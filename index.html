@@ -685,15 +685,19 @@
             box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
         }
 
-        .cancel-item-btn {
+        .remove-item-x {
             background: #fee2e2;
-            color: #991b1b;
+            color: #dc2626;
             border: none;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 13px;
+            font-weight: 800;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             margin-left: 8px;
         }
 
@@ -1467,11 +1471,11 @@
                                 <strong>${item.name}</strong><br>
                                 <span style="font-size: 12px; color: var(--text-muted);">₹${item.price} x ${tray[id]} = <strong>₹${item.price * tray[id]}</strong></span>
                             </div>
-                            <div>
+                            <div style="display: flex; align-items: center;">
                                 <button onclick="updateQty('${id}', -1)" style="background:#e0e7ff; color:var(--primary); border:none; width:22px; height:22px; border-radius:4px; font-weight:700; cursor:pointer;">-</button>
-                                <span style="margin: 0 4px; font-weight: 700;">${tray[id]}</span>
+                                <span style="margin: 0 6px; font-weight: 700;">${tray[id]}</span>
                                 <button onclick="updateQty('${id}', 1)" style="background:#e0e7ff; color:var(--primary); border:none; width:22px; height:22px; border-radius:4px; font-weight:700; cursor:pointer;">+</button>
-                                <button class="cancel-item-btn" onclick="removeCartItem('${id}')">Cancel</button>
+                                <button class="remove-item-x" onclick="removeCartItem('${id}')" title="Remove item">✕</button>
                             </div>
                         </div>
                     `;
