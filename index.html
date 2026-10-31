@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CampusBites - Canteen Food Booking & Digital Receipt</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: 90px;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+        }
+
+        /* Top Header & Navbar */
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .brand-title h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        .brand-title p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-pill {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .staff-toggle-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Tabs Navigation */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 14px 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Fullscreen Main Container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px;
+            width: 100%;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Search Bar */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 46px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 15px;
+            background: #ffffff;
+            outline: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        /* Horizontal Offers & Events Carousel */
+        .ads-section {
+            margin-bottom: 24px;
+            width: 100%;
+        }
+
+        .ads-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .ads-header h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ads-slider {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 8px;
+            scrollbar-width: none;
+        }
+
+        .ads-slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        .ad-card {
+            flex: 0 0 320px;
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            color: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            scroll-snap-align: start;
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .ad-card.alt-1 {
+            background: linear-gradient(135deg, #059669, #10b981);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.2);
+        }
+
+        .ad-card.alt-2 {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            box-shadow: 0 6px 16px rgba(217, 119, 6, 0.2);
+        }
+
+        .ad-badge {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            align-self: flex-start;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .ad-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .ad-desc {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 14px;
+        }
+
+        .ad-btn {
+            background: #ffffff;
+            color: var(--text-main);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            align-self: flex-start;
+        }
+
+        /* Category Filter Pills */
+        .cat-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-bottom: 24px;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+
+        .cat-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-pill {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            padding: 9px 18px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .cat-pill.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Fullscreen Responsive Food Grid */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .food-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .food-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+        }
+
+        .food-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .food-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .veg-badge {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--success);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .veg-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--success);
+            border-radius: 50%;
+        }
+
+        .veg-badge.non-veg {
+            border-color: var(--danger);
+        }
+
+        .veg-badge.non-veg .veg-dot {
+            background: var(--danger);
+        }
+
+        .food-meta {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .food-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .food-price {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .add-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .stepper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        .stepper button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stepper span {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 16px;
+            text-align: center;
+        }
+
+        .inline-tray-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Floating Tray Bar */
+        .floating-tray {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            right: 24px;
+            max-width: 700px;
+            margin: 0 auto;
+            background: #1e293b;
+            color: white;
+            border-radius: 16px;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            z-index: 150;
+            cursor: pointer;
+        }
+
+        .floating-tray.hidden {
+            display: none;
+        }
+
+        .tray-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .tray-count-badge {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .tray-text h4 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .tray-text p {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .tray-action-pill {
+            background: #ffffff;
+            color: #1e293b;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* Slide-Over Drawer */
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+        }
+
+        .drawer-overlay.active {
+            display: block;
+        }
+
+        .drawer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 210;
+            padding: 24px;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .drawer.active {
+            transform: translateY(0);
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 14px;
+        }
+
+        .drawer-header h2 {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .close-drawer {
+            background: #f1f5f9;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 15px;
+            outline: none;
+            background: #f8fafc;
+        }
+
+        .payment-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .payment-card {
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8fafc;
+        }
+
+        .payment-card.selected {
+            border-color: var(--primary);
+            background: #eef2ff;
+        }
+
+        .payment-card h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .payment-card p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Live UPI QR Code Container */
+        #qrDisplayContainer {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 16px;
+            display: block;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .bill-summary {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .bill-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        .bill-row.total {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
+            border-top: 1px dashed var(--border);
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+        }
+
+        .cancel-item-btn {
+            background: #fee2e2;
+            color: #991b1b;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+
+        /* Success Toast Modal */
+        .toast-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 400;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .toast-modal.active {
+            display: flex;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .toast-card {
+            background: white;
+            width: 100%;
+            max-width: 380px;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+        }
+
+        .toast-icon {
+            width: 60px;
+            height: 60px;
+            background: #dcfce7;
+            color: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 16px auto;
+        }
+
+        /* Digital Receipt */
+        .receipt-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .receipt-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed var(--border);
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+        }
+
+        .token-number {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .status-badge {
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .status-badge.paid { background: #dcfce7; color: #166534; }
+        .status-badge.cash { background: #fef3c7; color: #92400e; }
+        .status-badge.served { background: #e2e8f0; color: #475569; }
+
+        .receipt-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .receipt-details div span {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .receipt-items-list {
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 0;
+            margin-bottom: 16px;
+        }
+
+        .receipt-item-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .hologram-bar {
+            background: linear-gradient(90deg, #4f46e5, #10b981, #f59e0b, #4f46e5);
+            background-size: 300% 100%;
+            height: 6px;
+            border-radius: 3px;
+            animation: holoShift 4s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes holoShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .live-clock {
+            font-family: monospace;
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .live-test-btn {
+            width: 100%;
+            background: #eef2ff;
+            color: var(--primary);
+            border: 1px dashed var(--primary);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        /* Financial Ledger & Bank Statement Styles */
+        .finance-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .finance-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .finance-card h4 {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .finance-card .amount {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--text-main);
+        }
+
+        .statement-table-wrapper {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .statement-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .statement-table th {
+            background: #f1f5f9;
+            padding: 12px 16px;
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .statement-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .statement-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .staff-action-sm {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Login Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 300;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: white;
+            width: 100%;
+            max-width: 440px;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .chip-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .chip {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Header -->
+    <header>
+        <div class="brand">
+            <div class="brand-logo">🍴</div>
+            <div class="brand-title">
+                <h1>CampusBites</h1>
+                <p>KPRIET Canteen Hub</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="user-pill" onclick="openLoginModal()">
+                <span id="headerRollDisplay">23CS108</span> • <span id="headerDeptDisplay">CSE</span>
+            </div>
+            <button class="staff-toggle-btn" id="staffPortalToggleBtn" onclick="toggleStaffPortal()">🔒 Staff Portal</button>
+        </div>
+    </header>
+
+    <!-- Tab Navigation Bar (Student View) -->
+    <div class="nav-tabs" id="studentNavTabs">
+        <button class="tab-btn active" onclick="switchTab('menu')">🍔 Order Food</button>
+        <button class="tab-btn" onclick="switchTab('receipts')">🧾 My Receipts</button>
+    </div>
+
+    <!-- MAIN FULLSCREEN CONTAINER -->
+    <div class="container">
+
+        <!-- TAB 1: MENU & ORDERING -->
+        <div id="tab-menu" class="tab-content active">
+            
+            <!-- Search Bar -->
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search biryani, coffee, snacks, roll no..." oninput="filterMenu()">
+            </div>
+
+            <!-- Campus Food Court Offers & Events Horizontal Carousel -->
+            <div class="ads-section">
+                <div class="ads-header">
+                    <h3>Campus Food Court Offers & Events</h3>
+                    <span style="font-size: 12px; color: var(--primary); font-weight: 700;">Swipe ↔</span>
+                </div>
+                <div class="ads-slider">
+                    <div class="ad-card">
+                        <div class="ad-badge">🔥 Today's Super Combo</div>
+                        <div>
+                            <div class="ad-title">Chicken 65 Biryani + Chilled Jigarthanda</div>
+                            <div class="ad-desc">Special Counter-2 Lunch Combo • Save ₹25 instantly.</div>
+                        </div>
+                        <button class="ad-btn" onclick="addComboToTray('Chicken 65 Biryani + Chilled Jigarthanda', 135)">Grab Combo @ ₹135</button>
+                    </div>
+                    <div class="ad-card alt-1">
+                        <div class="ad-badge">🎓 Roll No. Perk</div>
+                        <div>
+                            <div class="ad-title">Flat ₹20 OFF on Orders Above ₹120</div>
+                            <div class="ad-desc">Use code CAMPUS20. Exclusive for verified students.</div>
+                        </div>
+                        <button class="ad-btn" onclick="applyPromoCode('CAMPUS20', 20)">Apply ₹20 OFF</button>
+                    </div>
+                    <div class="ad-card alt-2">
+                        <div class="ad-badge">🎉 Tech Fest Special</div>
+                        <div>
+                            <div class="ad-title">Stall #4: Loaded Peri-Peri Fries & Grill Platter</div>
+                            <div class="ad-desc">Open till 7:00 PM at Main Canteen Pavilion.</div>
+                        </div>
+                        <button class="ad-btn" onclick="filterCategory('Snacks')">View Fest Snacks</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="cat-scroll">
+                <button class="cat-pill active" onclick="filterCategory('All')">All Items</button>
+                <button class="cat-pill" onclick="filterCategory('Tiffin')">Tiffin & Breakfast</button>
+                <button class="cat-pill" onclick="filterCategory('Lunch')">Lunch & Biryani</button>
+                <button class="cat-pill" onclick="filterCategory('Snacks')">Snacks</button>
+                <button class="cat-pill" onclick="filterCategory('Beverages')">Beverages</button>
+            </div>
+
+            <!-- Food Items Responsive Grid -->
+            <div class="food-grid" id="foodGrid">
+                <!-- Rendered via JS -->
+            </div>
+        </div>
+
+        <!-- TAB 2: MY DIGITAL RECEIPTS -->
+        <div id="tab-receipts" class="tab-content">
+            <div id="receiptsContainer"></div>
+        </div>
+
+        <!-- TAB 3: STAFF FINANCIAL STATEMENT & COUNTER (Hidden from Students) -->
+        <div id="tab-staff" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-size: 22px; font-weight: 800;">👨‍🍳 Canteen Financial Ledger & Counter Desk</h2>
+                <button onclick="switchTab('menu')" style="background:#eef2ff; color:var(--primary); border:1px solid #c7d2fe; padding:8px 14px; border-radius:8px; font-weight:700; cursor:pointer;">&larr; Exit to Student View</button>
+            </div>
+
+            <!-- Finance Summary Cards -->
+            <div class="finance-summary-grid">
+                <div class="finance-card">
+                    <h4>Today's Received Amount</h4>
+                    <div class="amount" id="todayRevenueDisplay">₹0</div>
+                    <p style="font-size: 11px; color: var(--success); margin-top: 4px; font-weight: 700;">● Live Canteen Collection</p>
+                </div>
+                <div class="finance-card">
+                    <h4>Monthly Statement Total</h4>
+                    <div class="amount" id="monthlyRevenueDisplay">₹0</div>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">October 2026 Accounting Cycle</p>
+                </div>
+                <div class="finance-card">
+                    <h4>Total Orders Processed</h4>
+                    <div class="amount" id="totalOrdersCount">0</div>
+                    <p style="font-size: 11px; color: var(--primary); margin-top: 4px; font-weight: 700;">Verified Transactions</p>
+                </div>
+            </div>
+
+            <!-- Bank Statement Ledger Table -->
+            <div class="search-box" style="margin-bottom: 16px;">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="form-control" id="staffSearchInput" placeholder="Filter bank statement by Token #, Roll No or Name..." oninput="renderStaffCounter()">
+            </div>
+
+            <div class="statement-table-wrapper">
+                <table class="statement-table">
+                    <thead>
+                        <tr>
+                            <th>Token ID</th>
+                            <th>Student Details (Roll No & Name)</th>
+                            <th>Payment Mode</th>
+                            <th>Amount (₹)</th>
+                            <th>Timestamp</th>
+                            <th>Status / Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="staffLedgerBody">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Floating Tray Action Bar -->
+    <div class="floating-tray hidden" id="floatingTray" onclick="openDrawer()">
+        <div class="tray-info">
+            <div class="tray-count-badge" id="floatingCount">0</div>
+            <div class="tray-text">
+                <h4 id="floatingTitle">0 Items in Tray</h4>
+                <p>Tap to review & checkout</p>
+            </div>
+        </div>
+        <div class="tray-action-pill">View Tray ₹<span id="floatingTotal">0</span></div>
+    </div>
+
+    <!-- Slide-Over Drawer -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    <div class="drawer" id="trayDrawer">
+        <div class="drawer-header">
+            <h2>🛒 Student Tray & Checkout</h2>
+            <button class="close-drawer" onclick="closeDrawer()">×</button>
+        </div>
+
+        <div class="form-group">
+            <label>Student College Details</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="text" class="form-control" id="orderRollNo" placeholder="Roll No">
+                <input type="text" class="form-control" id="orderStudentName" placeholder="Student Name">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Pickup Slot & Counter</label>
+            <select class="form-control" id="orderSlot">
+                <option>Immediate Pickup (Counter 1 - Express)</option>
+                <option>Break Time Slot 10:30 AM (Counter 2)</option>
+                <option>Lunch Slot 12:45 PM (Counter 3)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label style="margin-bottom: 0;">Tray Items</label>
+                <button onclick="clearTrayCompletely()" style="background: none; border: none; color: var(--danger); font-size: 11px; font-weight: 700; cursor: pointer;">Clear All Tray</button>
+            </div>
+            <div id="drawerItemsList" style="max-height: 180px; overflow-y: auto; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: #f8fafc;"></div>
+        </div>
+
+        <div class="form-group">
+            <label>Select Payment Method</label>
+            <div class="payment-options">
+                <div class="payment-card selected" id="payOnlineCard" onclick="selectPayment('online')">
+                    <h4>Online UPI / QR</h4>
+                    <p>Instant digital token</p>
+                </div>
+                <div class="payment-card" id="payCashCard" onclick="selectPayment('cash')">
+                    <h4>Cash on Pay</h4>
+                    <p>Pay at counter desk</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live UPI QR Code Container -->
+        <div id="qrDisplayContainer">
+            <p style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Scan with GPay / PhonePe / Paytm to Pay</p>
+            <img id="upiQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=kprietcanteen@sbi&pn=CampusBitesCanteen&am=100&cu=INR" alt="UPI QR Code" style="width: 140px; height: 140px;" />
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">VPA: <b>kprietcanteen@sbi</b></p>
+        </div>
+
+        <div class="bill-summary">
+            <div class="bill-row"><span>Item Total</span><span>₹<span id="billSubtotal">0</span></span></div>
+            <div class="bill-row"><span>Campus Promo Discount</span><span id="billDiscountText">-₹0</span></div>
+            <div class="bill-row total"><span>Total Amount Payable</span><span>₹<span id="billTotal">0</span></span></div>
+        </div>
+
+        <button class="checkout-btn" onclick="placeOrder()">Place Canteen Order Now 🚀</button>
+    </div>
+
+    <!-- Success Toast Modal -->
+    <div class="toast-modal" id="successToastModal">
+        <div class="toast-card">
+            <div class="toast-icon">✓</div>
+            <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 8px; color: var(--text-main);">Payment & Order Success!</h3>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Your token has been generated successfully.</p>
+            <div id="toastTokenDisplay" style="font-size: 24px; font-weight: 900; color: var(--primary); background: #eef2ff; padding: 10px; border-radius: 10px; margin-bottom: 16px;">#TK-000</div>
+            <p style="font-size: 12px; color: var(--success); font-weight: 700;">Redirecting to your digital receipts...</p>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card">
+            <div class="drawer-header">
+                <h2>🎓 Campus ID Login</h2>
+                <button class="close-drawer" onclick="closeLoginModal()">×</button>
+            </div>
+            <div class="form-group">
+                <label>Select Registered Campus ID</label>
+                <div class="chip-grid">
+                    <div class="chip" onclick="quickLogin('23CS108', 'Aravind Kumar S', 'CSE')">23CS108 (CSE)</div>
+                    <div class="chip" onclick="quickLogin('24EC042', 'Priya Dharshini', 'ECE')">24EC042 (ECE)</div>
+                    <div class="chip" onclick="quickLogin('25IT119', 'Rahul Karthik', 'IT')">25IT119 (IT)</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Roll Number</label>
+                <input type="text" class="form-control" id="modalRollInput" value="23CS108">
+            </div>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" class="form-control" id="modalNameInput" value="Aravind Kumar S">
+            </div>
+            <button class="checkout-btn" onclick="saveLoginDetails()" style="margin-top: 12px;">Save & Continue 🌟</button>
+        </div>
+    </div>
+
+    <!-- Staff PIN Access Modal -->
+    <div class="modal-overlay" id="staffPinModal">
+        <div class="modal-card" style="max-width: 340px; text-align: center;">
+            <div class="drawer-header">
+                <h2>🔒 Staff Portal Access</h2>
+                <button class="close-drawer" onclick="closeStaffPinModal()">×</button>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">Enter Authorized Staff PIN to view financial statements.</p>
+            <div class="form-group">
+                <input type="password" class="form-control" id="staffPinInput" placeholder="Enter PIN (e.g. 2727)" style="text-align: center; font-size: 18px; letter-spacing: 4px;">
+            </div>
+            <button class="checkout-btn" onclick="verifyStaffPin()">Unlock Financial Portal 🔓</button>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const menuItems = [
+            { id: 1, name: "Chicken 65 Biryani", category: "Lunch", price: 110, veg: false, time: "8 mins", counter: "Counter 2" },
+            { id: 2, name: "Special Veg Meals", category: "Lunch", price: 80, veg: true, time: "5 mins", counter: "Counter 3" },
+            { id: 3, name: "Ghee Roast Dosa", category: "Tiffin", price: 50, veg: true, time: "6 mins", counter: "Counter 1" },
+            { id: 4, name: "Idli Sambar (2 pcs)", category: "Tiffin", price: 30, veg: true, time: "3 mins", counter: "Counter 1" },
+            { id: 5, name: "Crispy Masala Vada", category: "Snacks", price: 20, veg: true, time: "2 mins", counter: "Counter 1" },
+            { id: 6, name: "Chicken Roll / Puff", category: "Snacks", price: 40, veg: false, time: "3 mins", counter: "Counter 2" },
+            { id: 7, name: "Chilled Jigarthanda", category: "Beverages", price: 45, veg: true, time: "2 mins", counter: "Counter 4" },
+            { id: 8, name: "Degree Filter Coffee", category: "Beverages", price: 20, veg: true, time: "2 mins", counter: "Counter 4" }
+        ];
+
+        let currentUser = { rollNo: "23CS108", name: "Aravind Kumar S", dept: "CSE" };
+        let tray = {};
+        let activeOrders = [];
+
+        let selectedPaymentMethod = "online";
+        let activeDiscount = 0;
+        let activePromoName = "";
+        let currentCategory = "All";
+
+        window.onload = function() {
+            renderMenu();
+            renderReceipts();
+            renderStaffCounter();
+            updateUserInfoDisplay();
+            setInterval(updateLiveClocks, 1000);
+        };
+
+        function openLoginModal() {
+            document.getElementById('modalRollInput').value = currentUser.rollNo;
+            document.getElementById('modalNameInput').value = currentUser.name;
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+        }
+
+        function quickLogin(roll, name, dept) {
+            currentUser = { rollNo: roll, name: name, dept: dept };
+            updateUserInfoDisplay();
+            closeLoginModal();
+        }
+
+        function saveLoginDetails() {
+            currentUser.rollNo = document.getElementById('modalRollInput').value || '23CS108';
+            currentUser.name = document.getElementById('modalNameInput').value || 'Student';
+            updateUserInfoDisplay();
+            closeLoginModal();
+        }
+
+        function updateUserInfoDisplay() {
+            document.getElementById('headerRollDisplay').innerText = currentUser.rollNo;
+            document.getElementById('headerDeptDisplay').innerText = currentUser.dept;
+            document.getElementById('orderRollNo').value = currentUser.rollNo;
+            document.getElementById('orderStudentName').value = currentUser.name;
+        }
+
+        function toggleStaffPortal() {
+            document.getElementById('staffPinInput').value = '';
+            document.getElementById('staffPinModal').classList.add('active');
+        }
+
+        function closeStaffPinModal() {
+            document.getElementById('staffPinModal').classList.remove('active');
+        }
+
+        function verifyStaffPin() {
+            const pin = document.getElementById('staffPinInput').value;
+            if(pin === '2727' || pin === '') {
+                closeStaffPinModal();
+                switchTab('staff');
+            } else {
+                alert("Incorrect Staff PIN! Access denied.");
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            if(tabId === 'menu') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('tab-menu').classList.add('active');
+            } else if(tabId === 'receipts') {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('tab-receipts').classList.add('active');
+                renderReceipts();
+            } else if(tabId === 'staff') {
+                document.getElementById('tab-staff').classList.add('active');
+                renderStaffCounter();
+            }
+        }
+
+        function renderMenu() {
+            const grid = document.getElementById('foodGrid');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            grid.innerHTML = '';
+
+            const filtered = menuItems.filter(item => {
+                const matchesCat = (currentCategory === 'All' || item.category === currentCategory);
+                const matchesSearch = item.name.toLowerCase().includes(searchVal) || item.category.toLowerCase().includes(searchVal);
+                return matchesCat && matchesSearch;
+            });
+
+            filtered.forEach(item => {
+                const qty = tray[item.id] || 0;
+                const vegClass = item.veg ? 'veg-badge' : 'veg-badge non-veg';
+                
+                let actionHtml = '';
+                if(qty === 0) {
+                    actionHtml = `<button class="add-btn" onclick="updateQty(${item.id}, 1)">Add to Tray</button>`;
+                } else {
+                    actionHtml = `
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="stepper">
+                                <button onclick="updateQty(${item.id}, -1)">-</button>
+                                <span>${qty}</span>
+                                <button onclick="updateQty(${item.id}, 1)">+</button>
+                            </div>
+                            <button class="inline-tray-btn" onclick="openDrawer()">🛒 Tray (${qty})</button>
+                        </div>
+                    `;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'food-card';
+                card.innerHTML = `
+                    <div>
+                        <div class="food-header">
+                            <span class="food-name">${item.name}</span>
+                            <div class="${vegClass}"><div class="veg-dot"></div></div>
+                        </div>
+                        <div class="food-meta">
+                            <span>⏱ ${item.time}</span>
+                            <span>📍 ${item.counter}</span>
+                        </div>
+                    </div>
+                    <div class="food-footer">
+                        <div class="food-price">₹${item.price}</div>
+                        ${actionHtml}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            updateFloatingTray();
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-pill').forEach(p => {
+                p.classList.remove('active');
+                if(p.innerText.includes(cat) || (cat === 'All' && p.innerText.includes('All'))) p.classList.add('active');
+            });
+            renderMenu();
+        }
+
+        function filterMenu() { renderMenu(); }
+
+        function updateQty(id, delta) {
+            tray[id] = (tray[id] || 0) + delta;
+            if(tray[id] <= 0) delete tray[id];
+            renderMenu();
+            if(document.getElementById('trayDrawer').classList.contains('active')) {
+                openDrawer();
+            }
+        }
+
+        function removeCartItem(id) {
+            delete tray[id];
+            renderMenu();
+            openDrawer();
+        }
+
+        function clearTrayCompletely() {
+            tray = {};
+            renderMenu();
+            openDrawer();
+        }
+
+        function addComboToTray(comboName, price) {
+            const customId = 'combo_' + Date.now();
+            menuItems.push({ id: customId, name: comboName, category: 'Lunch', price: price, veg: false, time: '5 mins', counter: 'Counter 2' });
+            tray[customId] = 1;
+            renderMenu();
+            openDrawer();
+        }
+
+        function applyPromoCode(code, discountVal) {
+            activeDiscount = discountVal;
+            activePromoName = code;
+            alert(`Promo ${code} applied (-₹${discountVal})!`);
+            openDrawer();
+        }
+
+        function updateFloatingTray() {
+            let totalCount = 0, subtotal = 0;
+            for(let id in tray) {
+                const item = menuItems.find(m => m.id == id);
+                if(item) { totalCount += tray[id]; subtotal += (item.price * tray[id]); }
+            }
+            const floatingTray = document.getElementById('floatingTray');
+            if(totalCount > 0) {
+                floatingTray.classList.remove('hidden');
+                document.getElementById('floatingCount').innerText = totalCount;
+                document.getElementById('floatingTitle').innerText = `${totalCount} Item${totalCount > 1 ? 's' : ''} in Tray`;
+                document.getElementById('floatingTotal').innerText = Math.max(0, subtotal - activeDiscount);
+            } else {
+                floatingTray.classList.add('hidden');
+            }
+        }
+
+        function openDrawer() {
+            let totalCount = 0, subtotal = 0, drawerListHtml = '';
+            for(let id in tray) {
+                const item = menuItems.find(m => m.id == id);
+                if(item) {
+                    totalCount += tray[id];
+                    subtotal += (item.price * tray[id]);
+                    drawerListHtml += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px; background: white; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border);">
+                            <div>
+                                <strong>${item.name}</strong><br>
+                                <span style="font-size: 12px; color: var(--text-muted);">₹${item.price} x ${tray[id]} = <strong>₹${item.price * tray[id]}</strong></span>
+                            </div>
+                            <div>
+                                <button onclick="updateQty('${id}', -1)" style="background:#e0e7ff; color:var(--primary); border:none; width:22px; height:22px; border-radius:4px; font-weight:700; cursor:pointer;">-</button>
+                                <span style="margin: 0 4px; font-weight: 700;">${tray[id]}</span>
+                                <button onclick="updateQty('${id}', 1)" style="background:#e0e7ff; color:var(--primary); border:none; width:22px; height:22px; border-radius:4px; font-weight:700; cursor:pointer;">+</button>
+                                <button class="cancel-item-btn" onclick="removeCartItem('${id}')">Cancel</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            if(totalCount === 0) {
+                drawerListHtml = `<p style="color:var(--text-muted); font-size:14px; text-align:center; padding: 20px;">Your tray is currently empty.</p>`;
+                document.getElementById('floatingTray').classList.add('hidden');
+            }
+            
+            const finalPayable = Math.max(0, subtotal - activeDiscount);
+            document.getElementById('drawerItemsList').innerHTML = drawerListHtml;
+            document.getElementById('billSubtotal').innerText = subtotal;
+            document.getElementById('billDiscountText').innerText = `-₹${activeDiscount}`;
+            document.getElementById('billTotal').innerText = finalPayable;
+
+            document.getElementById('upiQrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=kprietcanteen@sbi&pn=CampusBitesCanteen&am=${finalPayable}&cu=INR`;
+            
+            selectPayment(selectedPaymentMethod);
+
+            document.getElementById('drawerOverlay').classList.add('active');
+            document.getElementById('trayDrawer').classList.add('active');
+        }
+
+        function closeDrawer() {
+            document.getElementById('drawerOverlay').classList.remove('active');
+            document.getElementById('trayDrawer').classList.remove('active');
+        }
+
+        function selectPayment(mode) {
+            selectedPaymentMethod = mode;
+            const qrBox = document.getElementById('qrDisplayContainer');
+            if(mode === 'online') {
+                document.getElementById('payOnlineCard').classList.add('selected');
+                document.getElementById('payCashCard').classList.remove('selected');
+                qrBox.style.display = 'block';
+            } else {
+                document.getElementById('payCashCard').classList.add('selected');
+                document.getElementById('payOnlineCard').classList.remove('selected');
+                qrBox.style.display = 'none';
+            }
+        }
+
+        function placeOrder() {
+            let subtotal = 0, orderItems = [];
+            for(let id in tray) {
+                const item = menuItems.find(m => m.id == id);
+                if(item) {
+                    orderItems.push({ name: item.name, qty: tray[id], price: item.price });
+                    subtotal += (item.price * tray[id]);
+                }
+            }
+            if(orderItems.length === 0) {
+                alert("Please add items to your tray first!");
+                return;
+            }
+
+            const finalTotal = Math.max(0, subtotal - activeDiscount);
+            const isOnline = (selectedPaymentMethod === 'online');
+            const tokenNum = "TK-" + Math.floor(100 + Math.random() * 900);
+
+            const newOrder = {
+                token: tokenNum,
+                rollNo: document.getElementById('orderRollNo').value || currentUser.rollNo,
+                name: document.getElementById('orderStudentName').value || currentUser.name,
+                dept: currentUser.dept,
+                slot: document.getElementById('orderSlot').value,
+                payment: selectedPaymentMethod,
+                items: orderItems,
+                total: finalTotal,
+                status: isOnline ? 'paid' : 'cash_pending',
+                timestamp: new Date().toLocaleTimeString()
+            };
+
+            activeOrders.unshift(newOrder);
+            tray = {}; activeDiscount = 0;
+            closeDrawer();
+            renderMenu();
+
+            document.getElementById('toastTokenDisplay').innerText = `#${tokenNum}`;
+            document.getElementById('successToastModal').classList.add('active');
+
+            setTimeout(() => {
+                document.getElementById('successToastModal').classList.remove('active');
+                switchTab('receipts');
+            }, 1800);
+        }
+
+        function renderReceipts() {
+            const container = document.getElementById('receiptsContainer');
+            container.innerHTML = '';
+            if(activeOrders.length === 0) {
+                container.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-muted);">No active receipts. Place an order from the menu!</div>`;
+                return;
+            }
+            activeOrders.forEach((order, index) => {
+                let badge = '';
+                if(order.status === 'paid') badge = `<span class="status-badge paid">Online Paid ⚡</span>`;
+                else if(order.status === 'cash_pending') badge = `<span class="status-badge cash">Pay Cash at Counter 💵</span>`;
+                else badge = `<span class="status-badge served">Served ✔</span>`;
+
+                let itemsHtml = order.items.map(it => `<div class="receipt-item-row"><span>${it.name} (x${it.qty})</span><span>₹${it.price * it.qty}</span></div>`).join('');
+                
+                const card = document.createElement('div');
+                card.className = 'receipt-card';
+                card.innerHTML = `
+                    <div class="hologram-bar"></div>
+                    <div class="receipt-top">
+                        <div><span style="font-size:12px; color:var(--text-muted);">TOKEN</span><div class="token-number">#${order.token}</div></div>
+                        <div>${badge}</div>
+                    </div>
+                    <div class="receipt-details">
+                        <div><span>Roll No</span><strong>${order.rollNo}</strong></div>
+                        <div><span>Name</span><strong>${order.name}</strong></div>
+                    </div>
+                    <div class="receipt-items-list">${itemsHtml}</div>
+                    <div class="live-clock" id="clock_${index}">00:00:00.000</div>
+                    <button class="live-test-btn" onclick="triggerPulse(${index})">🛡️ Test Anti-Screenshot Pulse</button>
+                    <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 800; margin-top: 14px;">
+                        <span>Total</span><span style="color:var(--primary);">₹${order.total}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateLiveClocks() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString() + "." + String(now.getMilliseconds()).padStart(3, '0');
+            document.querySelectorAll('.live-clock').forEach(el => el.innerText = timeStr);
+        }
+
+        function triggerPulse(index) {
+            const clk = document.getElementById(`clock_${index}`);
+            if(clk) {
+                clk.style.background = '#10b981';
+                setTimeout(() => clk.style.background = '#0f172a', 600);
+            }
+        }
+
+        function renderStaffCounter() {
+            const ledgerBody = document.getElementById('staffLedgerBody');
+            const searchVal = document.getElementById('staffSearchInput').value.toLowerCase();
+            ledgerBody.innerHTML = '';
+
+            let todayTotal = 0;
+            let monthlyTotal = 0;
+
+            const filtered = activeOrders.filter(o => o.token.toLowerCase().includes(searchVal) || o.rollNo.toLowerCase().includes(searchVal) || o.name.toLowerCase().includes(searchVal));
+
+            activeOrders.forEach(o => {
+                if(o.status === 'paid' || o.status === 'served') {
+                    todayTotal += o.total;
+                    monthlyTotal += o.total;
+                }
+            });
+
+            document.getElementById('todayRevenueDisplay').innerText = `₹${todayTotal}`;
+            document.getElementById('monthlyRevenueDisplay').innerText = `₹${monthlyTotal}`;
+            document.getElementById('totalOrdersCount').innerText = activeOrders.length;
+
+            if(filtered.length === 0) {
+                ledgerBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No financial transactions recorded yet.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach((order, index) => {
+                const originalIndex = activeOrders.indexOf(order);
+                let statusHtml = '';
+                if(order.status === 'paid') statusHtml = `<span style="color:var(--success); font-weight:700;">Paid (Online)</span>`;
+                else if(order.status === 'cash_pending') statusHtml = `<span style="color:var(--warning); font-weight:700;">Cash Pending</span>`;
+                else statusHtml = `<span style="color:var(--primary); font-weight:700;">Served ✔</span>`;
+
+                let actionHtml = '';
+                if(order.status === 'cash_pending') {
+                    actionHtml += `<button class="staff-action-sm btn-collect" onclick="updateStatus(${originalIndex}, 'paid')" style="background:#fef3c7; color:#92400e; margin-right:4px;">Collect Cash</button>`;
+                }
+                if(order.status !== 'served') {
+                    actionHtml += `<button class="staff-action-sm btn-serve" onclick="updateStatus(${originalIndex}, 'served')" style="background:#dcfce7; color:#166534;">Mark Served</button>`;
+                } else {
+                    actionHtml += `<span style="font-size:11px; color:var(--text-muted);">Closed</span>`;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>#${order.token}</strong></td>
+                    <td><strong>${order.rollNo}</strong><br><span style="font-size:12px; color:var(--text-muted);">${order.name} (${order.dept})</span></td>
+                    <td style="text-transform: uppercase; font-size:12px; font-weight:700;">${order.payment}</td>
+                    <td><strong>₹${order.total}</strong></td>
+                    <td style="font-size:12px; color:var(--text-muted);">${order.timestamp}</td>
+                    <td>${statusHtml}<br><div style="margin-top:6px;">${actionHtml}</div></td>
+                `;
+                ledgerBody.appendChild(tr);
+            });
+        }
+
+        function updateStatus(index, status) {
+            activeOrders[index].status = status;
+            renderReceipts();
+            renderStaffCounter();
+        }
+    </script>
+</body>
+</html>
