@@ -12,12 +12,13 @@
             --success: #10b981;
             --warning: #d97706;
             --danger: #ef4444;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
             --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --radius: 16px;
+            --text-muted: #475569;
+            --glass-bg: rgba(255, 255, 255, 0.58);
+            --glass-bg-strong: rgba(255, 255, 255, 0.78);
+            --glass-border: rgba(255, 255, 255, 0.85);
+            --glass-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+            --radius: 18px;
         }
 
         * {
@@ -29,20 +30,55 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: #eef2ff;
             color: var(--text-main);
-            padding-bottom: 100px;
+            padding-bottom: 110px;
             min-height: 100vh;
-            width: 100vw;
+            width: 100%;
             overflow-x: hidden;
             -webkit-text-size-adjust: 100%;
+            position: relative;
+        }
+
+        /* Ambient Color Mesh Background (Essential so Frosted Glass refracts vibrant colors) */
+        .ambient-mesh {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background: 
+                radial-gradient(circle at 12% 18%, rgba(99, 102, 241, 0.38) 0%, transparent 45%),
+                radial-gradient(circle at 88% 15%, rgba(16, 185, 129, 0.32) 0%, transparent 45%),
+                radial-gradient(circle at 82% 82%, rgba(245, 158, 11, 0.28) 0%, transparent 50%),
+                radial-gradient(circle at 18% 85%, rgba(56, 189, 248, 0.34) 0%, transparent 50%),
+                linear-gradient(135deg, #e0e7ff 0%, #f0fdf4 50%, #fef3c7 100%);
+            transform: translateZ(0);
+        }
+
+        /* True Frosted Glass Utility Classes */
+        .glass-surface {
+            background: var(--glass-bg);
+            backdrop-filter: blur(18px) saturate(190%);
+            -webkit-backdrop-filter: blur(18px) saturate(190%);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .glass-surface-strong {
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(22px) saturate(200%);
+            -webkit-backdrop-filter: blur(22px) saturate(200%);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
         }
 
         /* Secure Login & College Pass Gate */
         .auth-gate {
             position: fixed;
             inset: 0;
-            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4f46e5 100%);
+            background: linear-gradient(135deg, rgba(30, 27, 75, 0.82) 0%, rgba(49, 46, 129, 0.82) 50%, rgba(79, 70, 229, 0.78) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             z-index: 500;
             display: flex;
             align-items: center;
@@ -56,12 +92,15 @@
         }
 
         .auth-card {
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.95);
             width: 100%;
             max-width: 440px;
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+            border-radius: 26px;
+            padding: 26px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 1);
             margin: auto;
         }
 
@@ -77,10 +116,11 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
-            background: #f1f5f9;
+            background: rgba(241, 245, 249, 0.75);
             padding: 6px;
             border-radius: 14px;
             margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
 
         .role-tab {
@@ -101,10 +141,8 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        /* Top Header & Navbar */
+        /* Top Header & Navbar with Frosted Glass */
         header {
-            background: #ffffff;
-            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -114,6 +152,11 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px) saturate(190%);
+            -webkit-backdrop-filter: blur(20px) saturate(190%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
         }
 
         @media(min-width: 768px) {
@@ -138,7 +181,7 @@
             align-items: center;
             justify-content: center;
             font-size: 18px;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
             flex-shrink: 0;
         }
 
@@ -163,8 +206,8 @@
         }
 
         .user-pill {
-            background: #eef2ff;
-            border: 1px solid #c7d2fe;
+            background: rgba(238, 242, 255, 0.8);
+            border: 1px solid rgba(199, 210, 254, 0.9);
             color: var(--primary);
             padding: 6px 12px;
             border-radius: 20px;
@@ -175,12 +218,14 @@
             gap: 6px;
             cursor: pointer;
             white-space: nowrap;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9);
         }
 
         .switch-auth-btn {
-            background: #1e293b;
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(8px);
             color: white;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 11px;
@@ -189,13 +234,15 @@
             white-space: nowrap;
         }
 
-        /* Tabs Navigation */
+        /* Tabs Navigation with Glassmorphism */
         .nav-tabs {
             display: flex;
             justify-content: flex-start;
             gap: 16px;
-            background: #ffffff;
-            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.52);
+            backdrop-filter: blur(14px) saturate(180%);
+            -webkit-backdrop-filter: blur(14px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
             padding: 0 16px;
             overflow-x: auto;
             scrollbar-width: none;
@@ -218,7 +265,7 @@
             border: none;
             padding: 12px 8px;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text-muted);
             cursor: pointer;
             border-bottom: 3px solid transparent;
@@ -231,7 +278,7 @@
             border-bottom-color: var(--primary);
         }
 
-        /* Fullscreen Main Container */
+        /* Main Container */
         .container {
             max-width: 1280px;
             margin: 0 auto;
@@ -253,41 +300,48 @@
             display: block;
         }
 
-        /* College Pass Banner */
+        /* College Pass Banner - Frosted Glass Card */
         .pass-banner {
-            background: linear-gradient(135deg, #eef2ff 0%, #f0fdf4 100%);
-            border: 1px solid #c7d2fe;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.72) 0%, rgba(240, 253, 244, 0.68) 100%);
+            backdrop-filter: blur(18px) saturate(190%);
+            -webkit-backdrop-filter: blur(18px) saturate(190%);
+            border: 1px solid rgba(255, 255, 255, 0.9);
             border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 20px;
+            padding: 16px 18px;
+            margin-bottom: 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 12px;
-            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.04);
+            box-shadow: var(--glass-shadow);
         }
 
-        /* Search Bar */
+        /* Search Bar - Frosted Glass Input */
         .search-box {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .search-box input {
             width: 100%;
-            padding: 12px 16px 12px 44px;
-            border: 1px solid var(--border);
+            padding: 13px 16px 13px 44px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
             border-radius: var(--radius);
             font-size: 14px;
-            background: #ffffff;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.68);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
             outline: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            box-shadow: var(--glass-shadow);
+            color: var(--text-main);
         }
 
         .search-box input:focus {
+            background: rgba(255, 255, 255, 0.88);
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
         }
 
         .search-icon {
@@ -297,11 +351,12 @@
             transform: translateY(-50%);
             color: var(--text-muted);
             font-size: 15px;
+            z-index: 2;
         }
 
-        /* Horizontal Offers & Events Carousel (Image Background Overlay Card) */
+        /* Horizontal Offers Carousel (Image Background + Glass Badge) */
         .ads-section {
-            margin-bottom: 24px;
+            margin-bottom: 22px;
             width: 100%;
         }
 
@@ -324,7 +379,7 @@
             gap: 14px;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
-            padding-bottom: 4px;
+            padding-bottom: 6px;
             scrollbar-width: none;
         }
 
@@ -333,27 +388,32 @@
         }
 
         .ad-card {
-            flex: 0 0 300px;
-            @media(min-width: 768px) { flex: 0 0 360px; }
-            height: 190px;
+            flex: 0 0 290px;
+            height: 185px;
             border-radius: var(--radius);
             overflow: hidden;
             scroll-snap-align: start;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             background-size: cover;
             background-position: center;
+            border: 1px solid rgba(255, 255, 255, 0.7);
         }
 
-        /* Dark Gradient Overlay for Maximum Text Visibility */
+        @media(min-width: 768px) {
+            .ad-card {
+                flex: 0 0 350px;
+            }
+        }
+
         .ad-card::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.1) 0%, rgba(15, 23, 42, 0.85) 70%, rgba(15, 23, 42, 0.95) 100%);
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.15) 0%, rgba(15, 23, 42, 0.82) 65%, rgba(15, 23, 42, 0.95) 100%);
             z-index: 1;
         }
 
@@ -371,17 +431,18 @@
         }
 
         .ad-badge {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(4px);
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             color: #ffffff;
             padding: 4px 10px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 11px;
             font-weight: 800;
             align-self: flex-start;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.45);
         }
 
         .ad-title {
@@ -390,28 +451,28 @@
             color: #ffffff;
             margin-bottom: 4px;
             line-height: 1.25;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
         }
 
         .ad-desc {
             font-size: 12px;
-            color: #f1f5f9;
-            margin-bottom: 12px;
+            color: #f8fafc;
+            margin-bottom: 10px;
             font-weight: 600;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
         }
 
         .ad-btn {
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.92);
             color: #0f172a;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 10px;
             font-size: 12px;
             font-weight: 900;
             cursor: pointer;
             align-self: flex-start;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
             transition: transform 0.1s;
         }
 
@@ -419,12 +480,12 @@
             transform: scale(0.96);
         }
 
-        /* Category Filter Pills */
+        /* Frosted Glass Filter Pills (Canteens & Categories) */
         .cat-scroll {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             overflow-x: auto;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             padding-bottom: 4px;
             scrollbar-width: none;
         }
@@ -434,27 +495,33 @@
         }
 
         .cat-pill {
-            background: #ffffff;
-            border: 1px solid var(--border);
-            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.62);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.88);
+            padding: 9px 18px;
             border-radius: 30px;
             font-size: 13px;
-            font-weight: 700;
-            color: var(--text-muted);
+            font-weight: 800;
+            color: var(--text-main);
             cursor: pointer;
             white-space: nowrap;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+            transition: all 0.18s ease;
+        }
+
+        .cat-pill:hover {
+            background: rgba(255, 255, 255, 0.85);
         }
 
         .cat-pill.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
         }
 
-        /* Responsive Food Grid */
+        /* Responsive Food Grid with True Frosted Glass Cards */
         .food-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -468,31 +535,34 @@
         }
 
         .food-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.68) 0%, rgba(255, 255, 255, 0.48) 100%);
+            backdrop-filter: blur(16px) saturate(190%);
+            -webkit-backdrop-filter: blur(16px) saturate(190%);
+            border: 1px solid rgba(255, 255, 255, 0.88);
             border-radius: var(--radius);
-            padding: 16px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: var(--glass-shadow);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
         }
 
         .food-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            transform: translateY(-3px);
+            box-shadow: 0 14px 32px -6px rgba(15, 23, 42, 0.12), inset 0 1px 2px rgba(255, 255, 255, 1);
         }
 
         .food-college-tag {
             display: inline-block;
-            background: #f1f5f9;
-            color: #475569;
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            color: #334155;
             font-size: 11px;
             font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 6px;
-            margin-bottom: 8px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
 
         .food-header {
@@ -500,6 +570,7 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 6px;
+            gap: 8px;
         }
 
         .food-name {
@@ -509,8 +580,8 @@
         }
 
         .veg-badge {
-            width: 15px;
-            height: 15px;
+            width: 16px;
+            height: 16px;
             border: 2px solid var(--success);
             border-radius: 4px;
             display: flex;
@@ -518,6 +589,7 @@
             justify-content: center;
             flex-shrink: 0;
             margin-top: 2px;
+            background: rgba(255, 255, 255, 0.8);
         }
 
         .veg-dot {
@@ -538,10 +610,10 @@
         .food-meta {
             font-size: 12px;
             color: var(--text-muted);
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             display: flex;
             gap: 12px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .food-footer {
@@ -549,46 +621,52 @@
             justify-content: space-between;
             align-items: center;
             margin-top: auto;
+            gap: 8px;
         }
 
         .food-price {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 900;
             color: var(--text-main);
         }
 
         .add-btn {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 10px;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.28);
+            transition: transform 0.1s;
+        }
+
+        .add-btn:active {
+            transform: scale(0.95);
         }
 
         .stepper {
             display: flex;
             align-items: center;
             gap: 6px;
-            background: #eef2ff;
+            background: rgba(238, 242, 255, 0.85);
             border: 1px solid #c7d2fe;
             padding: 3px 8px;
-            border-radius: 8px;
+            border-radius: 10px;
         }
 
         .stepper button {
             background: var(--primary);
             color: white;
             border: none;
-            width: 22px;
-            height: 22px;
-            border-radius: 5px;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
             font-weight: 800;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -598,12 +676,12 @@
             font-size: 13px;
             font-weight: 800;
             color: var(--primary-dark);
-            min-width: 14px;
+            min-width: 16px;
             text-align: center;
         }
 
         .inline-tray-btn {
-            background: #1e293b;
+            background: rgba(15, 23, 42, 0.9);
             color: white;
             border: none;
             padding: 7px 10px;
@@ -616,10 +694,12 @@
             gap: 4px;
         }
 
-        /* Admin Studio Layout */
+        /* Admin Studio Glass Panels */
         .admin-section-divider {
-            background: #ffffff;
-            border: 1px solid var(--border);
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(18px) saturate(190%);
+            -webkit-backdrop-filter: blur(18px) saturate(190%);
+            border: 1px solid var(--glass-border);
             border-radius: var(--radius);
             padding: 20px;
             margin-bottom: 20px;
@@ -628,7 +708,7 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 16px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+            box-shadow: var(--glass-shadow);
         }
 
         .admin-grid {
@@ -639,11 +719,13 @@
         }
 
         .admin-panel {
-            background: #ffffff;
-            border: 1px solid var(--border);
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(18px) saturate(190%);
+            -webkit-backdrop-filter: blur(18px) saturate(190%);
+            border: 1px solid var(--glass-border);
             border-radius: var(--radius);
             padding: 20px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+            box-shadow: var(--glass-shadow);
         }
 
         .admin-panel h3 {
@@ -662,16 +744,16 @@
         .item-list-box {
             max-height: 220px;
             overflow-y: auto;
-            border: 1px solid var(--border);
-            border-radius: 10px;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: 12px;
             padding: 8px;
-            background: #f8fafc;
+            background: rgba(248, 250, 252, 0.65);
         }
 
         .item-list-row {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: 10px;
             padding: 10px;
             margin-bottom: 6px;
             display: flex;
@@ -718,12 +800,12 @@
             background: #10b981;
             color: white;
             border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
+            padding: 11px 16px;
+            border-radius: 10px;
             font-size: 13px;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -746,10 +828,11 @@
             top: 100%;
             left: 0;
             right: 0;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(16px);
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.14);
             max-height: 160px;
             overflow-y: auto;
             z-index: 50;
@@ -770,7 +853,7 @@
             color: var(--primary);
         }
 
-        /* Floating Tray Bar */
+        /* Floating Dark Glass Tray Bar */
         .floating-tray {
             position: fixed;
             bottom: 16px;
@@ -778,16 +861,19 @@
             right: 16px;
             max-width: 650px;
             margin: 0 auto;
-            background: #1e293b;
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(20px) saturate(190%);
+            -webkit-backdrop-filter: blur(20px) saturate(190%);
             color: white;
-            border-radius: var(--radius);
+            border-radius: 20px;
             padding: 14px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.3);
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.25);
             z-index: 150;
             cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
         .floating-tray.hidden {
@@ -803,8 +889,8 @@
         .tray-count-badge {
             background: var(--primary);
             color: white;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -821,27 +907,28 @@
 
         .tray-text p {
             font-size: 11px;
-            color: #94a3b8;
+            color: #cbd5e1;
             font-weight: 500;
         }
 
         .tray-action-pill {
             background: #ffffff;
-            color: #1e293b;
-            padding: 8px 16px;
-            border-radius: 10px;
+            color: #0f172a;
+            padding: 9px 16px;
+            border-radius: 12px;
             font-size: 13px;
             font-weight: 800;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             white-space: nowrap;
         }
 
-        /* Slide-Over Drawer */
+        /* Slide-Over Frosted Glass Drawer */
         .drawer-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.5);
-            backdrop-filter: blur(4px);
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             z-index: 200;
             display: none;
         }
@@ -857,17 +944,25 @@
             right: 0;
             max-width: 600px;
             margin: 0 auto;
-            background: #ffffff;
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
+            border-top: 1px solid rgba(255, 255, 255, 0.95);
+            border-top-left-radius: 26px;
+            border-top-right-radius: 26px;
             max-height: 90vh;
             overflow-y: auto;
             z-index: 210;
             padding: 20px;
-            @media(min-width: 768px) { padding: 28px; }
             transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 -12px 40px rgba(0,0,0,0.18);
+        }
+
+        @media(min-width: 768px) {
+            .drawer {
+                padding: 28px;
+            }
         }
 
         .drawer.active {
@@ -879,7 +974,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
             padding-bottom: 14px;
         }
 
@@ -889,8 +984,8 @@
         }
 
         .close-drawer {
-            background: #f1f5f9;
-            border: none;
+            background: rgba(241, 245, 249, 0.9);
+            border: 1px solid rgba(226, 232, 240, 0.9);
             width: 32px;
             height: 32px;
             border-radius: 50%;
@@ -917,12 +1012,13 @@
         .form-control {
             width: 100%;
             padding: 10px 14px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border: 1px solid rgba(203, 213, 225, 0.9);
+            border-radius: 12px;
             font-size: 14px;
             outline: none;
-            background: #f8fafc;
+            background: rgba(255, 255, 255, 0.85);
             font-weight: 600;
+            color: var(--text-main);
         }
 
         .form-control:focus {
@@ -938,17 +1034,17 @@
         }
 
         .payment-card {
-            border: 2px solid var(--border);
-            border-radius: var(--radius);
+            border: 2px solid rgba(226, 232, 240, 0.9);
+            border-radius: 14px;
             padding: 14px;
             text-align: center;
             cursor: pointer;
-            background: #f8fafc;
+            background: rgba(255, 255, 255, 0.75);
         }
 
         .payment-card.selected {
             border-color: var(--primary);
-            background: #eef2ff;
+            background: rgba(238, 242, 255, 0.9);
         }
 
         .payment-card h4 {
@@ -965,20 +1061,20 @@
         }
 
         #qrDisplayContainer {
-            background: #ffffff;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: 14px;
             padding: 14px;
             text-align: center;
             margin-bottom: 16px;
             display: block;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
         .bill-summary {
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            background: rgba(248, 250, 252, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: 14px;
             padding: 16px;
             margin-bottom: 16px;
         }
@@ -996,18 +1092,18 @@
             font-size: 17px;
             font-weight: 900;
             color: var(--text-main);
-            border-top: 1px dashed var(--border);
+            border-top: 1px dashed #cbd5e1;
             padding-top: 10px;
             margin-top: 10px;
         }
 
         .checkout-btn {
             width: 100%;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
             padding: 14px;
-            border-radius: var(--radius);
+            border-radius: 14px;
             font-size: 14px;
             font-weight: 800;
             cursor: pointer;
@@ -1018,8 +1114,8 @@
         .toast-modal {
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(6px);
             z-index: 400;
             display: none;
             align-items: center;
@@ -1032,13 +1128,15 @@
         }
 
         .toast-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
             width: 100%;
             max-width: 360px;
             border-radius: 24px;
             padding: 28px;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            border: 1px solid #ffffff;
         }
 
         .toast-icon {
@@ -1056,12 +1154,13 @@
 
         /* Digital Receipt */
         .receipt-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 18px;
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(18px) saturate(190%);
+            -webkit-backdrop-filter: blur(18px) saturate(190%);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
             padding: 20px;
-            @media(min-width: 768px) { padding: 24px; }
-            box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+            box-shadow: var(--glass-shadow);
             margin-bottom: 16px;
             max-width: 600px;
             margin-left: auto;
@@ -1072,7 +1171,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px dashed var(--border);
+            border-bottom: 2px dashed #cbd5e1;
             padding-bottom: 14px;
             margin-bottom: 14px;
         }
@@ -1112,8 +1211,8 @@
         }
 
         .receipt-items-list {
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
+            border-top: 1px solid #cbd5e1;
+            border-bottom: 1px solid #cbd5e1;
             padding: 10px 0;
             margin-bottom: 14px;
         }
@@ -1154,7 +1253,7 @@
 
         .live-test-btn {
             width: 100%;
-            background: #eef2ff;
+            background: rgba(238, 242, 255, 0.85);
             color: var(--primary);
             border: 1px dashed var(--primary);
             padding: 10px;
@@ -1174,11 +1273,12 @@
         }
 
         .finance-card {
-            background: white;
-            border: 1px solid var(--border);
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
             border-radius: var(--radius);
             padding: 18px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+            box-shadow: var(--glass-shadow);
         }
 
         .finance-card h4 {
@@ -1197,11 +1297,12 @@
         }
 
         .statement-table-wrapper {
-            background: white;
-            border: 1px solid var(--border);
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(18px);
+            border: 1px solid var(--glass-border);
             border-radius: var(--radius);
             overflow-x: auto;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+            box-shadow: var(--glass-shadow);
         }
 
         .statement-table {
@@ -1212,20 +1313,20 @@
         }
 
         .statement-table th {
-            background: #f8fafc;
+            background: rgba(248, 250, 252, 0.85);
             padding: 12px 16px;
             font-weight: 800;
             color: var(--text-muted);
             font-size: 11px;
             text-transform: uppercase;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #e2e8f0;
             letter-spacing: 0.5px;
             white-space: nowrap;
         }
 
         .statement-table td {
             padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.7);
             color: var(--text-main);
             vertical-align: middle;
             font-weight: 600;
@@ -1234,7 +1335,7 @@
         .staff-actions-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             margin-top: 6px;
             flex-wrap: wrap;
         }
@@ -1243,7 +1344,7 @@
             background: #f59e0b;
             color: #ffffff;
             border: none;
-            padding: 10px 16px;
+            padding: 11px 18px;
             border-radius: 10px;
             font-size: 13px;
             font-weight: 800;
@@ -1275,24 +1376,26 @@
         }
 
         .chip {
-            background: #f1f5f9;
-            border: 1px solid var(--border);
+            background: rgba(241, 245, 249, 0.9);
+            border: 1px solid #cbd5e1;
             padding: 6px 10px;
             border-radius: 8px;
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
-            color: var(--text-muted);
+            color: var(--text-main);
             transition: all 0.2s;
         }
 
         .chip:hover {
             background: #e2e8f0;
-            color: var(--text-main);
         }
     </style>
 </head>
 <body>
+
+    <!-- AMBIENT COLOR MESH (MAKES GLASSMORPHISM CLEARLY VISIBLE & VIBRANT) -->
+    <div class="ambient-mesh"></div>
 
     <!-- INITIAL LOGIN & COLLEGE PASS GATE -->
     <div class="auth-gate" id="authGate">
@@ -1313,7 +1416,7 @@
 
             <!-- STUDENT PASS JOIN FORM -->
             <div id="studentAuthForm">
-                <div style="background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: var(--primary); font-weight: 700; line-height: 1.4;">
+                <div style="background: rgba(238, 242, 255, 0.85); border: 1px solid #c7d2fe; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: var(--primary); font-weight: 700; line-height: 1.4;">
                     🔗 Join via your <b>College Pass QR Code / Link</b> to securely access your campus canteens and avoid scam portals!
                 </div>
 
@@ -1342,10 +1445,7 @@
                     </div>
                     <div class="form-group">
                         <label>Verified College Pass *</label>
-                        <select class="form-control" id="loginStudentCollege" style="font-weight: 700;">
-                            <option value="KPRIET">KPRIET (Main Campus)</option>
-                            <option value="PSG Tech">PSG Tech (Refectory Pass)</option>
-                        </select>
+                        <select class="form-control" id="loginStudentCollege" style="font-weight: 700;"></select>
                     </div>
                 </div>
 
@@ -1354,8 +1454,8 @@
 
             <!-- ADMINISTRATION LOGIN FORM -->
             <div id="adminAuthForm" style="display: none;">
-                <div style="background: #fef3c7; border: 1px solid #fde68a; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #92400e; font-weight: 700; line-height: 1.4;">
-                    🏛️ Manage college pass QR, add canteens, edit menus & rates, and post item offers with image background overlays.
+                <div style="background: rgba(254, 243, 199, 0.9); border: 1px solid #fde68a; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #92400e; font-weight: 700; line-height: 1.4;">
+                    🏛️ Manage college pass QR, add canteens, edit menus & rates, and post item offers with glassmorphism UI.
                 </div>
 
                 <div class="form-group">
@@ -1374,7 +1474,7 @@
         </div>
     </div>
 
-    <!-- TOP NAVIGATION HEADER -->
+    <!-- TOP NAVIGATION HEADER WITH FROSTED GLASS -->
     <header>
         <div class="brand">
             <div class="brand-logo">🍴</div>
@@ -1384,7 +1484,7 @@
             </div>
         </div>
         <div class="header-actions">
-            <div class="user-pill" id="activeUserPill">🎓 26CS108 • KPRIET Pass</div>
+            <div class="user-pill" id="activeUserPill" onclick="openAuthGate()">🎓 26CS108 • KPRIET Pass</div>
             <button class="switch-auth-btn" onclick="openAuthGate()">🔄 Switch Pass</button>
         </div>
     </header>
@@ -1413,15 +1513,15 @@
                 <div>
                     <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--success); letter-spacing: 0.5px;">🔒 Verified Secure Pass Active</span>
                     <h3 id="studentPassTitle" style="font-size: 16px; font-weight: 900; color: var(--text-main);">KPRIET Canteen Network</h3>
-                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;" id="studentPassDesc">You are connected to official verified campus canteens only.</p>
+                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;" id="studentPassDesc">Showing all verified canteens for KPRIET.</p>
                 </div>
-                <div style="background: white; padding: 8px 12px; border-radius: 12px; border: 1px solid #c7d2fe; text-align: right;">
+                <div style="background: rgba(255, 255, 255, 0.85); padding: 8px 12px; border-radius: 12px; border: 1px solid #c7d2fe; text-align: right;">
                     <span style="font-size: 9px; color: var(--text-muted); display: block; text-transform: uppercase; font-weight: 800;">Official VPA Protected</span>
                     <span style="font-size: 12px; font-weight: 900; color: var(--primary);" id="studentActiveUpi">kprietcanteen@sbi</span>
                 </div>
             </div>
 
-            <!-- Canteen Selector Pill Bar -->
+            <!-- Canteen Selector Pill Bar (Fixed & Instant Switching) -->
             <div class="cat-scroll" id="canteenPillsContainer" style="margin-bottom: 14px;"></div>
 
             <!-- Search Bar -->
@@ -1430,7 +1530,7 @@
                 <input type="text" id="searchInput" placeholder="Search dish, price, or category..." oninput="renderMenu()">
             </div>
 
-            <!-- College Events & Offers Carousel (Image Background with Clear Text) -->
+            <!-- College Events & Offers Carousel -->
             <div class="ads-section">
                 <div class="ads-header">
                     <h3>🔥 Official Campus Specials & Item Offers</h3>
@@ -1439,13 +1539,13 @@
                 <div class="ads-slider" id="offersSlider"></div>
             </div>
 
-            <!-- Category Filter Pills -->
-            <div class="cat-scroll">
-                <button class="cat-pill active" onclick="filterCategory('All')">All Items</button>
-                <button class="cat-pill" onclick="filterCategory('Tiffin')">Tiffin & Breakfast</button>
-                <button class="cat-pill" onclick="filterCategory('Lunch')">Lunch & Biryani</button>
-                <button class="cat-pill" onclick="filterCategory('Snacks')">Snacks</button>
-                <button class="cat-pill" onclick="filterCategory('Beverages')">Beverages</button>
+            <!-- Category Filter Pills (Separated ID so it never conflicts with Canteen Pills) -->
+            <div class="cat-scroll" id="categoryPillsContainer">
+                <button class="cat-pill active" data-cat="All" onclick="filterCategory('All')">All Items</button>
+                <button class="cat-pill" data-cat="Tiffin" onclick="filterCategory('Tiffin')">Tiffin & Breakfast</button>
+                <button class="cat-pill" data-cat="Lunch" onclick="filterCategory('Lunch')">Lunch & Biryani</button>
+                <button class="cat-pill" data-cat="Snacks" onclick="filterCategory('Snacks')">Snacks</button>
+                <button class="cat-pill" data-cat="Beverages" onclick="filterCategory('Beverages')">Beverages</button>
             </div>
 
             <!-- Food Items Grid -->
@@ -1459,7 +1559,7 @@
 
         <!-- ADMIN TAB 1: CANTEEN DESIGNER, EDIT MENU, QR PASS & OFFERS PUBLISHER -->
         <div id="tab-admin-studio" class="tab-content">
-            <div style="background: #1e293b; color: white; padding: 18px 22px; border-radius: var(--radius); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; box-shadow: 0 10px 25px rgba(30, 41, 59, 0.2);">
+            <div style="background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(18px); color: white; padding: 18px 22px; border-radius: var(--radius); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);">
                 <div>
                     <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 800;">Administration Studio</span>
                     <h2 id="adminStudioTitle" style="font-size: 20px; font-weight: 900; margin-top: 2px;">Managing: KPRIET</h2>
@@ -1473,7 +1573,7 @@
             <!-- DEDICATED SECTION FOR COLLEGE PASS QR CODE -->
             <div class="admin-section-divider">
                 <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
-                    <img id="adminPassQrImg" src="" alt="Pass QR" style="width: 70px; height: 70px; border-radius: 10px; background: white; padding: 4px; border: 1px solid var(--border);" />
+                    <img id="adminPassQrImg" src="" alt="Pass QR" style="width: 70px; height: 70px; border-radius: 10px; background: white; padding: 4px; border: 1px solid #e2e8f0;" />
                     <div>
                         <span style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">Official Onboarding Pass QR</span>
                         <h3 style="font-size: 15px; font-weight: 900; color: var(--text-main);">Secure Student Join Link</h3>
@@ -1565,7 +1665,7 @@
                     <div class="item-list-box" id="adminMenuItemsList"></div>
                 </div>
 
-                <!-- STEP 3: SEARCH-SUGGESTION OFFER SELECTOR (WITH IMAGE BACKGROUND & CLEAR OVERLAY TEXT) -->
+                <!-- STEP 3: SEARCH-SUGGESTION OFFER SELECTOR -->
                 <div class="admin-panel">
                     <h3>📢 3. Post Offer (Type to Search Item)</h3>
                     <p class="sub">Type to search dishes. Click suggestion to lock item with (✕).</p>
@@ -1582,7 +1682,7 @@
                             <button type="button" class="remove-item-symbol" onclick="clearSelectedOfferItem()" title="Cancel selection" style="width: 22px; height: 22px; font-size: 11px;">✕</button>
                         </div>
 
-                        <!-- Suggestions Dropdown Box (Hidden completely until typing) -->
+                        <!-- Suggestions Dropdown Box -->
                         <div id="offerSuggestionsDropdown" class="suggestions-dropdown"></div>
                     </div>
 
@@ -1665,7 +1765,7 @@
 
     </div>
 
-    <!-- FLOATING TRAY ACTION BAR -->
+    <!-- FLOATING TRAY ACTION BAR WITH FROSTED GLASS -->
     <div class="floating-tray hidden" id="floatingTray" onclick="openDrawer()">
         <div class="tray-info">
             <div class="tray-count-badge" id="floatingCount">0</div>
@@ -1707,7 +1807,7 @@
                 <label style="margin-bottom: 0;">Tray Items</label>
                 <button onclick="clearTrayCompletely()" style="background: none; border: none; color: var(--danger); font-size: 11px; font-weight: 800; cursor: pointer;">Clear All Tray</button>
             </div>
-            <div id="drawerItemsList" style="max-height: 180px; overflow-y: auto; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 10px; padding: 10px; background: #f8fafc;"></div>
+            <div id="drawerItemsList" style="max-height: 180px; overflow-y: auto; margin-bottom: 12px; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; background: rgba(248, 250, 252, 0.8);"></div>
         </div>
 
         <!-- ITEM OFFER IN TRAY -->
@@ -1775,6 +1875,7 @@
             { id: 2, name: "Special Veg Meals", category: "Lunch", price: 80, veg: true, time: "5 mins", college: "KPRIET", canteen: "KPRIET Main Canteen Hub" },
             { id: 3, name: "Ghee Roast Dosa", category: "Tiffin", price: 50, veg: true, time: "6 mins", college: "KPRIET", canteen: "KPRIET Main Canteen Hub" },
             { id: 4, name: "Chilled Jigarthanda", category: "Beverages", price: 45, veg: true, time: "2 mins", college: "KPRIET", canteen: "KPRIET Juice & Snacks Bar" },
+            { id: 6, name: "Loaded Peri-Peri Fries", category: "Snacks", price: 65, veg: true, time: "4 mins", college: "KPRIET", canteen: "KPRIET Juice & Snacks Bar" },
             { id: 5, name: "PSG Special Sambar Idli", category: "Tiffin", price: 35, veg: true, time: "3 mins", college: "PSG Tech", canteen: "PSG Tech Refectory" }
         ];
 
@@ -1811,6 +1912,7 @@
             refreshStudentPassEnvironment();
             renderReceipts();
             renderStaffCounter();
+            setInterval(updateLiveClocks, 250);
         };
 
         function openAuthGate() {
@@ -1837,13 +1939,20 @@
             box.innerHTML = colleges.map(c => `
                 <div class="chip" onclick="document.getElementById('loginAdminCollege').value='${c.name}';">${c.name}</div>
             `).join('');
+
+            const studentColSel = document.getElementById('loginStudentCollege');
+            const currentVal = studentColSel.value || 'KPRIET';
+            studentColSel.innerHTML = colleges.map(c => `<option value="${c.name}">${c.name} Pass</option>`).join('');
+            if (colleges.some(c => c.name === currentVal)) {
+                studentColSel.value = currentVal;
+            }
         }
 
         function completeStudentLogin() {
             const roll = document.getElementById('loginStudentRoll').value.trim() || "26CS108";
             const name = document.getElementById('loginStudentName').value.trim() || "Student";
             const dept = document.getElementById('loginStudentDept').value.trim() || "CSE";
-            const collegePass = document.getElementById('loginStudentCollege').value;
+            const collegePass = document.getElementById('loginStudentCollege').value || "KPRIET";
 
             currentRole = "student";
             currentUser = { rollNo: roll, name: name, dept: dept, college: collegePass };
@@ -1900,7 +2009,7 @@
         function refreshStudentPassEnvironment() {
             const col = currentUser.college;
             document.getElementById('studentPassTitle').innerText = `${col} Verified Canteen Network`;
-            document.getElementById('studentPassDesc').innerText = `You are connected to official verified campus canteens for ${col}.`;
+            document.getElementById('studentPassDesc').innerText = `Showing all verified canteens for ${col}.`;
             
             const matchedCanteens = canteens.filter(c => c.college === col);
             if (matchedCanteens.length > 0) {
@@ -1908,11 +2017,25 @@
             }
 
             const pillsBox = document.getElementById('canteenPillsContainer');
-            pillsBox.innerHTML = `
-                <button class="cat-pill active" onclick="filterStudentCanteen('ALL')">🏪 All ${col} Canteens</button>
-            ` + matchedCanteens.map(c => `
-                <button class="cat-pill" onclick="filterStudentCanteen('${c.name}')">🏪 ${c.name}</button>
-            `).join('');
+            pillsBox.innerHTML = '';
+
+            // Create "All Canteens" Pill
+            const allBtn = document.createElement('button');
+            allBtn.className = 'cat-pill active';
+            allBtn.dataset.canteen = 'ALL';
+            allBtn.innerText = `🏪 All ${col} Canteens (${matchedCanteens.length})`;
+            allBtn.onclick = () => filterStudentCanteen('ALL');
+            pillsBox.appendChild(allBtn);
+
+            // Create Individual Canteen Pills cleanly without string-escaping bugs
+            matchedCanteens.forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = 'cat-pill';
+                btn.dataset.canteen = c.name;
+                btn.innerText = `🏪 ${c.name}`;
+                btn.onclick = () => filterStudentCanteen(c.name);
+                pillsBox.appendChild(btn);
+            });
 
             activeStudentCanteenFilter = "ALL";
             renderOffersCarousel();
@@ -1921,10 +2044,26 @@
 
         function filterStudentCanteen(canName) {
             activeStudentCanteenFilter = canName;
+            const col = currentUser.college;
+
+            // Update active pill state
             document.querySelectorAll('#canteenPillsContainer .cat-pill').forEach(p => {
-                p.classList.remove('active');
-                if (p.innerText.includes(canName) || (cat === 'ALL' && p.innerText.includes('All'))) p.classList.add('active');
+                p.classList.toggle('active', p.dataset.canteen === canName);
             });
+
+            // Update banner subtitle and official VPA for the selected canteen
+            if (canName === 'ALL') {
+                document.getElementById('studentPassDesc').innerText = `Showing all verified canteens for ${col}.`;
+                const firstCan = canteens.find(c => c.college === col);
+                if (firstCan) document.getElementById('studentActiveUpi').innerText = firstCan.upi;
+            } else {
+                const selectedCan = canteens.find(c => c.college === col && c.name === canName);
+                document.getElementById('studentPassDesc').innerText = `Browsing menu at ${canName}${selectedCan && selectedCan.location ? ' (' + selectedCan.location + ')' : ''}.`;
+                if (selectedCan && selectedCan.upi) {
+                    document.getElementById('studentActiveUpi').innerText = selectedCan.upi;
+                }
+            }
+
             renderMenu();
         }
 
@@ -1934,7 +2073,7 @@
             const visible = offersEvents.filter(ev => ev.college === col || ev.college === 'ALL');
 
             if (visible.length === 0) {
-                slider.innerHTML = `<div style="color:var(--text-muted); font-size:13px; padding:10px;">No active item offers for ${col} pass today.</div>`;
+                slider.innerHTML = `<div style="color:var(--text-muted); font-size:13px; padding:10px; font-weight:600;">No active item offers for ${col} pass today.</div>`;
                 return;
             }
 
@@ -1955,6 +2094,11 @@
         }
 
         function openDrawerWithOffer(evId) {
+            const ev = offersEvents.find(e => e.id === evId);
+            if (ev && ev.targetItemId && !tray[ev.targetItemId]) {
+                tray[ev.targetItemId] = 1;
+                renderMenu();
+            }
             activeSelectedOfferId = evId;
             openDrawer();
         }
@@ -1974,46 +2118,47 @@
             }
         }
 
+        function getActionHtmlForItem(itemId) {
+            const qty = tray[itemId] || 0;
+            if (qty === 0) {
+                return `<button class="add-btn" onclick="updateQty('${itemId}', 1)">Add to Tray</button>`;
+            }
+            return `
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <div class="stepper">
+                        <button onclick="updateQty('${itemId}', -1)">-</button>
+                        <span>${qty}</span>
+                        <button onclick="updateQty('${itemId}', 1)">+</button>
+                    </div>
+                    <button class="inline-tray-btn" onclick="openDrawer()">🛒 (${qty})</button>
+                </div>
+            `;
+        }
+
         function renderMenu() {
             const grid = document.getElementById('foodGrid');
             const searchVal = document.getElementById('searchInput').value.toLowerCase();
             const col = currentUser.college;
-            grid.innerHTML = '';
 
             const filtered = menuItems.filter(item => {
                 const matchesCollege = (item.college === col);
                 const matchesCanteen = (activeStudentCanteenFilter === 'ALL' || item.canteen === activeStudentCanteenFilter);
                 const matchesCat = (currentCategory === 'All' || item.category === currentCategory);
-                const matchesSearch = item.name.toLowerCase().includes(searchVal) || item.category.toLowerCase().includes(searchVal);
+                const matchesSearch = item.name.toLowerCase().includes(searchVal) ||
+                                      item.category.toLowerCase().includes(searchVal) ||
+                                      item.canteen.toLowerCase().includes(searchVal);
                 return matchesCollege && matchesCanteen && matchesCat && matchesSearch;
             });
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">No dishes found in this canteen.</div>`;
+                grid.innerHTML = `<div class="glass-surface" style="grid-column: 1 / -1; text-align: center; padding: 36px; border-radius: 16px; color: var(--text-muted); font-weight: 700;">No dishes found in this canteen filter.</div>`;
                 updateFloatingTray();
                 return;
             }
 
+            const fragment = document.createDocumentFragment();
             filtered.forEach(item => {
-                const qty = tray[item.id] || 0;
                 const vegClass = item.veg ? 'veg-badge' : 'veg-badge non-veg';
-                
-                let actionHtml = '';
-                if (qty === 0) {
-                    actionHtml = `<button class="add-btn" onclick="updateQty('${item.id}', 1)">Add to Tray</button>`;
-                } else {
-                    actionHtml = `
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <div class="stepper">
-                                <button onclick="updateQty('${item.id}', -1)">-</button>
-                                <span>${qty}</span>
-                                <button onclick="updateQty('${item.id}', 1)">+</button>
-                            </div>
-                            <button class="inline-tray-btn" onclick="openDrawer()">🛒 Tray (${qty})</button>
-                        </div>
-                    `;
-                }
-
                 const card = document.createElement('div');
                 card.className = 'food-card';
                 card.innerHTML = `
@@ -2030,21 +2175,21 @@
                     </div>
                     <div class="food-footer">
                         <div class="food-price">₹${item.price}</div>
-                        ${actionHtml}
+                        <div id="food-action-${item.id}">${getActionHtmlForItem(item.id)}</div>
                     </div>
                 `;
-                grid.appendChild(card);
+                fragment.appendChild(card);
             });
+
+            grid.innerHTML = '';
+            grid.appendChild(fragment);
             updateFloatingTray();
         }
 
         function filterCategory(cat) {
             currentCategory = cat;
-            document.querySelectorAll('.cat-scroll .cat-pill').forEach(p => {
-                if (!p.getAttribute('onclick').includes('filterStudentCanteen')) {
-                    p.classList.remove('active');
-                    if (p.innerText.includes(cat) || (cat === 'All' && p.innerText.includes('All'))) p.classList.add('active');
-                }
+            document.querySelectorAll('#categoryPillsContainer .cat-pill').forEach(p => {
+                p.classList.toggle('active', p.dataset.cat === cat);
             });
             renderMenu();
         }
@@ -2052,7 +2197,16 @@
         function updateQty(id, delta) {
             tray[id] = (tray[id] || 0) + delta;
             if (tray[id] <= 0) delete tray[id];
-            renderMenu();
+
+            // Fast-path targeted DOM update (Zero lag!)
+            const actionContainer = document.getElementById(`food-action-${id}`);
+            if (actionContainer) {
+                actionContainer.innerHTML = getActionHtmlForItem(id);
+            } else {
+                renderMenu();
+            }
+
+            updateFloatingTray();
             if (document.getElementById('trayDrawer').classList.contains('active')) {
                 openDrawer();
             }
@@ -2113,7 +2267,7 @@
                     if (matchedCanteen && matchedCanteen.upi) activeUpi = matchedCanteen.upi;
 
                     drawerListHtml += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px; background: white; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px; background: white; padding: 8px 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
                             <div>
                                 <strong>${item.name}</strong><br>
                                 <span style="font-size: 11px; color: var(--primary); font-weight: 700;">🏪 ${item.canteen}</span><br>
@@ -2150,7 +2304,7 @@
 
                     if (!hasItem) {
                         return `
-                            <div style="background:#f8fafc; border:1px solid var(--border); padding:10px 14px; border-radius:10px; margin-bottom:8px; font-size:13px; opacity: 0.6;">
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:8px; font-size:13px; opacity: 0.65;">
                                 <strong style="color:var(--text-muted);">${ev.title}</strong><br>
                                 <span style="font-size:11px; color:var(--danger); font-weight:700;">
                                     ❌ Add "${dishName}" to tray to unlock (Saves ₹${ev.amount})
@@ -2160,14 +2314,14 @@
                     }
 
                     return `
-                        <div style="background:${isSelected ? '#eef2ff' : '#f8fafc'}; border:1px solid ${isSelected ? 'var(--primary)' : 'var(--border)'}; padding:10px 14px; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; font-size:13px;">
+                        <div style="background:${isSelected ? '#eef2ff' : '#f8fafc'}; border:1px solid ${isSelected ? 'var(--primary)' : '#e2e8f0'}; padding:10px 14px; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; font-size:13px;">
                             <div>
                                 <strong style="color:var(--text-main);">${ev.title}</strong><br>
                                 <span style="font-size:11px; color:var(--success); font-weight:700;">
                                     ✔ Item in tray! Saves ₹${ev.amount}
                                 </span>
                             </div>
-                            <button onclick="selectOfferInDrawer('${ev.id}', true)" style="background:${isSelected ? 'var(--primary)' : 'white'}; color:${isSelected ? 'white' : 'var(--text-main)'}; border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-size:12px; font-weight:800; cursor:pointer;">
+                            <button onclick="selectOfferInDrawer('${ev.id}', true)" style="background:${isSelected ? 'var(--primary)' : 'white'}; color:${isSelected ? 'white' : 'var(--text-main)'}; border:1px solid #cbd5e1; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:800; cursor:pointer;">
                                 ${isSelected ? 'Applied ✓' : 'Apply'}
                             </button>
                         </div>
@@ -2202,12 +2356,9 @@
 
         function selectOfferInDrawer(evId, isEligible) {
             if (!isEligible) return;
-            if (activeSelectedOfferId === evId) {
-                activeSelectedOfferId = null;
-            } else {
-                activeSelectedOfferId = evId;
-            }
+            activeSelectedOfferId = (activeSelectedOfferId === evId) ? null : evId;
             openDrawer();
+            updateFloatingTray();
         }
 
         function closeDrawer() {
@@ -2287,14 +2438,14 @@
             setTimeout(() => {
                 document.getElementById('successToastModal').classList.remove('active');
                 switchTab('receipts');
-            }, 1600);
+            }, 1300);
         }
 
         function renderReceipts() {
             const container = document.getElementById('receiptsContainer');
             container.innerHTML = '';
             if (activeOrders.length === 0) {
-                container.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-muted); font-weight: 600;">No active receipts yet. Place an order from your college pass menu!</div>`;
+                container.innerHTML = `<div class="glass-surface" style="text-align: center; padding: 40px; border-radius: 18px; color: var(--text-muted); font-weight: 700;">No active receipts yet. Place an order from your college pass menu!</div>`;
                 return;
             }
             activeOrders.forEach((order, index) => {
@@ -2327,9 +2478,12 @@
                 `;
                 container.appendChild(card);
             });
+            updateLiveClocks();
         }
 
         function updateLiveClocks() {
+            const receiptsTab = document.getElementById('tab-receipts');
+            if (!receiptsTab || !receiptsTab.classList.contains('active')) return;
             const now = new Date();
             const timeStr = now.toLocaleTimeString() + "." + String(now.getMilliseconds()).padStart(3, '0');
             document.querySelectorAll('.live-clock').forEach(el => el.innerText = timeStr);
@@ -2431,11 +2585,14 @@
                 return;
             }
 
-            dropdown.innerHTML = matches.map(d => `
-                <div class="suggestion-item" onclick="selectOfferTargetItem('${d.id}', '${d.name} (₹${d.price})')">
-                    <strong>${d.name}</strong> (₹${d.price}) <small style="color:var(--text-muted);">[${d.canteen}]</small>
-                </div>
-            `).join('');
+            dropdown.innerHTML = '';
+            matches.forEach(d => {
+                const row = document.createElement('div');
+                row.className = 'suggestion-item';
+                row.innerHTML = `<strong>${d.name}</strong> (₹${d.price}) <small style="color:var(--text-muted);">[${d.canteen}]</small>`;
+                row.onclick = () => selectOfferTargetItem(d.id, `${d.name} (₹${d.price})`);
+                dropdown.appendChild(row);
+            });
             dropdown.style.display = 'block';
         }
 
@@ -2475,12 +2632,14 @@
             document.getElementById('newCanteenLocation').value = '';
             saveState();
             refreshAdminStudio();
+            if (currentUser.college === currentAdminCollege) refreshStudentPassEnvironment();
         }
 
         function adminDeleteCanteen(canId) {
             canteens = canteens.filter(c => c.id !== canId);
             saveState();
             refreshAdminStudio();
+            if (currentUser.college === currentAdminCollege) refreshStudentPassEnvironment();
         }
 
         function renderAdminMenuList() {
@@ -2515,8 +2674,6 @@
             document.getElementById('newMenuCategory').value = item.category;
             document.getElementById('newMenuVeg').value = String(item.veg);
             document.getElementById('newMenuTime').value = item.time;
-
-            window.scrollTo({ top: 200, behavior: 'smooth' });
         }
 
         function adminResetMenuForm() {
@@ -2568,16 +2725,15 @@
 
             saveState();
             adminResetMenuForm();
-            refreshAdminStudio();
+            renderAdminMenuList();
             renderMenu();
-            alert("Menu item successfully saved!");
         }
 
         function adminDeleteMenuItem(itemId) {
             menuItems = menuItems.filter(m => String(m.id) !== String(itemId));
             delete tray[itemId];
             saveState();
-            refreshAdminStudio();
+            renderAdminMenuList();
             renderMenu();
         }
 
@@ -2623,7 +2779,6 @@
             saveState();
             renderAdminOffersList();
             renderOffersCarousel();
-            alert("Offer successfully published live!");
         }
 
         function renderAdminOffersList() {
