@@ -101,7 +101,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        /* Top Header & Navbar - Fully Responsive */
+        /* Top Header & Navbar */
         header {
             background: #ffffff;
             border-bottom: 1px solid var(--border);
@@ -231,7 +231,7 @@
             border-bottom-color: var(--primary);
         }
 
-        /* Fullscreen Main Container with Safe Padding */
+        /* Fullscreen Main Container */
         .container {
             max-width: 1280px;
             margin: 0 auto;
@@ -299,7 +299,7 @@
             font-size: 15px;
         }
 
-        /* Horizontal Offers & Events Carousel */
+        /* Horizontal Offers & Events Carousel (Image Background Overlay Card) */
         .ads-section {
             margin-bottom: 24px;
             width: 100%;
@@ -333,24 +333,33 @@
         }
 
         .ad-card {
-            flex: 0 0 280px;
-            @media(min-width: 768px) { flex: 0 0 340px; }
-            background: linear-gradient(135deg, #4f46e5, #3b82f6);
-            color: white;
+            flex: 0 0 300px;
+            @media(min-width: 768px) { flex: 0 0 360px; }
+            height: 190px;
             border-radius: var(--radius);
             overflow: hidden;
             scroll-snap-align: start;
-            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.25);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            position: relative;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-end;
+            background-size: cover;
+            background-position: center;
         }
 
-        .ad-card-img {
-            width: 100%;
-            height: 110px;
-            object-fit: cover;
-            background: #312e81;
+        /* Dark Gradient Overlay for Maximum Text Visibility */
+        .ad-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.1) 0%, rgba(15, 23, 42, 0.85) 70%, rgba(15, 23, 42, 0.95) 100%);
+            z-index: 1;
+        }
+
+        .ad-card > * {
+            position: relative;
+            z-index: 2;
         }
 
         .ad-card-body {
@@ -358,46 +367,56 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            flex: 1;
+            height: 100%;
         }
 
         .ad-badge {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            color: #ffffff;
             padding: 4px 10px;
             border-radius: 6px;
             font-size: 11px;
             font-weight: 800;
             align-self: flex-start;
-            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .ad-title {
-            font-size: 15px;
-            font-weight: 800;
+            font-size: 16px;
+            font-weight: 900;
+            color: #ffffff;
             margin-bottom: 4px;
-            line-height: 1.3;
+            line-height: 1.25;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .ad-desc {
             font-size: 12px;
-            opacity: 0.92;
+            color: #f1f5f9;
             margin-bottom: 12px;
-            font-weight: 500;
+            font-weight: 600;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
         .ad-btn {
             background: #ffffff;
-            color: var(--primary);
+            color: #0f172a;
             border: none;
-            padding: 7px 14px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 10px;
             font-size: 12px;
-            font-weight: 800;
+            font-weight: 900;
             cursor: pointer;
             align-self: flex-start;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        .ad-btn:active {
+            transform: scale(0.96);
         }
 
         /* Category Filter Pills */
@@ -751,7 +770,7 @@
             color: var(--primary);
         }
 
-        /* Floating Tray Bar - Fully Safe on Mobile Edges */
+        /* Floating Tray Bar */
         .floating-tray {
             position: fixed;
             bottom: 16px;
@@ -1336,7 +1355,7 @@
             <!-- ADMINISTRATION LOGIN FORM -->
             <div id="adminAuthForm" style="display: none;">
                 <div style="background: #fef3c7; border: 1px solid #fde68a; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #92400e; font-weight: 700; line-height: 1.4;">
-                    🏛️ Manage college pass QR, add canteens, edit menus & rates, and post item offers with autocomplete search.
+                    🏛️ Manage college pass QR, add canteens, edit menus & rates, and post item offers with image background overlays.
                 </div>
 
                 <div class="form-group">
@@ -1411,7 +1430,7 @@
                 <input type="text" id="searchInput" placeholder="Search dish, price, or category..." oninput="renderMenu()">
             </div>
 
-            <!-- College Events & Offers Carousel -->
+            <!-- College Events & Offers Carousel (Image Background with Clear Text) -->
             <div class="ads-section">
                 <div class="ads-header">
                     <h3>🔥 Official Campus Specials & Item Offers</h3>
@@ -1546,7 +1565,7 @@
                     <div class="item-list-box" id="adminMenuItemsList"></div>
                 </div>
 
-                <!-- STEP 3: SEARCH-SUGGESTION OFFER SELECTOR (NO ITEMS SHOWN UNTIL TYPING) -->
+                <!-- STEP 3: SEARCH-SUGGESTION OFFER SELECTOR (WITH IMAGE BACKGROUND & CLEAR OVERLAY TEXT) -->
                 <div class="admin-panel">
                     <h3>📢 3. Post Offer (Type to Search Item)</h3>
                     <p class="sub">Type to search dishes. Click suggestion to lock item with (✕).</p>
@@ -1904,7 +1923,7 @@
             activeStudentCanteenFilter = canName;
             document.querySelectorAll('#canteenPillsContainer .cat-pill').forEach(p => {
                 p.classList.remove('active');
-                if (p.innerText.includes(canName) || (canName === 'ALL' && p.innerText.includes('All'))) p.classList.add('active');
+                if (p.innerText.includes(canName) || (cat === 'ALL' && p.innerText.includes('All'))) p.classList.add('active');
             });
             renderMenu();
         }
@@ -1920,15 +1939,16 @@
             }
 
             slider.innerHTML = visible.map(ev => `
-                <div class="ad-card">
-                    <img src="${ev.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80'}" class="ad-card-img" alt="Offer Banner" />
+                <div class="ad-card" style="background-image: url('${ev.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80'}');">
                     <div class="ad-card-body">
                         <div>
                             <div class="ad-badge">${ev.badge}</div>
+                        </div>
+                        <div>
                             <div class="ad-title">${ev.title}</div>
                             <div class="ad-desc">${ev.desc} (Saves ₹${ev.amount})</div>
+                            <button class="ad-btn" onclick="openDrawerWithOffer('${ev.id}')">Apply Offer in Tray</button>
                         </div>
-                        <button class="ad-btn" onclick="openDrawerWithOffer('${ev.id}')">Apply Offer in Tray</button>
                     </div>
                 </div>
             `).join('');
