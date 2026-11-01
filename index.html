@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CampusBites - Canteen Food Booking & Digital Receipt</title>
+    <title>CampusBites - Secure College Pass & Canteen Network</title>
     <style>
         :root {
             --primary: #4f46e5;
             --primary-dark: #4338ca;
-            --success: #16a34a;
+            --accent: #f59e0b;
+            --success: #10b981;
             --warning: #d97706;
-            --danger: #dc2626;
+            --danger: #ef4444;
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
-            --radius: 12px;
+            --radius: 16px;
         }
 
         * {
@@ -30,10 +31,73 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            padding-bottom: 90px;
+            padding-bottom: 100px;
             min-height: 100vh;
             width: 100vw;
             overflow-x: hidden;
+        }
+
+        /* Secure Login & College Pass Gate */
+        .auth-gate {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4f46e5 100%);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .auth-gate.hidden {
+            display: none;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 440px;
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+            margin: auto;
+        }
+
+        .auth-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            justify-content: center;
+        }
+
+        .role-switch {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background: #f1f5f9;
+            padding: 6px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+        }
+
+        .role-tab {
+            border: none;
+            background: transparent;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .role-tab.active {
+            background: #ffffff;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
         /* Top Header & Navbar */
@@ -43,10 +107,12 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            padding: 14px 24px;
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .brand {
@@ -60,16 +126,17 @@
             color: white;
             width: 42px;
             height: 42px;
-            border-radius: 12px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
         }
 
         .brand-title h1 {
             font-size: 18px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text-main);
             line-height: 1.2;
         }
@@ -77,12 +144,14 @@
         .brand-title p {
             font-size: 12px;
             color: var(--text-muted);
+            font-weight: 600;
         }
 
         .header-actions {
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .user-pill {
@@ -92,14 +161,14 @@
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             cursor: pointer;
         }
 
-        .staff-toggle-btn {
+        .switch-auth-btn {
             background: #1e293b;
             color: white;
             border: none;
@@ -114,18 +183,19 @@
         .nav-tabs {
             display: flex;
             justify-content: center;
-            gap: 40px;
+            gap: 24px;
             background: #ffffff;
             border-bottom: 1px solid var(--border);
             padding: 0 24px;
+            overflow-x: auto;
         }
 
         .tab-btn {
             background: none;
             border: none;
-            padding: 14px 10px;
+            padding: 14px 12px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-muted);
             cursor: pointer;
             border-bottom: 3px solid transparent;
@@ -140,7 +210,7 @@
 
         /* Fullscreen Main Container */
         .container {
-            max-width: 1280px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 24px;
             width: 100%;
@@ -154,31 +224,46 @@
             display: block;
         }
 
+        /* College Pass Banner */
+        .pass-banner {
+            background: linear-gradient(135deg, #eef2ff 0%, #f0fdf4 100%);
+            border: 1px solid #c7d2fe;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.04);
+        }
+
         /* Search Bar */
         .search-box {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .search-box input {
             width: 100%;
-            padding: 14px 20px 14px 46px;
+            padding: 14px 20px 14px 48px;
             border: 1px solid var(--border);
             border-radius: var(--radius);
             font-size: 15px;
             background: #ffffff;
             outline: none;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
 
         .search-box input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
         }
 
         .search-icon {
             position: absolute;
-            left: 16px;
+            left: 18px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
@@ -187,7 +272,7 @@
 
         /* Horizontal Offers & Events Carousel */
         .ads-section {
-            margin-bottom: 24px;
+            margin-bottom: 28px;
             width: 100%;
         }
 
@@ -195,15 +280,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .ads-header h3 {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: 0.3px;
         }
 
         .ads-slider {
@@ -211,7 +295,7 @@
             gap: 16px;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
             scrollbar-width: none;
         }
 
@@ -220,26 +304,31 @@
         }
 
         .ad-card {
-            flex: 0 0 320px;
-            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            flex: 0 0 340px;
+            background: linear-gradient(135deg, #4f46e5, #3b82f6);
             color: white;
             border-radius: var(--radius);
-            padding: 20px;
+            overflow: hidden;
             scroll-snap-align: start;
-            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.25);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        .ad-card.alt-1 {
-            background: linear-gradient(135deg, #059669, #10b981);
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.2);
+        .ad-card-img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            background: #312e81;
         }
 
-        .ad-card.alt-2 {
-            background: linear-gradient(135deg, #d97706, #f59e0b);
-            box-shadow: 0 6px 16px rgba(217, 119, 6, 0.2);
+        .ad-card-body {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1;
         }
 
         .ad-badge {
@@ -247,35 +336,38 @@
             padding: 4px 10px;
             border-radius: 6px;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 800;
             align-self: flex-start;
             margin-bottom: 10px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .ad-title {
-            font-size: 17px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 800;
             margin-bottom: 6px;
             line-height: 1.3;
         }
 
         .ad-desc {
-            font-size: 13px;
-            opacity: 0.9;
+            font-size: 12px;
+            opacity: 0.92;
             margin-bottom: 14px;
+            font-weight: 500;
         }
 
         .ad-btn {
             background: #ffffff;
-            color: var(--text-main);
+            color: var(--primary);
             border: none;
             padding: 8px 16px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             align-self: flex-start;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
         /* Category Filter Pills */
@@ -295,13 +387,14 @@
         .cat-pill {
             background: #ffffff;
             border: 1px solid var(--border);
-            padding: 9px 18px;
-            border-radius: 24px;
+            padding: 10px 20px;
+            border-radius: 30px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-muted);
             cursor: pointer;
             white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             transition: all 0.2s;
         }
 
@@ -309,12 +402,13 @@
             background: var(--primary);
             color: white;
             border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
 
-        /* Fullscreen Responsive Food Grid */
+        /* Responsive Food Grid */
         .food-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
         }
 
@@ -326,13 +420,24 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .food-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+
+        .food-college-tag {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
 
         .food-header {
@@ -344,7 +449,7 @@
 
         .food-name {
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text-main);
         }
 
@@ -376,11 +481,12 @@
         }
 
         .food-meta {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             display: flex;
             gap: 12px;
+            font-weight: 600;
         }
 
         .food-footer {
@@ -392,7 +498,7 @@
 
         .food-price {
             font-size: 18px;
-            font-weight: 800;
+            font-weight: 900;
             color: var(--text-main);
         }
 
@@ -401,20 +507,21 @@
             color: white;
             border: none;
             padding: 8px 16px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
         }
 
         .stepper {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             background: #eef2ff;
             border: 1px solid #c7d2fe;
             padding: 4px 10px;
-            border-radius: 8px;
+            border-radius: 10px;
         }
 
         .stepper button {
@@ -424,7 +531,7 @@
             width: 24px;
             height: 24px;
             border-radius: 6px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             font-size: 14px;
             display: flex;
@@ -434,24 +541,177 @@
 
         .stepper span {
             font-size: 14px;
-            font-weight: 700;
-            color: var(--primary);
+            font-weight: 800;
+            color: var(--primary-dark);
             min-width: 16px;
             text-align: center;
         }
 
         .inline-tray-btn {
-            background: #059669;
+            background: #1e293b;
             color: white;
             border: none;
-            padding: 7px 12px;
-            border-radius: 8px;
+            padding: 8px 12px;
+            border-radius: 10px;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 6px;
+        }
+
+        /* Admin Studio */
+        .admin-section-divider {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .admin-panel {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+        }
+
+        .admin-panel h3 {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .admin-panel p.sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .item-list-box {
+            max-height: 240px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px;
+            background: #f8fafc;
+        }
+
+        .item-list-row {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .item-list-row:hover {
+            background: #eef2ff;
+            border-color: #c7d2fe;
+        }
+
+        /* Clear Visible Symbols */
+        .remove-item-symbol {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 2px solid #fecaca;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.2);
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        .remove-item-symbol:hover {
+            background: #dc2626;
+            color: white;
+            border-color: #b91c1c;
+            transform: scale(1.05);
+        }
+
+        .add-item-symbol-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+
+        .add-item-symbol-btn:hover {
+            background: #059669;
+        }
+
+        /* Autocomplete Search Suggestions Styling */
+        .search-suggestions-container {
+            position: relative;
+        }
+
+        .suggestions-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-height: 180px;
+            overflow-y: auto;
+            z-index: 50;
+            display: none;
+            margin-top: 4px;
+        }
+
+        .suggestion-item {
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .suggestion-item:hover {
+            background: #eef2ff;
+            color: var(--primary);
         }
 
         /* Floating Tray Bar */
@@ -464,12 +724,12 @@
             margin: 0 auto;
             background: #1e293b;
             color: white;
-            border-radius: 16px;
+            border-radius: var(--radius);
             padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.3);
             z-index: 150;
             cursor: pointer;
         }
@@ -487,43 +747,43 @@
         .tray-count-badge {
             background: var(--primary);
             color: white;
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 14px;
         }
 
         .tray-text h4 {
             font-size: 15px;
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .tray-text p {
             font-size: 12px;
             color: #94a3b8;
+            font-weight: 500;
         }
 
         .tray-action-pill {
             background: #ffffff;
             color: #1e293b;
-            padding: 10px 18px;
-            border-radius: 10px;
+            padding: 10px 20px;
+            border-radius: 12px;
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 800;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
         /* Slide-Over Drawer */
         .drawer-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
             z-index: 200;
             display: none;
         }
@@ -540,14 +800,15 @@
             max-width: 600px;
             margin: 0 auto;
             background: #ffffff;
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
             max-height: 90vh;
             overflow-y: auto;
             z-index: 210;
-            padding: 24px;
+            padding: 28px;
             transform: translateY(100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
         }
 
         .drawer.active {
@@ -560,7 +821,7 @@
             align-items: center;
             margin-bottom: 20px;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 14px;
+            padding-bottom: 16px;
         }
 
         .drawer-header h2 {
@@ -574,9 +835,10 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             font-size: 18px;
+            color: var(--text-muted);
         }
 
         .form-group {
@@ -585,11 +847,12 @@
 
         .form-group label {
             display: block;
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 11px;
+            font-weight: 800;
             color: var(--text-muted);
             margin-bottom: 6px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-control {
@@ -597,16 +860,22 @@
             padding: 12px 16px;
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            font-size: 15px;
+            font-size: 14px;
             outline: none;
             background: #f8fafc;
+            font-weight: 600;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            background: #ffffff;
         }
 
         .payment-options {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .payment-card {
@@ -625,7 +894,7 @@
 
         .payment-card h4 {
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text-main);
             margin-bottom: 4px;
         }
@@ -633,25 +902,25 @@
         .payment-card p {
             font-size: 12px;
             color: var(--text-muted);
+            font-weight: 500;
         }
 
-        /* Live UPI QR Code Container */
         #qrDisplayContainer {
             background: #ffffff;
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 16px;
             text-align: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             display: block;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
 
         .bill-summary {
             background: #f8fafc;
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 16px;
+            padding: 18px;
             margin-bottom: 20px;
         }
 
@@ -659,13 +928,14 @@
             display: flex;
             justify-content: space-between;
             font-size: 14px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: var(--text-muted);
+            font-weight: 600;
         }
 
         .bill-row.total {
             font-size: 18px;
-            font-weight: 800;
+            font-weight: 900;
             color: var(--text-main);
             border-top: 1px dashed var(--border);
             padding-top: 12px;
@@ -679,36 +949,18 @@
             border: none;
             padding: 16px;
             border-radius: var(--radius);
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
-        }
-
-        .remove-item-x {
-            background: #fee2e2;
-            color: #dc2626;
-            border: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            font-size: 13px;
-            font-weight: 800;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 8px;
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
         }
 
         /* Success Toast Modal */
         .toast-modal {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.6);
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
             z-index: 400;
             display: none;
             align-items: center;
@@ -718,29 +970,28 @@
 
         .toast-modal.active {
             display: flex;
-            animation: fadeIn 0.2s ease-out;
         }
 
         .toast-card {
             background: white;
             width: 100%;
             max-width: 380px;
-            border-radius: 20px;
-            padding: 30px;
+            border-radius: 24px;
+            padding: 32px;
             text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
         .toast-icon {
-            width: 60px;
-            height: 60px;
+            width: 64px;
+            height: 64px;
             background: #dcfce7;
             color: var(--success);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 32px;
             margin: 0 auto 16px auto;
         }
 
@@ -748,9 +999,9 @@
         .receipt-card {
             background: white;
             border: 1px solid var(--border);
-            border-radius: 18px;
+            border-radius: 20px;
             padding: 24px;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.04);
             margin-bottom: 20px;
             max-width: 600px;
             margin-left: auto;
@@ -773,7 +1024,7 @@
         }
 
         .status-badge {
-            padding: 8px 14px;
+            padding: 8px 16px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 800;
@@ -782,7 +1033,7 @@
 
         .status-badge.paid { background: #dcfce7; color: #166534; }
         .status-badge.cash { background: #fef3c7; color: #92400e; }
-        .status-badge.served { background: #e2e8f0; color: #475569; }
+        .status-badge.served { background: #f1f5f9; color: #475569; }
 
         .receipt-details {
             display: grid;
@@ -797,6 +1048,7 @@
             font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
+            font-weight: 700;
         }
 
         .receipt-items-list {
@@ -811,6 +1063,7 @@
             justify-content: space-between;
             font-size: 14px;
             margin-bottom: 8px;
+            font-weight: 600;
         }
 
         .hologram-bar {
@@ -832,10 +1085,10 @@
             background: #0f172a;
             color: #38bdf8;
             padding: 10px 14px;
-            border-radius: 8px;
+            border-radius: 10px;
             text-align: center;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 14px;
         }
 
@@ -845,14 +1098,14 @@
             color: var(--primary);
             border: 1px dashed var(--primary);
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             margin-bottom: 10px;
         }
 
-        /* Financial Ledger & Bank Statement Styles */
+        /* Financial Ledger */
         .finance-summary-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -865,14 +1118,15 @@
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 20px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
         }
 
         .finance-card h4 {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
             margin-bottom: 6px;
+            font-weight: 800;
             letter-spacing: 0.5px;
         }
 
@@ -886,8 +1140,8 @@
             background: white;
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            overflow-x: auto;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
         }
 
         .statement-table {
@@ -898,149 +1152,228 @@
         }
 
         .statement-table th {
-            background: #f1f5f9;
-            padding: 12px 16px;
-            font-weight: 700;
+            background: #f8fafc;
+            padding: 14px 18px;
+            font-weight: 800;
             color: var(--text-muted);
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             border-bottom: 1px solid var(--border);
+            letter-spacing: 0.5px;
         }
 
         .statement-table td {
-            padding: 14px 16px;
+            padding: 16px 18px;
             border-bottom: 1px solid var(--border);
             color: var(--text-main);
+            vertical-align: middle;
+            font-weight: 600;
         }
 
-        .statement-table tr:last-child td {
-            border-bottom: none;
+        .staff-actions-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-collect-lg {
+            background: #f59e0b;
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .staff-action-sm {
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
             border: none;
+            background: #dcfce7;
+            color: #166534;
             cursor: pointer;
-        }
-
-        /* Login Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 300;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-card {
-            background: white;
-            width: 100%;
-            max-width: 440px;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         .chip-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
         }
 
         .chip {
             background: #f1f5f9;
             border: 1px solid var(--border);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
             cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
         }
     </style>
 </head>
 <body>
 
-    <!-- Top Navigation Header -->
+    <!-- INITIAL LOGIN & COLLEGE PASS GATE -->
+    <div class="auth-gate" id="authGate">
+        <div class="auth-card">
+            <div class="auth-brand">
+                <div class="brand-logo">🍴</div>
+                <div>
+                    <h2 style="font-size: 22px; font-weight: 900; color: var(--text-main);">CampusBites</h2>
+                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Secure College Pass & Canteen Network</p>
+                </div>
+            </div>
+
+            <!-- Role Switcher -->
+            <div class="role-switch">
+                <button class="role-tab active" id="roleTabStudent" onclick="switchAuthRole('student')">🎓 Student Pass Join</button>
+                <button class="role-tab" id="roleTabAdmin" onclick="switchAuthRole('admin')">🏛️ Administration Studio</button>
+            </div>
+
+            <!-- STUDENT PASS JOIN FORM -->
+            <div id="studentAuthForm">
+                <div style="background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; font-size: 12px; color: var(--primary); font-weight: 700; line-height: 1.4;">
+                    🔗 Join via your <b>College Pass QR Code / Link</b> to securely access your campus canteens and avoid scam portals!
+                </div>
+
+                <div class="form-group">
+                    <label>Quick Demo College Passes</label>
+                    <div class="chip-grid">
+                        <div class="chip" onclick="fillStudentDemo('26CS108', 'Prathap Vadivel', 'CSE', 'KPRIET')">KPRIET Pass</div>
+                        <div class="chip" onclick="fillStudentDemo('24EC042', 'Priya', 'ECE', 'PSG Tech')">PSG Tech Pass</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Roll Number *</label>
+                    <input type="text" class="form-control" id="loginStudentRoll" value="26CS108" placeholder="e.g. 26CS108">
+                </div>
+
+                <div class="form-group">
+                    <label>Student Full Name *</label>
+                    <input type="text" class="form-control" id="loginStudentName" value="Prathap Vadivel" placeholder="Enter your full name">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label>Department</label>
+                        <input type="text" class="form-control" id="loginStudentDept" value="CSE" placeholder="e.g. CSE">
+                    </div>
+                    <div class="form-group">
+                        <label>Verified College Pass *</label>
+                        <select class="form-control" id="loginStudentCollege" style="font-weight: 700;">
+                            <option value="KPRIET">KPRIET (Main Campus)</option>
+                            <option value="PSG Tech">PSG Tech (Refectory Pass)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="checkout-btn" onclick="completeStudentLogin()" style="margin-top: 8px;">Join College Pass & Open Canteens 🚀</button>
+            </div>
+
+            <!-- ADMINISTRATION LOGIN FORM -->
+            <div id="adminAuthForm" style="display: none;">
+                <div style="background: #fef3c7; border: 1px solid #fde68a; border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; font-size: 12px; color: #92400e; font-weight: 700; line-height: 1.4;">
+                    🏛️ Manage college pass QR, add canteens, edit menus & rates, and post item offers with autocomplete search.
+                </div>
+
+                <div class="form-group">
+                    <label>College Name *</label>
+                    <div class="chip-grid" id="adminCollegeChips"></div>
+                    <input type="text" class="form-control" id="loginAdminCollege" value="KPRIET" placeholder="e.g. KPRIET">
+                </div>
+
+                <div class="form-group">
+                    <label>Administration Security PIN (Default: 2727)</label>
+                    <input type="password" class="form-control" id="loginAdminPin" value="2727" placeholder="Enter PIN (2727)">
+                </div>
+
+                <button class="checkout-btn" onclick="completeAdminLogin()" style="background: #1e293b; margin-top: 8px;">Generate Pass & Enter Admin Studio 🛠️</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOP NAVIGATION HEADER -->
     <header>
         <div class="brand">
             <div class="brand-logo">🍴</div>
             <div class="brand-title">
                 <h1>CampusBites</h1>
-                <p>KPRIET Canteen Hub</p>
+                <p id="headerSubTitle">Secure College Pass Network</p>
             </div>
         </div>
         <div class="header-actions">
-            <div class="user-pill" onclick="openLoginModal()">
-                <span id="headerRollDisplay">23CS108</span> • <span id="headerDeptDisplay">CSE</span>
-            </div>
-            <button class="staff-toggle-btn" id="staffPortalToggleBtn" onclick="toggleStaffPortal()">🔒 Staff Portal</button>
+            <div class="user-pill" id="activeUserPill">🎓 26CS108 • KPRIET Pass</div>
+            <button class="switch-auth-btn" onclick="openAuthGate()">🔄 Switch Pass</button>
         </div>
     </header>
 
-    <!-- Tab Navigation Bar (Student View) -->
+    <!-- STUDENT NAVIGATION TABS -->
     <div class="nav-tabs" id="studentNavTabs">
-        <button class="tab-btn active" onclick="switchTab('menu')">🍔 Order Food</button>
-        <button class="tab-btn" onclick="switchTab('receipts')">🧾 My Receipts</button>
+        <button class="tab-btn active" onclick="switchTab('menu')">🍔 Campus Canteens & Menu</button>
+        <button class="tab-btn" onclick="switchTab('receipts')">🧾 My Digital Receipts</button>
     </div>
 
-    <!-- MAIN FULLSCREEN CONTAINER -->
+    <!-- ADMINISTRATION NAVIGATION TABS -->
+    <div class="nav-tabs" id="adminNavTabs" style="display: none;">
+        <button class="tab-btn active" onclick="switchAdminTab('admin-studio')">🏗️ Canteens, Edit Menu & Offers</button>
+        <button class="tab-btn" onclick="switchAdminTab('admin-ledger')">👨‍🍳 Orders & Bank Statement Ledger</button>
+        <button class="tab-btn" onclick="switchTab('menu')">👀 Preview Student View</button>
+    </div>
+
+    <!-- MAIN CONTAINER -->
     <div class="container">
 
-        <!-- TAB 1: MENU & ORDERING -->
+        <!-- STUDENT TAB 1: COLLEGE-LOCKED CANTEENS & MENU -->
         <div id="tab-menu" class="tab-content active">
             
+            <!-- Secure College Pass Active Banner -->
+            <div class="pass-banner">
+                <div>
+                    <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--success); letter-spacing: 0.5px;">🔒 Verified Secure Pass Active</span>
+                    <h3 id="studentPassTitle" style="font-size: 18px; font-weight: 900; color: var(--text-main);">KPRIET Canteen Network</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); font-weight: 600;" id="studentPassDesc">You are connected to official verified campus canteens only.</p>
+                </div>
+                <div style="background: white; padding: 10px 16px; border-radius: 14px; border: 1px solid #c7d2fe; text-align: right;">
+                    <span style="font-size: 10px; color: var(--text-muted); display: block; text-transform: uppercase; font-weight: 800;">Official VPA Protected</span>
+                    <span style="font-size: 14px; font-weight: 900; color: var(--primary);" id="studentActiveUpi">kprietcanteen@sbi</span>
+                </div>
+            </div>
+
+            <!-- Canteen Selector Pill Bar -->
+            <div class="cat-scroll" id="canteenPillsContainer" style="margin-bottom: 16px;"></div>
+
             <!-- Search Bar -->
             <div class="search-box">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" placeholder="Search biryani, coffee, snacks, roll no..." oninput="filterMenu()">
+                <input type="text" id="searchInput" placeholder="Search dish, price, or category..." oninput="renderMenu()">
             </div>
 
-            <!-- Campus Food Court Offers & Events Horizontal Carousel -->
+            <!-- College Events & Offers Carousel -->
             <div class="ads-section">
                 <div class="ads-header">
-                    <h3>Campus Food Court Offers & Events</h3>
+                    <h3>🔥 Official Campus Specials & Item Offers</h3>
                     <span style="font-size: 12px; color: var(--primary); font-weight: 700;">Swipe ↔</span>
                 </div>
-                <div class="ads-slider">
-                    <div class="ad-card">
-                        <div class="ad-badge">🔥 Today's Super Combo</div>
-                        <div>
-                            <div class="ad-title">Chicken 65 Biryani + Chilled Jigarthanda</div>
-                            <div class="ad-desc">Special Counter-2 Lunch Combo • Save ₹25 instantly.</div>
-                        </div>
-                        <button class="ad-btn" onclick="addComboToTray('Chicken 65 Biryani + Chilled Jigarthanda', 135)">Grab Combo @ ₹135</button>
-                    </div>
-                    <div class="ad-card alt-1">
-                        <div class="ad-badge">🎓 Roll No. Perk</div>
-                        <div>
-                            <div class="ad-title">Flat ₹20 OFF on Orders Above ₹120</div>
-                            <div class="ad-desc">Use code CAMPUS20. Exclusive for verified students.</div>
-                        </div>
-                        <button class="ad-btn" onclick="applyPromoCode('CAMPUS20', 20)">Apply ₹20 OFF</button>
-                    </div>
-                    <div class="ad-card alt-2">
-                        <div class="ad-badge">🎉 Tech Fest Special</div>
-                        <div>
-                            <div class="ad-title">Stall #4: Loaded Peri-Peri Fries & Grill Platter</div>
-                            <div class="ad-desc">Open till 7:00 PM at Main Canteen Pavilion.</div>
-                        </div>
-                        <button class="ad-btn" onclick="filterCategory('Snacks')">View Fest Snacks</button>
-                    </div>
-                </div>
+                <div class="ads-slider" id="offersSlider"></div>
             </div>
 
             <!-- Category Filter Pills -->
@@ -1052,22 +1385,177 @@
                 <button class="cat-pill" onclick="filterCategory('Beverages')">Beverages</button>
             </div>
 
-            <!-- Food Items Responsive Grid -->
-            <div class="food-grid" id="foodGrid">
-                <!-- Rendered via JS -->
-            </div>
+            <!-- Food Items Grid -->
+            <div class="food-grid" id="foodGrid"></div>
         </div>
 
-        <!-- TAB 2: MY DIGITAL RECEIPTS -->
+        <!-- STUDENT TAB 2: MY DIGITAL RECEIPTS -->
         <div id="tab-receipts" class="tab-content">
             <div id="receiptsContainer"></div>
         </div>
 
-        <!-- TAB 3: STAFF FINANCIAL STATEMENT & COUNTER (Hidden from Students) -->
-        <div id="tab-staff" class="tab-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="font-size: 22px; font-weight: 800;">👨‍🍳 Canteen Financial Ledger & Counter Desk</h2>
-                <button onclick="switchTab('menu')" style="background:#eef2ff; color:var(--primary); border:1px solid #c7d2fe; padding:8px 14px; border-radius:8px; font-weight:700; cursor:pointer;">&larr; Exit to Student View</button>
+        <!-- ADMIN TAB 1: CANTEEN DESIGNER, EDIT MENU, QR PASS & OFFERS PUBLISHER -->
+        <div id="tab-admin-studio" class="tab-content">
+            <div style="background: #1e293b; color: white; padding: 22px 28px; border-radius: var(--radius); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; box-shadow: 0 10px 25px rgba(30, 41, 59, 0.2);">
+                <div>
+                    <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 800;">Administration Studio</span>
+                    <h2 id="adminStudioTitle" style="font-size: 22px; font-weight: 900; margin-top: 2px;">Managing: KPRIET</h2>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select id="adminActiveCollegeSelect" class="form-control" onchange="switchAdminCollege(this.value)" style="width: auto; background: #334155; color: white; border-color: #475569; font-weight: 700;"></select>
+                    <button onclick="promptNewCollege()" style="background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer;">+ Add College</button>
+                </div>
+            </div>
+
+            <!-- DEDICATED SECTION FOR COLLEGE PASS QR CODE -->
+            <div class="admin-section-divider">
+                <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                    <img id="adminPassQrImg" src="" alt="Pass QR" style="width: 80px; height: 80px; border-radius: 12px; background: white; padding: 4px; border: 1px solid var(--border);" />
+                    <div>
+                        <span style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">Official Onboarding Pass QR</span>
+                        <h3 style="font-size: 16px; font-weight: 900; color: var(--text-main);">Secure Student Join Link</h3>
+                        <div style="font-size: 12px; color: var(--text-muted); font-family: monospace;" id="adminPassLinkText">campusbites.app/join/kpriet</div>
+                    </div>
+                </div>
+                <div>
+                    <button onclick="copyCollegeInviteLink()" style="background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);">📋 Copy Secure Join Link</button>
+                </div>
+            </div>
+
+            <!-- EDITING SECTION: CANTEENS, MENUS WITH CLEAR + AND ✕ SYMBOLS -->
+            <div class="admin-grid">
+                <!-- STEP 1: ADD CANTEENS -->
+                <div class="admin-panel">
+                    <h3>🏪 1. Add Canteens & Stalls</h3>
+                    <p class="sub">Create canteens and assign official UPI IDs.</p>
+
+                    <div class="form-group">
+                        <label>Canteen Name *</label>
+                        <input type="text" class="form-control" id="newCanteenName" placeholder="e.g. Main Canteen Hub">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" class="form-control" id="newCanteenLocation" placeholder="Main Block">
+                        </div>
+                        <div class="form-group">
+                            <label>UPI ID (VPA)</label>
+                            <input type="text" class="form-control" id="newCanteenUpi" value="canteen@sbi" placeholder="canteen@sbi">
+                        </div>
+                    </div>
+                    <button class="checkout-btn" onclick="adminAddCanteen()" style="padding: 12px; font-size: 14px; margin-bottom: 14px;">+ Add Canteen</button>
+                    <div class="item-list-box" id="adminCanteenList"></div>
+                </div>
+
+                <!-- STEP 2: MENU EDITOR WITH CLEAR + AND ✕ SYMBOLS -->
+                <div class="admin-panel">
+                    <h3>🍽️ 2. Edit Menu & Rates</h3>
+                    <p class="sub">Click any dish to edit. Use (+) to add and (✕) to delete.</p>
+
+                    <input type="hidden" id="editingMenuItemId" value="">
+
+                    <div class="form-group">
+                        <label>Select Canteen *</label>
+                        <select class="form-control" id="adminMenuCanteenSelect" onchange="renderAdminMenuList()" style="font-weight: 700; background: #eef2ff;"></select>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 8px;">
+                        <div class="form-group">
+                            <label>Dish Name *</label>
+                            <input type="text" class="form-control" id="newMenuName" placeholder="Paneer Dosa">
+                        </div>
+                        <div class="form-group">
+                            <label>Rate (₹) *</label>
+                            <input type="number" class="form-control" id="newMenuPrice" placeholder="60">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select class="form-control" id="newMenuCategory">
+                                <option value="Tiffin">Tiffin</option>
+                                <option value="Lunch">Lunch</option>
+                                <option value="Snacks">Snacks</option>
+                                <option value="Beverages">Beverages</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select class="form-control" id="newMenuVeg">
+                                <option value="true">🟢 Veg</option>
+                                <option value="false">🔴 Non-Veg</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input type="text" class="form-control" id="newMenuTime" value="5 mins" placeholder="5 mins">
+                        </div>
+                    </div>
+
+                    <!-- Clear Visible Add (+) Symbol Button -->
+                    <button class="add-item-symbol-btn" onclick="adminSaveMenuItem()">
+                        <span style="font-size: 18px; font-weight: 900; line-height: 1;">+</span> Save / Add Menu Item
+                    </button>
+
+                    <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin: 10px 0 6px 0;">Existing Dishes (Click to Edit)</label>
+                    <div class="item-list-box" id="adminMenuItemsList"></div>
+                </div>
+
+                <!-- STEP 3: SEARCH-SUGGESTION OFFER SELECTOR -->
+                <div class="admin-panel">
+                    <h3>📢 3. Post Offer (Search & Select Item)</h3>
+                    <p class="sub">Type to search menu item suggestions. Click to select.</p>
+
+                    <input type="hidden" id="selectedOfferTargetItemId" value="">
+
+                    <div class="form-group search-suggestions-container">
+                        <label>Search Target Menu Item *</label>
+                        <input type="text" id="offerSearchInput" class="form-control" placeholder="Type to search menu item..." oninput="handleOfferSearchInput()" autocomplete="off">
+                        
+                        <!-- Selected Item Tag with X Symbol -->
+                        <div id="selectedOfferItemTag" style="display: none; margin-top: 6px; background: #eef2ff; border: 1px solid #c7d2fe; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; color: var(--primary); justify-content: space-between; align-items: center;">
+                            <span id="selectedOfferItemText">Selected: None</span>
+                            <button type="button" class="remove-item-symbol" onclick="clearSelectedOfferItem()" title="Cancel selection" style="width: 22px; height: 22px; font-size: 11px;">✕</button>
+                        </div>
+
+                        <!-- Suggestions Dropdown Box (Hidden by default until typing) -->
+                        <div id="offerSuggestionsDropdown" class="suggestions-dropdown"></div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div class="form-group">
+                            <label>Badge Title</label>
+                            <input type="text" class="form-control" id="newOfferBadge" value="🔥 Special Offer" placeholder="Badge">
+                        </div>
+                        <div class="form-group">
+                            <label>Discount (₹) *</label>
+                            <input type="number" class="form-control" id="newOfferAmount" value="20" placeholder="20">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Offer Headline / Title *</label>
+                        <input type="text" class="form-control" id="newOfferTitle" placeholder="e.g. Special Discount on Dish">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Banner Image (Upload File or URL)</label>
+                        <input type="file" class="form-control" id="newOfferImageFile" accept="image/*" style="padding: 8px;" onchange="previewUploadedImage(event)">
+                        <input type="text" class="form-control" id="newOfferImg" value="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80" placeholder="Image URL" style="margin-top: 6px;">
+                    </div>
+
+                    <button class="checkout-btn" onclick="adminPostSingleItemOffer()" style="padding: 12px; font-size: 14px; background: #f59e0b; margin-bottom: 14px;">+ Publish Offer Live</button>
+                    <div class="item-list-box" id="adminOffersList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN TAB 2: FINANCIAL STATEMENT & BANK LEDGER -->
+        <div id="tab-admin-ledger" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px;">
+                <h2 style="font-size: 22px; font-weight: 900;">👨‍🍳 Canteen Financial Ledger & Counter Desk</h2>
+                <button onclick="switchAdminTab('admin-studio')" style="background:#eef2ff; color:var(--primary); border:1px solid #c7d2fe; padding:10px 16px; border-radius:10px; font-weight:800; cursor:pointer;">&larr; Back to Admin Studio</button>
             </div>
 
             <!-- Finance Summary Cards -->
@@ -1075,22 +1563,22 @@
                 <div class="finance-card">
                     <h4>Today's Received Amount</h4>
                     <div class="amount" id="todayRevenueDisplay">₹0</div>
-                    <p style="font-size: 11px; color: var(--success); margin-top: 4px; font-weight: 700;">● Live Canteen Collection</p>
+                    <p style="font-size: 11px; color: var(--success); margin-top: 4px; font-weight: 800;">● Verified Canteen Collections</p>
                 </div>
                 <div class="finance-card">
                     <h4>Monthly Statement Total</h4>
                     <div class="amount" id="monthlyRevenueDisplay">₹0</div>
-                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">October 2026 Accounting Cycle</p>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 600;">November 2026 Cycle</p>
                 </div>
                 <div class="finance-card">
                     <h4>Total Orders Processed</h4>
                     <div class="amount" id="totalOrdersCount">0</div>
-                    <p style="font-size: 11px; color: var(--primary); margin-top: 4px; font-weight: 700;">Verified Transactions</p>
+                    <p style="font-size: 11px; color: var(--primary); margin-top: 4px; font-weight: 800;">Secure Transactions</p>
                 </div>
             </div>
 
             <!-- Bank Statement Ledger Table -->
-            <div class="search-box" style="margin-bottom: 16px;">
+            <div class="search-box" style="margin-bottom: 20px;">
                 <span class="search-icon">🔍</span>
                 <input type="text" class="form-control" id="staffSearchInput" placeholder="Filter bank statement by Token #, Roll No or Name..." oninput="renderStaffCounter()">
             </div>
@@ -1100,23 +1588,21 @@
                     <thead>
                         <tr>
                             <th>Token ID</th>
-                            <th>Student Details (Roll No & Name)</th>
-                            <th>Payment Mode</th>
+                            <th>Student Details</th>
+                            <th>Canteen & Items</th>
+                            <th>Mode</th>
                             <th>Amount (₹)</th>
-                            <th>Timestamp</th>
                             <th>Status / Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="staffLedgerBody">
-                        <!-- Populated dynamically -->
-                    </tbody>
+                    <tbody id="staffLedgerBody"></tbody>
                 </table>
             </div>
         </div>
 
     </div>
 
-    <!-- Floating Tray Action Bar -->
+    <!-- FLOATING TRAY ACTION BAR -->
     <div class="floating-tray hidden" id="floatingTray" onclick="openDrawer()">
         <div class="tray-info">
             <div class="tray-count-badge" id="floatingCount">0</div>
@@ -1128,7 +1614,7 @@
         <div class="tray-action-pill">View Tray ₹<span id="floatingTotal">0</span></div>
     </div>
 
-    <!-- Slide-Over Drawer -->
+    <!-- SLIDE-OVER CHECKOUT DRAWER -->
     <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
     <div class="drawer" id="trayDrawer">
         <div class="drawer-header">
@@ -1137,7 +1623,7 @@
         </div>
 
         <div class="form-group">
-            <label>Student College Details</label>
+            <label>Student Credentials (College Locked Pass)</label>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <input type="text" class="form-control" id="orderRollNo" placeholder="Roll No">
                 <input type="text" class="form-control" id="orderStudentName" placeholder="Student Name">
@@ -1145,20 +1631,26 @@
         </div>
 
         <div class="form-group">
-            <label>Pickup Slot & Counter</label>
+            <label>Pickup Slot</label>
             <select class="form-control" id="orderSlot">
-                <option>Immediate Pickup (Counter 1 - Express)</option>
-                <option>Break Time Slot 10:30 AM (Counter 2)</option>
-                <option>Lunch Slot 12:45 PM (Counter 3)</option>
+                <option>Immediate Pickup (Express Counter)</option>
+                <option>Break Time Slot 10:30 AM</option>
+                <option>Lunch Slot 12:45 PM</option>
             </select>
         </div>
 
         <div class="form-group">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                 <label style="margin-bottom: 0;">Tray Items</label>
-                <button onclick="clearTrayCompletely()" style="background: none; border: none; color: var(--danger); font-size: 11px; font-weight: 700; cursor: pointer;">Clear All Tray</button>
+                <button onclick="clearTrayCompletely()" style="background: none; border: none; color: var(--danger); font-size: 11px; font-weight: 800; cursor: pointer;">Clear All Tray</button>
             </div>
-            <div id="drawerItemsList" style="max-height: 180px; overflow-y: auto; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: #f8fafc;"></div>
+            <div id="drawerItemsList" style="max-height: 180px; overflow-y: auto; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 10px; padding: 10px; background: #f8fafc;"></div>
+        </div>
+
+        <!-- ITEM OFFER IN TRAY -->
+        <div class="form-group">
+            <label>Available Item Offer for Your Tray</label>
+            <div id="availableOffersBox" style="margin-bottom: 10px;"></div>
         </div>
 
         <div class="form-group">
@@ -1166,7 +1658,7 @@
             <div class="payment-options">
                 <div class="payment-card selected" id="payOnlineCard" onclick="selectPayment('online')">
                     <h4>Online UPI / QR</h4>
-                    <p>Instant digital token</p>
+                    <p>Instant verified VPA</p>
                 </div>
                 <div class="payment-card" id="payCashCard" onclick="selectPayment('cash')">
                     <h4>Cash on Pay</h4>
@@ -1177,187 +1669,274 @@
 
         <!-- Live UPI QR Code Container -->
         <div id="qrDisplayContainer">
-            <p style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Scan with GPay / PhonePe / Paytm to Pay</p>
+            <p style="font-size: 13px; font-weight: 800; color: var(--success); margin-bottom: 8px;">🛡️ Verified Official College VPA Pass</p>
             <img id="upiQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=kprietcanteen@sbi&pn=CampusBitesCanteen&am=100&cu=INR" alt="UPI QR Code" style="width: 140px; height: 140px;" />
-            <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">VPA: <b>kprietcanteen@sbi</b></p>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px; font-weight: 600;">VPA: <b id="qrVpaText">kprietcanteen@sbi</b></p>
         </div>
 
         <div class="bill-summary">
             <div class="bill-row"><span>Item Total</span><span>₹<span id="billSubtotal">0</span></span></div>
-            <div class="bill-row"><span>Campus Promo Discount</span><span id="billDiscountText">-₹0</span></div>
+            <div class="bill-row"><span>Applied Offer Discount</span><span id="billDiscountText" style="color:var(--success); font-weight:800;">-₹0</span></div>
             <div class="bill-row total"><span>Total Amount Payable</span><span>₹<span id="billTotal">0</span></span></div>
         </div>
 
-        <button class="checkout-btn" onclick="placeOrder()">Place Canteen Order Now 🚀</button>
+        <button class="checkout-btn" onclick="placeOrder()">Place Secure Canteen Order Now 🚀</button>
     </div>
 
-    <!-- Success Toast Modal -->
+    <!-- SUCCESS TOAST MODAL -->
     <div class="toast-modal" id="successToastModal">
         <div class="toast-card">
             <div class="toast-icon">✓</div>
-            <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 8px; color: var(--text-main);">Payment & Order Success!</h3>
-            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Your token has been generated successfully.</p>
-            <div id="toastTokenDisplay" style="font-size: 24px; font-weight: 900; color: var(--primary); background: #eef2ff; padding: 10px; border-radius: 10px; margin-bottom: 16px;">#TK-000</div>
-            <p style="font-size: 12px; color: var(--success); font-weight: 700;">Redirecting to your digital receipts...</p>
+            <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main);">Secure Order Generated!</h3>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px; font-weight: 600;">Verified through official college pass.</p>
+            <div id="toastTokenDisplay" style="font-size: 24px; font-weight: 900; color: var(--primary); background: #eef2ff; padding: 12px; border-radius: 12px; margin-bottom: 16px; border: 1px solid #c7d2fe;">#TK-000</div>
+            <p style="font-size: 12px; color: var(--success); font-weight: 800;">Redirecting to your digital receipts...</p>
         </div>
     </div>
 
-    <!-- Login Modal -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-card">
-            <div class="drawer-header">
-                <h2>🎓 Campus ID Login</h2>
-                <button class="close-drawer" onclick="closeLoginModal()">×</button>
-            </div>
-            <div class="form-group">
-                <label>Select Registered Campus ID</label>
-                <div class="chip-grid">
-                    <div class="chip" onclick="quickLogin('23CS108', 'Aravind Kumar S', 'CSE')">23CS108 (CSE)</div>
-                    <div class="chip" onclick="quickLogin('24EC042', 'Priya Dharshini', 'ECE')">24EC042 (ECE)</div>
-                    <div class="chip" onclick="quickLogin('25IT119', 'Rahul Karthik', 'IT')">25IT119 (IT)</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Roll Number</label>
-                <input type="text" class="form-control" id="modalRollInput" value="23CS108">
-            </div>
-            <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" class="form-control" id="modalNameInput" value="Aravind Kumar S">
-            </div>
-            <button class="checkout-btn" onclick="saveLoginDetails()" style="margin-top: 12px;">Save & Continue 🌟</button>
-        </div>
-    </div>
-
-    <!-- Staff PIN Access Modal -->
-    <div class="modal-overlay" id="staffPinModal">
-        <div class="modal-card" style="max-width: 340px; text-align: center;">
-            <div class="drawer-header">
-                <h2>🔒 Staff Portal Access</h2>
-                <button class="close-drawer" onclick="closeStaffPinModal()">×</button>
-            </div>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">Enter Authorized Staff PIN to view financial statements.</p>
-            <div class="form-group">
-                <input type="password" class="form-control" id="staffPinInput" placeholder="Enter PIN (e.g. 2727)" style="text-align: center; font-size: 18px; letter-spacing: 4px;">
-            </div>
-            <button class="checkout-btn" onclick="verifyStaffPin()">Unlock Financial Portal 🔓</button>
-        </div>
-    </div>
-
-    <!-- JavaScript Logic -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        const menuItems = [
-            { id: 1, name: "Chicken 65 Biryani", category: "Lunch", price: 110, veg: false, time: "8 mins", counter: "Counter 2" },
-            { id: 2, name: "Special Veg Meals", category: "Lunch", price: 80, veg: true, time: "5 mins", counter: "Counter 3" },
-            { id: 3, name: "Ghee Roast Dosa", category: "Tiffin", price: 50, veg: true, time: "6 mins", counter: "Counter 1" },
-            { id: 4, name: "Idli Sambar (2 pcs)", category: "Tiffin", price: 30, veg: true, time: "3 mins", counter: "Counter 1" },
-            { id: 5, name: "Crispy Masala Vada", category: "Snacks", price: 20, veg: true, time: "2 mins", counter: "Counter 1" },
-            { id: 6, name: "Chicken Roll / Puff", category: "Snacks", price: 40, veg: false, time: "3 mins", counter: "Counter 2" },
-            { id: 7, name: "Chilled Jigarthanda", category: "Beverages", price: 45, veg: true, time: "2 mins", counter: "Counter 4" },
-            { id: 8, name: "Degree Filter Coffee", category: "Beverages", price: 20, veg: true, time: "2 mins", counter: "Counter 4" }
+        const defaultColleges = [
+            { id: "col_1", name: "KPRIET", city: "Coimbatore" },
+            { id: "col_2", name: "PSG Tech", city: "Coimbatore" }
         ];
 
-        let currentUser = { rollNo: "23CS108", name: "Aravind Kumar S", dept: "CSE" };
-        let tray = {};
-        let activeOrders = [];
+        const defaultCanteens = [
+            { id: "can_1", name: "KPRIET Main Canteen Hub", college: "KPRIET", location: "Main Block", upi: "kprietcanteen@sbi" },
+            { id: "can_2", name: "KPRIET Juice & Snacks Bar", college: "KPRIET", location: "Auditorium Wing", upi: "kprietjuice@sbi" },
+            { id: "can_3", name: "PSG Tech Refectory", college: "PSG Tech", location: "Central Block", upi: "psgcanteen@sbi" }
+        ];
 
+        const defaultMenuItems = [
+            { id: 1, name: "Chicken 65 Biryani", category: "Lunch", price: 110, veg: false, time: "8 mins", college: "KPRIET", canteen: "KPRIET Main Canteen Hub" },
+            { id: 2, name: "Special Veg Meals", category: "Lunch", price: 80, veg: true, time: "5 mins", college: "KPRIET", canteen: "KPRIET Main Canteen Hub" },
+            { id: 3, name: "Ghee Roast Dosa", category: "Tiffin", price: 50, veg: true, time: "6 mins", college: "KPRIET", canteen: "KPRIET Main Canteen Hub" },
+            { id: 4, name: "Chilled Jigarthanda", category: "Beverages", price: 45, veg: true, time: "2 mins", college: "KPRIET", canteen: "KPRIET Juice & Snacks Bar" },
+            { id: 5, name: "PSG Special Sambar Idli", category: "Tiffin", price: 35, veg: true, time: "3 mins", college: "PSG Tech", canteen: "PSG Tech Refectory" }
+        ];
+
+        const defaultOffers = [
+            { id: "ev_1", college: "KPRIET", targetItemId: "1", badge: "🔥 Special Offer", title: "₹20 OFF on Chicken 65 Biryani", desc: "Valid when Chicken 65 Biryani is in your tray.", amount: 20, img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80" }
+        ];
+
+        let colleges = JSON.parse(localStorage.getItem('cb_colleges')) || defaultColleges;
+        let canteens = JSON.parse(localStorage.getItem('cb_canteens')) || defaultCanteens;
+        let menuItems = JSON.parse(localStorage.getItem('cb_menu')) || defaultMenuItems;
+        let offersEvents = JSON.parse(localStorage.getItem('cb_offers')) || defaultOffers;
+        let activeOrders = JSON.parse(localStorage.getItem('cb_orders')) || [];
+
+        let currentRole = "student";
+        let currentUser = { rollNo: "26CS108", name: "Prathap Vadivel", dept: "CSE", college: "KPRIET" };
+        let currentAdminCollege = "KPRIET";
+        let activeStudentCanteenFilter = "ALL";
+
+        let tray = {};
         let selectedPaymentMethod = "online";
-        let activeDiscount = 0;
-        let activePromoName = "";
+        let activeSelectedOfferId = null;
         let currentCategory = "All";
 
+        function saveState() {
+            localStorage.setItem('cb_colleges', JSON.stringify(colleges));
+            localStorage.setItem('cb_canteens', JSON.stringify(canteens));
+            localStorage.setItem('cb_menu', JSON.stringify(menuItems));
+            localStorage.setItem('cb_offers', JSON.stringify(offersEvents));
+            localStorage.setItem('cb_orders', JSON.stringify(activeOrders));
+        }
+
         window.onload = function() {
-            renderMenu();
+            renderAdminCollegeChips();
+            refreshStudentPassEnvironment();
             renderReceipts();
             renderStaffCounter();
-            updateUserInfoDisplay();
-            setInterval(updateLiveClocks, 1000);
         };
 
-        function openLoginModal() {
-            document.getElementById('modalRollInput').value = currentUser.rollNo;
-            document.getElementById('modalNameInput').value = currentUser.name;
-            document.getElementById('loginModal').classList.add('active');
+        function openAuthGate() {
+            renderAdminCollegeChips();
+            document.getElementById('authGate').classList.remove('hidden');
         }
 
-        function closeLoginModal() {
-            document.getElementById('loginModal').classList.remove('active');
+        function switchAuthRole(role) {
+            document.getElementById('roleTabStudent').classList.toggle('active', role === 'student');
+            document.getElementById('roleTabAdmin').classList.toggle('active', role === 'admin');
+            document.getElementById('studentAuthForm').style.display = role === 'student' ? 'block' : 'none';
+            document.getElementById('adminAuthForm').style.display = role === 'admin' ? 'block' : 'none';
         }
 
-        function quickLogin(roll, name, dept) {
-            currentUser = { rollNo: roll, name: name, dept: dept };
-            updateUserInfoDisplay();
-            closeLoginModal();
+        function fillStudentDemo(roll, name, dept, col) {
+            document.getElementById('loginStudentRoll').value = roll;
+            document.getElementById('loginStudentName').value = name;
+            document.getElementById('loginStudentDept').value = dept;
+            document.getElementById('loginStudentCollege').value = col;
         }
 
-        function saveLoginDetails() {
-            currentUser.rollNo = document.getElementById('modalRollInput').value || '23CS108';
-            currentUser.name = document.getElementById('modalNameInput').value || 'Student';
-            updateUserInfoDisplay();
-            closeLoginModal();
+        function renderAdminCollegeChips() {
+            const box = document.getElementById('adminCollegeChips');
+            box.innerHTML = colleges.map(c => `
+                <div class="chip" onclick="document.getElementById('loginAdminCollege').value='${c.name}';">${c.name}</div>
+            `).join('');
         }
 
-        function updateUserInfoDisplay() {
-            document.getElementById('headerRollDisplay').innerText = currentUser.rollNo;
-            document.getElementById('headerDeptDisplay').innerText = currentUser.dept;
-            document.getElementById('orderRollNo').value = currentUser.rollNo;
-            document.getElementById('orderStudentName').value = currentUser.name;
+        function completeStudentLogin() {
+            const roll = document.getElementById('loginStudentRoll').value.trim() || "26CS108";
+            const name = document.getElementById('loginStudentName').value.trim() || "Student";
+            const dept = document.getElementById('loginStudentDept').value.trim() || "CSE";
+            const collegePass = document.getElementById('loginStudentCollege').value;
+
+            currentRole = "student";
+            currentUser = { rollNo: roll, name: name, dept: dept, college: collegePass };
+
+            document.getElementById('activeUserPill').innerText = `🎓 ${roll} • ${collegePass} Pass`;
+            document.getElementById('headerSubTitle').innerText = `Secure College Pass Network`;
+            document.getElementById('orderRollNo').value = roll;
+            document.getElementById('orderStudentName').value = name;
+
+            document.getElementById('studentNavTabs').style.display = 'flex';
+            document.getElementById('adminNavTabs').style.display = 'none';
+
+            document.getElementById('authGate').classList.add('hidden');
+            refreshStudentPassEnvironment();
+            switchTab('menu');
         }
 
-        function toggleStaffPortal() {
-            document.getElementById('staffPinInput').value = '';
-            document.getElementById('staffPinModal').classList.add('active');
-        }
+        function completeAdminLogin() {
+            const colName = document.getElementById('loginAdminCollege').value.trim();
+            const pin = document.getElementById('loginAdminPin').value.trim();
 
-        function closeStaffPinModal() {
-            document.getElementById('staffPinModal').classList.remove('active');
-        }
-
-        function verifyStaffPin() {
-            const pin = document.getElementById('staffPinInput').value;
-            if(pin === '2727' || pin === '') {
-                closeStaffPinModal();
-                switchTab('staff');
-            } else {
-                alert("Incorrect Staff PIN! Access denied.");
+            if (!colName) {
+                alert("Please enter College Name!");
+                return;
             }
+            if (pin !== '2727' && pin !== '') {
+                alert("Incorrect PIN! Use default: 2727");
+                return;
+            }
+
+            let existing = colleges.find(c => c.name.toLowerCase() === colName.toLowerCase());
+            if (!existing) {
+                existing = { id: 'col_' + Date.now(), name: colName, city: 'Campus Network' };
+                colleges.push(existing);
+                canteens.push({ id: 'can_' + Date.now(), name: `${colName} Main Canteen`, college: colName, location: 'Main Campus', upi: 'kprietcanteen@sbi' });
+                saveState();
+            }
+
+            currentRole = "admin";
+            currentAdminCollege = existing.name;
+
+            document.getElementById('activeUserPill').innerText = `🏛️ Admin • ${currentAdminCollege}`;
+            document.getElementById('headerSubTitle').innerText = `Administration Studio & Pass Manager`;
+
+            document.getElementById('studentNavTabs').style.display = 'none';
+            document.getElementById('adminNavTabs').style.display = 'flex';
+            document.getElementById('floatingTray').classList.add('hidden');
+
+            refreshAdminStudio();
+            document.getElementById('authGate').classList.add('hidden');
+            switchAdminTab('admin-studio');
+        }
+
+        function refreshStudentPassEnvironment() {
+            const col = currentUser.college;
+            document.getElementById('studentPassTitle').innerText = `${col} Verified Canteen Network`;
+            document.getElementById('studentPassDesc').innerText = `You are connected to official verified campus canteens for ${col}.`;
+            
+            const matchedCanteens = canteens.filter(c => c.college === col);
+            if (matchedCanteens.length > 0) {
+                document.getElementById('studentActiveUpi').innerText = matchedCanteens[0].upi;
+            }
+
+            const pillsBox = document.getElementById('canteenPillsContainer');
+            pillsBox.innerHTML = `
+                <button class="cat-pill active" onclick="filterStudentCanteen('ALL')">🏪 All ${col} Canteens</button>
+            ` + matchedCanteens.map(c => `
+                <button class="cat-pill" onclick="filterStudentCanteen('${c.name}')">🏪 ${c.name}</button>
+            `).join('');
+
+            activeStudentCanteenFilter = "ALL";
+            renderOffersCarousel();
+            renderMenu();
+        }
+
+        function filterStudentCanteen(canName) {
+            activeStudentCanteenFilter = canName;
+            document.querySelectorAll('#canteenPillsContainer .cat-pill').forEach(p => {
+                p.classList.remove('active');
+                if (p.innerText.includes(canName) || (canName === 'ALL' && p.innerText.includes('All'))) p.classList.add('active');
+            });
+            renderMenu();
+        }
+
+        function renderOffersCarousel() {
+            const slider = document.getElementById('offersSlider');
+            const col = currentUser.college;
+            const visible = offersEvents.filter(ev => ev.college === col || ev.college === 'ALL');
+
+            if (visible.length === 0) {
+                slider.innerHTML = `<div style="color:var(--text-muted); font-size:13px; padding:10px;">No active item offers for ${col} pass today.</div>`;
+                return;
+            }
+
+            slider.innerHTML = visible.map(ev => `
+                <div class="ad-card">
+                    <img src="${ev.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80'}" class="ad-card-img" alt="Offer Banner" />
+                    <div class="ad-card-body">
+                        <div>
+                            <div class="ad-badge">${ev.badge}</div>
+                            <div class="ad-title">${ev.title}</div>
+                            <div class="ad-desc">${ev.desc} (Saves ₹${ev.amount})</div>
+                        </div>
+                        <button class="ad-btn" onclick="openDrawerWithOffer('${ev.id}')">Apply Offer in Tray</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openDrawerWithOffer(evId) {
+            activeSelectedOfferId = evId;
+            openDrawer();
         }
 
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#studentNavTabs .tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-            if(tabId === 'menu') {
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            if (tabId === 'menu') {
+                document.querySelectorAll('#studentNavTabs .tab-btn')[0].classList.add('active');
                 document.getElementById('tab-menu').classList.add('active');
-            } else if(tabId === 'receipts') {
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                renderMenu();
+            } else if (tabId === 'receipts') {
+                document.querySelectorAll('#studentNavTabs .tab-btn')[1].classList.add('active');
                 document.getElementById('tab-receipts').classList.add('active');
                 renderReceipts();
-            } else if(tabId === 'staff') {
-                document.getElementById('tab-staff').classList.add('active');
-                renderStaffCounter();
             }
         }
 
         function renderMenu() {
             const grid = document.getElementById('foodGrid');
             const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const col = currentUser.college;
             grid.innerHTML = '';
 
             const filtered = menuItems.filter(item => {
+                const matchesCollege = (item.college === col);
+                const matchesCanteen = (activeStudentCanteenFilter === 'ALL' || item.canteen === activeStudentCanteenFilter);
                 const matchesCat = (currentCategory === 'All' || item.category === currentCategory);
                 const matchesSearch = item.name.toLowerCase().includes(searchVal) || item.category.toLowerCase().includes(searchVal);
-                return matchesCat && matchesSearch;
+                return matchesCollege && matchesCanteen && matchesCat && matchesSearch;
             });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">No dishes found in this canteen.</div>`;
+                updateFloatingTray();
+                return;
+            }
 
             filtered.forEach(item => {
                 const qty = tray[item.id] || 0;
                 const vegClass = item.veg ? 'veg-badge' : 'veg-badge non-veg';
                 
                 let actionHtml = '';
-                if(qty === 0) {
-                    actionHtml = `<button class="add-btn" onclick="updateQty(${item.id}, 1)">Add to Tray</button>`;
+                if (qty === 0) {
+                    actionHtml = `<button class="add-btn" onclick="updateQty('${item.id}', 1)">Add to Tray</button>`;
                 } else {
                     actionHtml = `
                         <div style="display: flex; align-items: center; gap: 8px;">
@@ -1375,13 +1954,14 @@
                 card.className = 'food-card';
                 card.innerHTML = `
                     <div>
+                        <span class="food-college-tag">🏪 ${item.canteen}</span>
                         <div class="food-header">
                             <span class="food-name">${item.name}</span>
                             <div class="${vegClass}"><div class="veg-dot"></div></div>
                         </div>
                         <div class="food-meta">
+                            <span>🍽️ ${item.category}</span>
                             <span>⏱ ${item.time}</span>
-                            <span>📍 ${item.counter}</span>
                         </div>
                     </div>
                     <div class="food-footer">
@@ -1396,20 +1976,20 @@
 
         function filterCategory(cat) {
             currentCategory = cat;
-            document.querySelectorAll('.cat-pill').forEach(p => {
-                p.classList.remove('active');
-                if(p.innerText.includes(cat) || (cat === 'All' && p.innerText.includes('All'))) p.classList.add('active');
+            document.querySelectorAll('.cat-scroll .cat-pill').forEach(p => {
+                if (!p.getAttribute('onclick').includes('filterStudentCanteen')) {
+                    p.classList.remove('active');
+                    if (p.innerText.includes(cat) || (cat === 'All' && p.innerText.includes('All'))) p.classList.add('active');
+                }
             });
             renderMenu();
         }
 
-        function filterMenu() { renderMenu(); }
-
         function updateQty(id, delta) {
             tray[id] = (tray[id] || 0) + delta;
-            if(tray[id] <= 0) delete tray[id];
+            if (tray[id] <= 0) delete tray[id];
             renderMenu();
-            if(document.getElementById('trayDrawer').classList.contains('active')) {
+            if (document.getElementById('trayDrawer').classList.contains('active')) {
                 openDrawer();
             }
         }
@@ -1422,37 +2002,34 @@
 
         function clearTrayCompletely() {
             tray = {};
+            activeSelectedOfferId = null;
             renderMenu();
-            openDrawer();
-        }
-
-        function addComboToTray(comboName, price) {
-            const customId = 'combo_' + Date.now();
-            menuItems.push({ id: customId, name: comboName, category: 'Lunch', price: price, veg: false, time: '5 mins', counter: 'Counter 2' });
-            tray[customId] = 1;
-            renderMenu();
-            openDrawer();
-        }
-
-        function applyPromoCode(code, discountVal) {
-            activeDiscount = discountVal;
-            activePromoName = code;
-            alert(`Promo ${code} applied (-₹${discountVal})!`);
             openDrawer();
         }
 
         function updateFloatingTray() {
             let totalCount = 0, subtotal = 0;
-            for(let id in tray) {
-                const item = menuItems.find(m => m.id == id);
-                if(item) { totalCount += tray[id]; subtotal += (item.price * tray[id]); }
+            for (let id in tray) {
+                const item = menuItems.find(m => String(m.id) === String(id));
+                if (item) {
+                    totalCount += tray[id];
+                    subtotal += (item.price * tray[id]);
+                }
             }
             const floatingTray = document.getElementById('floatingTray');
-            if(totalCount > 0) {
+            if (totalCount > 0) {
                 floatingTray.classList.remove('hidden');
                 document.getElementById('floatingCount').innerText = totalCount;
                 document.getElementById('floatingTitle').innerText = `${totalCount} Item${totalCount > 1 ? 's' : ''} in Tray`;
-                document.getElementById('floatingTotal').innerText = Math.max(0, subtotal - activeDiscount);
+                
+                let tempDiscount = 0;
+                if (activeSelectedOfferId) {
+                    const off = offersEvents.find(e => e.id === activeSelectedOfferId);
+                    if (off && tray[off.targetItemId] && tray[off.targetItemId] > 0) {
+                        tempDiscount = off.amount;
+                    }
+                }
+                document.getElementById('floatingTotal').innerText = Math.max(0, subtotal - tempDiscount);
             } else {
                 floatingTray.classList.add('hidden');
             }
@@ -1460,44 +2037,113 @@
 
         function openDrawer() {
             let totalCount = 0, subtotal = 0, drawerListHtml = '';
-            for(let id in tray) {
-                const item = menuItems.find(m => m.id == id);
-                if(item) {
+            let activeUpi = 'kprietcanteen@sbi';
+            const col = currentUser.college;
+
+            for (let id in tray) {
+                const item = menuItems.find(m => String(m.id) === String(id));
+                if (item) {
                     totalCount += tray[id];
                     subtotal += (item.price * tray[id]);
+                    const matchedCanteen = canteens.find(c => c.name === item.canteen);
+                    if (matchedCanteen && matchedCanteen.upi) activeUpi = matchedCanteen.upi;
+
                     drawerListHtml += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px; background: white; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px; background: white; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);">
                             <div>
                                 <strong>${item.name}</strong><br>
+                                <span style="font-size: 11px; color: var(--primary); font-weight: 700;">🏪 ${item.canteen}</span><br>
                                 <span style="font-size: 12px; color: var(--text-muted);">₹${item.price} x ${tray[id]} = <strong>₹${item.price * tray[id]}</strong></span>
                             </div>
                             <div style="display: flex; align-items: center;">
-                                <button onclick="updateQty('${id}', -1)" style="background:#e0e7ff; color:var(--primary); border:none; width:22px; height:22px; border-radius:4px; font-weight:700; cursor:pointer;">-</button>
-                                <span style="margin: 0 6px; font-weight: 700;">${tray[id]}</span>
-                                <button onclick="updateQty('${id}', 1)" style="background:#e0e7ff; color:var(--primary); border:none; width:22px; height:22px; border-radius:4px; font-weight:700; cursor:pointer;">+</button>
-                                <button class="remove-item-x" onclick="removeCartItem('${id}')" title="Remove item">✕</button>
+                                <button onclick="updateQty('${id}', -1)" style="background:#eef2ff; color:var(--primary); border:none; width:24px; height:24px; border-radius:6px; font-weight:800; cursor:pointer;">-</button>
+                                <span style="margin: 0 8px; font-weight: 800;">${tray[id]}</span>
+                                <button onclick="updateQty('${id}', 1)" style="background:#eef2ff; color:var(--primary); border:none; width:24px; height:24px; border-radius:6px; font-weight:800; cursor:pointer;">+</button>
+                                <button class="remove-item-symbol" onclick="removeCartItem('${id}')" title="Remove item">✕</button>
                             </div>
                         </div>
                     `;
                 }
             }
-            if(totalCount === 0) {
-                drawerListHtml = `<p style="color:var(--text-muted); font-size:14px; text-align:center; padding: 20px;">Your tray is currently empty.</p>`;
+            if (totalCount === 0) {
+                drawerListHtml = `<p style="color:var(--text-muted); font-size:14px; text-align:center; padding: 20px; font-weight: 600;">Your tray is currently empty.</p>`;
+                activeSelectedOfferId = null;
                 document.getElementById('floatingTray').classList.add('hidden');
             }
-            
-            const finalPayable = Math.max(0, subtotal - activeDiscount);
+
+            const offersBox = document.getElementById('availableOffersBox');
+            const collegeOffers = offersEvents.filter(ev => ev.college === col || ev.college === 'ALL');
+
+            if (collegeOffers.length === 0 || totalCount === 0) {
+                offersBox.innerHTML = `<span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">No item offers available.</span>`;
+                activeSelectedOfferId = null;
+            } else {
+                offersBox.innerHTML = collegeOffers.map(ev => {
+                    const hasItem = tray[ev.targetItemId] && tray[ev.targetItemId] > 0;
+                    const isSelected = activeSelectedOfferId === ev.id;
+                    const targetDish = menuItems.find(m => String(m.id) === String(ev.targetItemId));
+                    const dishName = targetDish ? targetDish.name : 'Item';
+
+                    if (!hasItem) {
+                        return `
+                            <div style="background:#f8fafc; border:1px solid var(--border); padding:10px 14px; border-radius:10px; margin-bottom:8px; font-size:13px; opacity: 0.6;">
+                                <strong style="color:var(--text-muted);">${ev.title}</strong><br>
+                                <span style="font-size:11px; color:var(--danger); font-weight:700;">
+                                    ❌ Add "${dishName}" to tray to unlock (Saves ₹${ev.amount})
+                                </span>
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <div style="background:${isSelected ? '#eef2ff' : '#f8fafc'}; border:1px solid ${isSelected ? 'var(--primary)' : 'var(--border)'}; padding:10px 14px; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; font-size:13px;">
+                            <div>
+                                <strong style="color:var(--text-main);">${ev.title}</strong><br>
+                                <span style="font-size:11px; color:var(--success); font-weight:700;">
+                                    ✔ Item in tray! Saves ₹${ev.amount}
+                                </span>
+                            </div>
+                            <button onclick="selectOfferInDrawer('${ev.id}', true)" style="background:${isSelected ? 'var(--primary)' : 'white'}; color:${isSelected ? 'white' : 'var(--text-main)'}; border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-size:12px; font-weight:800; cursor:pointer;">
+                                ${isSelected ? 'Applied ✓' : 'Apply'}
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            let computedDiscount = 0;
+            if (activeSelectedOfferId) {
+                const selectedOff = offersEvents.find(e => e.id === activeSelectedOfferId);
+                if (selectedOff && tray[selectedOff.targetItemId] && tray[selectedOff.targetItemId] > 0) {
+                    computedDiscount = selectedOff.amount;
+                } else {
+                    activeSelectedOfferId = null;
+                }
+            }
+
+            const finalPayable = Math.max(0, subtotal - computedDiscount);
             document.getElementById('drawerItemsList').innerHTML = drawerListHtml;
             document.getElementById('billSubtotal').innerText = subtotal;
-            document.getElementById('billDiscountText').innerText = `-₹${activeDiscount}`;
+            document.getElementById('billDiscountText').innerText = `-₹${computedDiscount}`;
             document.getElementById('billTotal').innerText = finalPayable;
 
-            document.getElementById('upiQrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=kprietcanteen@sbi&pn=CampusBitesCanteen&am=${finalPayable}&cu=INR`;
+            document.getElementById('qrVpaText').innerText = activeUpi;
+            document.getElementById('upiQrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=${activeUpi}&pn=CampusBites_${col}&am=${finalPayable}&cu=INR`;
             
             selectPayment(selectedPaymentMethod);
 
             document.getElementById('drawerOverlay').classList.add('active');
             document.getElementById('trayDrawer').classList.add('active');
+        }
+
+        function selectOfferInDrawer(evId, isEligible) {
+            if (!isEligible) return;
+            if (activeSelectedOfferId === evId) {
+                activeSelectedOfferId = null;
+            } else {
+                activeSelectedOfferId = evId;
+            }
+            openDrawer();
         }
 
         function closeDrawer() {
@@ -1508,7 +2154,7 @@
         function selectPayment(mode) {
             selectedPaymentMethod = mode;
             const qrBox = document.getElementById('qrDisplayContainer');
-            if(mode === 'online') {
+            if (mode === 'online') {
                 document.getElementById('payOnlineCard').classList.add('selected');
                 document.getElementById('payCashCard').classList.remove('selected');
                 qrBox.style.display = 'block';
@@ -1521,19 +2167,31 @@
 
         function placeOrder() {
             let subtotal = 0, orderItems = [];
-            for(let id in tray) {
-                const item = menuItems.find(m => m.id == id);
-                if(item) {
-                    orderItems.push({ name: item.name, qty: tray[id], price: item.price });
+            let orderCanteens = new Set();
+            const col = currentUser.college;
+
+            for (let id in tray) {
+                const item = menuItems.find(m => String(m.id) === String(id));
+                if (item) {
+                    orderItems.push({ name: item.name, qty: tray[id], price: item.price, canteen: item.canteen });
                     subtotal += (item.price * tray[id]);
+                    orderCanteens.add(item.canteen);
                 }
             }
-            if(orderItems.length === 0) {
+            if (orderItems.length === 0) {
                 alert("Please add items to your tray first!");
                 return;
             }
 
-            const finalTotal = Math.max(0, subtotal - activeDiscount);
+            let computedDiscount = 0;
+            if (activeSelectedOfferId) {
+                const selectedOff = offersEvents.find(e => e.id === activeSelectedOfferId);
+                if (selectedOff && tray[selectedOff.targetItemId] && tray[selectedOff.targetItemId] > 0) {
+                    computedDiscount = selectedOff.amount;
+                }
+            }
+
+            const finalTotal = Math.max(0, subtotal - computedDiscount);
             const isOnline = (selectedPaymentMethod === 'online');
             const tokenNum = "TK-" + Math.floor(100 + Math.random() * 900);
 
@@ -1542,6 +2200,8 @@
                 rollNo: document.getElementById('orderRollNo').value || currentUser.rollNo,
                 name: document.getElementById('orderStudentName').value || currentUser.name,
                 dept: currentUser.dept,
+                collegePass: col,
+                orderedCanteen: Array.from(orderCanteens).join(', '),
                 slot: document.getElementById('orderSlot').value,
                 payment: selectedPaymentMethod,
                 items: orderItems,
@@ -1551,7 +2211,9 @@
             };
 
             activeOrders.unshift(newOrder);
-            tray = {}; activeDiscount = 0;
+            tray = {};
+            activeSelectedOfferId = null;
+            saveState();
             closeDrawer();
             renderMenu();
 
@@ -1561,41 +2223,42 @@
             setTimeout(() => {
                 document.getElementById('successToastModal').classList.remove('active');
                 switchTab('receipts');
-            }, 1800);
+            }, 1600);
         }
 
         function renderReceipts() {
             const container = document.getElementById('receiptsContainer');
             container.innerHTML = '';
-            if(activeOrders.length === 0) {
-                container.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-muted);">No active receipts. Place an order from the menu!</div>`;
+            if (activeOrders.length === 0) {
+                container.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-muted); font-weight: 600;">No active receipts yet. Place an order from your college pass menu!</div>`;
                 return;
             }
             activeOrders.forEach((order, index) => {
                 let badge = '';
-                if(order.status === 'paid') badge = `<span class="status-badge paid">Online Paid ⚡</span>`;
-                else if(order.status === 'cash_pending') badge = `<span class="status-badge cash">Pay Cash at Counter 💵</span>`;
+                if (order.status === 'paid') badge = `<span class="status-badge paid">Online Paid ⚡</span>`;
+                else if (order.status === 'cash_pending') badge = `<span class="status-badge cash">Pay Cash at Counter 💵</span>`;
                 else badge = `<span class="status-badge served">Served ✔</span>`;
 
-                let itemsHtml = order.items.map(it => `<div class="receipt-item-row"><span>${it.name} (x${it.qty})</span><span>₹${it.price * it.qty}</span></div>`).join('');
+                let itemsHtml = order.items.map(it => `<div class="receipt-item-row"><span>${it.name} (x${it.qty}) <small style="color:var(--text-muted);">[${it.canteen}]</small></span><span>₹${it.price * it.qty}</span></div>`).join('');
                 
                 const card = document.createElement('div');
                 card.className = 'receipt-card';
                 card.innerHTML = `
                     <div class="hologram-bar"></div>
                     <div class="receipt-top">
-                        <div><span style="font-size:12px; color:var(--text-muted);">TOKEN</span><div class="token-number">#${order.token}</div></div>
+                        <div><span style="font-size:12px; color:var(--text-muted); font-weight:700;">TOKEN</span><div class="token-number">#${order.token}</div></div>
                         <div>${badge}</div>
                     </div>
                     <div class="receipt-details">
-                        <div><span>Roll No</span><strong>${order.rollNo}</strong></div>
-                        <div><span>Name</span><strong>${order.name}</strong></div>
+                        <div><span>Student Details</span><strong>${order.rollNo} (${order.name})</strong></div>
+                        <div><span>College Pass</span><strong>🏛️ ${order.collegePass}</strong></div>
+                        <div><span>Canteen Desk</span><strong>🏪 ${order.orderedCanteen || 'Main Canteen'}</strong></div>
                     </div>
                     <div class="receipt-items-list">${itemsHtml}</div>
                     <div class="live-clock" id="clock_${index}">00:00:00.000</div>
                     <button class="live-test-btn" onclick="triggerPulse(${index})">🛡️ Test Anti-Screenshot Pulse</button>
-                    <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 800; margin-top: 14px;">
-                        <span>Total</span><span style="color:var(--primary);">₹${order.total}</span>
+                    <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; margin-top: 14px;">
+                        <span>Total Amount</span><span style="color:var(--primary);">₹${order.total}</span>
                     </div>
                 `;
                 container.appendChild(card);
@@ -1610,24 +2273,342 @@
 
         function triggerPulse(index) {
             const clk = document.getElementById(`clock_${index}`);
-            if(clk) {
+            if (clk) {
                 clk.style.background = '#10b981';
                 setTimeout(() => clk.style.background = '#0f172a', 600);
             }
         }
 
+        /* ================= ADMINISTRATION STUDIO ================= */
+        function switchAdminTab(tabId) {
+            document.querySelectorAll('#adminNavTabs .tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            if (tabId === 'admin-studio') {
+                document.querySelectorAll('#adminNavTabs .tab-btn')[0].classList.add('active');
+                document.getElementById('tab-admin-studio').classList.add('active');
+                refreshAdminStudio();
+            } else if (tabId === 'admin-ledger') {
+                document.querySelectorAll('#adminNavTabs .tab-btn')[1].classList.add('active');
+                document.getElementById('tab-admin-ledger').classList.add('active');
+                renderStaffCounter();
+            }
+        }
+
+        function switchAdminCollege(colName) {
+            currentAdminCollege = colName;
+            document.getElementById('activeUserPill').innerText = `🏛️ Admin • ${currentAdminCollege}`;
+            refreshAdminStudio();
+        }
+
+        function promptNewCollege() {
+            const name = prompt("Enter New College Name:");
+            if (!name || !name.trim()) return;
+            const clean = name.trim();
+            if (!colleges.some(c => c.name.toLowerCase() === clean.toLowerCase())) {
+                colleges.push({ id: 'col_' + Date.now(), name: clean, city: 'Campus' });
+                canteens.push({ id: 'can_' + Date.now(), name: `${clean} Main Canteen`, college: clean, location: 'Main Block', upi: 'canteen@sbi' });
+                saveState();
+            }
+            currentAdminCollege = clean;
+            refreshAdminStudio();
+        }
+
+        function refreshAdminStudio() {
+            document.getElementById('adminStudioTitle').innerText = `Managing College Pass: ${currentAdminCollege}`;
+            
+            const colSel = document.getElementById('adminActiveCollegeSelect');
+            colSel.innerHTML = colleges.map(c => `<option value="${c.name}" ${c.name === currentAdminCollege ? 'selected' : ''}>🏛️ ${c.name}</option>`).join('');
+
+            const inviteUrl = `https://campusbites.app/join/${currentAdminCollege.toLowerCase().replace(/\s+/g, '')}`;
+            document.getElementById('adminPassLinkText').innerText = inviteUrl;
+            document.getElementById('adminPassQrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(inviteUrl)}`;
+
+            const collegeCanteens = canteens.filter(c => c.college === currentAdminCollege);
+            const canListEl = document.getElementById('adminCanteenList');
+            if (collegeCanteens.length === 0) {
+                canListEl.innerHTML = `<p style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No canteens yet.</p>`;
+            } else {
+                canListEl.innerHTML = collegeCanteens.map(c => `
+                    <div class="item-list-row">
+                        <div>
+                            <strong>🏪 ${c.name}</strong><br>
+                            <span style="font-size:11px; color:var(--text-muted);">VPA: ${c.upi}</span>
+                        </div>
+                        <button class="remove-item-symbol" onclick="adminDeleteCanteen('${c.id}')" title="Delete Canteen">✕</button>
+                    </div>
+                `).join('');
+            }
+
+            const menuCanSel = document.getElementById('adminMenuCanteenSelect');
+            menuCanSel.innerHTML = collegeCanteens.map(c => `<option value="${c.name}">🏪 ${c.name}</option>`).join('');
+
+            clearSelectedOfferItem();
+            adminResetMenuForm();
+            renderAdminMenuList();
+            renderAdminOffersList();
+        }
+
+        function handleOfferSearchInput() {
+            const query = document.getElementById('offerSearchInput').value.trim().toLowerCase();
+            const dropdown = document.getElementById('offerSuggestionsDropdown');
+
+            if (!query) {
+                dropdown.style.display = 'none';
+                dropdown.innerHTML = '';
+                return;
+            }
+
+            const matches = menuItems.filter(m => m.college === currentAdminCollege && m.name.toLowerCase().includes(query));
+
+            if (matches.length === 0) {
+                dropdown.innerHTML = `<div style="padding:10px; font-size:12px; color:var(--text-muted);">No matching dishes found</div>`;
+                dropdown.style.display = 'block';
+                return;
+            }
+
+            dropdown.innerHTML = matches.map(d => `
+                <div class="suggestion-item" onclick="selectOfferTargetItem('${d.id}', '${d.name} (₹${d.price})')">
+                    <strong>${d.name}</strong> (₹${d.price}) <small style="color:var(--text-muted);">[${d.canteen}]</small>
+                </div>
+            `).join('');
+            dropdown.style.display = 'block';
+        }
+
+        function selectOfferTargetItem(id, displayName) {
+            document.getElementById('selectedOfferTargetItemId').value = id;
+            document.getElementById('selectedOfferItemText').innerText = `Selected: ${displayName}`;
+            document.getElementById('selectedOfferItemTag').style.display = 'flex';
+            document.getElementById('offerSearchInput').value = '';
+            document.getElementById('offerSuggestionsDropdown').style.display = 'none';
+        }
+
+        function clearSelectedOfferItem() {
+            document.getElementById('selectedOfferTargetItemId').value = '';
+            document.getElementById('selectedOfferItemTag').style.display = 'none';
+            document.getElementById('offerSearchInput').value = '';
+            document.getElementById('offerSuggestionsDropdown').style.display = 'none';
+        }
+
+        function copyCollegeInviteLink() {
+            const link = document.getElementById('adminPassLinkText').innerText;
+            navigator.clipboard.writeText(link);
+            alert(`Copied secure college join link: ${link}`);
+        }
+
+        function adminAddCanteen() {
+            const name = document.getElementById('newCanteenName').value.trim();
+            const loc = document.getElementById('newCanteenLocation').value.trim() || "Main Block";
+            const upi = document.getElementById('newCanteenUpi').value.trim() || "canteen@sbi";
+
+            if (!name) {
+                alert("Please enter Canteen Name!");
+                return;
+            }
+
+            canteens.push({ id: 'can_' + Date.now(), name: name, college: currentAdminCollege, location: loc, upi: upi });
+            document.getElementById('newCanteenName').value = '';
+            document.getElementById('newCanteenLocation').value = '';
+            saveState();
+            refreshAdminStudio();
+        }
+
+        function adminDeleteCanteen(canId) {
+            canteens = canteens.filter(c => c.id !== canId);
+            saveState();
+            refreshAdminStudio();
+        }
+
+        function renderAdminMenuList() {
+            const selectedCanteen = document.getElementById('adminMenuCanteenSelect').value;
+            const box = document.getElementById('adminMenuItemsList');
+            const items = menuItems.filter(m => m.college === currentAdminCollege && m.canteen === selectedCanteen);
+
+            if (items.length === 0) {
+                box.innerHTML = `<p style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No dishes in this canteen yet.</p>`;
+                return;
+            }
+
+            box.innerHTML = items.map(item => `
+                <div class="item-list-row" onclick="loadMenuItemForEditing('${item.id}')" title="Click to edit this item">
+                    <div>
+                        <strong>${item.veg ? '🟢' : '🔴'} ${item.name}</strong> — <span style="color:var(--primary); font-weight:800;">₹${item.price}</span><br>
+                        <span style="font-size:11px; color:var(--text-muted);">${item.category} • ⏱ ${item.time}</span>
+                    </div>
+                    <button class="remove-item-symbol" onclick="event.stopPropagation(); adminDeleteMenuItem('${item.id}')" title="Delete Dish">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function loadMenuItemForEditing(itemId) {
+            const item = menuItems.find(m => String(m.id) === String(itemId));
+            if (!item) return;
+
+            document.getElementById('editingMenuItemId').value = item.id;
+            document.getElementById('adminMenuCanteenSelect').value = item.canteen;
+            document.getElementById('newMenuName').value = item.name;
+            document.getElementById('newMenuPrice').value = item.price;
+            document.getElementById('newMenuCategory').value = item.category;
+            document.getElementById('newMenuVeg').value = String(item.veg);
+            document.getElementById('newMenuTime').value = item.time;
+
+            window.scrollTo({ top: 200, behavior: 'smooth' });
+        }
+
+        function adminResetMenuForm() {
+            document.getElementById('editingMenuItemId').value = '';
+            document.getElementById('newMenuName').value = '';
+            document.getElementById('newMenuPrice').value = '';
+            document.getElementById('newMenuTime').value = '5 mins';
+        }
+
+        function adminSaveMenuItem() {
+            const editId = document.getElementById('editingMenuItemId').value;
+            const selectedCanteen = document.getElementById('adminMenuCanteenSelect').value;
+            const name = document.getElementById('newMenuName').value.trim();
+            const price = parseFloat(document.getElementById('newMenuPrice').value);
+            const cat = document.getElementById('newMenuCategory').value;
+            const veg = document.getElementById('newMenuVeg').value === "true";
+            const time = document.getElementById('newMenuTime').value.trim() || "5 mins";
+
+            if (!name || isNaN(price) || price <= 0) {
+                alert("Please enter valid Dish Name and Rate (₹)!");
+                return;
+            }
+
+            if (editId) {
+                const idx = menuItems.findIndex(m => String(m.id) === String(editId));
+                if (idx !== -1) {
+                    menuItems[idx] = {
+                        ...menuItems[idx],
+                        name: name,
+                        price: price,
+                        category: cat,
+                        veg: veg,
+                        time: time,
+                        canteen: selectedCanteen
+                    };
+                }
+            } else {
+                menuItems.unshift({
+                    id: 'item_' + Date.now(),
+                    name: name,
+                    category: cat,
+                    price: price,
+                    veg: veg,
+                    time: time,
+                    college: currentAdminCollege,
+                    canteen: selectedCanteen
+                });
+            }
+
+            saveState();
+            adminResetMenuForm();
+            refreshAdminStudio();
+            renderMenu();
+            alert("Menu item successfully saved!");
+        }
+
+        function adminDeleteMenuItem(itemId) {
+            menuItems = menuItems.filter(m => String(m.id) !== String(itemId));
+            delete tray[itemId];
+            saveState();
+            refreshAdminStudio();
+            renderMenu();
+        }
+
+        function previewUploadedImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('newOfferImg').value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function adminPostSingleItemOffer() {
+            const targetItemId = document.getElementById('selectedOfferTargetItemId').value;
+            const badge = document.getElementById('newOfferBadge').value.trim() || "🔥 Special Offer";
+            const title = document.getElementById('newOfferTitle').value.trim();
+            const img = document.getElementById('newOfferImg').value.trim() || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
+            const amount = parseFloat(document.getElementById('newOfferAmount').value) || 20;
+
+            if (!targetItemId || !title) {
+                alert("Please search and select a target menu item and enter an offer headline!");
+                return;
+            }
+
+            const targetDish = menuItems.find(m => String(m.id) === String(targetItemId));
+            const dishName = targetDish ? targetDish.name : 'Item';
+
+            offersEvents.unshift({
+                id: 'ev_' + Date.now(),
+                college: currentAdminCollege,
+                targetItemId: targetItemId,
+                badge: `${currentAdminCollege} • ${badge}`,
+                title: title,
+                desc: `Valid when "${dishName}" is in your tray.`,
+                amount: amount,
+                img: img
+            });
+
+            document.getElementById('newOfferTitle').value = '';
+            clearSelectedOfferItem();
+            saveState();
+            renderAdminOffersList();
+            renderOffersCarousel();
+            alert("Offer successfully published live!");
+        }
+
+        function renderAdminOffersList() {
+            const box = document.getElementById('adminOffersList');
+            const list = offersEvents.filter(e => e.college === currentAdminCollege);
+            if (list.length === 0) {
+                box.innerHTML = `<p style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No offers posted yet.</p>`;
+                return;
+            }
+            box.innerHTML = list.map(ev => {
+                const d = menuItems.find(m => String(m.id) === String(ev.targetItemId));
+                const dishName = d ? d.name : 'Item';
+                return `
+                    <div class="item-list-row">
+                        <div>
+                            <strong>${ev.title}</strong><br>
+                            <span style="font-size:11px; color:var(--primary);">Required Item: ${dishName} • Discount: ₹${ev.amount}</span>
+                        </div>
+                        <button class="remove-item-symbol" onclick="adminDeleteOffer('${ev.id}')" title="Delete Offer">✕</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function adminDeleteOffer(evId) {
+            offersEvents = offersEvents.filter(e => e.id !== evId);
+            saveState();
+            renderAdminOffersList();
+            renderOffersCarousel();
+        }
+
         function renderStaffCounter() {
             const ledgerBody = document.getElementById('staffLedgerBody');
-            const searchVal = document.getElementById('staffSearchInput').value.toLowerCase();
+            const searchInput = document.getElementById('staffSearchInput');
+            const searchVal = searchInput ? searchInput.value.toLowerCase() : '';
             ledgerBody.innerHTML = '';
 
             let todayTotal = 0;
             let monthlyTotal = 0;
 
-            const filtered = activeOrders.filter(o => o.token.toLowerCase().includes(searchVal) || o.rollNo.toLowerCase().includes(searchVal) || o.name.toLowerCase().includes(searchVal));
+            const filtered = activeOrders.filter(o =>
+                o.token.toLowerCase().includes(searchVal) ||
+                o.rollNo.toLowerCase().includes(searchVal) ||
+                o.name.toLowerCase().includes(searchVal) ||
+                (o.collegePass && o.collegePass.toLowerCase().includes(searchVal))
+            );
 
             activeOrders.forEach(o => {
-                if(o.status === 'paid' || o.status === 'served') {
+                if (o.status === 'paid' || o.status === 'served') {
                     todayTotal += o.total;
                     monthlyTotal += o.total;
                 }
@@ -1637,36 +2618,39 @@
             document.getElementById('monthlyRevenueDisplay').innerText = `₹${monthlyTotal}`;
             document.getElementById('totalOrdersCount').innerText = activeOrders.length;
 
-            if(filtered.length === 0) {
-                ledgerBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No financial transactions recorded yet.</td></tr>`;
+            if (filtered.length === 0) {
+                ledgerBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted); font-weight:600;">No financial transactions recorded yet.</td></tr>`;
                 return;
             }
 
-            filtered.forEach((order, index) => {
+            filtered.forEach(order => {
                 const originalIndex = activeOrders.indexOf(order);
                 let statusHtml = '';
-                if(order.status === 'paid') statusHtml = `<span style="color:var(--success); font-weight:700;">Paid (Online)</span>`;
-                else if(order.status === 'cash_pending') statusHtml = `<span style="color:var(--warning); font-weight:700;">Cash Pending</span>`;
-                else statusHtml = `<span style="color:var(--primary); font-weight:700;">Served ✔</span>`;
+                if (order.status === 'paid') statusHtml = `<span style="color:var(--success); font-weight:800;">Paid ✔</span>`;
+                else if (order.status === 'cash_pending') statusHtml = `<span style="color:var(--warning); font-weight:800;">Cash Pending</span>`;
+                else statusHtml = `<span style="color:var(--primary); font-weight:800;">Served ✔</span>`;
 
                 let actionHtml = '';
-                if(order.status === 'cash_pending') {
-                    actionHtml += `<button class="staff-action-sm btn-collect" onclick="updateStatus(${originalIndex}, 'paid')" style="background:#fef3c7; color:#92400e; margin-right:4px;">Collect Cash</button>`;
+                if (order.status === 'cash_pending') {
+                    actionHtml += `<button class="btn-collect-lg" onclick="updateStatus(${originalIndex}, 'paid')">💵 Collect Cash (₹${order.total})</button>`;
                 }
-                if(order.status !== 'served') {
-                    actionHtml += `<button class="staff-action-sm btn-serve" onclick="updateStatus(${originalIndex}, 'served')" style="background:#dcfce7; color:#166534;">Mark Served</button>`;
+                if (order.status !== 'served') {
+                    actionHtml += `<button class="staff-action-sm" onclick="updateStatus(${originalIndex}, 'served')">✔ Mark Served</button>`;
                 } else {
-                    actionHtml += `<span style="font-size:11px; color:var(--text-muted);">Closed</span>`;
+                    actionHtml += `<span style="font-size:11px; color:var(--text-muted); font-weight:700;">Closed</span>`;
                 }
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>#${order.token}</strong></td>
-                    <td><strong>${order.rollNo}</strong><br><span style="font-size:12px; color:var(--text-muted);">${order.name} (${order.dept})</span></td>
-                    <td style="text-transform: uppercase; font-size:12px; font-weight:700;">${order.payment}</td>
+                    <td><strong>#${order.token}</strong><br><span style="font-size:11px; color:var(--text-muted);">${order.timestamp}</span></td>
+                    <td><strong>${order.rollNo}</strong><br><span style="font-size:12px; color:var(--text-muted);">${order.name} (${order.collegePass})</span></td>
+                    <td><strong>🏛️ ${order.collegePass} Pass</strong><br><span style="font-size:12px; color:var(--text-muted);">${order.orderedCanteen || 'Canteen'}: ${order.items.map(i=>i.name).join(', ')}</span></td>
+                    <td style="text-transform: uppercase; font-size:12px; font-weight:800;">${order.payment}</td>
                     <td><strong>₹${order.total}</strong></td>
-                    <td style="font-size:12px; color:var(--text-muted);">${order.timestamp}</td>
-                    <td>${statusHtml}<br><div style="margin-top:6px;">${actionHtml}</div></td>
+                    <td>
+                        ${statusHtml}
+                        <div class="staff-actions-group">${actionHtml}</div>
+                    </td>
                 `;
                 ledgerBody.appendChild(tr);
             });
@@ -1674,6 +2658,7 @@
 
         function updateStatus(index, status) {
             activeOrders[index].status = status;
+            saveState();
             renderReceipts();
             renderStaffCounter();
         }
