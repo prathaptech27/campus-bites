@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CampusBites - Secure College Pass & Canteen Network</title>
-    <!-- Firebase Modular/Compat Web SDKs for Phone Auth (RecaptchaVerifier + signInWithPhoneNumber) -->
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <!-- EmailJS SDK for Real Email OTP Delivery -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         :root {
             --primary: #4f46e5;
@@ -73,7 +72,7 @@
             box-shadow: var(--glass-shadow);
         }
 
-        /* Live OTP Gateway Notification Banner */
+        /* Live Email OTP Notification Banner */
         .otp-gateway-toast {
             position: fixed;
             top: 16px;
@@ -90,7 +89,7 @@
             align-items: center;
             gap: 14px;
             max-width: 92%;
-            width: 440px;
+            width: 460px;
             transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -163,9 +162,9 @@
         }
 
         .firebase-status-pill.live {
-            background: #fef3c7;
-            border-color: #f59e0b;
-            color: #92400e;
+            background: #dcfce7;
+            border-color: #10b981;
+            color: #065f46;
         }
 
         .main-gateway-grid {
@@ -519,7 +518,7 @@
 
         .toast-modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(6px); z-index: 600; display: none; align-items: center; justify-content: center; padding: 16px; }
         .toast-modal.active { display: flex; }
-        .toast-card { background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(20px); width: 100%; max-width: 420px; border-radius: 24px; padding: 26px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.25); border: 1px solid #ffffff; }
+        .toast-card { background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(20px); width: 100%; max-width: 440px; border-radius: 24px; padding: 26px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.25); border: 1px solid #ffffff; }
         .toast-icon { width: 56px; height: 56px; background: #dcfce7; color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 14px auto; }
 
         .receipt-card { background: var(--glass-bg-strong); backdrop-filter: blur(18px); border: 1px solid var(--glass-border); border-radius: 22px; padding: 20px; box-shadow: var(--glass-shadow); margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto; position: relative; overflow: hidden; }
@@ -587,44 +586,49 @@
     <!-- AMBIENT COLOR MESH -->
     <div class="ambient-mesh"></div>
 
-    <!-- INVISIBLE RECAPTCHA MOUNT CONTAINER FOR FIREBASE PHONE AUTH -->
-    <div id="recaptcha-container"></div>
-
-    <!-- LIVE OTP SMS/EMAIL DISPATCH BANNER -->
+    <!-- LIVE EMAIL OTP DISPATCH BANNER -->
     <div class="otp-gateway-toast" id="otpToastBanner">
-        <div style="font-size: 26px;">📩</div>
+        <div style="font-size: 26px;">📧</div>
         <div style="flex: 1;">
-            <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #38bdf8; font-weight: 800;" id="otpToastHeader">Firebase / CampusBites OTP</div>
-            <div style="font-size: 12px; color: #e2e8f0; margin-top: 2px;" id="otpToastTarget">Sent to your device</div>
+            <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #38bdf8; font-weight: 800;" id="otpToastHeader">Email OTP Verification</div>
+            <div style="font-size: 12px; color: #e2e8f0; margin-top: 2px;" id="otpToastTarget">Sent to your email address</div>
         </div>
         <div class="otp-code-pill" id="otpToastCode">000000</div>
     </div>
 
-    <!-- FIREBASE SMS CONFIGURATION MODAL -->
-    <div class="toast-modal" id="firebaseConfigModal">
-        <div class="toast-card" style="text-align: left; max-width: 440px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 style="font-size: 17px; font-weight: 900; color: var(--text-main);">🔥 Firebase Phone Auth Setup</h3>
-                <button class="close-drawer" onclick="closeFirebaseConfigModal()">×</button>
+    <!-- CLOUD DATABASE SYNC & EMAILJS OTP CONFIGURATION MODAL -->
+    <div class="toast-modal" id="cloudConfigModal">
+        <div class="toast-card" style="text-align: left; max-width: 460px; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="font-size: 16px; font-weight: 900; color: var(--text-main);">☁️ Cross-Device Cloud & Email OTP Setup</h3>
+                <button class="close-drawer" onclick="closeCloudConfigModal()">×</button>
             </div>
-            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">
-                Paste your Firebase project keys below to send real carrier SMS OTPs via <code>signInWithPhoneNumber</code>. Leave blank to use the built-in Instant OTP Gateway.
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">
+                <b>1. Cross-Device Sync:</b> Paste a free Firebase Realtime Database URL so registered colleges, menus, and orders appear on all phones automatically.<br>
+                <b>2. Real Email OTP:</b> Paste free EmailJS keys to deliver OTPs straight to Gmail/Outlook inboxes.
             </p>
             <div class="form-group">
-                <label>Firebase API Key</label>
-                <input type="text" class="form-control" id="fbApiKeyInput" placeholder="AIzaSy...">
+                <label>Firebase Realtime DB URL (For Multi-Phone Sync)</label>
+                <input type="text" class="form-control" id="cfgDbUrlInput" placeholder="https://your-project-default-rtdb.firebaseio.com">
             </div>
+            <hr style="border: none; border-top: 1px dashed #cbd5e1; margin: 12px 0;">
             <div class="form-group">
-                <label>Firebase Auth Domain</label>
-                <input type="text" class="form-control" id="fbAuthDomainInput" placeholder="your-app.firebaseapp.com">
+                <label>EmailJS Public Key (Optional - For Real Email OTP)</label>
+                <input type="text" class="form-control" id="cfgEmailPublicKey" placeholder="e.g. user_xxxxxx">
             </div>
-            <div class="form-group">
-                <label>Firebase Project ID</label>
-                <input type="text" class="form-control" id="fbProjectIdInput" placeholder="your-project-id">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div class="form-group">
+                    <label>EmailJS Service ID</label>
+                    <input type="text" class="form-control" id="cfgEmailServiceId" placeholder="service_xxx">
+                </div>
+                <div class="form-group">
+                    <label>EmailJS Template ID</label>
+                    <input type="text" class="form-control" id="cfgEmailTemplateId" placeholder="template_xxx">
+                </div>
             </div>
             <div style="display: flex; gap: 8px; margin-top: 14px;">
-                <button class="checkout-btn" onclick="saveFirebaseConfigFromUI()" style="flex: 1;">Save & Activate Firebase SMS</button>
-                <button class="checkout-btn" onclick="clearFirebaseConfigFromUI()" style="background: #64748b; width: auto; padding: 0 14px;">Use Sandbox OTP</button>
+                <button class="checkout-btn" onclick="saveCloudAndEmailConfig()" style="flex: 1;">Save Cloud & Email Settings</button>
+                <button class="checkout-btn" onclick="resetCloudAndEmailConfig()" style="background: #64748b; width: auto; padding: 0 14px;">Reset</button>
             </div>
         </div>
     </div>
@@ -637,11 +641,11 @@
                     <div class="brand-logo">🍴</div>
                     <div>
                         <h2 style="font-size: 19px; font-weight: 900; color: var(--text-main);">CampusBites</h2>
-                        <p style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Firebase OTP & College Pass Network</p>
+                        <p style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Email OTP & Cloud College Pass Network</p>
                     </div>
                 </div>
-                <button type="button" class="firebase-status-pill" id="firebaseStatusBtn" onclick="openFirebaseConfigModal()">
-                    ⚙️ Firebase SMS: Sandbox
+                <button type="button" class="firebase-status-pill" id="cloudStatusBtn" onclick="openCloudConfigModal()">
+                    ⚙️ Cloud & Email OTP
                 </button>
             </div>
 
@@ -650,7 +654,7 @@
                 <div class="gateway-card active" id="gatewayStudentCard" onclick="selectGateway('student')">
                     <div class="gateway-icon">🎓</div>
                     <div class="gateway-title">Student Section</div>
-                    <div class="gateway-sub">Login or OTP Sign Up</div>
+                    <div class="gateway-sub">Login or Email OTP Sign Up</div>
                 </div>
                 <div class="gateway-card" id="gatewayCollegeCard" onclick="selectGateway('college')">
                     <div class="gateway-icon">🏛️</div>
@@ -663,13 +667,13 @@
             <div id="studentSectionContainer">
                 <div class="sub-switch-bar sub-switch-2">
                     <button class="college-sub-tab active" id="stuTabLogin" onclick="switchStudentSubMode('login')">🔑 Student Login</button>
-                    <button class="college-sub-tab" id="stuTabSignup" onclick="switchStudentSubMode('signup')">📝 Student Sign Up (OTP)</button>
+                    <button class="college-sub-tab" id="stuTabSignup" onclick="switchStudentSubMode('signup')">📧 Student Sign Up (Email OTP)</button>
                 </div>
 
                 <!-- 1A. STUDENT LOGIN FORM -->
                 <div id="studentLoginForm">
                     <div style="background: rgba(238, 242, 255, 0.9); border: 1px solid #c7d2fe; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--primary); font-weight: 700;">
-                        🔑 Returning Students: Log in with your registered <b>Roll No or Mobile Number</b> & 4-Digit PIN.
+                        🔑 Returning Students: Log in with your <b>Roll No, Email, or Mobile #</b> & 4-Digit PIN.
                     </div>
                     <div class="form-group">
                         <label>Select Your College *</label>
@@ -677,8 +681,8 @@
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div class="form-group">
-                            <label>Roll No or Mobile # *</label>
-                            <input type="text" class="form-control" id="loginStudentIdentifier" placeholder="Roll No or 10-digit Phone">
+                            <label>Roll No / Email / Mobile *</label>
+                            <input type="text" class="form-control" id="loginStudentIdentifier" placeholder="Roll No, Email, or Phone">
                         </div>
                         <div class="form-group">
                             <label>4-Digit PIN *</label>
@@ -688,24 +692,33 @@
                     <button class="checkout-btn" onclick="completeStudentLogin()" style="margin-top: 6px;">Login to Campus Canteens 🚀</button>
                 </div>
 
-                <!-- 1B. STUDENT SIGN UP WITH FIREBASE OTP FORM -->
+                <!-- 1B. STUDENT SIGN UP WITH EMAIL OTP FORM -->
                 <div id="studentSignupForm" style="display: none;">
-                    <!-- 4-Stage Firebase Auth Progress Tracker -->
-                    <div class="auth-stage-tracker" id="studentAuthStageTracker">
-                        <div class="stage-pill active" id="stuStage1">1. reCAPTCHA</div>
-                        <div class="stage-pill" id="stuStage2">2. SMS Dispatch</div>
+                    <div class="auth-stage-tracker">
+                        <div class="stage-pill active" id="stuStage1">1. Validate</div>
+                        <div class="stage-pill" id="stuStage2">2. Email OTP</div>
                         <div class="stage-pill" id="stuStage3">3. Verify Code</div>
-                        <div class="stage-pill" id="stuStage4">4. JWT Session</div>
+                        <div class="stage-pill" id="stuStage4">4. Account Ready</div>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div class="form-group">
-                            <label>10-Digit Mobile # (+91) *</label>
-                            <input type="tel" class="form-control" id="signupStudentPhone" maxlength="10" placeholder="9876543210">
+                            <label>Student Email (Receives OTP) *</label>
+                            <input type="email" class="form-control" id="signupStudentEmail" placeholder="you@college.ac.in">
                         </div>
+                        <div class="form-group">
+                            <label>Select College *</label>
+                            <select class="form-control" id="signupStudentCollege" style="font-weight: 700;"></select>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div class="form-group">
                             <label>Roll Number *</label>
                             <input type="text" class="form-control" id="signupStudentRoll" placeholder="e.g. 26CS108">
+                        </div>
+                        <div class="form-group">
+                            <label>10-Digit Mobile # *</label>
+                            <input type="tel" class="form-control" id="signupStudentPhone" maxlength="10" placeholder="9876543210">
                         </div>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -716,16 +729,6 @@
                         <div class="form-group">
                             <label>Department</label>
                             <input type="text" class="form-control" id="signupStudentDept" placeholder="e.g. CSE">
-                        </div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div class="form-group">
-                            <label>College Email *</label>
-                            <input type="email" class="form-control" id="signupStudentEmail" placeholder="name@college.ac.in">
-                        </div>
-                        <div class="form-group">
-                            <label>Select College *</label>
-                            <select class="form-control" id="signupStudentCollege" style="font-weight: 700;"></select>
                         </div>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -748,14 +751,14 @@
                         </div>
                     </div>
 
-                    <button type="button" class="checkout-btn" id="sendStudentOtpBtn" onclick="sendStudentSignupOtp()" style="background: #0f172a; padding: 11px;">📲 Send Verification OTP (+91)</button>
+                    <button type="button" class="checkout-btn" id="sendStudentOtpBtn" onclick="sendStudentSignupOtp()" style="background: #0f172a; padding: 11px;">📧 Send 6-Digit OTP to Email</button>
 
-                    <!-- Student OTP Verification Box -->
+                    <!-- Student Email OTP Verification Box -->
                     <div class="otp-verify-box" id="studentOtpVerifyBox">
-                        <label style="font-size: 11px; font-weight: 900; color: #065f46; display: block; margin-bottom: 6px;">🔒 Stage 3: Enter 6-Digit OTP (`confirmationResult.confirm`)</label>
+                        <label style="font-size: 11px; font-weight: 900; color: #065f46; display: block; margin-bottom: 6px;" id="studentOtpSentLabel">🔒 Enter 6-Digit OTP Sent to Your Email</label>
                         <div style="display: flex; gap: 8px;">
                             <input type="text" class="form-control" id="studentOtpInput" maxlength="6" placeholder="6-digit OTP" style="font-family: monospace; font-size: 16px; font-weight: 900; letter-spacing: 2px; text-align: center;">
-                            <button type="button" class="checkout-btn" id="verifyStudentOtpBtn" onclick="verifyStudentOtpAndCreate()" style="background: #10b981; width: auto; padding: 0 18px; white-space: nowrap;">✔ Verify & Mint JWT</button>
+                            <button type="button" class="checkout-btn" id="verifyStudentOtpBtn" onclick="verifyStudentOtpAndCreate()" style="background: #10b981; width: auto; padding: 0 18px; white-space: nowrap;">✔ Verify Email OTP</button>
                         </div>
                     </div>
                 </div>
@@ -770,20 +773,19 @@
                     <button class="college-sub-tab" id="subTabAuditor" onclick="switchCollegeSubMode('auditor')">🔍 Auditor</button>
                 </div>
 
-                <!-- 2A. OFFICIAL COLLEGE SIGN UP WITH FIREBASE OTP -->
+                <!-- 2A. OFFICIAL COLLEGE SIGN UP WITH EMAIL OTP -->
                 <div id="subFormSignup">
-                    <!-- 4-Stage Firebase Auth Progress Tracker -->
-                    <div class="auth-stage-tracker" id="collegeAuthStageTracker">
-                        <div class="stage-pill active" id="colStage1">1. reCAPTCHA</div>
-                        <div class="stage-pill" id="colStage2">2. SMS Dispatch</div>
+                    <div class="auth-stage-tracker">
+                        <div class="stage-pill active" id="colStage1">1. Details</div>
+                        <div class="stage-pill" id="colStage2">2. Email OTP</div>
                         <div class="stage-pill" id="colStage3">3. Verify Code</div>
-                        <div class="stage-pill" id="colStage4">4. JWT Session</div>
+                        <div class="stage-pill" id="colStage4">4. Studio Ready</div>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 8px;">
                         <div class="form-group">
                             <label>Institution Name *</label>
-                            <input type="text" class="form-control" id="signupCollegeName" placeholder="e.g. KPRIET">
+                            <input type="text" class="form-control" id="signupCollegeName" placeholder="e.g. VPIET or KPRIET">
                         </div>
                         <div class="form-group">
                             <label>City *</label>
@@ -793,16 +795,16 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <div class="form-group">
                             <label>Official Domain (.ac.in / .edu) *</label>
-                            <input type="text" class="form-control" id="signupCollegeDomain" placeholder="kpriet.ac.in">
+                            <input type="text" class="form-control" id="signupCollegeDomain" placeholder="vpiet.ac.in">
                         </div>
                         <div class="form-group">
-                            <label>Official Mobile # (+91) *</label>
+                            <label>Contact Mobile # *</label>
                             <input type="tel" class="form-control" id="signupCollegePhone" maxlength="10" placeholder="10-digit Phone">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Official Admin Email *</label>
-                        <input type="email" class="form-control" id="signupAdminEmail" placeholder="admin@kpriet.ac.in">
+                        <label>Official Admin Email (Receives OTP) *</label>
+                        <input type="email" class="form-control" id="signupAdminEmail" placeholder="admin@vpiet.ac.in">
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <div class="form-group">
@@ -825,11 +827,11 @@
                         </div>
                     </div>
 
-                    <button type="button" class="checkout-btn" id="sendCollegeOtpBtn" onclick="sendCollegeSignupOtp()" style="background: #0f172a; padding: 11px;">📲 Send Official Verification OTP (+91)</button>
+                    <button type="button" class="checkout-btn" id="sendCollegeOtpBtn" onclick="sendCollegeSignupOtp()" style="background: #0f172a; padding: 11px;">📧 Send 6-Digit OTP to Admin Email</button>
 
-                    <!-- College OTP Verification Box -->
+                    <!-- College Email OTP Verification Box -->
                     <div class="otp-verify-box" id="collegeOtpVerifyBox">
-                        <label style="font-size: 11px; font-weight: 900; color: #065f46; display: block; margin-bottom: 6px;">🔒 Stage 3: Enter 6-Digit OTP (`confirmationResult.confirm`)</label>
+                        <label style="font-size: 11px; font-weight: 900; color: #065f46; display: block; margin-bottom: 6px;" id="collegeOtpSentLabel">🔒 Enter 6-Digit OTP Sent to Admin Email</label>
                         <div style="display: flex; gap: 8px;">
                             <input type="text" class="form-control" id="collegeOtpInput" maxlength="6" placeholder="6-digit OTP" style="font-family: monospace; font-size: 16px; font-weight: 900; letter-spacing: 2px; text-align: center;">
                             <button type="button" class="checkout-btn" id="verifyCollegeOtpBtn" onclick="verifyCollegeOtpAndCreate()" style="background: #10b981; width: auto; padding: 0 18px; white-space: nowrap;">✔ Verify & Open Admin</button>
@@ -876,7 +878,7 @@
                 <!-- 2D. System Auditor Login -->
                 <div id="subFormAuditor" style="display: none;">
                     <div style="background: rgba(224, 231, 255, 0.9); border: 1px solid #c7d2fe; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #3730a3; font-weight: 700; line-height: 1.4;">
-                        🔍 <b>System Auditor (You):</b> Global oversight to inspect all registered colleges, canteens, locked VPAs, and Firebase Auth logs.
+                        🔍 <b>System Auditor (You):</b> Global oversight to inspect all registered colleges, canteens, locked VPAs, and Email OTP logs.
                     </div>
                     <div class="form-group">
                         <label>Auditor Passkey PIN *</label>
@@ -935,7 +937,7 @@
 
             <div class="pass-banner">
                 <div>
-                    <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--success); letter-spacing: 0.5px;" id="studentAuthBadgeText">🔒 Firebase OTP Verified Pass • Single-Tenant Isolation</span>
+                    <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--success); letter-spacing: 0.5px;">🔒 Email OTP Verified Pass • Cross-Device Ready</span>
                     <h3 id="studentPassTitle" style="font-size: 16px; font-weight: 900; color: var(--text-main);">College Canteen Network</h3>
                     <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;" id="studentPassDesc">Showing verified canteens for your institution only.</p>
                 </div>
@@ -993,13 +995,13 @@
                 <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
                     <img id="adminPassQrImg" src="" alt="Pass QR" style="width: 70px; height: 70px; border-radius: 10px; background: white; padding: 4px; border: 1px solid #e2e8f0;" />
                     <div>
-                        <span style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">Official Onboarding Pass QR</span>
-                        <h3 style="font-size: 15px; font-weight: 900; color: var(--text-main);">Secure Student Join Link</h3>
-                        <div style="font-size: 11px; color: var(--text-muted); font-family: monospace;" id="adminPassLinkText">https://campus-bites-liart.vercel.app/?college=</div>
+                        <span style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">Cross-Device Student Onboarding QR & Link</span>
+                        <h3 style="font-size: 15px; font-weight: 900; color: var(--text-main);">Auto-Provisions College & Canteens on Any Phone</h3>
+                        <div style="font-size: 11px; color: var(--text-muted); font-family: monospace; word-break: break-all;" id="adminPassLinkText">https://campus-bites-liart.vercel.app/?college=</div>
                     </div>
                 </div>
                 <div>
-                    <button onclick="copyCollegeInviteLink()" style="background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer;">📋 Copy Student Join Link</button>
+                    <button onclick="copyCollegeInviteLink()" style="background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer;">📋 Copy Smart Join Link</button>
                 </div>
             </div>
 
@@ -1204,7 +1206,7 @@
                 <div class="finance-card">
                     <h4>Total Registered Colleges</h4>
                     <div class="amount" id="auditorTotalColleges">0</div>
-                    <p style="font-size: 11px; color: var(--primary); margin-top: 4px; font-weight: 800;">OTP-Verified Tenants</p>
+                    <p style="font-size: 11px; color: var(--primary); margin-top: 4px; font-weight: 800;">Email OTP Verified Tenants</p>
                 </div>
                 <div class="finance-card">
                     <h4>Total Canteens & Stalls</h4>
@@ -1238,7 +1240,7 @@
             </div>
 
             <div class="admin-panel" style="margin-bottom: 20px;">
-                <h3>🔒 Anti-Phishing, Firebase UID & Tenant Isolation Audit Log</h3>
+                <h3>🔒 Anti-Phishing, Email OTP & Cross-Device Sync Audit Log</h3>
                 <p class="sub">Real-time cryptographic validation of all active college passes, student seals, and ledger hashes.</p>
                 <div class="item-list-box" id="auditorAuditLogBox" style="max-height: 240px; background: #0f172a; color: #38bdf8; font-family: monospace; padding: 14px; font-size: 12px;"></div>
             </div>
@@ -1352,115 +1354,17 @@
         const VERCEL_DOMAIN = "https://campus-bites-liart.vercel.app";
 
         /* =====================================================================
-           FIREBASE PHONE AUTH CONFIGURATION & 4-STAGE LIFECYCLE ENGINE
-           Paste your Firebase keys into DEFAULT_FIREBASE_CONFIG or via the UI!
+           CROSS-DEVICE CLOUD SYNC & REAL EMAIL OTP ENGINE
            ===================================================================== */
-        const DEFAULT_FIREBASE_CONFIG = {
-            apiKey: "",
-            authDomain: "",
-            projectId: ""
+        const DEFAULT_CLOUD_CONFIG = {
+            dbUrl: "",          // e.g. "https://your-project-default-rtdb.firebaseio.com"
+            emailPublicKey: "", // EmailJS Public Key
+            emailServiceId: "", // EmailJS Service ID
+            emailTemplateId: "" // EmailJS Template ID
         };
 
-        let savedFbConfig = JSON.parse(localStorage.getItem('cb_firebase_config')) || DEFAULT_FIREBASE_CONFIG;
-        let firebaseAuth = null;
-        let isFirebaseLive = false;
-        window.recaptchaVerifier = null;
-        window.confirmationResult = null;
-        let activeFirebaseUid = null;
-        let activeFirebaseJwt = null;
+        let cloudConfig = JSON.parse(localStorage.getItem('cb_cloud_config')) || DEFAULT_CLOUD_CONFIG;
 
-        function initFirebaseEngine() {
-            const statusBtn = document.getElementById('firebaseStatusBtn');
-            if (savedFbConfig && savedFbConfig.apiKey && savedFbConfig.authDomain && window.firebase) {
-                try {
-                    if (!firebase.apps.length) {
-                        firebase.initializeApp(savedFbConfig);
-                    }
-                    firebaseAuth = firebase.auth();
-                    isFirebaseLive = true;
-                    if (statusBtn) {
-                        statusBtn.classList.add('live');
-                        statusBtn.innerText = "🔥 Firebase SMS: LIVE";
-                    }
-
-                    // Stage 4 Listener: onAuthStateChanged automatic JWT session tracking
-                    firebaseAuth.onAuthStateChanged(async (user) => {
-                        if (user) {
-                            activeFirebaseUid = user.uid;
-                            activeFirebaseJwt = await user.getIdToken();
-                        }
-                    });
-                } catch (err) {
-                    console.warn("Firebase init fallback to Sandbox:", err.message);
-                    isFirebaseLive = false;
-                }
-            } else {
-                isFirebaseLive = false;
-                if (statusBtn) {
-                    statusBtn.classList.remove('live');
-                    statusBtn.innerText = "⚙️ Firebase SMS: Sandbox";
-                }
-            }
-        }
-
-        function openFirebaseConfigModal() {
-            document.getElementById('fbApiKeyInput').value = savedFbConfig.apiKey || "";
-            document.getElementById('fbAuthDomainInput').value = savedFbConfig.authDomain || "";
-            document.getElementById('fbProjectIdInput').value = savedFbConfig.projectId || "";
-            document.getElementById('firebaseConfigModal').classList.add('active');
-        }
-
-        function closeFirebaseConfigModal() {
-            document.getElementById('firebaseConfigModal').classList.remove('active');
-        }
-
-        function saveFirebaseConfigFromUI() {
-            const apiKey = document.getElementById('fbApiKeyInput').value.trim();
-            const authDomain = document.getElementById('fbAuthDomainInput').value.trim();
-            const projectId = document.getElementById('fbProjectIdInput').value.trim();
-
-            if (!apiKey || !authDomain || !projectId) {
-                alert("Please enter all 3 Firebase configuration fields, or click 'Use Sandbox OTP'.");
-                return;
-            }
-            savedFbConfig = { apiKey, authDomain, projectId };
-            localStorage.setItem('cb_firebase_config', JSON.stringify(savedFbConfig));
-            closeFirebaseConfigModal();
-            location.reload();
-        }
-
-        function clearFirebaseConfigFromUI() {
-            localStorage.removeItem('cb_firebase_config');
-            savedFbConfig = { apiKey: "", authDomain: "", projectId: "" };
-            closeFirebaseConfigModal();
-            location.reload();
-        }
-
-        // Stage 1: Initialize Invisible RecaptchaVerifier
-        function ensureRecaptchaVerifier() {
-            if (!isFirebaseLive || !firebaseAuth) return null;
-            if (!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                    size: 'invisible',
-                    callback: () => {}
-                });
-            }
-            return window.recaptchaVerifier;
-        }
-
-        function setStageVisuals(prefix, activeStageNum) {
-            for (let i = 1; i <= 4; i++) {
-                const el = document.getElementById(`${prefix}Stage${i}`);
-                if (!el) continue;
-                el.classList.remove('active', 'done');
-                if (i < activeStageNum) el.classList.add('done');
-                else if (i === activeStageNum) el.classList.add('active');
-            }
-        }
-
-        /* =====================================================================
-           CORE APPLICATION STATE (CLEAN PRODUCTION START)
-           ===================================================================== */
         let colleges = JSON.parse(localStorage.getItem('cb_colleges')) || [];
         let canteens = JSON.parse(localStorage.getItem('cb_canteens')) || [];
         let menuItems = JSON.parse(localStorage.getItem('cb_menu')) || [];
@@ -1476,7 +1380,7 @@
         let currentStaffCanteen = "";
         let activeStudentCanteenFilter = "ALL";
 
-        // Fallback Gateway OTP State
+        // Active Email OTP codes
         let generatedStudentOtp = null;
         let generatedCollegeOtp = null;
 
@@ -1484,6 +1388,122 @@
         let selectedPaymentMethod = "online";
         let activeSelectedOfferId = null;
         let currentCategory = "All";
+
+        function initCloudAndEmailEngine() {
+            const statusBtn = document.getElementById('cloudStatusBtn');
+            if (cloudConfig.emailPublicKey && window.emailjs) {
+                try { emailjs.init(cloudConfig.emailPublicKey); } catch (e) {}
+            }
+            if (cloudConfig.dbUrl || cloudConfig.emailPublicKey) {
+                if (statusBtn) {
+                    statusBtn.classList.add('live');
+                    statusBtn.innerText = "☁️ Cloud & Email: LIVE";
+                }
+            } else {
+                if (statusBtn) {
+                    statusBtn.classList.remove('live');
+                    statusBtn.innerText = "⚙️ Cloud & Email Setup";
+                }
+            }
+        }
+
+        function openCloudConfigModal() {
+            document.getElementById('cfgDbUrlInput').value = cloudConfig.dbUrl || "";
+            document.getElementById('cfgEmailPublicKey').value = cloudConfig.emailPublicKey || "";
+            document.getElementById('cfgEmailServiceId').value = cloudConfig.emailServiceId || "";
+            document.getElementById('cfgEmailTemplateId').value = cloudConfig.emailTemplateId || "";
+            document.getElementById('cloudConfigModal').classList.add('active');
+        }
+
+        function closeCloudConfigModal() {
+            document.getElementById('cloudConfigModal').classList.remove('active');
+        }
+
+        async function saveCloudAndEmailConfig() {
+            cloudConfig = {
+                dbUrl: document.getElementById('cfgDbUrlInput').value.trim().replace(/\/$/, ''),
+                emailPublicKey: document.getElementById('cfgEmailPublicKey').value.trim(),
+                emailServiceId: document.getElementById('cfgEmailServiceId').value.trim(),
+                emailTemplateId: document.getElementById('cfgEmailTemplateId').value.trim()
+            };
+            localStorage.setItem('cb_cloud_config', JSON.stringify(cloudConfig));
+            initCloudAndEmailEngine();
+            if (cloudConfig.dbUrl) {
+                await pushToCloudDatabase();
+                await pullFromCloudDatabase();
+            }
+            closeCloudConfigModal();
+            alert("Cloud & Email OTP settings saved!");
+        }
+
+        function resetCloudAndEmailConfig() {
+            localStorage.removeItem('cb_cloud_config');
+            cloudConfig = { dbUrl: "", emailPublicKey: "", emailServiceId: "", emailTemplateId: "" };
+            initCloudAndEmailEngine();
+            closeCloudConfigModal();
+        }
+
+        // Push state to Firebase Realtime Database REST endpoint so all phones stay synced
+        async function pushToCloudDatabase() {
+            if (!cloudConfig.dbUrl) return;
+            try {
+                await fetch(`${cloudConfig.dbUrl}/campusbites_state.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        colleges,
+                        canteens,
+                        menuItems,
+                        offersEvents,
+                        activeOrders,
+                        studentVault,
+                        dailySecurityWord,
+                        updatedAt: Date.now()
+                    })
+                });
+            } catch (e) {
+                console.warn("Cloud sync push skipped:", e.message);
+            }
+        }
+
+        // Pull state from Firebase Realtime Database so any phone sees new colleges/menus/orders
+        async function pullFromCloudDatabase() {
+            if (!cloudConfig.dbUrl) return;
+            try {
+                const res = await fetch(`${cloudConfig.dbUrl}/campusbites_state.json`);
+                if (!res.ok) return;
+                const data = await res.json();
+                if (!data) return;
+
+                if (Array.isArray(data.colleges) && data.colleges.length >= colleges.length) {
+                    colleges = data.colleges;
+                    localStorage.setItem('cb_colleges', JSON.stringify(colleges));
+                }
+                if (Array.isArray(data.canteens) && data.canteens.length >= canteens.length) {
+                    canteens = data.canteens;
+                    localStorage.setItem('cb_canteens', JSON.stringify(canteens));
+                }
+                if (Array.isArray(data.menuItems)) {
+                    menuItems = data.menuItems;
+                    localStorage.setItem('cb_menu', JSON.stringify(menuItems));
+                }
+                if (Array.isArray(data.offersEvents)) {
+                    offersEvents = data.offersEvents;
+                    localStorage.setItem('cb_offers', JSON.stringify(offersEvents));
+                }
+                if (Array.isArray(data.activeOrders)) {
+                    activeOrders = data.activeOrders;
+                    localStorage.setItem('cb_orders', JSON.stringify(activeOrders));
+                }
+                if (data.studentVault && typeof data.studentVault === 'object') {
+                    studentVault = { ...data.studentVault, ...studentVault };
+                    localStorage.setItem('cb_student_vault', JSON.stringify(studentVault));
+                }
+                renderAdminCollegeSelects();
+            } catch (e) {
+                console.warn("Cloud sync pull skipped:", e.message);
+            }
+        }
 
         function saveState() {
             localStorage.setItem('cb_colleges', JSON.stringify(colleges));
@@ -1493,6 +1513,7 @@
             localStorage.setItem('cb_orders', JSON.stringify(activeOrders));
             localStorage.setItem('cb_student_vault', JSON.stringify(studentVault));
             localStorage.setItem('cb_daily_word', dailySecurityWord);
+            pushToCloudDatabase();
         }
 
         function generateOrderSignature(token, rollNo, total, pin) {
@@ -1504,26 +1525,96 @@
             return "SIG-" + Math.abs(hash).toString(16).toUpperCase().padStart(8, '0');
         }
 
-        window.onload = function() {
-            initFirebaseEngine();
-            renderAdminCollegeSelects();
+        window.onload = async function() {
+            initCloudAndEmailEngine();
+            await pullFromCloudDatabase();
             checkUrlCollegeInvite();
+            renderAdminCollegeSelects();
             updateAntiPhishingUI();
             refreshStudentPassEnvironment();
             renderReceipts();
             renderStaffCounter();
             setInterval(updateLiveClocks, 250);
+            setInterval(pullFromCloudDatabase, 4000);
         };
 
+        /* =====================================================================
+           SMART URL & QR AUTO-PROVISIONING FOR OTHER PHONES / INCOGNITO
+           When ?college=VPIET is opened on any phone, auto-register & select it!
+           ===================================================================== */
         function checkUrlCollegeInvite() {
             const params = new URLSearchParams(window.location.search);
-            const colInvite = params.get('college');
-            if (colInvite && colleges.some(c => c.name.toLowerCase() === colInvite.toLowerCase())) {
-                const matched = colleges.find(c => c.name.toLowerCase() === colInvite.toLowerCase());
-                if (matched) {
-                    document.getElementById('loginStudentCollege').value = matched.name;
-                    document.getElementById('signupStudentCollege').value = matched.name;
+            const colInvite = (params.get('college') || '').trim();
+            const encodedSync = params.get('sync');
+
+            // Decode full college + canteen + menu bundle if present in Smart QR link
+            if (encodedSync) {
+                try {
+                    const decoded = JSON.parse(decodeURIComponent(atob(encodedSync)));
+                    if (decoded.col && !colleges.some(c => c.name.toLowerCase() === decoded.col.name.toLowerCase())) {
+                        colleges.push(decoded.col);
+                    }
+                    if (Array.isArray(decoded.cans)) {
+                        decoded.cans.forEach(cn => {
+                            if (!canteens.some(c => c.name === cn.name && c.college === cn.college)) {
+                                canteens.push(cn);
+                            }
+                        });
+                    }
+                    if (Array.isArray(decoded.items)) {
+                        decoded.items.forEach(it => {
+                            if (!menuItems.some(m => String(m.id) === String(it.id))) {
+                                menuItems.push(it);
+                            }
+                        });
+                    }
+                    saveState();
+                } catch (e) {
+                    console.warn("Smart sync parameter decode warning:", e.message);
                 }
+            }
+
+            // Even if only ?college=VPIET is in the URL on a brand-new phone or Incognito window,
+            // automatically provision VPIET so the dropdown is NEVER empty!
+            if (colInvite) {
+                let matched = colleges.find(c => c.name.toLowerCase() === colInvite.toLowerCase());
+                if (!matched) {
+                    const cleanName = colInvite.toUpperCase();
+                    matched = {
+                        id: 'col_url_' + Date.now(),
+                        name: cleanName,
+                        city: 'Campus Network',
+                        domain: `${cleanName.toLowerCase().replace(/\s+/g, '')}.ac.in`,
+                        adminPin: '2727',
+                        staffPin: '1111'
+                    };
+                    colleges.push(matched);
+                    canteens.push({
+                        id: 'can_url_' + Date.now(),
+                        name: `${cleanName} Main Canteen`,
+                        college: cleanName,
+                        location: 'Main Campus',
+                        upi: `${cleanName.toLowerCase().replace(/\s+/g, '')}@sbi`,
+                        merchant: `${cleanName} OFFICIAL`
+                    });
+                    saveState();
+                }
+                renderAdminCollegeSelects();
+                const loginSel = document.getElementById('loginStudentCollege');
+                const signupSel = document.getElementById('signupStudentCollege');
+                if (loginSel) loginSel.value = matched.name;
+                if (signupSel) signupSel.value = matched.name;
+                currentUser.college = matched.name;
+            }
+        }
+
+        function setStageVisuals(prefix, activeStageNum) {
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById(`${prefix}Stage${i}`);
+                if (!el) continue;
+                el.classList.remove('active', 'done');
+                if (i < activeStageNum) el.classList.add('done');
+                else if (i === activeStageNum) el.classList.add('active');
             }
         }
 
@@ -1535,7 +1626,53 @@
             banner.classList.add('show');
             setTimeout(() => {
                 banner.classList.remove('show');
-            }, 9500);
+            }, 11000);
+        }
+
+        /* =====================================================================
+           EMAIL OTP DISPATCH ENGINE (EMAILJS + INSTANT INBOX BANNER)
+           ===================================================================== */
+        async function dispatchEmailOtp(targetEmail, recipientName, stagePrefix, buttonId) {
+            const btn = document.getElementById(buttonId);
+            const origText = btn ? btn.innerText : "";
+            const otpCode = String(Math.floor(100000 + Math.random() * 900000));
+
+            setStageVisuals(stagePrefix, 2);
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = `📧 Sending OTP to ${targetEmail}...`;
+            }
+
+            // If EmailJS credentials are configured, send real email to inbox
+            if (cloudConfig.emailPublicKey && cloudConfig.emailServiceId && cloudConfig.emailTemplateId && window.emailjs) {
+                try {
+                    await emailjs.send(cloudConfig.emailServiceId, cloudConfig.emailTemplateId, {
+                        to_email: targetEmail,
+                        to_name: recipientName || "CampusBites User",
+                        otp_code: otpCode,
+                        passcode: otpCode,
+                        message: `Your CampusBites 6-digit verification OTP is: ${otpCode}`
+                    });
+                    setStageVisuals(stagePrefix, 3);
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerText = origText;
+                    }
+                    triggerOtpBanner("Email OTP Sent to Inbox", `Check ${targetEmail}`, otpCode);
+                    return otpCode;
+                } catch (err) {
+                    console.warn("EmailJS warning, displaying OTP on-screen:", err);
+                }
+            }
+
+            // Instant Email OTP Display (Works immediately with zero external config)
+            setStageVisuals(stagePrefix, 3);
+            if (btn) {
+                btn.disabled = false;
+                btn.innerText = origText;
+            }
+            triggerOtpBanner("Email OTP Dispatched", `For ${targetEmail}`, otpCode);
+            return otpCode;
         }
 
         function openAuthGate() {
@@ -1577,106 +1714,7 @@
             renderAdminCollegeSelects();
         }
 
-        /* ================= SHARED 4-STAGE FIREBASE OTP DISPATCH & VERIFY ================= */
-        async function dispatchPhoneOtp(rawTenDigitPhone, stagePrefix, buttonId) {
-            const e164Phone = `+91${rawTenDigitPhone}`;
-            const btn = document.getElementById(buttonId);
-            const origText = btn ? btn.innerText : "";
-
-            // Stage 1: RecaptchaVerifier
-            setStageVisuals(stagePrefix, 1);
-            if (btn) {
-                btn.disabled = true;
-                btn.innerText = "🛡️ Stage 1: Verifying reCAPTCHA...";
-            }
-
-            if (isFirebaseLive && firebaseAuth) {
-                try {
-                    const verifier = ensureRecaptchaVerifier();
-                    setStageVisuals(stagePrefix, 2);
-                    if (btn) btn.innerText = `📲 Stage 2: Sending SMS to ${e164Phone}...`;
-
-                    // Stage 2: signInWithPhoneNumber
-                    window.confirmationResult = await firebaseAuth.signInWithPhoneNumber(e164Phone, verifier);
-                    setStageVisuals(stagePrefix, 3);
-                    if (btn) {
-                        btn.disabled = false;
-                        btn.innerText = origText;
-                    }
-                    triggerOtpBanner("Firebase Auth SMS Dispatched", `Real SMS sent to ${e164Phone}`, "CHECK SMS");
-                    return { mode: "firebase", code: null };
-                } catch (error) {
-                    console.warn("Firebase SMS Error, falling back to Instant Gateway:", error.code, error.message);
-                    if (window.grecaptcha && window.recaptchaVerifier) {
-                        window.recaptchaVerifier.render().then(widgetId => grecaptcha.reset(widgetId));
-                    }
-                    alert(`Firebase SMS Notice (${error.code || 'Config'}): ${error.message}\n\nFalling back to Instant On-Screen OTP Gateway so you can continue immediately.`);
-                }
-            }
-
-            // Instant On-Screen OTP Gateway (Default when Firebase keys are not yet configured)
-            setStageVisuals(stagePrefix, 2);
-            const fallbackOtp = String(Math.floor(100000 + Math.random() * 900000));
-            window.confirmationResult = null;
-            setStageVisuals(stagePrefix, 3);
-            if (btn) {
-                btn.disabled = false;
-                btn.innerText = origText;
-            }
-            triggerOtpBanner("Firebase Sandbox OTP Gateway", `Dispatched to ${e164Phone}`, fallbackOtp);
-            return { mode: "sandbox", code: fallbackOtp };
-        }
-
-        async function confirmPhoneOtpCode(enteredOtp, expectedSandboxOtp, stagePrefix, buttonId) {
-            const btn = document.getElementById(buttonId);
-            const origText = btn ? btn.innerText : "";
-            if (btn) {
-                btn.disabled = true;
-                btn.innerText = "🔒 Verifying...";
-            }
-
-            // Stage 3: confirmationResult.confirm(code)
-            if (window.confirmationResult) {
-                try {
-                    const result = await window.confirmationResult.confirm(enteredOtp);
-                    const user = result.user;
-                    const jwtToken = await user.getIdToken();
-                    setStageVisuals(stagePrefix, 4);
-                    if (btn) {
-                        btn.disabled = false;
-                        btn.innerText = origText;
-                    }
-                    return { verified: true, uid: user.uid, jwt: jwtToken.slice(0, 16) + "..." };
-                } catch (error) {
-                    if (btn) {
-                        btn.disabled = false;
-                        btn.innerText = origText;
-                    }
-                    alert(`Firebase OTP Verification Failed (${error.code}): Please check the 6-digit code and try again.`);
-                    return { verified: false };
-                }
-            }
-
-            // Sandbox Gateway Verification
-            if (!expectedSandboxOtp || enteredOtp !== expectedSandboxOtp) {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerText = origText;
-                }
-                alert("Invalid 6-digit OTP! Please enter the exact OTP shown in the top notification banner.");
-                return { verified: false };
-            }
-
-            setStageVisuals(stagePrefix, 4);
-            if (btn) {
-                btn.disabled = false;
-                btn.innerText = origText;
-            }
-            const mockUid = "fb_uid_" + Math.random().toString(36).substring(2, 10);
-            return { verified: true, uid: mockUid, jwt: "eyJhbGciOiJSUzI1NiIs..." };
-        }
-
-        /* ================= COLLEGE SIGN UP WITH OTP ================= */
+        /* ================= COLLEGE SIGN UP WITH EMAIL OTP ================= */
         async function sendCollegeSignupOtp() {
             const cName = document.getElementById('signupCollegeName').value.trim();
             const cDomain = document.getElementById('signupCollegeDomain').value.trim().toLowerCase();
@@ -1686,40 +1724,32 @@
             const initUpi = document.getElementById('signupInitialUpi').value.trim();
 
             if (!cName || !cDomain || !cPhone || !cEmail || !initCan || !initUpi) {
-                alert("Please fill in all required college registration fields (including Primary Canteen & UPI ID)!");
+                alert("Please fill in all required college registration fields (including Admin Email, Canteen & UPI ID)!");
                 return;
             }
-            if (!/^\d{10}$/.test(cPhone)) {
-                alert("Please enter a valid 10-digit Official Mobile Number!");
+            if (!cEmail.includes('@')) {
+                alert("Please enter a valid Admin Email Address to receive the OTP!");
                 return;
             }
             if (!cDomain.endsWith('.ac.in') && !cDomain.endsWith('.edu') && !cDomain.endsWith('.in')) {
                 alert("Verification Error: Official College Domain must end with .ac.in, .edu, or .in!");
                 return;
             }
-            if (colleges.some(c => c.name.toLowerCase() === cName.toLowerCase())) {
-                alert(`College "${cName}" is already registered! Switching to Admin Login.`);
-                switchCollegeSubMode('admin');
-                document.getElementById('loginAdminCollegeSelect').value = cName;
+
+            generatedCollegeOtp = await dispatchEmailOtp(cEmail, `${cName} Admin`, 'col', 'sendCollegeOtpBtn');
+            document.getElementById('collegeOtpSentLabel').innerText = `🔒 Enter 6-Digit OTP Sent to ${cEmail}`;
+            document.getElementById('collegeOtpVerifyBox').classList.add('active');
+            document.getElementById('collegeOtpInput').value = generatedCollegeOtp;
+        }
+
+        function verifyCollegeOtpAndCreate() {
+            const enteredOtp = document.getElementById('collegeOtpInput').value.trim();
+            if (!generatedCollegeOtp || enteredOtp !== generatedCollegeOtp) {
+                alert("Invalid 6-digit Email OTP! Please check the code shown in the Email OTP banner.");
                 return;
             }
 
-            const dispatchRes = await dispatchPhoneOtp(cPhone, 'col', 'sendCollegeOtpBtn');
-            generatedCollegeOtp = dispatchRes.code;
-            document.getElementById('collegeOtpVerifyBox').classList.add('active');
-            if (dispatchRes.code) {
-                document.getElementById('collegeOtpInput').value = dispatchRes.code;
-            } else {
-                document.getElementById('collegeOtpInput').value = "";
-                document.getElementById('collegeOtpInput').focus();
-            }
-        }
-
-        async function verifyCollegeOtpAndCreate() {
-            const enteredOtp = document.getElementById('collegeOtpInput').value.trim();
-            const verifyRes = await confirmPhoneOtpCode(enteredOtp, generatedCollegeOtp, 'col', 'verifyCollegeOtpBtn');
-            if (!verifyRes.verified) return;
-
+            setStageVisuals('col', 4);
             const cName = document.getElementById('signupCollegeName').value.trim();
             const cCity = document.getElementById('signupCollegeCity').value.trim() || "India";
             const cDomain = document.getElementById('signupCollegeDomain').value.trim().toLowerCase();
@@ -1730,9 +1760,10 @@
             const adminPin = document.getElementById('signupAdminPin').value.trim() || "2727";
             const staffPin = document.getElementById('signupStaffPin').value.trim() || "1111";
 
+            // Update or insert college
+            const existingIdx = colleges.findIndex(c => c.name.toLowerCase() === cName.toLowerCase());
             const newCollegeObj = {
                 id: 'col_' + Date.now(),
-                firebaseUid: verifyRes.uid,
                 name: cName,
                 city: cCity,
                 domain: cDomain,
@@ -1742,15 +1773,22 @@
                 staffPin: staffPin
             };
 
-            colleges.push(newCollegeObj);
-            canteens.push({
-                id: 'can_' + Date.now(),
-                name: initCan,
-                college: cName,
-                location: 'Main Campus',
-                upi: initUpi,
-                merchant: `${cName.toUpperCase()} OFFICIAL`
-            });
+            if (existingIdx !== -1) {
+                colleges[existingIdx] = newCollegeObj;
+            } else {
+                colleges.push(newCollegeObj);
+            }
+
+            if (!canteens.some(c => c.college === cName && c.name === initCan)) {
+                canteens.push({
+                    id: 'can_' + Date.now(),
+                    name: initCan,
+                    college: cName,
+                    location: 'Main Campus',
+                    upi: initUpi,
+                    merchant: `${cName.toUpperCase()} OFFICIAL`
+                });
+            }
             saveState();
 
             generatedCollegeOtp = null;
@@ -1759,56 +1797,50 @@
 
             currentRole = "admin";
             currentAdminCollege = cName;
-            openManagementWorkspace(`🏛️ Admin • ${currentAdminCollege}`, `College Administration Studio (UID: ${verifyRes.uid})`);
+            openManagementWorkspace(`🏛️ Admin • ${currentAdminCollege}`, `College Administration Studio (${cEmail})`);
         }
 
-        /* ================= STUDENT SIGN UP WITH OTP & LOGIN ================= */
+        /* ================= STUDENT SIGN UP WITH EMAIL OTP & LOGIN ================= */
         async function sendStudentSignupOtp() {
-            if (colleges.length === 0) {
-                alert("No colleges are registered yet! Please register your college first under 'College Portal -> Sign Up'.");
-                return;
-            }
-
-            const phone = document.getElementById('signupStudentPhone').value.trim();
-            const roll = document.getElementById('signupStudentRoll').value.trim().toUpperCase();
-            const name = document.getElementById('signupStudentName').value.trim();
             const email = document.getElementById('signupStudentEmail').value.trim().toLowerCase();
+            const collegePass = document.getElementById('signupStudentCollege').value;
+            const roll = document.getElementById('signupStudentRoll').value.trim().toUpperCase();
+            const phone = document.getElementById('signupStudentPhone').value.trim();
+            const name = document.getElementById('signupStudentName').value.trim();
             const pin = document.getElementById('signupStudentPin').value.trim();
             const phrase = document.getElementById('signupStudentPhrase').value.trim();
 
-            if (!phone || !roll || !name || !email || !pin || !phrase) {
-                alert("Please complete all required student registration fields!");
+            if (!collegePass) {
+                alert("Please register a college first (under College Portal -> Sign Up) or open a college invite link!");
                 return;
             }
-            if (!/^\d{10}$/.test(phone)) {
-                alert("Please enter a valid 10-digit Mobile Number!");
+            if (!email || !roll || !phone || !name || !pin || !phrase) {
+                alert("Please fill in your Email, Roll Number, Mobile #, Full Name, 4-Digit PIN, and Phrase!");
+                return;
+            }
+            if (!email.includes('@')) {
+                alert("Please enter a valid Email Address to receive your verification OTP!");
                 return;
             }
             if (!/^\d{4}$/.test(pin)) {
                 alert("Please set a valid 4-digit numeric PIN!");
                 return;
             }
-            if (!email.includes('@') || !(email.endsWith('.ac.in') || email.endsWith('.edu') || email.endsWith('.in'))) {
-                alert("Please enter a valid institutional college email (.ac.in / .edu)!");
+
+            generatedStudentOtp = await dispatchEmailOtp(email, name, 'stu', 'sendStudentOtpBtn');
+            document.getElementById('studentOtpSentLabel').innerText = `🔒 Enter 6-Digit OTP Sent to ${email}`;
+            document.getElementById('studentOtpVerifyBox').classList.add('active');
+            document.getElementById('studentOtpInput').value = generatedStudentOtp;
+        }
+
+        function verifyStudentOtpAndCreate() {
+            const enteredOtp = document.getElementById('studentOtpInput').value.trim();
+            if (!generatedStudentOtp || enteredOtp !== generatedStudentOtp) {
+                alert("Invalid 6-digit Email OTP! Please check the code shown in the Email OTP banner.");
                 return;
             }
 
-            const dispatchRes = await dispatchPhoneOtp(phone, 'stu', 'sendStudentOtpBtn');
-            generatedStudentOtp = dispatchRes.code;
-            document.getElementById('studentOtpVerifyBox').classList.add('active');
-            if (dispatchRes.code) {
-                document.getElementById('studentOtpInput').value = dispatchRes.code;
-            } else {
-                document.getElementById('studentOtpInput').value = "";
-                document.getElementById('studentOtpInput').focus();
-            }
-        }
-
-        async function verifyStudentOtpAndCreate() {
-            const enteredOtp = document.getElementById('studentOtpInput').value.trim();
-            const verifyRes = await confirmPhoneOtpCode(enteredOtp, generatedStudentOtp, 'stu', 'verifyStudentOtpBtn');
-            if (!verifyRes.verified) return;
-
+            setStageVisuals('stu', 4);
             const phone = document.getElementById('signupStudentPhone').value.trim();
             const roll = document.getElementById('signupStudentRoll').value.trim().toUpperCase();
             const name = document.getElementById('signupStudentName').value.trim();
@@ -1820,8 +1852,6 @@
 
             studentVault[roll] = {
                 rollNo: roll,
-                firebaseUid: verifyRes.uid,
-                jwtPreview: verifyRes.jwt,
                 pin: pin,
                 name: name,
                 email: email,
@@ -1841,7 +1871,7 @@
 
         function completeStudentLogin() {
             if (colleges.length === 0) {
-                alert("No colleges are registered yet! Please use 'College Portal -> Sign Up' first.");
+                alert("No colleges are registered on this device yet! Open your college's Smart Join Link (?college=YOUR_COLLEGE) or register under 'College Portal -> Sign Up'.");
                 return;
             }
 
@@ -1850,20 +1880,23 @@
             const pin = document.getElementById('loginStudentPin').value.trim();
 
             if (!identifier || !pin) {
-                alert("Please enter your Roll Number (or Mobile Number) and 4-Digit PIN!");
+                alert("Please enter your Roll Number (or Email / Mobile #) and 4-Digit PIN!");
                 return;
             }
 
             const upperId = identifier.toUpperCase();
+            const lowerId = identifier.toLowerCase();
             let matchedStudent = studentVault[upperId];
 
             if (!matchedStudent) {
-                const foundKey = Object.keys(studentVault).find(k => studentVault[k].phone === identifier);
+                const foundKey = Object.keys(studentVault).find(
+                    k => studentVault[k].phone === identifier || (studentVault[k].email && studentVault[k].email.toLowerCase() === lowerId)
+                );
                 if (foundKey) matchedStudent = studentVault[foundKey];
             }
 
             if (!matchedStudent) {
-                alert("Account not found! Please switch to the '📝 Student Sign Up (OTP)' tab to verify your mobile OTP and create your account.");
+                alert("Student account not found! Please switch to '📧 Student Sign Up (Email OTP)' to verify your email and create your account.");
                 switchStudentSubMode('signup');
                 return;
             }
@@ -1881,7 +1914,6 @@
             currentRole = "student";
             currentUser = {
                 rollNo: stuObj.rollNo || "STUDENT",
-                uid: stuObj.firebaseUid || "fb_verified",
                 name: stuObj.name,
                 email: stuObj.email,
                 phone: stuObj.phone,
@@ -1892,7 +1924,7 @@
             };
 
             document.getElementById('activeUserPill').innerText = `🎓 ${currentUser.rollNo} • ${currentUser.college}`;
-            document.getElementById('headerSubTitle').innerText = `Firebase UID: ${currentUser.uid}`;
+            document.getElementById('headerSubTitle').innerText = `Verified Email: ${currentUser.email}`;
             document.getElementById('headerPhishSeal').style.display = 'inline-flex';
             document.getElementById('previewReturnBanner').style.display = 'none';
 
@@ -1988,7 +2020,7 @@
 
         function completeAdminLogin() {
             if (colleges.length === 0) {
-                alert("No colleges registered yet! Please use the '📝 Sign Up' tab to register your college with OTP.");
+                alert("No colleges registered yet! Please use the '📝 Sign Up' tab to register your college with Email OTP.");
                 switchCollegeSubMode('signup');
                 return;
             }
@@ -2465,7 +2497,6 @@
                 token: tokenNum,
                 handshakePin: handshakePin,
                 signature: signatureHash,
-                firebaseUid: currentUser.uid || "fb_verified",
                 syncWord: dailySecurityWord,
                 rollNo: roll,
                 name: document.getElementById('orderStudentName').value || currentUser.name,
@@ -2604,7 +2635,7 @@
 
             if (matchedOrder.status === 'served') { alert(`⚠️ ALREADY REDEEMED: Token #${rawToken} was already served!`); return; }
 
-            alert(`✅ AUTHENTIC ORDER VERIFIED!\n\nToken: #${matchedOrder.token} (PIN: ${matchedOrder.handshakePin})\nStudent: ${matchedOrder.rollNo} (${matchedOrder.name})\nFirebase UID: ${matchedOrder.firebaseUid || 'Verified'}\nAmount: ₹${matchedOrder.total}`);
+            alert(`✅ AUTHENTIC ORDER VERIFIED!\n\nToken: #${matchedOrder.token} (PIN: ${matchedOrder.handshakePin})\nStudent: ${matchedOrder.rollNo} (${matchedOrder.name})\nEmail: ${matchedOrder.email || 'Verified'}\nAmount: ₹${matchedOrder.total}`);
         }
 
         /* ================= ADMIN & COUNTER STUDIO FUNCTIONS ================= */
@@ -2650,13 +2681,29 @@
                 }
             }
 
-            const inviteUrl = `${VERCEL_DOMAIN}/?college=${encodeURIComponent(currentAdminCollege)}`;
+            const collegeCanteens = canteens.filter(c => c.college === currentAdminCollege);
+            const collegeItems = menuItems.filter(m => m.college === currentAdminCollege);
+            const colObj = colleges.find(c => c.name === currentAdminCollege);
+
+            // Build Smart Join URL that carries college + canteen metadata to any new phone
+            let syncParam = "";
+            if (colObj) {
+                try {
+                    const bundle = { col: colObj, cans: collegeCanteens, items: collegeItems.slice(0, 15) };
+                    syncParam = `&sync=${btoa(encodeURIComponent(JSON.stringify(bundle)))}`;
+                } catch (e) {}
+            }
+
+            const inviteUrl = `${VERCEL_DOMAIN}/?college=${encodeURIComponent(currentAdminCollege)}${syncParam}`;
+            const qrShortUrl = `${VERCEL_DOMAIN}/?college=${encodeURIComponent(currentAdminCollege)}`;
             const linkTextEl = document.getElementById('adminPassLinkText');
             const qrImgEl = document.getElementById('adminPassQrImg');
-            if (linkTextEl) linkTextEl.innerText = inviteUrl;
+            if (linkTextEl) {
+                linkTextEl.dataset.fullUrl = inviteUrl;
+                linkTextEl.innerText = qrShortUrl;
+            }
             if (qrImgEl) qrImgEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(inviteUrl)}`;
 
-            const collegeCanteens = canteens.filter(c => c.college === currentAdminCollege);
             const canListEl = document.getElementById('adminCanteenList');
             if (canListEl) {
                 if (collegeCanteens.length === 0) {
@@ -2708,7 +2755,7 @@
 
                     return `
                         <tr>
-                            <td><strong>🏛️ ${col.name}</strong><br><span style="font-size:11px; color:var(--text-muted);">${col.city || 'India'} • 📱 +91-${col.phone || 'Verified'}</span></td>
+                            <td><strong>🏛️ ${col.name}</strong><br><span style="font-size:11px; color:var(--text-muted);">${col.city || 'India'} • 📧 ${col.email || 'Verified'}</span></td>
                             <td><code>${col.domain || (col.name.toLowerCase() + '.ac.in')}</code></td>
                             <td>${canteensStr}</td>
                             <td>${vpasStr}</td>
@@ -2720,11 +2767,11 @@
 
             const logBox = document.getElementById('auditorAuditLogBox');
             let logHtml = `[AUDIT_INIT] Global auditor session active at ${new Date().toLocaleTimeString()}\n`;
-            logHtml += `[FIREBASE_AUTH] Mode: ${isFirebaseLive ? 'LIVE CARRIER SMS' : 'INSTANT SANDBOX GATEWAY'}\n`;
-            logHtml += `[TENANT_ISOLATION] Enforcing strict single-college boundaries across ${colleges.length} OTP-verified institutions.\n`;
-            logHtml += `[STUDENT_VAULT] ${Object.keys(studentVault).length} OTP-verified student accounts active.\n`;
+            logHtml += `[EMAIL_OTP_GATEWAY] Active (${cloudConfig.emailPublicKey ? 'LIVE EMAILJS' : 'INSTANT INBOX BANNER'})\n`;
+            logHtml += `[CLOUD_DB_SYNC] ${cloudConfig.dbUrl ? 'CONNECTED (' + cloudConfig.dbUrl + ')' : 'URL AUTO-PROVISIONING MODE'}\n`;
+            logHtml += `[TENANT_ISOLATION] ${colleges.length} OTP-verified institutions | ${Object.keys(studentVault).length} student accounts.\n`;
             activeOrders.forEach((ord, idx) => {
-                logHtml += `[TX_${idx+1}] Token #${ord.token} | College: ${ord.collegePass} | Student: ${ord.rollNo} | UID: ${ord.firebaseUid || 'OK'} | Hash: ${ord.signature || 'OK'}\n`;
+                logHtml += `[TX_${idx+1}] Token #${ord.token} | College: ${ord.collegePass} | Student: ${ord.rollNo} | Hash: ${ord.signature || 'OK'}\n`;
             });
             logBox.innerText = logHtml;
         }
@@ -2769,9 +2816,10 @@
         }
 
         function copyCollegeInviteLink() {
-            const link = document.getElementById('adminPassLinkText').innerText;
-            navigator.clipboard.writeText(link);
-            alert(`Copied secure college join link: ${link}`);
+            const linkEl = document.getElementById('adminPassLinkText');
+            const fullUrl = linkEl.dataset.fullUrl || linkEl.innerText;
+            navigator.clipboard.writeText(fullUrl);
+            alert(`Copied Smart Student Join Link!\n\nOpening this link on any other phone or Incognito window will automatically load ${currentAdminCollege} and its canteens.`);
         }
 
         function adminAddCanteen() {
@@ -2868,6 +2916,7 @@
             saveState();
             adminResetMenuForm();
             renderAdminMenuList();
+            refreshAdminStudio();
             renderMenu();
         }
 
@@ -2876,6 +2925,7 @@
             delete tray[itemId];
             saveState();
             renderAdminMenuList();
+            refreshAdminStudio();
             renderMenu();
         }
 
@@ -2892,7 +2942,7 @@
             const targetItemId = document.getElementById('selectedOfferTargetItemId').value;
             const badge = document.getElementById('newOfferBadge').value.trim() || "🔥 Special Offer";
             const title = document.getElementById('newOfferTitle').value.trim();
-            const img = document.getElementById('newOfferImg').value.trim() || "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80";
+            const img = document.getElementById('newOfferImg').value.trim() || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
             const amount = parseFloat(document.getElementById('newOfferAmount').value) || 20;
 
             if (!targetItemId || !title) { alert("Please search and select a target menu item and enter an offer headline!"); return; }
