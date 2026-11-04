@@ -357,38 +357,184 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Universal College Canteen QR Banner in Student View */
-        .pass-banner {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(238, 242, 255, 0.78) 100%);
+        /* PERFECTED QR CODE BANNERS & CONTAINERS */
+        .pass-banner, .admin-section-divider {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(238, 242, 255, 0.84) 100%);
             backdrop-filter: blur(18px);
             border: 1px solid rgba(255, 255, 255, 0.95);
             border-radius: var(--radius);
-            padding: 16px 20px;
+            padding: 18px 20px;
             margin-bottom: 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 18px;
             box-shadow: var(--glass-shadow);
         }
 
         .qr-banner-left {
             display: flex;
             align-items: center;
-            gap: 14px;
-            flex-wrap: wrap;
+            gap: 16px;
+            flex: 1 1 320px;
         }
 
-        .qr-banner-img {
-            width: 82px;
-            height: 82px;
-            border-radius: 12px;
+        .qr-frame-box {
+            width: 104px;
+            height: 104px;
+            min-width: 104px;
+            aspect-ratio: 1 / 1;
+            border-radius: 16px;
             background: #ffffff;
-            padding: 5px;
+            padding: 8px;
             border: 2px solid #c7d2fe;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.14);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
+        }
+
+        .qr-frame-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .qr-banner-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 200px;
+        }
+
+        @media (max-width: 520px) {
+            .qr-banner-left {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .qr-banner-actions {
+                justify-content: center;
+            }
+            .pass-banner, .admin-section-divider {
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        .qr-checkout-frame {
+            width: 168px;
+            height: 168px;
+            aspect-ratio: 1 / 1;
+            margin: 10px auto;
+            background: #ffffff;
+            border: 2px solid #10b981;
+            border-radius: 16px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
+        }
+
+        .qr-checkout-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* COUNTER FOOD PREPARATION POPUP ICON & MODAL */
+        .prep-floating-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 13px;
+            font-weight: 900;
+            box-shadow: 0 12px 28px rgba(217, 119, 6, 0.4);
+            cursor: pointer;
+            z-index: 160;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+
+        .prep-floating-fab:hover {
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .prep-floating-fab.visible {
+            display: inline-flex;
+        }
+
+        .prep-rank-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            gap: 12px;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+        }
+
+        .prep-rank-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: #eef2ff;
+            color: var(--primary);
+            font-weight: 900;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .prep-rank-row.top-1 .prep-rank-badge {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #f59e0b;
+        }
+
+        .prep-qty-pill {
+            background: #0f172a;
+            color: #38bdf8;
+            font-size: 14px;
+            font-weight: 900;
+            padding: 6px 12px;
+            border-radius: 10px;
+            white-space: nowrap;
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .prep-progress-track {
+            width: 100%;
+            height: 6px;
+            background: #f1f5f9;
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .prep-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #10b981);
+            border-radius: 4px;
         }
 
         .search-box { position: relative; margin-bottom: 18px; }
@@ -457,7 +603,6 @@
         .stepper span { font-size: 13px; font-weight: 800; color: var(--primary-dark); min-width: 16px; text-align: center; }
         .inline-tray-btn { background: rgba(15, 23, 42, 0.9); color: white; border: none; padding: 7px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
 
-        .admin-section-divider { background: var(--glass-bg-strong); backdrop-filter: blur(18px); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; box-shadow: var(--glass-shadow); }
         .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 24px; }
         .admin-panel { background: var(--glass-bg-strong); backdrop-filter: blur(18px); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 20px; box-shadow: var(--glass-shadow); }
         .admin-panel h3 { font-size: 16px; font-weight: 800; margin-bottom: 4px; color: var(--text-main); }
@@ -502,7 +647,7 @@
         .payment-card h4 { font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
         .payment-card p { font-size: 11px; color: var(--text-muted); font-weight: 500; }
 
-        #qrDisplayContainer { background: rgba(255, 255, 255, 0.95); border: 2px solid #a7f3d0; border-radius: 16px; padding: 14px; text-align: center; margin-bottom: 16px; display: block; }
+        #qrDisplayContainer { background: rgba(255, 255, 255, 0.95); border: 2px solid #a7f3d0; border-radius: 16px; padding: 16px; text-align: center; margin-bottom: 16px; display: block; }
         .bill-summary { background: rgba(248, 250, 252, 0.85); border: 1px solid rgba(226, 232, 240, 0.9); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
         .bill-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: var(--text-muted); font-weight: 600; }
         .bill-row.total { font-size: 17px; font-weight: 900; color: var(--text-main); border-top: 1px dashed #cbd5e1; padding-top: 10px; margin-top: 10px; }
@@ -589,6 +734,50 @@
         <div class="otp-code-pill" id="otpToastCode">000000</div>
     </div>
 
+    <!-- KITCHEN & COUNTER FOOD PREPARATION POPUP MODAL (SORTED HIGHEST TO LOWEST) -->
+    <div class="toast-modal" id="foodPrepModal">
+        <div class="toast-card" style="text-align: left; max-width: 520px; max-height: 88vh; display: flex; flex-direction: column; padding: 22px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+                <div>
+                    <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: #d97706; letter-spacing: 0.6px;">🍲 Counter & Kitchen Prep Tracker</span>
+                    <h3 style="font-size: 18px; font-weight: 900; color: var(--text-main);">Ordered Food Items (High to Low)</h3>
+                </div>
+                <button class="close-drawer" onclick="closeFoodPrepModal()">×</button>
+            </div>
+
+            <!-- Filter Mode Switcher: Pending Prep vs All Orders -->
+            <div class="sub-switch-bar sub-switch-2" style="margin-bottom: 12px;">
+                <button class="college-sub-tab active" id="prepTabPending" onclick="switchPrepFilter('pending')">🔥 To Prepare (Unserved)</button>
+                <button class="college-sub-tab" id="prepTabAll" onclick="switchPrepFilter('all')">📋 All Orders Today</button>
+            </div>
+
+            <!-- Summary Totals -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div style="background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 10px 12px;">
+                    <span style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block;">Total Portions / Plates</span>
+                    <strong style="font-size: 20px; font-weight: 900; color: var(--primary);" id="prepTotalPortionsCount">0</strong>
+                </div>
+                <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; padding: 10px 12px;">
+                    <span style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block;">Unique Dishes Ordered</span>
+                    <strong style="font-size: 20px; font-weight: 900; color: #059669;" id="prepUniqueDishesCount">0</strong>
+                </div>
+            </div>
+
+            <!-- Ranked List Container (High to Low) -->
+            <div id="foodPrepRankedList" style="overflow-y: auto; flex: 1; max-height: 360px; padding-right: 4px;"></div>
+
+            <div style="margin-top: 14px; display: flex; justify-content: flex-end;">
+                <button class="checkout-btn" onclick="closeFoodPrepModal()" style="padding: 10px 18px;">Close Prep Summary</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING POPUP ICON FOR COUNTER SECTION -->
+    <button class="prep-floating-fab" id="prepFloatingFab" onclick="openFoodPrepModal()" title="View Ordered Food Items (Highest to Lowest)">
+        <span style="font-size: 18px;">🍲</span>
+        <span>Prep Count (<span id="prepFabBadgeCount">0</span>)</span>
+    </button>
+
     <!-- CLOUD DATABASE SYNC & EMAILJS OTP CONFIGURATION MODAL -->
     <div class="toast-modal" id="cloudConfigModal">
         <div class="toast-card" style="text-align: left; max-width: 460px; max-height: 90vh; overflow-y: auto;">
@@ -665,7 +854,7 @@
                 <!-- 1A. STUDENT LOGIN FORM (PERSONAL PHONE OR EMAIL) -->
                 <div id="studentLoginForm">
                     <div style="background: rgba(238, 242, 255, 0.9); border: 1px solid #c7d2fe; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--primary); font-weight: 700;">
-                        🔑 Log in using your <b>Personal Mobile Number or Personal Email ID</b> & 4-Digit PIN.
+                        🔑 Log in using your <b>Personal Mobile Number or Personal Email ID</b> & 4-Digit PIN. Stay logged in across page reloads!
                     </div>
                     <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 10px;">
                         <div class="form-group">
@@ -757,7 +946,7 @@
                 <!-- 2B. VPIET Counter Staff Login -->
                 <div id="subFormStaff" style="display: none;">
                     <div style="background: rgba(236, 253, 245, 0.9); border: 1px solid #a7f3d0; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #065f46; font-weight: 700; line-height: 1.4;">
-                        👨‍🍳 <b>VPIET Counter Staff Portal:</b> Manage live orders, verify 2-digit Handshake PINs, and edit VPIET menu items & offers.
+                        👨‍🍳 <b>VPIET Counter Staff Portal:</b> Manage live orders, check high-to-low food prep counts, verify 2-digit PINs, and edit VPIET menu items.
                     </div>
                     <div class="form-group">
                         <label>Select VPIET Canteen *</label>
@@ -797,8 +986,8 @@
         </div>
         <div class="header-actions">
             <div class="anti-phish-pill" id="headerPhishSeal">🛡️ Seal: Verified</div>
-            <div class="user-pill" id="activeUserPill" onclick="openAuthGate()">🎓 Student Pass</div>
-            <button class="switch-auth-btn" onclick="openAuthGate()">🔄 Switch Role</button>
+            <div class="user-pill" id="activeUserPill" onclick="logoutAndOpenAuthGate()">🎓 Student Pass</div>
+            <button class="switch-auth-btn" onclick="logoutAndOpenAuthGate()">🚪 Switch Role / Logout</button>
         </div>
     </header>
 
@@ -830,21 +1019,23 @@
                 </div>
             </div>
 
-            <!-- SINGLE UNIVERSAL QR CODE BANNER TO JOIN ALL CANTEENS OF VPIET -->
+            <!-- PERFECTLY ALIGNED UNIVERSAL QR CODE BANNER TO JOIN ALL CANTEENS OF VPIET -->
             <div class="pass-banner">
                 <div class="qr-banner-left">
-                    <img id="studentViewPassQrImg" class="qr-banner-img" src="" alt="Join All VPIET Canteens QR" />
-                    <div>
+                    <div class="qr-frame-box">
+                        <img id="studentViewPassQrImg" src="" alt="Join All VPIET Canteens QR" />
+                    </div>
+                    <div class="qr-banner-info">
                         <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--primary); letter-spacing: 0.6px; display: block;">📲 Single Universal QR • All VPIET Canteens</span>
                         <h3 id="studentPassTitle" style="font-size: 16px; font-weight: 900; color: var(--text-main); margin-top: 2px;">Scan to Join All VPIET Canteens</h3>
                         <p style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 2px;" id="studentPassDesc">One QR code gives instant access to every canteen & food court in VPIET.</p>
-                        <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
-                            <button onclick="copyCollegeInviteLink()" style="background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;">📋 Copy Join Link</button>
-                            <button onclick="downloadVpietQrCode()" style="background: #0f172a; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;">⬇️ Download QR</button>
+                        <div class="qr-banner-actions" style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+                            <button onclick="copyCollegeInviteLink()" style="background: var(--primary); color: white; border: none; padding: 7px 13px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;">📋 Copy Join Link</button>
+                            <button onclick="downloadVpietQrCode()" style="background: #0f172a; color: white; border: none; padding: 7px 13px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;">⬇️ Download QR</button>
                         </div>
                     </div>
                 </div>
-                <div style="background: rgba(255, 255, 255, 0.9); padding: 10px 14px; border-radius: 12px; border: 1px solid #c7d2fe; text-align: right;">
+                <div style="background: rgba(255, 255, 255, 0.92); padding: 12px 16px; border-radius: 14px; border: 1px solid #c7d2fe; text-align: right; min-width: 170px;">
                     <span style="font-size: 9px; color: var(--text-muted); display: block; text-transform: uppercase; font-weight: 800;">Official VPIET VPA</span>
                     <span style="font-size: 13px; font-weight: 900; color: var(--primary);" id="studentActiveUpi">vpietcanteen@sbi</span>
                 </div>
@@ -889,19 +1080,22 @@
                     <h2 id="adminStudioTitle" style="font-size: 20px; font-weight: 900; margin-top: 2px;">Managing: VPIET</h2>
                 </div>
                 <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                    <button onclick="forceManualCloudSync()" style="background: #334155; color: #38bdf8; border: 1px solid #475569; padding: 9px 14px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer;">🔄 Sync All Devices Now</button>
+                    <button onclick="openFoodPrepModal()" style="background: #f59e0b; color: #ffffff; border: none; padding: 9px 14px; border-radius: 10px; font-size: 12px; font-weight: 900; cursor: pointer;">🍲 Food Prep Count</button>
+                    <button onclick="forceManualCloudSync()" style="background: #334155; color: #38bdf8; border: 1px solid #475569; padding: 9px 14px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer;">🔄 Sync All Devices</button>
                     <button onclick="switchAdminTab('admin-ledger')" style="background: #059669; color: white; border: none; padding: 9px 14px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer;">👨‍🍳 Go to Orders & Counter Ledger &rarr;</button>
                 </div>
             </div>
 
-            <!-- INSTANT LOCAL CANVAS QR GENERATOR SECTION -->
+            <!-- PERFECTLY FITTED LOCAL CANVAS QR GENERATOR SECTION -->
             <div class="admin-section-divider">
-                <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-                    <img id="adminPassQrImg" src="" alt="VPIET Pass QR" style="width: 96px; height: 96px; border-radius: 12px; background: white; padding: 6px; border: 2px solid #c7d2fe; box-shadow: 0 4px 12px rgba(79,70,229,0.15);" />
-                    <div>
+                <div class="qr-banner-left">
+                    <div class="qr-frame-box">
+                        <img id="adminPassQrImg" src="" alt="VPIET Pass QR" />
+                    </div>
+                    <div class="qr-banner-info">
                         <span style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">Single Universal QR Code for All VPIET Canteens</span>
-                        <h3 style="font-size: 16px; font-weight: 900; color: var(--text-main);">Scan to Join All VPIET Canteens</h3>
-                        <div style="font-size: 12px; color: var(--text-muted); font-family: monospace; margin-top: 2px;" id="adminPassLinkText">https://campus-bites-liart.vercel.app/?college=VPIET</div>
+                        <h3 style="font-size: 16px; font-weight: 900; color: var(--text-main); margin-top: 2px;">Scan to Join All VPIET Canteens</h3>
+                        <div style="font-size: 12px; color: var(--text-muted); font-family: monospace; margin-top: 4px; word-break: break-all;" id="adminPassLinkText">https://campus-bites-liart.vercel.app/?college=VPIET</div>
                     </div>
                 </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
@@ -1042,7 +1236,11 @@
                     <h2 style="font-size: 20px; font-weight: 900;">👨‍🍳 VPIET Orders & Bank Statement Counter Ledger</h2>
                     <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Match the student's <b>2-Digit Handshake PIN</b> & line-by-line items before serving food.</p>
                 </div>
-                <div style="display: flex; gap: 8px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <!-- POPUP ICON BUTTON FOR ORDERED FOOD PREPARATION RANKING -->
+                    <button onclick="openFoodPrepModal()" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #ffffff; border: none; padding: 9px 16px; border-radius: 10px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+                        🍲 Food Prep Count (High &rarr; Low)
+                    </button>
                     <button id="backToStudioBtn" onclick="switchAdminTab('admin-studio')" style="background:#eef2ff; color:var(--primary); border:1px solid #c7d2fe; padding:9px 16px; border-radius:10px; font-weight:800; cursor:pointer;">🏗️ Open Menu & Offer Editor</button>
                 </div>
             </div>
@@ -1070,10 +1268,10 @@
                     <div class="amount" id="monthlyRevenueDisplay">₹0</div>
                     <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 600;">Current Cycle</p>
                 </div>
-                <div class="finance-card">
-                    <h4>Total VPIET Orders</h4>
-                    <div class="amount" id="totalOrdersCount">0</div>
-                    <p style="font-size: 11px; color: var(--primary); margin-top: 4px; font-weight: 800;">PIN Protected</p>
+                <div class="finance-card" onclick="openFoodPrepModal()" style="cursor: pointer; border: 2px solid #fde68a;">
+                    <h4>🍲 Pending Kitchen Prep</h4>
+                    <div class="amount" id="totalOrdersCount" style="color: #d97706;">0</div>
+                    <p style="font-size: 11px; color: var(--primary); margin-top: 4px; font-weight: 800;">Tap to view High &rarr; Low dish count</p>
                 </div>
             </div>
 
@@ -1226,9 +1424,11 @@
         </div>
 
         <div id="qrDisplayContainer">
-            <p style="font-size: 13px; font-weight: 900; color: #059669; margin-bottom: 6px;">🛡️ Official VPIET UPI QR Code</p>
-            <img id="upiQrImg" src="" alt="UPI QR" style="width: 148px; height: 148px; border-radius: 10px; border: 1px solid #e2e8f0; padding: 6px; background: white;" />
-            <p style="font-size: 12px; color: var(--text-main); margin-top: 6px; font-weight: 800;">Official VPA: <span id="qrVpaText" style="color: var(--primary);">vpietcanteen@sbi</span></p>
+            <p style="font-size: 13px; font-weight: 900; color: #059669; margin-bottom: 4px;">🛡️ Official VPIET UPI QR Code</p>
+            <div class="qr-checkout-frame">
+                <img id="upiQrImg" src="" alt="UPI QR" />
+            </div>
+            <p style="font-size: 12px; color: var(--text-main); margin-top: 4px; font-weight: 800;">Official VPA: <span id="qrVpaText" style="color: var(--primary);">vpietcanteen@sbi</span></p>
             <div style="background: #fef3c7; border: 1px solid #fde68a; color: #92400e; font-size: 11px; font-weight: 800; padding: 6px 10px; border-radius: 8px; margin-top: 6px;">
                 ⚠️ Verify banking name shows <u id="qrMerchantNameText">VPIET OFFICIAL</u> in GPay/PhonePe before entering UPI PIN.
             </div>
@@ -1264,7 +1464,7 @@
         /* =====================================================================
            1. CLIENT-SIDE QR CODE GENERATOR (QRious Canvas + Fallback)
            ===================================================================== */
-        function generateQrDataUrl(textData, sizePx = 180) {
+        function generateQrDataUrl(textData, sizePx = 220) {
             const cleanText = String(textData || UNIVERSAL_JOIN_URL).trim();
             if (window.QRious) {
                 try {
@@ -1274,7 +1474,7 @@
                         level: 'M',
                         background: '#ffffff',
                         foreground: '#0f172a',
-                        padding: 8
+                        padding: 6
                     });
                     return qr.toDataURL('image/png');
                 } catch (e) {
@@ -1338,7 +1538,220 @@
         enforceVpietExclusiveState();
 
         /* =====================================================================
-           3. ZERO-CONFIG REAL-TIME MULTI-DEVICE CLOUD SYNC (MQTT WSS + FIREBASE)
+           3. PERSISTENT SESSION STORAGE (STAYS LOGGED IN ON PAGE RELOAD)
+           ===================================================================== */
+        let currentRole = "student";
+        let selectedEmojiSeal = "🐯";
+        let currentUser = { rollNo: "STUDENT", name: "Student", email: "", phone: "", college: LOCKED_COLLEGE, emoji: "🐯", phrase: "My Pass" };
+        let currentAdminCollege = LOCKED_COLLEGE;
+        let currentStaffCanteen = "";
+        let currentActiveTab = "menu";
+        let activeStudentCanteenFilter = "ALL";
+        let generatedStudentOtp = null;
+        let prepFilterMode = "pending";
+
+        let tray = {};
+        let selectedPaymentMethod = "online";
+        let activeSelectedOfferId = null;
+        let currentCategory = "All";
+
+        function saveActiveSession(activeTabOverride) {
+            if (activeTabOverride) currentActiveTab = activeTabOverride;
+            const sessionObj = {
+                loggedIn: true,
+                role: currentRole,
+                user: currentUser,
+                adminCollege: currentAdminCollege,
+                staffCanteen: currentStaffCanteen,
+                activeTab: currentActiveTab
+            };
+            localStorage.setItem('cb_active_session', JSON.stringify(sessionObj));
+            updateFloatingPrepButtonVisibility();
+        }
+
+        function restoreActiveSessionOnLoad() {
+            const rawSession = localStorage.getItem('cb_active_session');
+            if (!rawSession) return false;
+            try {
+                const session = JSON.parse(rawSession);
+                if (!session || !session.loggedIn) return false;
+
+                currentRole = session.role || "student";
+                currentUser = session.user || currentUser;
+                currentAdminCollege = LOCKED_COLLEGE;
+                currentStaffCanteen = session.staffCanteen || "";
+                currentActiveTab = session.activeTab || "menu";
+
+                document.getElementById('authGate').classList.add('hidden');
+
+                if (currentRole === "student") {
+                    document.getElementById('activeUserPill').innerText = `🎓 ${currentUser.name} • ${currentUser.phone || currentUser.email}`;
+                    document.getElementById('headerSubTitle').innerText = `Logged in: ${currentUser.email || currentUser.phone}`;
+                    document.getElementById('headerPhishSeal').style.display = 'inline-flex';
+                    document.getElementById('previewReturnBanner').style.display = 'none';
+                    document.getElementById('studentNavTabs').style.display = 'flex';
+                    document.getElementById('adminNavTabs').style.display = 'none';
+                    updateAntiPhishingUI();
+                    refreshStudentPassEnvironment();
+                    switchTab(currentActiveTab === 'receipts' ? 'receipts' : 'menu');
+                } else if (currentRole === "admin" || currentRole === "staff") {
+                    const pill = currentRole === "admin" ? `🏛️ Admin • VPIET` : `👨‍🍳 Counter • VPIET`;
+                    const sub = currentRole === "admin" ? `VPIET Administration Studio` : `VPIET Counter Desk, Menu & Offer Studio`;
+                    document.getElementById('activeUserPill').innerText = pill;
+                    document.getElementById('headerSubTitle').innerText = sub;
+                    document.getElementById('headerPhishSeal').style.display = 'none';
+                    document.getElementById('studentNavTabs').style.display = 'none';
+                    document.getElementById('adminNavTabs').style.display = 'flex';
+                    document.getElementById('navBtnAdminStudio').style.display = 'inline-block';
+                    document.getElementById('navBtnAdminLedger').style.display = 'inline-block';
+                    document.getElementById('navBtnAuditorPortal').style.display = 'none';
+                    document.getElementById('backToStudioBtn').style.display = 'inline-block';
+                    refreshAdminStudio();
+                    if (currentActiveTab === 'admin-ledger') {
+                        switchAdminTab('admin-ledger');
+                    } else if (currentActiveTab === 'menu') {
+                        switchTab('menu');
+                    } else {
+                        switchAdminTab('admin-studio');
+                    }
+                } else if (currentRole === "auditor") {
+                    document.getElementById('activeUserPill').innerText = `🔍 Auditor • VPIET`;
+                    document.getElementById('headerSubTitle').innerText = `VPIET Security & Sync Audit Portal`;
+                    document.getElementById('headerPhishSeal').style.display = 'none';
+                    document.getElementById('studentNavTabs').style.display = 'none';
+                    document.getElementById('adminNavTabs').style.display = 'flex';
+                    document.getElementById('navBtnAdminStudio').style.display = 'none';
+                    document.getElementById('navBtnAdminLedger').style.display = 'none';
+                    document.getElementById('navBtnAuditorPortal').style.display = 'inline-block';
+                    switchAdminTab('auditor-portal');
+                }
+                updateFloatingPrepButtonVisibility();
+                return true;
+            } catch (e) {
+                console.warn("Session restore error:", e);
+                return false;
+            }
+        }
+
+        function logoutAndOpenAuthGate() {
+            localStorage.removeItem('cb_active_session');
+            document.getElementById('prepFloatingFab').classList.remove('visible');
+            populateStaffCanteenSelect();
+            document.getElementById('authGate').classList.remove('hidden');
+        }
+
+        /* =====================================================================
+           4. COUNTER FOOD PREPARATION RANKING POPUP (HIGHEST TO LOWEST)
+           ===================================================================== */
+        function updateFloatingPrepButtonVisibility() {
+            const fab = document.getElementById('prepFloatingFab');
+            const badge = document.getElementById('prepFabBadgeCount');
+            if (!fab) return;
+
+            let unservedPortions = 0;
+            activeOrders.forEach(o => {
+                if (o.status !== 'served' && Array.isArray(o.items)) {
+                    o.items.forEach(it => { unservedPortions += (Number(it.qty) || 0); });
+                }
+            });
+            if (badge) badge.innerText = unservedPortions;
+
+            const isStaffOrAdmin = (currentRole === 'admin' || currentRole === 'staff');
+            const authHidden = document.getElementById('authGate').classList.contains('hidden');
+            if (isStaffOrAdmin && authHidden) {
+                fab.classList.add('visible');
+            } else {
+                fab.classList.remove('visible');
+            }
+        }
+
+        function openFoodPrepModal() {
+            renderFoodPrepList();
+            document.getElementById('foodPrepModal').classList.add('active');
+        }
+
+        function closeFoodPrepModal() {
+            document.getElementById('foodPrepModal').classList.remove('active');
+        }
+
+        function switchPrepFilter(mode) {
+            prepFilterMode = mode;
+            document.getElementById('prepTabPending').classList.toggle('active', mode === 'pending');
+            document.getElementById('prepTabAll').classList.toggle('active', mode === 'all');
+            renderFoodPrepList();
+        }
+
+        function renderFoodPrepList() {
+            const listEl = document.getElementById('foodPrepRankedList');
+            const totalPortionsEl = document.getElementById('prepTotalPortionsCount');
+            const uniqueDishesEl = document.getElementById('prepUniqueDishesCount');
+            if (!listEl) return;
+
+            const relevantOrders = activeOrders.filter(o => {
+                if (prepFilterMode === 'pending') return o.status !== 'served';
+                return true;
+            });
+
+            const dishMap = {};
+            let grandTotalPortions = 0;
+
+            relevantOrders.forEach(order => {
+                if (!Array.isArray(order.items)) return;
+                order.items.forEach(it => {
+                    const qty = Number(it.qty) || 0;
+                    if (qty <= 0) return;
+                    const cName = it.canteen || order.orderedCanteen || 'VPIET Main Canteen';
+                    const key = `${it.name}__${cName}`;
+                    if (!dishMap[key]) {
+                        dishMap[key] = {
+                            name: it.name,
+                            canteen: cName,
+                            totalQty: 0,
+                            orderCount: 0
+                        };
+                    }
+                    dishMap[key].totalQty += qty;
+                    dishMap[key].orderCount += 1;
+                    grandTotalPortions += qty;
+                });
+            });
+
+            // Sort strictly from Highest Quantity to Lowest Quantity
+            const sortedDishes = Object.values(dishMap).sort((a, b) => b.totalQty - a.totalQty);
+
+            if (totalPortionsEl) totalPortionsEl.innerText = grandTotalPortions;
+            if (uniqueDishesEl) uniqueDishesEl.innerText = sortedDishes.length;
+            updateFloatingPrepButtonVisibility();
+
+            if (sortedDishes.length === 0) {
+                listEl.innerHTML = `<div style="text-align:center; padding: 32px 16px; color: var(--text-muted); font-size: 13px; font-weight: 700;">No ordered food items to prepare in this view yet.</div>`;
+                return;
+            }
+
+            const maxQty = sortedDishes[0].totalQty || 1;
+
+            listEl.innerHTML = sortedDishes.map((d, idx) => {
+                const pct = Math.max(12, Math.round((d.totalQty / maxQty) * 100));
+                return `
+                    <div class="prep-rank-row ${idx === 0 ? 'top-1' : ''}">
+                        <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                            <div class="prep-rank-badge">#${idx + 1}</div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 14px; font-weight: 900; color: var(--text-main);">${d.name}</div>
+                                <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">🏪 ${d.canteen} • In ${d.orderCount} order${d.orderCount > 1 ? 's' : ''}</div>
+                                <div class="prep-progress-track">
+                                    <div class="prep-progress-fill" style="width: ${pct}%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="prep-qty-pill">${d.totalQty} Qty</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /* =====================================================================
+           5. ZERO-CONFIG REAL-TIME MULTI-DEVICE CLOUD SYNC (MQTT WSS + FIREBASE)
            ===================================================================== */
         const DEFAULT_CLOUD_CONFIG = {
             dbUrl: "",
@@ -1438,6 +1851,10 @@
             if (document.getElementById('tab-receipts').classList.contains('active')) {
                 renderReceipts();
             }
+            if (document.getElementById('foodPrepModal').classList.contains('active')) {
+                renderFoodPrepList();
+            }
+            updateFloatingPrepButtonVisibility();
             isApplyingRemoteSync = false;
         }
 
@@ -1476,6 +1893,8 @@
             localStorage.setItem('cb_student_vault', JSON.stringify(studentVault));
             localStorage.setItem('cb_daily_word', dailySecurityWord);
 
+            updateFloatingPrepButtonVisibility();
+
             if (!isApplyingRemoteSync) {
                 const payload = {
                     colleges,
@@ -1497,19 +1916,6 @@
             alert("✅ Synced! VPIET canteens, menu items, offers, and orders have been broadcast to all connected devices.");
         }
 
-        let currentRole = "student";
-        let selectedEmojiSeal = "🐯";
-        let currentUser = { rollNo: "STUDENT", name: "Student", email: "", phone: "", college: LOCKED_COLLEGE, emoji: "🐯", phrase: "My Pass" };
-        let currentAdminCollege = LOCKED_COLLEGE;
-        let currentStaffCanteen = "";
-        let activeStudentCanteenFilter = "ALL";
-        let generatedStudentOtp = null;
-
-        let tray = {};
-        let selectedPaymentMethod = "online";
-        let activeSelectedOfferId = null;
-        let currentCategory = "All";
-
         function generateOrderSignature(token, rollNo, total, pin) {
             const raw = `${token}|${rollNo}|${total}|${pin}|${dailySecurityWord}|VPIET_2026`;
             let hash = 5381;
@@ -1524,13 +1930,17 @@
                 try { emailjs.init(cloudConfig.emailPublicKey); } catch (e) {}
             }
             initZeroConfigMqttSync();
-            await pullFromCloudDatabase();
             populateStaffCanteenSelect();
             updateAntiPhishingUI();
             refreshStudentPassEnvironment();
             refreshAdminStudio();
             renderReceipts();
             renderStaffCounter();
+
+            // Immediately restore active session if user was logged in before reload
+            restoreActiveSessionOnLoad();
+
+            await pullFromCloudDatabase();
             setInterval(updateLiveClocks, 250);
             setInterval(pullFromCloudDatabase, 4000);
         };
@@ -1612,11 +2022,6 @@
             return otpCode;
         }
 
-        function openAuthGate() {
-            populateStaffCanteenSelect();
-            document.getElementById('authGate').classList.remove('hidden');
-        }
-
         function selectGateway(mode) {
             const isStudent = (mode === 'student');
             document.getElementById('gatewayStudentCard').classList.toggle('active', isStudent);
@@ -1651,7 +2056,6 @@
             const phone = document.getElementById('signupStudentPhone').value.trim();
             const email = document.getElementById('signupStudentEmail').value.trim().toLowerCase();
             const pin = document.getElementById('signupStudentPin').value.trim();
-            const phrase = document.getElementById('signupStudentPhrase').value.trim();
 
             if (!name || !phone || !email || !pin) {
                 alert("Please enter your Full Name, Personal Mobile Number, Personal Email ID, and 4-Digit PIN!");
@@ -1689,7 +2093,6 @@
             const pin = document.getElementById('signupStudentPin').value.trim();
             const phrase = document.getElementById('signupStudentPhrase').value.trim() || "My Pass";
 
-            // Key by personal mobile number so no college roll number or college email is ever needed
             studentVault[phone] = {
                 rollNo: phone,
                 pin: pin,
@@ -1768,6 +2171,7 @@
             document.getElementById('authGate').classList.add('hidden');
             refreshStudentPassEnvironment();
             switchTab('menu');
+            saveActiveSession('menu');
         }
 
         function selectPhishEmoji(emoji) {
@@ -1798,7 +2202,7 @@
         }
 
         /* ================= VPIET ADMIN, COUNTER STAFF & AUDITOR LOGINS ================= */
-        function openManagementWorkspace(pillText, subTitleText) {
+        function openManagementWorkspace(pillText, subTitleText, initialTab = 'admin-studio') {
             document.getElementById('activeUserPill').innerText = pillText;
             document.getElementById('headerSubTitle').innerText = subTitleText;
             document.getElementById('headerPhishSeal').style.display = 'none';
@@ -1818,7 +2222,8 @@
 
             refreshAdminStudio();
             document.getElementById('authGate').classList.add('hidden');
-            switchAdminTab('admin-studio');
+            switchAdminTab(initialTab);
+            saveActiveSession(initialTab);
         }
 
         function completeAdminLogin() {
@@ -1830,7 +2235,7 @@
             currentRole = "admin";
             currentAdminCollege = LOCKED_COLLEGE;
             currentStaffCanteen = "";
-            openManagementWorkspace(`🏛️ Admin • VPIET`, `VPIET Administration Studio`);
+            openManagementWorkspace(`🏛️ Admin • VPIET`, `VPIET Administration Studio`, 'admin-studio');
         }
 
         function completeStaffLogin() {
@@ -1845,7 +2250,7 @@
             currentRole = "staff";
             currentAdminCollege = LOCKED_COLLEGE;
             currentStaffCanteen = canName || "";
-            openManagementWorkspace(`👨‍🍳 Counter • VPIET`, `VPIET Counter Desk, Menu & Offer Studio`);
+            openManagementWorkspace(`👨‍🍳 Counter • VPIET`, `VPIET Counter Desk, Menu & Offer Studio`, 'admin-ledger');
         }
 
         function completeAuditorLogin() {
@@ -1867,6 +2272,7 @@
 
             document.getElementById('authGate').classList.add('hidden');
             switchAdminTab('auditor-portal');
+            saveActiveSession('auditor-portal');
         }
 
         function refreshStudentPassEnvironment() {
@@ -1875,10 +2281,9 @@
                 document.getElementById('studentActiveUpi').innerText = matchedCanteens[0].upi;
             }
 
-            // Render the Single Universal QR Code inside the Student View Banner
             const stuQrImg = document.getElementById('studentViewPassQrImg');
             if (stuQrImg) {
-                stuQrImg.src = generateQrDataUrl(UNIVERSAL_JOIN_URL, 180);
+                stuQrImg.src = generateQrDataUrl(UNIVERSAL_JOIN_URL, 220);
             }
             document.getElementById('studentPassTitle').innerText = `Scan to Join All VPIET Canteens (${matchedCanteens.length} Active)`;
             document.getElementById('studentPassDesc').innerText = `One universal QR code gives access to all ${matchedCanteens.length} canteen(s) in VPIET.`;
@@ -1971,10 +2376,12 @@
                 document.getElementById('tab-menu').classList.add('active');
                 renderOffersCarousel();
                 renderMenu();
+                if (document.getElementById('authGate').classList.contains('hidden')) saveActiveSession('menu');
             } else if (tabId === 'receipts') {
                 document.querySelectorAll('#studentNavTabs .tab-btn')[1].classList.add('active');
                 document.getElementById('tab-receipts').classList.add('active');
                 renderReceipts();
+                if (document.getElementById('authGate').classList.contains('hidden')) saveActiveSession('receipts');
             }
         }
 
@@ -2202,7 +2609,7 @@
             document.getElementById('qrMerchantNameText').innerText = activeMerchant;
 
             const upiUri = `upi://pay?pa=${activeUpi}&pn=${encodeURIComponent(activeMerchant)}&am=${finalPayable}&cu=INR`;
-            document.getElementById('upiQrImg').src = generateQrDataUrl(upiUri, 180);
+            document.getElementById('upiQrImg').src = generateQrDataUrl(upiUri, 220);
             
             selectPayment(selectedPaymentMethod);
 
@@ -2422,14 +2829,17 @@
                 document.getElementById('navBtnAdminStudio').classList.add('active');
                 document.getElementById('tab-admin-studio').classList.add('active');
                 refreshAdminStudio();
+                if (document.getElementById('authGate').classList.contains('hidden')) saveActiveSession('admin-studio');
             } else if (tabId === 'admin-ledger') {
                 document.getElementById('navBtnAdminLedger').classList.add('active');
                 document.getElementById('tab-admin-ledger').classList.add('active');
                 renderStaffCounter();
+                if (document.getElementById('authGate').classList.contains('hidden')) saveActiveSession('admin-ledger');
             } else if (tabId === 'auditor-portal') {
                 document.getElementById('navBtnAuditorPortal').classList.add('active');
                 document.getElementById('tab-auditor-portal').classList.add('active');
                 renderAuditorPortal();
+                if (document.getElementById('authGate').classList.contains('hidden')) saveActiveSession('auditor-portal');
             }
         }
 
@@ -2450,7 +2860,7 @@
             const linkTextEl = document.getElementById('adminPassLinkText');
             const qrImgEl = document.getElementById('adminPassQrImg');
             if (linkTextEl) linkTextEl.innerText = UNIVERSAL_JOIN_URL;
-            if (qrImgEl) qrImgEl.src = generateQrDataUrl(UNIVERSAL_JOIN_URL, 200);
+            if (qrImgEl) qrImgEl.src = generateQrDataUrl(UNIVERSAL_JOIN_URL, 220);
 
             const collegeCanteens = canteens.filter(c => c.college === LOCKED_COLLEGE);
             const canListEl = document.getElementById('adminCanteenList');
@@ -2761,6 +3171,7 @@
 
             let todayTotal = 0;
             let monthlyTotal = 0;
+            let unservedPortions = 0;
 
             const filtered = activeOrders.filter(o => {
                 const matchesSearch = o.token.toLowerCase().includes(searchVal) ||
@@ -2775,11 +3186,15 @@
                     todayTotal += o.total;
                     monthlyTotal += o.total;
                 }
+                if (o.status !== 'served' && Array.isArray(o.items)) {
+                    o.items.forEach(it => { unservedPortions += (Number(it.qty) || 0); });
+                }
             });
 
             document.getElementById('todayRevenueDisplay').innerText = `₹${todayTotal}`;
             document.getElementById('monthlyRevenueDisplay').innerText = `₹${monthlyTotal}`;
-            document.getElementById('totalOrdersCount').innerText = filtered.length;
+            document.getElementById('totalOrdersCount').innerText = `${unservedPortions} Portions`;
+            updateFloatingPrepButtonVisibility();
 
             if (filtered.length === 0) {
                 ledgerBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted); font-weight:600;">No VPIET transactions recorded yet.</td></tr>`;
@@ -2846,6 +3261,9 @@
             saveState();
             renderReceipts();
             renderStaffCounter();
+            if (document.getElementById('foodPrepModal').classList.contains('active')) {
+                renderFoodPrepList();
+            }
         }
     </script>
 </body>
