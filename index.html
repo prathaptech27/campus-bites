@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CampusBites VPIET - Official Canteen Pass & Order Network</title>
+    <title>CampusBites - Official Canteen Pass & Order Network</title>
     <!-- QRious Client-Side HTML5 Canvas QR Generator -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <!-- MQTT.js for Zero-Config Real-Time Multi-Device Cloud Sync -->
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-    <!-- EmailJS SDK for Optional Real Inbox Email OTP Delivery -->
+    <!-- EmailJS SDK for Real Inbox Email OTP Delivery -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         :root {
@@ -251,24 +251,6 @@
             display: block;
         }
 
-        .emoji-seal-picker { display: flex; gap: 8px; margin-bottom: 8px; }
-        .emoji-option { flex: 1; background: #ffffff; border: 2px solid #e2e8f0; border-radius: 10px; padding: 6px 0; font-size: 16px; text-align: center; cursor: pointer; }
-        .emoji-option.selected { border-color: var(--primary); background: #eef2ff; }
-
-        .anti-phish-pill {
-            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-            border: 1px solid #6ee7b7;
-            color: #065f46;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 800;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            white-space: nowrap;
-        }
-
         header {
             position: sticky;
             top: 0;
@@ -288,7 +270,21 @@
         @media(min-width: 768px) { header { padding: 14px 24px; } }
 
         .brand { display: flex; align-items: center; gap: 10px; }
-        .brand-logo { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); flex-shrink: 0; }
+        .brand-logo {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            flex-shrink: 0;
+            cursor: pointer;
+            user-select: none;
+        }
         .brand-title h1 { font-size: 16px; font-weight: 800; color: var(--text-main); line-height: 1.2; }
         .brand-title p { font-size: 11px; color: var(--text-muted); font-weight: 600; }
         .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -357,13 +353,13 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* PERFECTED QR CODE BANNERS & CONTAINERS */
+        /* PERFECTED QR CODE BANNERS & SYMMETRICAL CONTAINERS */
         .pass-banner, .admin-section-divider {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(238, 242, 255, 0.84) 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(238, 242, 255, 0.86) 100%);
             backdrop-filter: blur(18px);
             border: 1px solid rgba(255, 255, 255, 0.95);
             border-radius: var(--radius);
-            padding: 18px 20px;
+            padding: 18px 22px;
             margin-bottom: 18px;
             display: flex;
             justify-content: space-between;
@@ -376,24 +372,26 @@
         .qr-banner-left {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 18px;
             flex: 1 1 320px;
         }
 
         .qr-frame-box {
-            width: 104px;
-            height: 104px;
-            min-width: 104px;
+            width: 112px;
+            height: 112px;
+            min-width: 112px;
+            min-height: 112px;
             aspect-ratio: 1 / 1;
             border-radius: 16px;
             background: #ffffff;
-            padding: 8px;
+            padding: 6px;
             border: 2px solid #c7d2fe;
             box-shadow: 0 8px 20px rgba(79, 70, 229, 0.14);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            overflow: hidden;
         }
 
         .qr-frame-box img {
@@ -401,7 +399,7 @@
             height: 100%;
             object-fit: contain;
             display: block;
-            border-radius: 8px;
+            margin: auto;
         }
 
         .qr-banner-info {
@@ -427,18 +425,21 @@
         }
 
         .qr-checkout-frame {
-            width: 168px;
-            height: 168px;
+            width: 176px;
+            height: 176px;
+            min-width: 176px;
+            min-height: 176px;
             aspect-ratio: 1 / 1;
             margin: 10px auto;
             background: #ffffff;
             border: 2px solid #10b981;
-            border-radius: 16px;
-            padding: 10px;
+            border-radius: 18px;
+            padding: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
+            overflow: hidden;
         }
 
         .qr-checkout-frame img {
@@ -446,6 +447,7 @@
             height: 100%;
             object-fit: contain;
             display: block;
+            margin: auto;
         }
 
         /* COUNTER FOOD PREPARATION POPUP ICON & MODAL */
@@ -729,9 +731,27 @@
         <div style="font-size: 26px;">📧</div>
         <div style="flex: 1;">
             <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #38bdf8; font-weight: 800;" id="otpToastHeader">Email OTP Verification</div>
-            <div style="font-size: 12px; color: #e2e8f0; margin-top: 2px;" id="otpToastTarget">Sent to your personal email</div>
+            <div style="font-size: 12px; color: #e2e8f0; margin-top: 2px;" id="otpToastTarget">Sent to your registered email</div>
         </div>
         <div class="otp-code-pill" id="otpToastCode">000000</div>
+    </div>
+
+    <!-- HIDDEN APP CREATOR (AUDITOR) SECRET ACCESS MODAL (ONLY VISIBLE WHEN TRIGGERED BY CREATOR) -->
+    <div class="toast-modal" id="creatorSecretModal">
+        <div class="toast-card" style="text-align: left; max-width: 400px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="font-size: 17px; font-weight: 900; color: #4f46e5;">👑 App Creator Portal</h3>
+                <button class="close-drawer" onclick="closeCreatorModal()">×</button>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">
+                Hidden creator-only access. Inspect all canteens, VPAs, registered accounts, and live multi-device sync logs.
+            </p>
+            <div class="form-group">
+                <label>Creator / Auditor Master PIN *</label>
+                <input type="password" class="form-control" id="creatorMasterPinInput" placeholder="Enter Creator PIN">
+            </div>
+            <button class="checkout-btn" onclick="completeCreatorAuditorLogin()" style="margin-top: 8px;">Unlock Creator Audit Dashboard 🔍</button>
+        </div>
     </div>
 
     <!-- KITCHEN & COUNTER FOOD PREPARATION POPUP MODAL (SORTED HIGHEST TO LOWEST) -->
@@ -819,7 +839,7 @@
         <div class="auth-card">
             <div class="auth-brand">
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <div class="brand-logo">🍴</div>
+                    <div class="brand-logo" onclick="handleCreatorLogoTap()" title="CampusBites">🍴</div>
                     <div>
                         <h2 style="font-size: 19px; font-weight: 900; color: var(--text-main);">CampusBites</h2>
                         <p style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Fast Canteen Ordering & Digital Pass</p>
@@ -835,12 +855,12 @@
                 <div class="gateway-card active" id="gatewayStudentCard" onclick="selectGateway('student')">
                     <div class="gateway-icon">🎓</div>
                     <div class="gateway-title">Student Section</div>
-                    <div class="gateway-sub">Personal Phone or Email</div>
+                    <div class="gateway-sub">Login or Sign Up</div>
                 </div>
                 <div class="gateway-card" id="gatewayCollegeCard" onclick="selectGateway('college')">
                     <div class="gateway-icon">🏛️</div>
-                    <div class="gateway-title">Canteen Portal</div>
-                    <div class="gateway-sub">Admin, Counter & Auditor</div>
+                    <div class="gateway-title">College Portal</div>
+                    <div class="gateway-sub">Admin, Counter & Sign Up</div>
                 </div>
             </div>
 
@@ -851,14 +871,14 @@
                     <button class="college-sub-tab" id="stuTabSignup" onclick="switchStudentSubMode('signup')">📧 Student Sign Up (OTP)</button>
                 </div>
 
-                <!-- 1A. STUDENT LOGIN FORM (PERSONAL PHONE OR EMAIL) -->
+                <!-- 1A. STUDENT LOGIN FORM -->
                 <div id="studentLoginForm">
                     <div style="background: rgba(238, 242, 255, 0.9); border: 1px solid #c7d2fe; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--primary); font-weight: 700;">
-                        🔑 Log in using your <b>Personal Mobile Number or Personal Email ID</b> & 4-Digit PIN. Stay logged in across page reloads!
+                        🔑 Log in using your <b>Personal Mobile Number or Email ID</b> & 4-Digit PIN.
                     </div>
                     <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 10px;">
                         <div class="form-group">
-                            <label>Personal Mobile # or Email *</label>
+                            <label>Mobile Number or Email ID *</label>
                             <input type="text" class="form-control" id="loginStudentIdentifier" placeholder="Mobile # or Email ID">
                         </div>
                         <div class="form-group">
@@ -869,10 +889,10 @@
                     <button class="checkout-btn" onclick="completeStudentLogin()" style="margin-top: 6px;">Login & Open Canteens 🚀</button>
                 </div>
 
-                <!-- 1B. STUDENT SIGN UP FORM (PERSONAL PHONE & PERSONAL EMAIL — NO COLLEGE DETAILS ASKED) -->
+                <!-- 1B. STUDENT SIGN UP FORM (CLEAN: NO EMOJI OR SECRET PHRASE) -->
                 <div id="studentSignupForm" style="display: none;">
                     <div style="background: rgba(240, 253, 244, 0.9); border: 1px solid #bbf7d0; border-radius: 12px; padding: 9px 12px; margin-bottom: 10px; font-size: 11px; color: #065f46; font-weight: 700;">
-                        📱 Sign up with your <b>Personal Mobile Number & Personal Email ID</b> (Gmail, Outlook, etc.).
+                        📧 Enter your details below. We will send a 6-digit OTP to your email to verify and create your account.
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div class="form-group">
@@ -880,13 +900,13 @@
                             <input type="text" class="form-control" id="signupStudentName" placeholder="e.g. Prathap">
                         </div>
                         <div class="form-group">
-                            <label>Personal Mobile # *</label>
-                            <input type="tel" class="form-control" id="signupStudentPhone" maxlength="10" placeholder="10-digit Mobile #">
+                            <label>10-Digit Mobile # *</label>
+                            <input type="tel" class="form-control" id="signupStudentPhone" maxlength="10" placeholder="9876543210">
                         </div>
                     </div>
                     <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 10px;">
                         <div class="form-group">
-                            <label>Personal Email ID (For OTP) *</label>
+                            <label>Email ID (Receives OTP) *</label>
                             <input type="email" class="form-control" id="signupStudentEmail" placeholder="you@gmail.com">
                         </div>
                         <div class="form-group">
@@ -894,81 +914,102 @@
                             <input type="password" class="form-control" id="signupStudentPin" maxlength="4" placeholder="Set 4-digit PIN">
                         </div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end;">
-                        <div class="form-group">
-                            <label>Pick Security Emoji</label>
-                            <div class="emoji-seal-picker" id="emojiSealPicker" style="margin-bottom: 0;">
-                                <div class="emoji-option selected" data-emoji="🐯" onclick="selectPhishEmoji('🐯')">🐯</div>
-                                <div class="emoji-option" data-emoji="🦅" onclick="selectPhishEmoji('🦅')">🦅</div>
-                                <div class="emoji-option" data-emoji="⚡" onclick="selectPhishEmoji('⚡')">⚡</div>
-                                <div class="emoji-option" data-emoji="🛡️" onclick="selectPhishEmoji('🛡️')">🛡️</div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Secret Phrase *</label>
-                            <input type="text" class="form-control" id="signupStudentPhrase" value="My Pass" placeholder="Secret Phrase">
-                        </div>
-                    </div>
 
-                    <button type="button" class="checkout-btn" id="sendStudentOtpBtn" onclick="sendStudentSignupOtp()" style="background: #0f172a; padding: 11px; margin-top: 4px;">📧 Send 6-Digit OTP to Personal Email</button>
+                    <button type="button" class="checkout-btn" id="sendStudentOtpBtn" onclick="sendStudentSignupOtp()" style="background: #0f172a; padding: 11px; margin-top: 4px;">📧 Send 6-Digit OTP to Email</button>
 
                     <!-- Student Email OTP Verification Box -->
                     <div class="otp-verify-box" id="studentOtpVerifyBox">
-                        <label style="font-size: 11px; font-weight: 900; color: #065f46; display: block; margin-bottom: 6px;" id="studentOtpSentLabel">🔒 Enter 6-Digit OTP Sent to Your Email</label>
+                        <label style="font-size: 11px; font-weight: 900; color: #065f46; display: block; margin-bottom: 6px;" id="studentOtpSentLabel">🔒 Enter 6-Digit OTP Received in Your Email</label>
                         <div style="display: flex; gap: 8px;">
-                            <input type="text" class="form-control" id="studentOtpInput" maxlength="6" placeholder="6-digit OTP" style="font-family: monospace; font-size: 16px; font-weight: 900; letter-spacing: 2px; text-align: center;">
-                            <button type="button" class="checkout-btn" id="verifyStudentOtpBtn" onclick="verifyStudentOtpAndCreate()" style="background: #10b981; width: auto; padding: 0 18px; white-space: nowrap;">✔ Verify & Create Account</button>
+                            <input type="text" class="form-control" id="studentOtpInput" maxlength="6" placeholder="Enter 6-digit OTP" style="font-family: monospace; font-size: 16px; font-weight: 900; letter-spacing: 2px; text-align: center;">
+                            <button type="button" class="checkout-btn" id="verifyStudentOtpBtn" onclick="verifyStudentOtpAndCreate()" style="background: #10b981; width: auto; padding: 0 18px; white-space: nowrap;">✔ Verify & Sign Up</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ================= 2. VPIET PORTAL ================= -->
+            <!-- ================= 2. COLLEGE PORTAL (ADMIN, COUNTER & COLLEGE SIGN UP — AUDITOR HIDDEN) ================= -->
             <div id="collegeSectionContainer" style="display: none;">
                 <div class="sub-switch-bar sub-switch-3">
-                    <button class="college-sub-tab active" id="subTabAdmin" onclick="switchCollegeSubMode('admin')">🏛️ VPIET Admin</button>
-                    <button class="college-sub-tab" id="subTabStaff" onclick="switchCollegeSubMode('staff')">👨‍🍳 VPIET Counter</button>
-                    <button class="college-sub-tab" id="subTabAuditor" onclick="switchCollegeSubMode('auditor')">🔍 Auditor</button>
+                    <button class="college-sub-tab active" id="subTabAdmin" onclick="switchCollegeSubMode('admin')">🏛️ Admin Login</button>
+                    <button class="college-sub-tab" id="subTabStaff" onclick="switchCollegeSubMode('staff')">👨‍🍳 Counter Login</button>
+                    <button class="college-sub-tab" id="subTabSignup" onclick="switchCollegeSubMode('signup')">📝 College Sign Up</button>
                 </div>
 
-                <!-- 2A. VPIET College Admin Login -->
+                <!-- 2A. College Admin Login -->
                 <div id="subFormAdmin">
                     <div style="background: rgba(254, 243, 199, 0.9); border: 1px solid #fde68a; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #92400e; font-weight: 700; line-height: 1.4;">
-                        🏛️ <b>VPIET Admin Portal:</b> Full access to manage VPIET canteens, edit menus, publish offers, and view live financial ledgers synced across all devices.
+                        🏛️ <b>College Admin Portal:</b> Enter the Admin PIN you created during College Sign Up to manage canteens, edit menus, and view financial ledgers.
                     </div>
                     <div class="form-group">
-                        <label>VPIET Admin PIN (Default: 2727) *</label>
-                        <input type="password" class="form-control" id="loginAdminPin" value="2727" placeholder="Enter Admin PIN">
+                        <label>College Admin PIN *</label>
+                        <input type="password" class="form-control" id="loginAdminPin" placeholder="Enter Your Admin PIN">
                     </div>
-                    <button class="checkout-btn" onclick="completeAdminLogin()" style="background: #1e293b; margin-top: 6px;">Open VPIET Admin Studio 🛠️</button>
+                    <button class="checkout-btn" onclick="completeAdminLogin()" style="background: #1e293b; margin-top: 6px;">Open College Admin Studio 🛠️</button>
                 </div>
 
-                <!-- 2B. VPIET Counter Staff Login -->
+                <!-- 2B. Counter Staff Login -->
                 <div id="subFormStaff" style="display: none;">
                     <div style="background: rgba(236, 253, 245, 0.9); border: 1px solid #a7f3d0; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #065f46; font-weight: 700; line-height: 1.4;">
-                        👨‍🍳 <b>VPIET Counter Staff Portal:</b> Manage live orders, check high-to-low food prep counts, verify 2-digit PINs, and edit VPIET menu items.
+                        👨‍🍳 <b>Counter Staff Portal:</b> Manage live orders, check high-to-low food prep counts, verify 2-digit PINs, and edit menu items.
                     </div>
                     <div class="form-group">
-                        <label>Select VPIET Canteen *</label>
+                        <label>Select Canteen *</label>
                         <select class="form-control" id="loginStaffCanteen" style="font-weight: 700;"></select>
                     </div>
                     <div class="form-group">
-                        <label>VPIET Counter Staff PIN (Default: 1111) *</label>
-                        <input type="password" class="form-control" id="loginStaffPin" value="1111" placeholder="Enter Counter PIN">
+                        <label>Counter Staff PIN *</label>
+                        <input type="password" class="form-control" id="loginStaffPin" placeholder="Enter Counter Staff PIN">
                     </div>
-                    <button class="checkout-btn" onclick="completeStaffLogin()" style="background: #059669; margin-top: 6px;">Open VPIET Counter & Menu Studio 🧾</button>
+                    <button class="checkout-btn" onclick="completeStaffLogin()" style="background: #059669; margin-top: 6px;">Open Counter & Menu Studio 🧾</button>
                 </div>
 
-                <!-- 2C. System Auditor Login -->
-                <div id="subFormAuditor" style="display: none;">
-                    <div style="background: rgba(224, 231, 255, 0.9); border: 1px solid #c7d2fe; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #3730a3; font-weight: 700; line-height: 1.4;">
-                        🔍 <b>VPIET System Auditor:</b> Inspect VPIET canteens, locked UPI VPAs, registered students, and live multi-device sync logs.
+                <!-- 2C. College Sign Up (Create Custom Admin PIN & Counter PIN with Email OTP) -->
+                <div id="subFormSignup" style="display: none;">
+                    <div style="background: rgba(224, 231, 255, 0.9); border: 1px solid #c7d2fe; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: #3730a3; font-weight: 700; line-height: 1.4;">
+                        📝 <b>College Sign Up & PIN Setup:</b> Verify your official email via OTP and create your own custom <b>Admin PIN</b> and <b>Counter Staff PIN</b>.
                     </div>
-                    <div class="form-group">
-                        <label>Auditor Passkey PIN (Default: 9999) *</label>
-                        <input type="password" class="form-control" id="loginAuditorPin" value="9999" placeholder="Auditor PIN (9999)">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div class="form-group">
+                            <label>College Name *</label>
+                            <input type="text" class="form-control" id="signupCollegeName" value="VPIET" placeholder="VPIET">
+                        </div>
+                        <div class="form-group">
+                            <label>Primary Canteen Name *</label>
+                            <input type="text" class="form-control" id="signupInitialCanteen" value="VPIET Main Canteen" placeholder="Main Canteen">
+                        </div>
                     </div>
-                    <button class="checkout-btn" onclick="completeAuditorLogin()" style="background: #4f46e5; margin-top: 6px;">Open VPIET Auditor Dashboard 🔍</button>
+                    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 8px;">
+                        <div class="form-group">
+                            <label>Admin Email ID (Receives OTP) *</label>
+                            <input type="email" class="form-control" id="signupAdminEmail" placeholder="admin@vpiet.ac.in">
+                        </div>
+                        <div class="form-group">
+                            <label>Official UPI ID (VPA) *</label>
+                            <input type="text" class="form-control" id="signupInitialUpi" placeholder="vpietcanteen@sbi">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div class="form-group">
+                            <label>Create Admin PIN *</label>
+                            <input type="password" class="form-control" id="signupAdminPin" maxlength="6" placeholder="Create Admin PIN">
+                        </div>
+                        <div class="form-group">
+                            <label>Create Counter Staff PIN *</label>
+                            <input type="password" class="form-control" id="signupStaffPin" maxlength="6" placeholder="Create Counter PIN">
+                        </div>
+                    </div>
+
+                    <button type="button" class="checkout-btn" id="sendCollegeOtpBtn" onclick="sendCollegeSignupOtp()" style="background: #0f172a; padding: 11px;">📧 Send 6-Digit OTP to Admin Email</button>
+
+                    <!-- College Email OTP Verification Box -->
+                    <div class="otp-verify-box" id="collegeOtpVerifyBox">
+                        <label style="font-size: 11px; font-weight: 900; color: #065f46; display: block; margin-bottom: 6px;" id="collegeOtpSentLabel">🔒 Enter 6-Digit OTP Received in Admin Email</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" class="form-control" id="collegeOtpInput" maxlength="6" placeholder="Enter 6-digit OTP" style="font-family: monospace; font-size: 16px; font-weight: 900; letter-spacing: 2px; text-align: center;">
+                            <button type="button" class="checkout-btn" id="verifyCollegeOtpBtn" onclick="verifyCollegeOtpAndCreate()" style="background: #10b981; width: auto; padding: 0 18px; white-space: nowrap;">✔ Verify & Save PINs</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -978,14 +1019,13 @@
     <!-- TOP NAVIGATION HEADER -->
     <header>
         <div class="brand">
-            <div class="brand-logo">🍴</div>
+            <div class="brand-logo" onclick="handleCreatorLogoTap()" title="CampusBites">🍴</div>
             <div class="brand-title">
                 <h1>CampusBites • VPIET</h1>
                 <p id="headerSubTitle">Official VPIET Canteen Network</p>
             </div>
         </div>
         <div class="header-actions">
-            <div class="anti-phish-pill" id="headerPhishSeal">🛡️ Seal: Verified</div>
             <div class="user-pill" id="activeUserPill" onclick="logoutAndOpenAuthGate()">🎓 Student Pass</div>
             <button class="switch-auth-btn" onclick="logoutAndOpenAuthGate()">🚪 Switch Role / Logout</button>
         </div>
@@ -1001,7 +1041,7 @@
     <div class="nav-tabs" id="adminNavTabs" style="display: none;">
         <button class="tab-btn active" id="navBtnAdminStudio" onclick="switchAdminTab('admin-studio')">🏗️ Canteens, Edit Menu & Offers</button>
         <button class="tab-btn" id="navBtnAdminLedger" onclick="switchAdminTab('admin-ledger')">👨‍🍳 Orders & Counter Ledger</button>
-        <button class="tab-btn" id="navBtnAuditorPortal" onclick="switchAdminTab('auditor-portal')" style="display:none; color:#4f46e5;">🔍 VPIET Security Audit Log</button>
+        <button class="tab-btn" id="navBtnAuditorPortal" onclick="switchAdminTab('auditor-portal')" style="display:none; color:#4f46e5;">👑 App Creator Audit Log</button>
         <button class="tab-btn" onclick="switchTab('menu')" style="color:#059669; font-weight:900;">👀 Preview Student View</button>
     </div>
 
@@ -1019,7 +1059,7 @@
                 </div>
             </div>
 
-            <!-- PERFECTLY ALIGNED UNIVERSAL QR CODE BANNER TO JOIN ALL CANTEENS OF VPIET -->
+            <!-- PERFECTLY CENTERED UNIVERSAL QR CODE BANNER TO JOIN ALL CANTEENS OF VPIET -->
             <div class="pass-banner">
                 <div class="qr-banner-left">
                     <div class="qr-frame-box">
@@ -1086,7 +1126,7 @@
                 </div>
             </div>
 
-            <!-- PERFECTLY FITTED LOCAL CANVAS QR GENERATOR SECTION -->
+            <!-- PERFECTLY CENTERED LOCAL CANVAS QR GENERATOR SECTION -->
             <div class="admin-section-divider">
                 <div class="qr-banner-left">
                     <div class="qr-frame-box">
@@ -1297,12 +1337,12 @@
             </div>
         </div>
 
-        <!-- OPTION 4: VPIET SYSTEM AUDITOR PORTAL -->
+        <!-- HIDDEN APP CREATOR (AUDITOR) PORTAL (INVISIBLE TO REGULAR USERS) -->
         <div id="tab-auditor-portal" class="tab-content">
             <div style="background: linear-gradient(135deg, #312e81 0%, #4f46e5 100%); color: white; padding: 22px 28px; border-radius: var(--radius); margin-bottom: 20px; box-shadow: 0 10px 25px rgba(49, 46, 129, 0.25);">
-                <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 800;">VPIET System Auditor Portal</span>
-                <h2 style="font-size: 24px; font-weight: 900; margin-top: 4px;">VPIET Canteen & Anti-Phishing Audit Dashboard</h2>
-                <p style="font-size: 13px; color: #cbd5e1; margin-top: 6px;">Inspect all VPIET canteens, verify cryptographic receipt hashes, and monitor live cross-device synchronization.</p>
+                <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 800;">👑 Hidden App Creator Portal (Visible Only to You)</span>
+                <h2 style="font-size: 24px; font-weight: 900; margin-top: 4px;">Master System Creator & Security Audit Dashboard</h2>
+                <p style="font-size: 13px; color: #cbd5e1; margin-top: 6px;">Inspect all canteens, custom Admin/Counter PINs, cryptographic receipt hashes, and live cross-device synchronization.</p>
             </div>
 
             <div class="finance-summary-grid">
@@ -1324,13 +1364,13 @@
             </div>
 
             <div class="admin-panel" style="margin-bottom: 20px;">
-                <h3>🏛️ VPIET Canteen Directory (Auditor View)</h3>
-                <p class="sub">Complete breakdown of VPIET canteens, locked VPA handles, and menu item counts.</p>
+                <h3>🏛️ Institutional Canteen & PIN Directory (Creator View)</h3>
+                <p class="sub">Complete breakdown of VPIET canteens, locked VPA handles, custom Admin/Counter PINs, and menu item counts.</p>
                 <div class="statement-table-wrapper" style="margin-top: 10px;">
                     <table class="statement-table">
                         <thead>
                             <tr>
-                                <th>Institution</th>
+                                <th>Institution & Custom PINs</th>
                                 <th>Universal Join QR Link</th>
                                 <th>Active VPIET Canteens</th>
                                 <th>Locked Official VPAs</th>
@@ -1343,8 +1383,8 @@
             </div>
 
             <div class="admin-panel" style="margin-bottom: 20px;">
-                <h3>🔒 VPIET Anti-Phishing & Live Cloud Sync Audit Log</h3>
-                <p class="sub">Real-time cryptographic validation of VPIET passes, student seals, and ledger hashes.</p>
+                <h3>🔒 Creator Security & Live Cloud Sync Audit Log</h3>
+                <p class="sub">Real-time cryptographic validation of passes, student accounts, and ledger hashes.</p>
                 <div class="item-list-box" id="auditorAuditLogBox" style="max-height: 240px; background: #0f172a; color: #38bdf8; font-family: monospace; padding: 14px; font-size: 12px;"></div>
             </div>
         </div>
@@ -1369,14 +1409,6 @@
         <div class="drawer-header">
             <h2>🛒 Student Tray & Checkout</h2>
             <button class="close-drawer" onclick="closeDrawer()">×</button>
-        </div>
-
-        <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 1px solid #6ee7b7; border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <div>
-                <span style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #047857; display: block;">Verified Personal Anti-Phishing Seal</span>
-                <strong style="font-size: 13px; color: #065f46;" id="drawerPhishSealText">🐯 Verified</strong>
-            </div>
-            <span style="font-size: 11px; background: #ffffff; color: #059669; padding: 4px 10px; border-radius: 20px; font-weight: 800; border: 1px solid #a7f3d0;">✔ Genuine Portal</span>
         </div>
 
         <div class="form-group">
@@ -1423,6 +1455,7 @@
             </div>
         </div>
 
+        <!-- SYMMETRICALLY CENTERED UPI QR CODE IN CHECKOUT DRAWER -->
         <div id="qrDisplayContainer">
             <p style="font-size: 13px; font-weight: 900; color: #059669; margin-bottom: 4px;">🛡️ Official VPIET UPI QR Code</p>
             <div class="qr-checkout-frame">
@@ -1462,30 +1495,42 @@
         const MQTT_SYNC_TOPIC = "campusbites/vpiet_exclusive_sync_2026/state_v1";
 
         /* =====================================================================
-           1. CLIENT-SIDE QR CODE GENERATOR (QRious Canvas + Fallback)
+           1. DEAD-CENTER SYMMETRICAL QR CODE GENERATOR (Fixes QRious Padding Bug)
            ===================================================================== */
-        function generateQrDataUrl(textData, sizePx = 220) {
+        function generateQrDataUrl(textData, sizePx = 240) {
             const cleanText = String(textData || UNIVERSAL_JOIN_URL).trim();
             if (window.QRious) {
                 try {
-                    const qr = new QRious({
+                    const margin = Math.round(sizePx * 0.08);
+                    const innerSize = sizePx - (margin * 2);
+
+                    // padding: null prevents QRious from shifting the QR matrix to the top-left corner
+                    const rawQr = new QRious({
                         value: cleanText,
-                        size: sizePx,
+                        size: innerSize,
                         level: 'M',
+                        padding: null,
                         background: '#ffffff',
-                        foreground: '#0f172a',
-                        padding: 6
+                        foreground: '#0f172a'
                     });
-                    return qr.toDataURL('image/png');
+
+                    const finalCanvas = document.createElement('canvas');
+                    finalCanvas.width = sizePx;
+                    finalCanvas.height = sizePx;
+                    const ctx = finalCanvas.getContext('2d');
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, sizePx, sizePx);
+                    ctx.drawImage(rawQr.canvas, margin, margin, innerSize, innerSize);
+                    return finalCanvas.toDataURL('image/png');
                 } catch (e) {
                     console.warn("QRious fallback:", e);
                 }
             }
-            return `https://api.qrserver.com/v1/create-qr-code/?size=${sizePx}x${sizePx}&data=${encodeURIComponent(cleanText)}`;
+            return `https://api.qrserver.com/v1/create-qr-code/?size=${sizePx}x${sizePx}&margin=10&data=${encodeURIComponent(cleanText)}`;
         }
 
         function downloadVpietQrCode() {
-            const dataUrl = generateQrDataUrl(UNIVERSAL_JOIN_URL, 400);
+            const dataUrl = generateQrDataUrl(UNIVERSAL_JOIN_URL, 420);
             const a = document.createElement('a');
             a.href = dataUrl;
             a.download = "VPIET_All_Canteens_Join_QR.png";
@@ -1495,7 +1540,7 @@
         }
 
         /* =====================================================================
-           2. STRICT VPIET-ONLY INITIALIZATION
+           2. VPIET INITIALIZATION & CUSTOM ADMIN/STAFF PIN STORAGE
            ===================================================================== */
         const VPIET_DEFAULT_COLLEGE = {
             id: "col_vpiet",
@@ -1516,7 +1561,8 @@
             merchant: "VPIET OFFICIAL"
         };
 
-        let colleges = [VPIET_DEFAULT_COLLEGE];
+        let storedColleges = JSON.parse(localStorage.getItem('cb_colleges')) || [VPIET_DEFAULT_COLLEGE];
+        let colleges = [storedColleges.find(c => c.name === LOCKED_COLLEGE) || VPIET_DEFAULT_COLLEGE];
         let canteens = JSON.parse(localStorage.getItem('cb_canteens')) || [VPIET_DEFAULT_CANTEEN];
         let menuItems = JSON.parse(localStorage.getItem('cb_menu')) || [];
         let offersEvents = JSON.parse(localStorage.getItem('cb_offers')) || [];
@@ -1526,7 +1572,8 @@
         let lastStateTimestamp = Number(localStorage.getItem('cb_state_ts')) || 0;
 
         function enforceVpietExclusiveState() {
-            colleges = [VPIET_DEFAULT_COLLEGE];
+            const existingVpiet = colleges.find(c => c.name === LOCKED_COLLEGE) || VPIET_DEFAULT_COLLEGE;
+            colleges = [existingVpiet];
             canteens = canteens.filter(c => c.college === LOCKED_COLLEGE);
             if (canteens.length === 0) {
                 canteens = [VPIET_DEFAULT_CANTEEN];
@@ -1538,16 +1585,68 @@
         enforceVpietExclusiveState();
 
         /* =====================================================================
-           3. PERSISTENT SESSION STORAGE (STAYS LOGGED IN ON PAGE RELOAD)
+           3. HIDDEN APP CREATOR (AUDITOR) TRIGGER (5 TAPS ON 🍴 LOGO OR ?creator=1)
+           ===================================================================== */
+        let creatorTapCount = 0;
+        let creatorTapTimer = null;
+
+        function handleCreatorLogoTap() {
+            creatorTapCount += 1;
+            if (creatorTapTimer) clearTimeout(creatorTapTimer);
+            if (creatorTapCount >= 5) {
+                creatorTapCount = 0;
+                openCreatorModal();
+                return;
+            }
+            creatorTapTimer = setTimeout(() => {
+                creatorTapCount = 0;
+            }, 1800);
+        }
+
+        function openCreatorModal() {
+            document.getElementById('creatorMasterPinInput').value = '';
+            document.getElementById('creatorSecretModal').classList.add('active');
+        }
+
+        function closeCreatorModal() {
+            document.getElementById('creatorSecretModal').classList.remove('active');
+        }
+
+        function completeCreatorAuditorLogin() {
+            const pin = document.getElementById('creatorMasterPinInput').value.trim();
+            if (pin !== '9999') {
+                alert("❌ Invalid App Creator PIN!");
+                return;
+            }
+            closeCreatorModal();
+            currentRole = "auditor";
+            currentAdminCollege = LOCKED_COLLEGE;
+            document.getElementById('activeUserPill').innerText = `👑 Creator • VPIET`;
+            document.getElementById('headerSubTitle').innerText = `App Creator Security & Sync Audit Portal`;
+
+            document.getElementById('studentNavTabs').style.display = 'none';
+            document.getElementById('adminNavTabs').style.display = 'flex';
+            document.getElementById('navBtnAdminStudio').style.display = 'inline-block';
+            document.getElementById('navBtnAdminLedger').style.display = 'inline-block';
+            document.getElementById('navBtnAuditorPortal').style.display = 'inline-block';
+            document.getElementById('floatingTray').classList.add('hidden');
+
+            document.getElementById('authGate').classList.add('hidden');
+            switchAdminTab('auditor-portal');
+            saveActiveSession('auditor-portal');
+        }
+
+        /* =====================================================================
+           4. PERSISTENT SESSION STORAGE (STAYS LOGGED IN ON PAGE RELOAD)
            ===================================================================== */
         let currentRole = "student";
-        let selectedEmojiSeal = "🐯";
-        let currentUser = { rollNo: "STUDENT", name: "Student", email: "", phone: "", college: LOCKED_COLLEGE, emoji: "🐯", phrase: "My Pass" };
+        let currentUser = { rollNo: "STUDENT", name: "Student", email: "", phone: "", college: LOCKED_COLLEGE };
         let currentAdminCollege = LOCKED_COLLEGE;
         let currentStaffCanteen = "";
         let currentActiveTab = "menu";
         let activeStudentCanteenFilter = "ALL";
         let generatedStudentOtp = null;
+        let generatedCollegeOtp = null;
         let prepFilterMode = "pending";
 
         let tray = {};
@@ -1587,11 +1686,10 @@
                 if (currentRole === "student") {
                     document.getElementById('activeUserPill').innerText = `🎓 ${currentUser.name} • ${currentUser.phone || currentUser.email}`;
                     document.getElementById('headerSubTitle').innerText = `Logged in: ${currentUser.email || currentUser.phone}`;
-                    document.getElementById('headerPhishSeal').style.display = 'inline-flex';
                     document.getElementById('previewReturnBanner').style.display = 'none';
                     document.getElementById('studentNavTabs').style.display = 'flex';
                     document.getElementById('adminNavTabs').style.display = 'none';
-                    updateAntiPhishingUI();
+                    updateStudentOrderFields();
                     refreshStudentPassEnvironment();
                     switchTab(currentActiveTab === 'receipts' ? 'receipts' : 'menu');
                 } else if (currentRole === "admin" || currentRole === "staff") {
@@ -1599,7 +1697,6 @@
                     const sub = currentRole === "admin" ? `VPIET Administration Studio` : `VPIET Counter Desk, Menu & Offer Studio`;
                     document.getElementById('activeUserPill').innerText = pill;
                     document.getElementById('headerSubTitle').innerText = sub;
-                    document.getElementById('headerPhishSeal').style.display = 'none';
                     document.getElementById('studentNavTabs').style.display = 'none';
                     document.getElementById('adminNavTabs').style.display = 'flex';
                     document.getElementById('navBtnAdminStudio').style.display = 'inline-block';
@@ -1615,13 +1712,12 @@
                         switchAdminTab('admin-studio');
                     }
                 } else if (currentRole === "auditor") {
-                    document.getElementById('activeUserPill').innerText = `🔍 Auditor • VPIET`;
-                    document.getElementById('headerSubTitle').innerText = `VPIET Security & Sync Audit Portal`;
-                    document.getElementById('headerPhishSeal').style.display = 'none';
+                    document.getElementById('activeUserPill').innerText = `👑 Creator • VPIET`;
+                    document.getElementById('headerSubTitle').innerText = `App Creator Security & Sync Audit Portal`;
                     document.getElementById('studentNavTabs').style.display = 'none';
                     document.getElementById('adminNavTabs').style.display = 'flex';
-                    document.getElementById('navBtnAdminStudio').style.display = 'none';
-                    document.getElementById('navBtnAdminLedger').style.display = 'none';
+                    document.getElementById('navBtnAdminStudio').style.display = 'inline-block';
+                    document.getElementById('navBtnAdminLedger').style.display = 'inline-block';
                     document.getElementById('navBtnAuditorPortal').style.display = 'inline-block';
                     switchAdminTab('auditor-portal');
                 }
@@ -1641,7 +1737,7 @@
         }
 
         /* =====================================================================
-           4. COUNTER FOOD PREPARATION RANKING POPUP (HIGHEST TO LOWEST)
+           5. COUNTER FOOD PREPARATION RANKING POPUP (HIGHEST TO LOWEST)
            ===================================================================== */
         function updateFloatingPrepButtonVisibility() {
             const fab = document.getElementById('prepFloatingFab');
@@ -1656,7 +1752,7 @@
             });
             if (badge) badge.innerText = unservedPortions;
 
-            const isStaffOrAdmin = (currentRole === 'admin' || currentRole === 'staff');
+            const isStaffOrAdmin = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor');
             const authHidden = document.getElementById('authGate').classList.contains('hidden');
             if (isStaffOrAdmin && authHidden) {
                 fab.classList.add('visible');
@@ -1716,7 +1812,6 @@
                 });
             });
 
-            // Sort strictly from Highest Quantity to Lowest Quantity
             const sortedDishes = Object.values(dishMap).sort((a, b) => b.totalQty - a.totalQty);
 
             if (totalPortionsEl) totalPortionsEl.innerText = grandTotalPortions;
@@ -1751,7 +1846,7 @@
         }
 
         /* =====================================================================
-           5. ZERO-CONFIG REAL-TIME MULTI-DEVICE CLOUD SYNC (MQTT WSS + FIREBASE)
+           6. ZERO-CONFIG REAL-TIME MULTI-DEVICE CLOUD SYNC (MQTT WSS + FIREBASE)
            ===================================================================== */
         const DEFAULT_CLOUD_CONFIG = {
             dbUrl: "",
@@ -1812,6 +1907,10 @@
 
         function applyRemoteStatePayload(data) {
             isApplyingRemoteSync = true;
+            if (Array.isArray(data.colleges) && data.colleges.length > 0) {
+                const remoteVpiet = data.colleges.find(c => c.name === LOCKED_COLLEGE);
+                if (remoteVpiet) colleges = [remoteVpiet];
+            }
             if (Array.isArray(data.canteens) && data.canteens.length > 0) {
                 canteens = data.canteens.filter(c => c.college === LOCKED_COLLEGE);
                 if (canteens.length === 0) canteens = [VPIET_DEFAULT_CANTEEN];
@@ -1913,7 +2012,7 @@
 
         function forceManualCloudSync() {
             saveState();
-            alert("✅ Synced! VPIET canteens, menu items, offers, and orders have been broadcast to all connected devices.");
+            alert("✅ Synced! Canteens, custom PINs, menu items, offers, and orders have been broadcast to all connected devices.");
         }
 
         function generateOrderSignature(token, rollNo, total, pin) {
@@ -1931,13 +2030,18 @@
             }
             initZeroConfigMqttSync();
             populateStaffCanteenSelect();
-            updateAntiPhishingUI();
+            updateStudentOrderFields();
             refreshStudentPassEnvironment();
             refreshAdminStudio();
             renderReceipts();
             renderStaffCounter();
 
-            // Immediately restore active session if user was logged in before reload
+            // Check if creator URL parameter is present
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('creator') === '1' || params.get('creator') === 'true') {
+                openCreatorModal();
+            }
+
             restoreActiveSessionOnLoad();
 
             await pullFromCloudDatabase();
@@ -1981,7 +2085,7 @@
             banner.classList.add('show');
             setTimeout(() => {
                 banner.classList.remove('show');
-            }, 11000);
+            }, 14000);
         }
 
         async function dispatchEmailOtp(targetEmail, recipientName, buttonId) {
@@ -1998,7 +2102,7 @@
                 try {
                     await emailjs.send(cloudConfig.emailServiceId, cloudConfig.emailTemplateId, {
                         to_email: targetEmail,
-                        to_name: recipientName || "Student",
+                        to_name: recipientName || "User",
                         otp_code: otpCode,
                         passcode: otpCode,
                         message: `Your CampusBites 6-digit verification OTP is: ${otpCode}`
@@ -2007,7 +2111,7 @@
                         btn.disabled = false;
                         btn.innerText = origText;
                     }
-                    triggerOtpBanner("Email OTP Sent", `Check inbox: ${targetEmail}`, otpCode);
+                    triggerOtpBanner("Email OTP Sent to Inbox", `Check ${targetEmail}`, otpCode);
                     return otpCode;
                 } catch (err) {
                     console.warn("EmailJS fallback to on-screen banner:", err);
@@ -2018,7 +2122,7 @@
                 btn.disabled = false;
                 btn.innerText = origText;
             }
-            triggerOtpBanner("Email OTP Dispatched", `For ${targetEmail}`, otpCode);
+            triggerOtpBanner("Email OTP Dispatched", `Sent to ${targetEmail}`, otpCode);
             return otpCode;
         }
 
@@ -2042,15 +2146,93 @@
         function switchCollegeSubMode(subMode) {
             document.getElementById('subTabAdmin').classList.toggle('active', subMode === 'admin');
             document.getElementById('subTabStaff').classList.toggle('active', subMode === 'staff');
-            document.getElementById('subTabAuditor').classList.toggle('active', subMode === 'auditor');
+            document.getElementById('subTabSignup').classList.toggle('active', subMode === 'signup');
 
             document.getElementById('subFormAdmin').style.display = subMode === 'admin' ? 'block' : 'none';
             document.getElementById('subFormStaff').style.display = subMode === 'staff' ? 'block' : 'none';
-            document.getElementById('subFormAuditor').style.display = subMode === 'auditor' ? 'block' : 'none';
+            document.getElementById('subFormSignup').style.display = subMode === 'signup' ? 'block' : 'none';
             populateStaffCanteenSelect();
         }
 
-        /* ================= PERSONAL MOBILE / PERSONAL EMAIL STUDENT SIGN UP & LOGIN ================= */
+        /* ================= COLLEGE SIGN UP (CUSTOM ADMIN & COUNTER PINS + EMAIL OTP) ================= */
+        async function sendCollegeSignupOtp() {
+            const cName = document.getElementById('signupCollegeName').value.trim() || LOCKED_COLLEGE;
+            const initCan = document.getElementById('signupInitialCanteen').value.trim();
+            const cEmail = document.getElementById('signupAdminEmail').value.trim().toLowerCase();
+            const initUpi = document.getElementById('signupInitialUpi').value.trim();
+            const adminPin = document.getElementById('signupAdminPin').value.trim();
+            const staffPin = document.getElementById('signupStaffPin').value.trim();
+
+            if (!cName || !initCan || !cEmail || !initUpi || !adminPin || !staffPin) {
+                alert("Please fill in all fields, including your Admin Email, UPI ID, Custom Admin PIN, and Custom Counter PIN!");
+                return;
+            }
+            if (!cEmail.includes('@')) {
+                alert("Please enter a valid Admin Email ID to receive the OTP!");
+                return;
+            }
+            if (adminPin.length < 4 || staffPin.length < 4) {
+                alert("Admin PIN and Counter Staff PIN must be at least 4 digits!");
+                return;
+            }
+
+            generatedCollegeOtp = await dispatchEmailOtp(cEmail, `${cName} Admin`, 'sendCollegeOtpBtn');
+            document.getElementById('collegeOtpSentLabel').innerText = `🔒 Enter 6-Digit OTP Sent to ${cEmail}`;
+            document.getElementById('collegeOtpVerifyBox').classList.add('active');
+            // Leave input empty so the user must enter the received OTP
+            document.getElementById('collegeOtpInput').value = '';
+            document.getElementById('collegeOtpInput').focus();
+        }
+
+        function verifyCollegeOtpAndCreate() {
+            const enteredOtp = document.getElementById('collegeOtpInput').value.trim();
+            if (!generatedCollegeOtp || enteredOtp !== generatedCollegeOtp) {
+                alert("❌ Incorrect OTP / PIN! Please enter the exact 6-digit OTP sent to your Admin Email.");
+                return;
+            }
+
+            const initCan = document.getElementById('signupInitialCanteen').value.trim() || "VPIET Main Canteen";
+            const cEmail = document.getElementById('signupAdminEmail').value.trim().toLowerCase();
+            const initUpi = document.getElementById('signupInitialUpi').value.trim() || "vpietcanteen@sbi";
+            const adminPin = document.getElementById('signupAdminPin').value.trim();
+            const staffPin = document.getElementById('signupStaffPin').value.trim();
+
+            colleges = [{
+                id: 'col_vpiet',
+                name: LOCKED_COLLEGE,
+                city: 'Campus Network',
+                domain: 'vpiet.ac.in',
+                email: cEmail,
+                adminPin: adminPin,
+                staffPin: staffPin
+            }];
+
+            const existingCanIdx = canteens.findIndex(c => c.name.toLowerCase() === initCan.toLowerCase());
+            if (existingCanIdx !== -1) {
+                canteens[existingCanIdx].upi = initUpi;
+            } else {
+                canteens.push({
+                    id: 'can_' + Date.now(),
+                    name: initCan,
+                    college: LOCKED_COLLEGE,
+                    location: 'Main Campus',
+                    upi: initUpi,
+                    merchant: `VPIET OFFICIAL`
+                });
+            }
+
+            saveState();
+            generatedCollegeOtp = null;
+            document.getElementById('collegeOtpVerifyBox').classList.remove('active');
+            alert(`✅ College Sign Up Successful!\n\nYour custom Admin PIN and Counter Staff PIN are now active.`);
+
+            currentRole = "admin";
+            currentAdminCollege = LOCKED_COLLEGE;
+            currentStaffCanteen = "";
+            openManagementWorkspace(`🏛️ Admin • VPIET`, `VPIET Administration Studio`, 'admin-studio');
+        }
+
+        /* ================= STUDENT SIGN UP (EMAIL OTP — NO EMOJI/PHRASE) & LOGIN ================= */
         async function sendStudentSignupOtp() {
             const name = document.getElementById('signupStudentName').value.trim();
             const phone = document.getElementById('signupStudentPhone').value.trim();
@@ -2058,15 +2240,15 @@
             const pin = document.getElementById('signupStudentPin').value.trim();
 
             if (!name || !phone || !email || !pin) {
-                alert("Please enter your Full Name, Personal Mobile Number, Personal Email ID, and 4-Digit PIN!");
+                alert("Please enter your Full Name, 10-Digit Mobile Number, Email ID, and 4-Digit PIN!");
                 return;
             }
             if (!/^\d{10}$/.test(phone)) {
-                alert("Please enter a valid 10-digit Personal Mobile Number!");
+                alert("Please enter a valid 10-digit Mobile Number!");
                 return;
             }
             if (!email.includes('@')) {
-                alert("Please enter a valid Personal Email ID (e.g. you@gmail.com) to receive your OTP!");
+                alert("Please enter a valid Email ID to receive your OTP!");
                 return;
             }
             if (!/^\d{4}$/.test(pin)) {
@@ -2077,13 +2259,15 @@
             generatedStudentOtp = await dispatchEmailOtp(email, name, 'sendStudentOtpBtn');
             document.getElementById('studentOtpSentLabel').innerText = `🔒 Enter 6-Digit OTP Sent to ${email}`;
             document.getElementById('studentOtpVerifyBox').classList.add('active');
-            document.getElementById('studentOtpInput').value = generatedStudentOtp;
+            // Leave input blank so the student must type the received OTP
+            document.getElementById('studentOtpInput').value = '';
+            document.getElementById('studentOtpInput').focus();
         }
 
         function verifyStudentOtpAndCreate() {
             const enteredOtp = document.getElementById('studentOtpInput').value.trim();
             if (!generatedStudentOtp || enteredOtp !== generatedStudentOtp) {
-                alert("Invalid 6-digit Email OTP! Please check the code shown in the top Email OTP banner.");
+                alert("❌ Incorrect OTP / PIN! Please enter the exact 6-digit OTP sent to your email.");
                 return;
             }
 
@@ -2091,7 +2275,6 @@
             const phone = document.getElementById('signupStudentPhone').value.trim();
             const email = document.getElementById('signupStudentEmail').value.trim().toLowerCase();
             const pin = document.getElementById('signupStudentPin').value.trim();
-            const phrase = document.getElementById('signupStudentPhrase').value.trim() || "My Pass";
 
             studentVault[phone] = {
                 rollNo: phone,
@@ -2099,14 +2282,13 @@
                 name: name,
                 email: email,
                 phone: phone,
-                emoji: selectedEmojiSeal,
-                phrase: phrase,
                 college: LOCKED_COLLEGE
             };
             saveState();
 
             generatedStudentOtp = null;
             document.getElementById('studentOtpVerifyBox').classList.remove('active');
+            alert("✅ Sign Up Successful! Welcome to CampusBites.");
 
             loginStudentIntoApp(studentVault[phone]);
         }
@@ -2116,7 +2298,13 @@
             const pin = document.getElementById('loginStudentPin').value.trim();
 
             if (!identifier || !pin) {
-                alert("Please enter your Personal Mobile Number (or Personal Email ID) and 4-Digit PIN!");
+                alert("Please enter your Mobile Number (or Email ID) and 4-Digit PIN!");
+                return;
+            }
+
+            // Secret creator shortcut if creator types #creator
+            if (identifier.toLowerCase() === '#creator') {
+                openCreatorModal();
                 return;
             }
 
@@ -2133,13 +2321,13 @@
             }
 
             if (!matchedStudent) {
-                alert("Account not found! Please switch to '📧 Student Sign Up (OTP)' to sign up with your personal mobile number & email.");
+                alert("Account not found! Please switch to '📧 Student Sign Up (OTP)' to verify your email and create your account.");
                 switchStudentSubMode('signup');
                 return;
             }
 
             if (matchedStudent.pin !== pin) {
-                alert("Incorrect 4-Digit PIN! Please try again.");
+                alert("❌ Incorrect 4-Digit PIN! Please try again.");
                 return;
             }
 
@@ -2154,31 +2342,21 @@
                 name: stuObj.name,
                 email: stuObj.email,
                 phone: stuObj.phone,
-                college: LOCKED_COLLEGE,
-                emoji: stuObj.emoji || "🐯",
-                phrase: stuObj.phrase || "My Pass"
+                college: LOCKED_COLLEGE
             };
 
             document.getElementById('activeUserPill').innerText = `🎓 ${currentUser.name} • ${currentUser.phone || currentUser.email}`;
             document.getElementById('headerSubTitle').innerText = `Logged in: ${currentUser.email || currentUser.phone}`;
-            document.getElementById('headerPhishSeal').style.display = 'inline-flex';
             document.getElementById('previewReturnBanner').style.display = 'none';
 
             document.getElementById('studentNavTabs').style.display = 'flex';
             document.getElementById('adminNavTabs').style.display = 'none';
 
-            updateAntiPhishingUI();
+            updateStudentOrderFields();
             document.getElementById('authGate').classList.add('hidden');
             refreshStudentPassEnvironment();
             switchTab('menu');
             saveActiveSession('menu');
-        }
-
-        function selectPhishEmoji(emoji) {
-            selectedEmojiSeal = emoji;
-            document.querySelectorAll('#emojiSealPicker .emoji-option').forEach(el => {
-                el.classList.toggle('selected', el.dataset.emoji === emoji);
-            });
         }
 
         function populateStaffCanteenSelect() {
@@ -2193,19 +2371,15 @@
             }
         }
 
-        function updateAntiPhishingUI() {
-            const sealStr = `${currentUser.emoji} ${currentUser.phrase}`;
-            document.getElementById('headerPhishSeal').innerText = `🛡️ Seal: ${sealStr}`;
-            document.getElementById('drawerPhishSealText').innerText = sealStr;
+        function updateStudentOrderFields() {
             document.getElementById('orderRollNo').value = currentUser.phone || currentUser.email || currentUser.rollNo;
             document.getElementById('orderStudentName').value = currentUser.name;
         }
 
-        /* ================= VPIET ADMIN, COUNTER STAFF & AUDITOR LOGINS ================= */
+        /* ================= VPIET ADMIN & COUNTER STAFF LOGINS (USES CUSTOM PINS) ================= */
         function openManagementWorkspace(pillText, subTitleText, initialTab = 'admin-studio') {
             document.getElementById('activeUserPill').innerText = pillText;
             document.getElementById('headerSubTitle').innerText = subTitleText;
-            document.getElementById('headerPhishSeal').style.display = 'none';
 
             currentUser.college = LOCKED_COLLEGE;
             currentAdminCollege = LOCKED_COLLEGE;
@@ -2228,8 +2402,11 @@
 
         function completeAdminLogin() {
             const pin = document.getElementById('loginAdminPin').value.trim();
-            if (pin !== '2727') {
-                alert("Incorrect VPIET Admin PIN! Default is 2727.");
+            const vpietCol = colleges[0] || VPIET_DEFAULT_COLLEGE;
+            const savedAdminPin = vpietCol.adminPin || "2727";
+
+            if (!pin || pin !== savedAdminPin) {
+                alert("❌ Incorrect College Admin PIN! Please enter the Admin PIN created during College Sign Up.");
                 return;
             }
             currentRole = "admin";
@@ -2241,9 +2418,11 @@
         function completeStaffLogin() {
             const canName = document.getElementById('loginStaffCanteen').value;
             const pin = document.getElementById('loginStaffPin').value.trim();
+            const vpietCol = colleges[0] || VPIET_DEFAULT_COLLEGE;
+            const savedStaffPin = vpietCol.staffPin || "1111";
 
-            if (pin !== '1111') {
-                alert("Incorrect VPIET Counter Staff PIN! Default is 1111.");
+            if (!pin || pin !== savedStaffPin) {
+                alert("❌ Incorrect Counter Staff PIN! Please enter the Counter PIN created during College Sign Up.");
                 return;
             }
 
@@ -2251,28 +2430,6 @@
             currentAdminCollege = LOCKED_COLLEGE;
             currentStaffCanteen = canName || "";
             openManagementWorkspace(`👨‍🍳 Counter • VPIET`, `VPIET Counter Desk, Menu & Offer Studio`, 'admin-ledger');
-        }
-
-        function completeAuditorLogin() {
-            const pin = document.getElementById('loginAuditorPin').value.trim();
-            if (pin !== '9999') { alert("Incorrect Auditor PIN! Use default: 9999"); return; }
-
-            currentRole = "auditor";
-            currentAdminCollege = LOCKED_COLLEGE;
-            document.getElementById('activeUserPill').innerText = `🔍 Auditor • VPIET`;
-            document.getElementById('headerSubTitle').innerText = `VPIET Security & Sync Audit Portal`;
-            document.getElementById('headerPhishSeal').style.display = 'none';
-
-            document.getElementById('studentNavTabs').style.display = 'none';
-            document.getElementById('adminNavTabs').style.display = 'flex';
-            document.getElementById('navBtnAdminStudio').style.display = 'none';
-            document.getElementById('navBtnAdminLedger').style.display = 'none';
-            document.getElementById('navBtnAuditorPortal').style.display = 'inline-block';
-            document.getElementById('floatingTray').classList.add('hidden');
-
-            document.getElementById('authGate').classList.add('hidden');
-            switchAdminTab('auditor-portal');
-            saveActiveSession('auditor-portal');
         }
 
         function refreshStudentPassEnvironment() {
@@ -2283,7 +2440,7 @@
 
             const stuQrImg = document.getElementById('studentViewPassQrImg');
             if (stuQrImg) {
-                stuQrImg.src = generateQrDataUrl(UNIVERSAL_JOIN_URL, 220);
+                stuQrImg.src = generateQrDataUrl(UNIVERSAL_JOIN_URL, 240);
             }
             document.getElementById('studentPassTitle').innerText = `Scan to Join All VPIET Canteens (${matchedCanteens.length} Active)`;
             document.getElementById('studentPassDesc').innerText = `One universal QR code gives access to all ${matchedCanteens.length} canteen(s) in VPIET.`;
@@ -2368,7 +2525,7 @@
             document.querySelectorAll('#studentNavTabs .tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-            const isStaffOrAdmin = (currentRole === 'admin' || currentRole === 'staff');
+            const isStaffOrAdmin = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor');
             document.getElementById('previewReturnBanner').style.display = isStaffOrAdmin ? 'flex' : 'none';
 
             if (tabId === 'menu') {
@@ -2609,7 +2766,7 @@
             document.getElementById('qrMerchantNameText').innerText = activeMerchant;
 
             const upiUri = `upi://pay?pa=${activeUpi}&pn=${encodeURIComponent(activeMerchant)}&am=${finalPayable}&cu=INR`;
-            document.getElementById('upiQrImg').src = generateQrDataUrl(upiUri, 220);
+            document.getElementById('upiQrImg').src = generateQrDataUrl(upiUri, 240);
             
             selectPayment(selectedPaymentMethod);
 
@@ -2684,7 +2841,6 @@
                 rollNo: studentId,
                 name: document.getElementById('orderStudentName').value || currentUser.name,
                 email: currentUser.email || "",
-                seal: `${currentUser.emoji} ${currentUser.phrase}`,
                 collegePass: LOCKED_COLLEGE,
                 orderedCanteen: Array.from(orderCanteens).join(', '),
                 slot: document.getElementById('orderSlot').value,
@@ -2773,7 +2929,7 @@
                     </div>
                     <div class="receipt-details">
                         <div><span>Student</span><strong>${order.name} (${order.rollNo})</strong></div>
-                        <div><span>Anti-Scam Seal</span><strong>${order.seal || 'Verified'}</strong></div>
+                        <div><span>Email</span><strong>${order.email || 'Verified'}</strong></div>
                         <div><span>Canteen</span><strong>🏪 ${order.orderedCanteen || 'VPIET Main Canteen'}</strong></div>
                         <div><span>Slot</span><strong>⏱ ${order.slot || 'Immediate'}</strong></div>
                     </div>
@@ -2860,7 +3016,7 @@
             const linkTextEl = document.getElementById('adminPassLinkText');
             const qrImgEl = document.getElementById('adminPassQrImg');
             if (linkTextEl) linkTextEl.innerText = UNIVERSAL_JOIN_URL;
-            if (qrImgEl) qrImgEl.src = generateQrDataUrl(UNIVERSAL_JOIN_URL, 220);
+            if (qrImgEl) qrImgEl.src = generateQrDataUrl(UNIVERSAL_JOIN_URL, 240);
 
             const collegeCanteens = canteens.filter(c => c.college === LOCKED_COLLEGE);
             const canListEl = document.getElementById('adminCanteenList');
@@ -2903,13 +3059,17 @@
             activeOrders.forEach(o => { if(o.status==='paid'||o.status==='served') globalRev += o.total; });
             document.getElementById('auditorGlobalRevenue').innerText = `₹${globalRev}`;
 
+            const vpietCol = colleges[0] || VPIET_DEFAULT_COLLEGE;
             const dirBody = document.getElementById('auditorCollegeDirectoryBody');
             const vpasStr = canteens.map(c => `<b>${c.name}</b>: <code>${c.upi}</code>`).join('<br>');
             const canteensStr = canteens.map(c => c.name).join(', ') || 'None';
 
             dirBody.innerHTML = `
                 <tr>
-                    <td><strong>🏛️ VPIET</strong><br><span style="font-size:11px; color:var(--text-muted);">Single QR Canteen Network</span></td>
+                    <td>
+                        <strong>🏛️ VPIET</strong><br>
+                        <span style="font-size:11px; color:var(--primary); font-weight:800;">Admin PIN: ${vpietCol.adminPin || '2727'} | Counter PIN: ${vpietCol.staffPin || '1111'}</span>
+                    </td>
                     <td><code>${UNIVERSAL_JOIN_URL}</code></td>
                     <td>${canteensStr}</td>
                     <td>${vpasStr}</td>
@@ -2918,10 +3078,11 @@
             `;
 
             const logBox = document.getElementById('auditorAuditLogBox');
-            let logHtml = `[AUDIT_INIT] VPIET Auditor session active at ${new Date().toLocaleTimeString()}\n`;
+            let logHtml = `[CREATOR_AUDIT_INIT] Hidden Creator Portal active at ${new Date().toLocaleTimeString()}\n`;
+            logHtml += `[CUSTOM_PINS] VPIET Admin PIN: ${vpietCol.adminPin || '2727'} | Counter PIN: ${vpietCol.staffPin || '1111'}\n`;
             logHtml += `[UNIVERSAL_QR] Single QR joins all ${canteens.length} VPIET canteen(s): ${UNIVERSAL_JOIN_URL}\n`;
             logHtml += `[LIVE_CLOUD_SYNC] MQTT WSS Broker (${mqttClient && mqttClient.connected ? 'CONNECTED' : 'CONNECTING'}) | Topic: ${MQTT_SYNC_TOPIC}\n`;
-            logHtml += `[STUDENT_VAULT] ${Object.keys(studentVault).length} personal student accounts synced.\n`;
+            logHtml += `[STUDENT_VAULT] ${Object.keys(studentVault).length} student accounts synced.\n`;
             activeOrders.forEach((ord, idx) => {
                 logHtml += `[TX_${idx+1}] Token #${ord.token} | Student: ${ord.name} (${ord.rollNo}) | Amount: ₹${ord.total} | Hash: ${ord.signature || 'OK'}\n`;
             });
@@ -2979,7 +3140,7 @@
 
             if (!name || !upi) { alert("Please enter Canteen Name and official UPI ID (VPA)!"); return; }
 
-            canteens.push({ id: 'can_' + Date.now(), name: name, college: LOCKED_COLLEGE, location: loc, upi: upi, merchant: `VPIET OFFICIAL` });
+            canteens.push({ id: 'can_' + Date.now(), name: name, college: LOCKED_COLLEGE, location: loc, upi: upi, merchant: `${name.toUpperCase()} OFFICIAL` });
             document.getElementById('newCanteenName').value = '';
             document.getElementById('newCanteenLocation').value = '';
             document.getElementById('newCanteenUpi').value = '';
@@ -3237,7 +3398,7 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><strong style="font-size:15px; color:var(--primary);">#${order.token}</strong> <span style="background:#1e1b4b; color:#fff; font-size:11px; font-weight:900; padding:2px 7px; border-radius:6px;">PIN: ${pinCode}</span><br><span style="font-size:10px; color:var(--text-muted); font-family:monospace;">${sigCode}</span></td>
-                    <td><strong>${order.name}</strong><br><span style="font-size:11px; color:var(--text-muted);">📱 ${order.rollNo}${order.email ? '<br>📧 ' + order.email : ''}</span><br><span style="font-size:11px; color:#059669; font-weight:800;">${order.seal || 'Verified'}</span></td>
+                    <td><strong>${order.name}</strong><br><span style="font-size:11px; color:var(--text-muted);">📱 ${order.rollNo}${order.email ? '<br>📧 ' + order.email : ''}</span></td>
                     <td>
                         <div class="ledger-canteen-header">
                             <span class="ledger-canteen-badge">🏪 ${order.orderedCanteen || 'VPIET Main Canteen'}</span>
