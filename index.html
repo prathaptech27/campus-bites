@@ -6,6 +6,8 @@
     <title>CampusBites - Official Canteen Pass & Order Network</title>
     <!-- QRious Client-Side HTML5 Canvas QR Generator -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <!-- jsQR Client-Side QR Code Scanner (Live Camera & Image Upload Decoder) -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <!-- MQTT.js for Zero-Config Real-Time Multi-Device Cloud Sync -->
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <!-- EmailJS SDK for Real Inbox Email OTP Delivery -->
@@ -450,6 +452,51 @@
             margin: auto;
         }
 
+        /* SCAN TO ADD COLLEGE CANTEEN EMPTY STATE FOR NEW STUDENTS */
+        .scan-college-card {
+            max-width: 520px;
+            margin: 24px auto;
+            padding: 32px 24px;
+            border-radius: 24px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.94);
+            border: 2px dashed #6366f1;
+            box-shadow: 0 18px 40px -10px rgba(79, 70, 229, 0.15);
+        }
+
+        .camera-scanner-box {
+            display: none;
+            margin: 14px auto;
+            max-width: 320px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 3px solid var(--primary);
+            background: #0f172a;
+            position: relative;
+        }
+
+        .camera-scanner-box.active {
+            display: block;
+        }
+
+        .camera-scanner-box video {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* COUNTER STAFF POST-LOGIN CANTEEN & PIN SELECTION GATE */
+        .counter-canteen-gate-card {
+            max-width: 520px;
+            margin: 28px auto;
+            padding: 28px 24px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #a7f3d0;
+            box-shadow: 0 20px 45px -12px rgba(5, 150, 105, 0.18);
+        }
+
         /* COUNTER FOOD PREPARATION POPUP ICON & MODAL */
         .prep-floating-fab {
             position: fixed;
@@ -744,7 +791,7 @@
                 <button class="close-drawer" onclick="closeCreatorModal()">×</button>
             </div>
             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">
-                Hidden creator-only access. Inspect all canteens, VPAs, registered accounts, and live multi-device sync logs.
+                Hidden creator-only access. Inspect all registered colleges, canteens, VPAs, and live multi-device sync logs.
             </p>
             <div class="form-group">
                 <label>Creator / Auditor Master PIN *</label>
@@ -806,7 +853,7 @@
                 <button class="close-drawer" onclick="closeCloudConfigModal()">×</button>
             </div>
             <p style="font-size: 11px; color: #065f46; background: #ecfdf5; border: 1px solid #6ee7b7; padding: 8px 10px; border-radius: 8px; margin-bottom: 12px; line-height: 1.4;">
-                ✔ <b>Automatic Multi-Device Cloud Sync is built-in and active!</b> Any menu edit, offer, or order on one device automatically syncs to all other phones via WebSockets.
+                ✔ <b>Automatic Multi-Device Cloud Sync is built-in and active!</b> Any college registration, menu edit, offer, or order on one device automatically syncs to all other phones via WebSockets.
             </p>
             <div class="form-group">
                 <label>Optional Firebase Realtime DB URL (Extra Backup)</label>
@@ -889,10 +936,10 @@
                     <button class="checkout-btn" onclick="completeStudentLogin()" style="margin-top: 6px;">Login & Open Canteens 🚀</button>
                 </div>
 
-                <!-- 1B. STUDENT SIGN UP FORM (CLEAN: NO EMOJI OR SECRET PHRASE) -->
+                <!-- 1B. STUDENT SIGN UP FORM (CLEAN: NO COLLEGE DETAILS, NO EMOJI/PHRASE) -->
                 <div id="studentSignupForm" style="display: none;">
                     <div style="background: rgba(240, 253, 244, 0.9); border: 1px solid #bbf7d0; border-radius: 12px; padding: 9px 12px; margin-bottom: 10px; font-size: 11px; color: #065f46; font-weight: 700;">
-                        📧 Enter your details below. We will send a 6-digit OTP to your email to verify and create your account.
+                        📧 Enter your personal details below. After sign up, scan your college QR code to add its canteens.
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div class="form-group">
@@ -928,7 +975,7 @@
                 </div>
             </div>
 
-            <!-- ================= 2. COLLEGE PORTAL (ADMIN, COUNTER & COLLEGE SIGN UP — AUDITOR HIDDEN) ================= -->
+            <!-- ================= 2. COLLEGE PORTAL (SHOWS REGISTERED COLLEGES DROPDOWN) ================= -->
             <div id="collegeSectionContainer" style="display: none;">
                 <div class="sub-switch-bar sub-switch-3">
                     <button class="college-sub-tab active" id="subTabAdmin" onclick="switchCollegeSubMode('admin')">🏛️ Admin Login</button>
@@ -936,10 +983,14 @@
                     <button class="college-sub-tab" id="subTabSignup" onclick="switchCollegeSubMode('signup')">📝 College Sign Up</button>
                 </div>
 
-                <!-- 2A. College Admin Login -->
+                <!-- 2A. College Admin Login (Picks Registered College + Admin PIN) -->
                 <div id="subFormAdmin">
                     <div style="background: rgba(254, 243, 199, 0.9); border: 1px solid #fde68a; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #92400e; font-weight: 700; line-height: 1.4;">
-                        🏛️ <b>College Admin Portal:</b> Enter the Admin PIN you created during College Sign Up to manage canteens, edit menus, and view financial ledgers.
+                        🏛️ <b>College Admin Portal:</b> Select your registered college and enter your Admin PIN to manage canteens, menus, and financial ledgers.
+                    </div>
+                    <div class="form-group">
+                        <label>Select Registered College *</label>
+                        <select class="form-control" id="loginAdminCollegeSelect" style="font-weight: 700;"></select>
                     </div>
                     <div class="form-group">
                         <label>College Admin PIN *</label>
@@ -948,45 +999,45 @@
                     <button class="checkout-btn" onclick="completeAdminLogin()" style="background: #1e293b; margin-top: 6px;">Open College Admin Studio 🛠️</button>
                 </div>
 
-                <!-- 2B. Counter Staff Login -->
+                <!-- 2B. Counter Staff Login (Step 1: Asks ONLY Registered College + Counter PIN, NOT Canteen) -->
                 <div id="subFormStaff" style="display: none;">
                     <div style="background: rgba(236, 253, 245, 0.9); border: 1px solid #a7f3d0; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #065f46; font-weight: 700; line-height: 1.4;">
-                        👨‍🍳 <b>Counter Staff Portal:</b> Manage live orders, check high-to-low food prep counts, verify 2-digit PINs, and edit menu items.
+                        👨‍🍳 <b>Counter Staff Login:</b> Select your registered college and enter the Counter PIN. After logging in, select your canteen and view required dishes.
                     </div>
                     <div class="form-group">
-                        <label>Select Canteen *</label>
-                        <select class="form-control" id="loginStaffCanteen" style="font-weight: 700;"></select>
+                        <label>Select Registered College *</label>
+                        <select class="form-control" id="loginStaffCollege" style="font-weight: 700;"></select>
                     </div>
                     <div class="form-group">
                         <label>Counter Staff PIN *</label>
                         <input type="password" class="form-control" id="loginStaffPin" placeholder="Enter Counter Staff PIN">
                     </div>
-                    <button class="checkout-btn" onclick="completeStaffLogin()" style="background: #059669; margin-top: 6px;">Open Counter & Menu Studio 🧾</button>
+                    <button class="checkout-btn" onclick="completeStaffLogin()" style="background: #059669; margin-top: 6px;">Login to Counter Portal &rarr;</button>
                 </div>
 
-                <!-- 2C. College Sign Up (Create Custom Admin PIN & Counter PIN with Email OTP) -->
+                <!-- 2C. College Sign Up (Register Any College + Create Custom Admin PIN & Counter PIN) -->
                 <div id="subFormSignup" style="display: none;">
                     <div style="background: rgba(224, 231, 255, 0.9); border: 1px solid #c7d2fe; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: #3730a3; font-weight: 700; line-height: 1.4;">
-                        📝 <b>College Sign Up & PIN Setup:</b> Verify your official email via OTP and create your own custom <b>Admin PIN</b> and <b>Counter Staff PIN</b>.
+                        📝 <b>College Sign Up & PIN Setup:</b> Register your college, verify via Email OTP, and create your custom <b>Admin PIN</b> and <b>Counter Staff PIN</b>.
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <div class="form-group">
                             <label>College Name *</label>
-                            <input type="text" class="form-control" id="signupCollegeName" value="VPIET" placeholder="VPIET">
+                            <input type="text" class="form-control" id="signupCollegeName" placeholder="e.g. VPIET">
                         </div>
                         <div class="form-group">
                             <label>Primary Canteen Name *</label>
-                            <input type="text" class="form-control" id="signupInitialCanteen" value="VPIET Main Canteen" placeholder="Main Canteen">
+                            <input type="text" class="form-control" id="signupInitialCanteen" placeholder="e.g. Main">
                         </div>
                     </div>
                     <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 8px;">
                         <div class="form-group">
                             <label>Admin Email ID (Receives OTP) *</label>
-                            <input type="email" class="form-control" id="signupAdminEmail" placeholder="admin@vpiet.ac.in">
+                            <input type="email" class="form-control" id="signupAdminEmail" placeholder="admin@college.ac.in">
                         </div>
                         <div class="form-group">
                             <label>Official UPI ID (VPA) *</label>
-                            <input type="text" class="form-control" id="signupInitialUpi" placeholder="vpietcanteen@sbi">
+                            <input type="text" class="form-control" id="signupInitialUpi" placeholder="canteen@sbi">
                         </div>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
@@ -1007,7 +1058,7 @@
                         <label style="font-size: 11px; font-weight: 900; color: #065f46; display: block; margin-bottom: 6px;" id="collegeOtpSentLabel">🔒 Enter 6-Digit OTP Received in Admin Email</label>
                         <div style="display: flex; gap: 8px;">
                             <input type="text" class="form-control" id="collegeOtpInput" maxlength="6" placeholder="Enter 6-digit OTP" style="font-family: monospace; font-size: 16px; font-weight: 900; letter-spacing: 2px; text-align: center;">
-                            <button type="button" class="checkout-btn" id="verifyCollegeOtpBtn" onclick="verifyCollegeOtpAndCreate()" style="background: #10b981; width: auto; padding: 0 18px; white-space: nowrap;">✔ Verify & Save PINs</button>
+                            <button type="button" class="checkout-btn" id="verifyCollegeOtpBtn" onclick="verifyCollegeOtpAndCreate()" style="background: #10b981; width: auto; padding: 0 18px; white-space: nowrap;">✔ Verify & Register</button>
                         </div>
                     </div>
                 </div>
@@ -1021,8 +1072,8 @@
         <div class="brand">
             <div class="brand-logo" onclick="handleCreatorLogoTap()" title="CampusBites">🍴</div>
             <div class="brand-title">
-                <h1>CampusBites • VPIET</h1>
-                <p id="headerSubTitle">Official VPIET Canteen Network</p>
+                <h1 id="headerBrandTitle">CampusBites</h1>
+                <p id="headerSubTitle">Official Canteen Pass Network</p>
             </div>
         </div>
         <div class="header-actions">
@@ -1033,7 +1084,7 @@
 
     <!-- STUDENT NAVIGATION TABS -->
     <div class="nav-tabs" id="studentNavTabs">
-        <button class="tab-btn active" onclick="switchTab('menu')">🍔 VPIET Canteens & Menu</button>
+        <button class="tab-btn active" onclick="switchTab('menu')">🍔 Canteens & Menu</button>
         <button class="tab-btn" onclick="switchTab('receipts')">🧾 My Digital Receipts</button>
     </div>
 
@@ -1048,63 +1099,151 @@
     <!-- MAIN CONTAINER -->
     <div class="container">
 
-        <!-- STUDENT TAB 1: VPIET CANTEENS & MENU -->
+        <!-- COUNTER STAFF POST-LOGIN STEP 2: ONLY SHOWS WHICH CANTEEN & REQUIRED DISHES OF THAT CANTEEN -->
+        <div id="tab-counter-canteen-gate" class="tab-content">
+            <div class="counter-canteen-gate-card">
+                <div style="text-align: center; margin-bottom: 18px;">
+                    <div style="font-size: 36px; margin-bottom: 6px;">👨‍🍳</div>
+                    <span style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #059669; letter-spacing: 0.6px;" id="staffGateCollegeBadge">COLLEGE COUNTER PORTAL</span>
+                    <h2 style="font-size: 20px; font-weight: 900; color: var(--text-main); margin-top: 2px;">Select Canteen & Verify PIN</h2>
+                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 4px;">
+                        Select your canteen to view its required food preparation and enter your PIN to access all counter & menu tools.
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label>Select Canteen *</label>
+                    <select class="form-control" id="staffGateCanteenSelect" onchange="updateStaffGateRequirementsPreview()" style="font-weight: 800; font-size: 14px;"></select>
+                </div>
+
+                <!-- Live Preview of Required Food & Orders for Selected Canteen -->
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 14px; padding: 14px; margin: 14px 0;">
+                    <div style="font-size: 11px; font-weight: 900; color: #065f46; text-transform: uppercase; margin-bottom: 8px;">
+                        🍲 Required Food to Prepare for Selected Canteen
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                        <div style="background: #ffffff; padding: 8px 12px; border-radius: 10px; border: 1px solid #dcfce7;">
+                            <span style="font-size: 10px; color: var(--text-muted); font-weight: 800; display: block;">PENDING ORDERS</span>
+                            <strong style="font-size: 18px; color: var(--primary);" id="staffGatePendingOrders">0</strong>
+                        </div>
+                        <div style="background: #ffffff; padding: 8px 12px; border-radius: 10px; border: 1px solid #dcfce7;">
+                            <span style="font-size: 10px; color: var(--text-muted); font-weight: 800; display: block;">PORTIONS TO PREPARE</span>
+                            <strong style="font-size: 18px; color: #d97706;" id="staffGatePendingPortions">0</strong>
+                        </div>
+                    </div>
+                    <div id="staffGateTopDishesPreview" style="font-size: 12px; color: var(--text-main); font-weight: 700;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Enter Canteen / Counter PIN *</label>
+                    <input type="password" class="form-control" id="staffGatePinInput" placeholder="Enter Counter PIN">
+                </div>
+
+                <button class="checkout-btn" onclick="unlockCounterCanteenWorkspace()" style="background: #059669; margin-top: 8px;">
+                    🔓 Enter Canteen & Access All Tools
+                </button>
+            </div>
+        </div>
+
+        <!-- STUDENT TAB 1: CANTEENS & MENU -->
         <div id="tab-menu" class="tab-content active">
             <!-- Quick Return Bar when Admin or Counter is previewing Student View -->
             <div id="previewReturnBanner" style="display: none; background: #0f172a; color: white; padding: 12px 18px; border-radius: 14px; margin-bottom: 14px; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <span style="font-size: 12px; font-weight: 800; color: #38bdf8;">👀 Previewing VPIET Student View</span>
+                <span style="font-size: 12px; font-weight: 800; color: #38bdf8;">👀 Previewing Student View</span>
                 <div style="display: flex; gap: 8px;">
                     <button onclick="switchAdminTab('admin-studio')" style="background: var(--primary); color: white; border: none; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">🏗️ Back to Edit Menu & Offers</button>
                     <button onclick="switchAdminTab('admin-ledger')" style="background: #059669; color: white; border: none; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">👨‍🍳 Back to Counter Ledger</button>
                 </div>
             </div>
 
-            <!-- PERFECTLY CENTERED UNIVERSAL QR CODE BANNER TO JOIN ALL CANTEENS OF VPIET -->
-            <div class="pass-banner">
-                <div class="qr-banner-left">
-                    <div class="qr-frame-box">
-                        <img id="studentViewPassQrImg" src="" alt="Join All VPIET Canteens QR" />
+            <!-- STATE A: NEW STUDENT ACCOUNT (NOT JOINED THROUGH QR CODE YET) -->
+            <div id="studentNoCollegeJoinedBox" style="display: none;">
+                <div class="scan-college-card">
+                    <div style="font-size: 46px; margin-bottom: 10px;">📷</div>
+                    <span style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: var(--primary); letter-spacing: 0.8px;">No College Canteen Joined Yet</span>
+                    <h2 style="font-size: 22px; font-weight: 900; color: var(--text-main); margin-top: 4px;">Scan to Add College Canteen</h2>
+                    <p style="font-size: 13px; color: var(--text-muted); font-weight: 600; margin: 8px 0 18px 0; line-height: 1.5;">
+                        Scan your college's official QR code to add and unlock all canteens for your college.
+                    </p>
+
+                    <!-- Live Camera Video QR Scanner Box -->
+                    <div class="camera-scanner-box" id="liveCameraScannerBox">
+                        <video id="qrVideoElement" playsinline muted></video>
+                        <button type="button" onclick="stopLiveCameraScanner()" style="position: absolute; top: 8px; right: 8px; background: rgba(239,68,68,0.9); color: #fff; border: none; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;">✕ Close Camera</button>
                     </div>
-                    <div class="qr-banner-info">
-                        <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--primary); letter-spacing: 0.6px; display: block;">📲 Single Universal QR • All VPIET Canteens</span>
-                        <h3 id="studentPassTitle" style="font-size: 16px; font-weight: 900; color: var(--text-main); margin-top: 2px;">Scan to Join All VPIET Canteens</h3>
-                        <p style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 2px;" id="studentPassDesc">One QR code gives instant access to every canteen & food court in VPIET.</p>
-                        <div class="qr-banner-actions" style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
-                            <button onclick="copyCollegeInviteLink()" style="background: var(--primary); color: white; border: none; padding: 7px 13px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;">📋 Copy Join Link</button>
-                            <button onclick="downloadVpietQrCode()" style="background: #0f172a; color: white; border: none; padding: 7px 13px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;">⬇️ Download QR</button>
+
+                    <input type="file" id="qrScannerFileInput" accept="image/*" style="display: none;" onchange="handleStudentQrImageScan(event)">
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+                        <button class="checkout-btn" onclick="startLiveCameraScanner()" style="font-size: 13px; padding: 13px;">
+                            📷 Scan QR with Camera
+                        </button>
+                        <button class="checkout-btn" onclick="document.getElementById('qrScannerFileInput').click()" style="background: #0f172a; font-size: 13px; padding: 13px;">
+                            🖼️ Upload QR Image
+                        </button>
+                    </div>
+
+                    <div style="border-top: 1px dashed #cbd5e1; padding-top: 14px; margin-top: 6px; text-align: left;">
+                        <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Or Paste College QR Link / Code</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" class="form-control" id="manualQrLinkInput" placeholder="Paste QR link or college code">
+                            <button class="checkout-btn" onclick="handleManualQrJoin()" style="width: auto; padding: 0 18px; background: var(--success); white-space: nowrap;">Add Canteen</button>
                         </div>
                     </div>
                 </div>
-                <div style="background: rgba(255, 255, 255, 0.92); padding: 12px 16px; border-radius: 14px; border: 1px solid #c7d2fe; text-align: right; min-width: 170px;">
-                    <span style="font-size: 9px; color: var(--text-muted); display: block; text-transform: uppercase; font-weight: 800;">Official VPIET VPA</span>
-                    <span style="font-size: 13px; font-weight: 900; color: var(--primary);" id="studentActiveUpi">vpietcanteen@sbi</span>
+            </div>
+
+            <!-- STATE B: STUDENT HAS JOINED A COLLEGE VIA QR CODE -->
+            <div id="studentJoinedCollegeContent">
+                <!-- PERFECTLY CENTERED UNIVERSAL QR CODE BANNER TO JOIN ALL CANTEENS OF THIS COLLEGE -->
+                <div class="pass-banner">
+                    <div class="qr-banner-left">
+                        <div class="qr-frame-box">
+                            <img id="studentViewPassQrImg" src="" alt="Join College Canteens QR" />
+                        </div>
+                        <div class="qr-banner-info">
+                            <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--primary); letter-spacing: 0.6px; display: block;">📲 Single Universal QR • All College Canteens</span>
+                            <h3 id="studentPassTitle" style="font-size: 16px; font-weight: 900; color: var(--text-main); margin-top: 2px;">Scan to Join Canteens</h3>
+                            <p style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 2px;" id="studentPassDesc">One QR code gives instant access to every canteen in this college.</p>
+                            <div class="qr-banner-actions" style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+                                <button onclick="copyCollegeInviteLink()" style="background: var(--primary); color: white; border: none; padding: 7px 13px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;">📋 Copy Join Link</button>
+                                <button onclick="downloadCollegeQrCode()" style="background: #0f172a; color: white; border: none; padding: 7px 13px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;">⬇️ Download QR</button>
+                                <button onclick="switchStudentCollegeQr()" style="background: #f1f5f9; color: var(--text-main); border: 1px solid #cbd5e1; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;">📷 Scan Another QR</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.92); padding: 12px 16px; border-radius: 14px; border: 1px solid #c7d2fe; text-align: right; min-width: 170px;">
+                        <span style="font-size: 9px; color: var(--text-muted); display: block; text-transform: uppercase; font-weight: 800;">Official Canteen VPA</span>
+                        <span style="font-size: 13px; font-weight: 900; color: var(--primary);" id="studentActiveUpi">canteen@sbi</span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="cat-scroll" id="canteenPillsContainer" style="margin-bottom: 14px;"></div>
+                <!-- CANTEEN PILLS: SHOWS ONLY "Main" OR ENTERED NAME (NO NUMBERS) -->
+                <div class="cat-scroll" id="canteenPillsContainer" style="margin-bottom: 14px;"></div>
 
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" placeholder="Search dish, price, or category..." oninput="renderMenu()">
-            </div>
-
-            <div class="ads-section">
-                <div class="ads-header">
-                    <h3>🔥 VPIET Specials & Item Offers</h3>
-                    <span style="font-size: 11px; color: var(--primary); font-weight: 700;">Swipe ↔</span>
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search dish, price, or category..." oninput="renderMenu()">
                 </div>
-                <div class="ads-slider" id="offersSlider"></div>
-            </div>
 
-            <div class="cat-scroll" id="categoryPillsContainer">
-                <button class="cat-pill active" data-cat="All" onclick="filterCategory('All')">All Items</button>
-                <button class="cat-pill" data-cat="Tiffin" onclick="filterCategory('Tiffin')">Tiffin & Breakfast</button>
-                <button class="cat-pill" data-cat="Lunch" onclick="filterCategory('Lunch')">Lunch & Biryani</button>
-                <button class="cat-pill" data-cat="Snacks" onclick="filterCategory('Snacks')">Snacks</button>
-                <button class="cat-pill" data-cat="Beverages" onclick="filterCategory('Beverages')">Beverages</button>
-            </div>
+                <div class="ads-section">
+                    <div class="ads-header">
+                        <h3>🔥 Campus Specials & Item Offers</h3>
+                        <span style="font-size: 11px; color: var(--primary); font-weight: 700;">Swipe ↔</span>
+                    </div>
+                    <div class="ads-slider" id="offersSlider"></div>
+                </div>
 
-            <div class="food-grid" id="foodGrid"></div>
+                <div class="cat-scroll" id="categoryPillsContainer">
+                    <button class="cat-pill active" data-cat="All" onclick="filterCategory('All')">All Items</button>
+                    <button class="cat-pill" data-cat="Tiffin" onclick="filterCategory('Tiffin')">Tiffin & Breakfast</button>
+                    <button class="cat-pill" data-cat="Lunch" onclick="filterCategory('Lunch')">Lunch & Biryani</button>
+                    <button class="cat-pill" data-cat="Snacks" onclick="filterCategory('Snacks')">Snacks</button>
+                    <button class="cat-pill" data-cat="Beverages" onclick="filterCategory('Beverages')">Beverages</button>
+                </div>
+
+                <div class="food-grid" id="foodGrid"></div>
+            </div>
         </div>
 
         <!-- STUDENT TAB 2: MY DIGITAL RECEIPTS -->
@@ -1112,12 +1251,12 @@
             <div id="receiptsContainer"></div>
         </div>
 
-        <!-- ADMIN & COUNTER TAB 1: VPIET CANTEEN DESIGNER, EDIT MENU, QR PASS & OFFERS -->
+        <!-- ADMIN & COUNTER TAB 1: CANTEEN DESIGNER, EDIT MENU, QR PASS & OFFERS -->
         <div id="tab-admin-studio" class="tab-content">
             <div style="background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(18px); color: white; padding: 18px 22px; border-radius: var(--radius); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);">
                 <div>
-                    <span id="adminRoleBadge" style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 800;">VPIET Admin & Counter Studio (Live Synced)</span>
-                    <h2 id="adminStudioTitle" style="font-size: 20px; font-weight: 900; margin-top: 2px;">Managing: VPIET</h2>
+                    <span id="adminRoleBadge" style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 800;">Admin & Counter Studio (Live Synced)</span>
+                    <h2 id="adminStudioTitle" style="font-size: 20px; font-weight: 900; margin-top: 2px;">Managing: College</h2>
                 </div>
                 <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                     <button onclick="openFoodPrepModal()" style="background: #f59e0b; color: #ffffff; border: none; padding: 9px 14px; border-radius: 10px; font-size: 12px; font-weight: 900; cursor: pointer;">🍲 Food Prep Count</button>
@@ -1130,29 +1269,29 @@
             <div class="admin-section-divider">
                 <div class="qr-banner-left">
                     <div class="qr-frame-box">
-                        <img id="adminPassQrImg" src="" alt="VPIET Pass QR" />
+                        <img id="adminPassQrImg" src="" alt="College Pass QR" />
                     </div>
                     <div class="qr-banner-info">
-                        <span style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">Single Universal QR Code for All VPIET Canteens</span>
-                        <h3 style="font-size: 16px; font-weight: 900; color: var(--text-main); margin-top: 2px;">Scan to Join All VPIET Canteens</h3>
+                        <span style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">Single Universal QR Code for All Canteens</span>
+                        <h3 style="font-size: 16px; font-weight: 900; color: var(--text-main); margin-top: 2px;" id="adminQrHeadingText">Scan to Join All Canteens</h3>
                         <div style="font-size: 12px; color: var(--text-muted); font-family: monospace; margin-top: 4px; word-break: break-all;" id="adminPassLinkText">https://campus-bites-liart.vercel.app/?college=VPIET</div>
                     </div>
                 </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <button onclick="copyCollegeInviteLink()" style="background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer;">📋 Copy Link</button>
-                    <button onclick="downloadVpietQrCode()" style="background: #0f172a; color: white; border: none; padding: 10px 16px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer;">⬇️ Download QR</button>
+                    <button onclick="downloadCollegeQrCode()" style="background: #0f172a; color: white; border: none; padding: 10px 16px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer;">⬇️ Download QR</button>
                 </div>
             </div>
 
             <div class="admin-grid">
-                <!-- STEP 1: VPIET CANTEENS -->
+                <!-- STEP 1: CANTEENS -->
                 <div class="admin-panel" id="canteenManagerPanel">
-                    <h3>🏪 1. VPIET Canteens & UPI VPAs</h3>
-                    <p class="sub">All canteens added here are linked to the single VPIET QR code.</p>
+                    <h3>🏪 1. Canteens & UPI VPAs</h3>
+                    <p class="sub">Enter canteen name (e.g. Main, Food Court) and official UPI ID.</p>
 
                     <div class="form-group">
                         <label>Canteen Name *</label>
-                        <input type="text" class="form-control" id="newCanteenName" placeholder="e.g. VPIET Food Court">
+                        <input type="text" class="form-control" id="newCanteenName" placeholder="e.g. Main">
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <div class="form-group">
@@ -1161,22 +1300,22 @@
                         </div>
                         <div class="form-group">
                             <label>Official UPI ID (VPA) *</label>
-                            <input type="text" class="form-control" id="newCanteenUpi" placeholder="vpietcanteen@sbi">
+                            <input type="text" class="form-control" id="newCanteenUpi" placeholder="canteen@sbi">
                         </div>
                     </div>
-                    <button class="checkout-btn" onclick="adminAddCanteen()" style="padding: 10px; font-size: 13px; margin-bottom: 12px;">+ Add VPIET Canteen</button>
+                    <button class="checkout-btn" onclick="adminAddCanteen()" style="padding: 10px; font-size: 13px; margin-bottom: 12px;">+ Add Canteen</button>
                     <div class="item-list-box" id="adminCanteenList"></div>
                 </div>
 
-                <!-- STEP 2: VPIET MENU EDITOR -->
+                <!-- STEP 2: MENU EDITOR -->
                 <div class="admin-panel">
-                    <h3>🍽️ 2. Edit VPIET Menu & Rates</h3>
+                    <h3>🍽️ 2. Edit Menu & Rates</h3>
                     <p class="sub">Changes sync automatically to all student phones.</p>
 
                     <input type="hidden" id="editingMenuItemId" value="">
 
                     <div class="form-group">
-                        <label>Select VPIET Canteen *</label>
+                        <label>Select Canteen *</label>
                         <select class="form-control" id="adminMenuCanteenSelect" onchange="renderAdminMenuList()" style="font-weight: 700; background: #eef2ff;"></select>
                     </div>
 
@@ -1218,14 +1357,14 @@
                         <span style="font-size: 16px; font-weight: 900; line-height: 1;">+</span> Save / Update Menu Item
                     </button>
 
-                    <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin: 8px 0 4px 0;">Existing VPIET Dishes (Click to Edit)</label>
+                    <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin: 8px 0 4px 0;">Existing Dishes (Click to Edit)</label>
                     <div class="item-list-box" id="adminMenuItemsList"></div>
                 </div>
 
-                <!-- STEP 3: VPIET OFFER PUBLISHER -->
+                <!-- STEP 3: OFFER PUBLISHER -->
                 <div class="admin-panel">
-                    <h3>📢 3. Post & Edit VPIET Offers</h3>
-                    <p class="sub">Attach special discounts to VPIET dishes.</p>
+                    <h3>📢 3. Post & Edit Item Offers</h3>
+                    <p class="sub">Attach special discounts to dishes.</p>
 
                     <input type="hidden" id="selectedOfferTargetItemId" value="">
 
@@ -1244,7 +1383,7 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <div class="form-group">
                             <label>Badge Title</label>
-                            <input type="text" class="form-control" id="newOfferBadge" value="🔥 VPIET Offer" placeholder="Badge">
+                            <input type="text" class="form-control" id="newOfferBadge" value="🔥 Special Offer" placeholder="Badge">
                         </div>
                         <div class="form-group">
                             <label>Discount (₹) *</label>
@@ -1263,24 +1402,24 @@
                         <input type="text" class="form-control" id="newOfferImg" value="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80" placeholder="Image URL">
                     </div>
 
-                    <button class="checkout-btn" onclick="adminPostSingleItemOffer()" style="padding: 12px; font-size: 14px; background: #f59e0b; margin-bottom: 12px;">+ Publish VPIET Offer Live</button>
+                    <button class="checkout-btn" onclick="adminPostSingleItemOffer()" style="padding: 12px; font-size: 14px; background: #f59e0b; margin-bottom: 12px;">+ Publish Offer Live</button>
                     <div class="item-list-box" id="adminOffersList"></div>
                 </div>
             </div>
         </div>
 
-        <!-- ADMIN & COUNTER TAB 2: VPIET FINANCIAL STATEMENT & COUNTER LEDGER -->
+        <!-- ADMIN & COUNTER TAB 2: FINANCIAL STATEMENT & COUNTER LEDGER -->
         <div id="tab-admin-ledger" class="tab-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <div>
-                    <h2 style="font-size: 20px; font-weight: 900;">👨‍🍳 VPIET Orders & Bank Statement Counter Ledger</h2>
+                    <h2 style="font-size: 20px; font-weight: 900;" id="ledgerHeadingTitle">👨‍🍳 Orders & Bank Statement Counter Ledger</h2>
                     <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Match the student's <b>2-Digit Handshake PIN</b> & line-by-line items before serving food.</p>
                 </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <!-- POPUP ICON BUTTON FOR ORDERED FOOD PREPARATION RANKING -->
                     <button onclick="openFoodPrepModal()" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #ffffff; border: none; padding: 9px 16px; border-radius: 10px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
                         🍲 Food Prep Count (High &rarr; Low)
                     </button>
+                    <button id="changeStaffCanteenBtn" onclick="showCounterCanteenGate()" style="display: none; background: #0f172a; color: #38bdf8; border: none; padding: 9px 14px; border-radius: 10px; font-weight: 800; cursor: pointer;">🏪 Switch Canteen</button>
                     <button id="backToStudioBtn" onclick="switchAdminTab('admin-studio')" style="background:#eef2ff; color:var(--primary); border:1px solid #c7d2fe; padding:9px 16px; border-radius:10px; font-weight:800; cursor:pointer;">🏗️ Open Menu & Offer Editor</button>
                 </div>
             </div>
@@ -1288,7 +1427,7 @@
             <!-- Instant Counter Token + 2-Digit PIN Anti-Scam Verifier Bar -->
             <div class="glass-surface-strong" style="padding: 16px; border-radius: 16px; margin-bottom: 18px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; border: 1px solid #a7f3d0;">
                 <div style="font-size: 13px; font-weight: 800; color: #065f46;">
-                    🛡️ Instant VPIET Receipt Verifier <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; display: block;">Enter Token # and 2-Digit Handshake PIN to verify authenticity</span>
+                    🛡️ Instant Receipt Verifier <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; display: block;">Enter Token # and 2-Digit Handshake PIN to verify authenticity</span>
                 </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
                     <input type="text" id="verifyTokenInput" class="form-control" placeholder="Token (e.g. TK-402)" style="width: 150px; padding: 8px 12px;">
@@ -1299,7 +1438,7 @@
 
             <div class="finance-summary-grid">
                 <div class="finance-card">
-                    <h4>Today's VPIET Received Amount</h4>
+                    <h4>Today's Received Amount</h4>
                     <div class="amount" id="todayRevenueDisplay">₹0</div>
                     <p style="font-size: 11px; color: var(--success); margin-top: 4px; font-weight: 800;">● Verified Collections</p>
                 </div>
@@ -1317,7 +1456,7 @@
 
             <div class="search-box" style="margin-bottom: 16px;">
                 <span class="search-icon">🔍</span>
-                <input type="text" class="form-control" id="staffSearchInput" placeholder="Filter VPIET ledger by Token #, Mobile #, PIN or Name..." oninput="renderStaffCounter()">
+                <input type="text" class="form-control" id="staffSearchInput" placeholder="Filter ledger by Token #, Mobile #, PIN or Name..." oninput="renderStaffCounter()">
             </div>
 
             <div class="statement-table-wrapper">
@@ -1342,37 +1481,37 @@
             <div style="background: linear-gradient(135deg, #312e81 0%, #4f46e5 100%); color: white; padding: 22px 28px; border-radius: var(--radius); margin-bottom: 20px; box-shadow: 0 10px 25px rgba(49, 46, 129, 0.25);">
                 <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 800;">👑 Hidden App Creator Portal (Visible Only to You)</span>
                 <h2 style="font-size: 24px; font-weight: 900; margin-top: 4px;">Master System Creator & Security Audit Dashboard</h2>
-                <p style="font-size: 13px; color: #cbd5e1; margin-top: 6px;">Inspect all canteens, custom Admin/Counter PINs, cryptographic receipt hashes, and live cross-device synchronization.</p>
+                <p style="font-size: 13px; color: #cbd5e1; margin-top: 6px;">Inspect all registered colleges, canteens, custom Admin/Counter PINs, and live cross-device synchronization.</p>
             </div>
 
             <div class="finance-summary-grid">
                 <div class="finance-card">
-                    <h4>Active Institution</h4>
-                    <div class="amount" id="auditorTotalColleges">VPIET</div>
-                    <p style="font-size: 11px; color: var(--primary); margin-top: 4px; font-weight: 800;">Universal QR Active</p>
+                    <h4>Registered Colleges</h4>
+                    <div class="amount" id="auditorTotalColleges">1</div>
+                    <p style="font-size: 11px; color: var(--primary); margin-top: 4px; font-weight: 800;">Active Institutions</p>
                 </div>
                 <div class="finance-card">
-                    <h4>VPIET Canteens & Stalls</h4>
+                    <h4>Total Canteens & Stalls</h4>
                     <div class="amount" id="auditorTotalCanteens">1</div>
                     <p style="font-size: 11px; color: var(--success); margin-top: 4px; font-weight: 800;">Verified VPAs Locked</p>
                 </div>
                 <div class="finance-card">
-                    <h4>VPIET Total Revenue</h4>
+                    <h4>Global Platform Revenue</h4>
                     <div class="amount" id="auditorGlobalRevenue">₹0</div>
-                    <p style="font-size: 11px; color: var(--accent); margin-top: 4px; font-weight: 800;">All VPIET Canteens</p>
+                    <p style="font-size: 11px; color: var(--accent); margin-top: 4px; font-weight: 800;">All Canteens</p>
                 </div>
             </div>
 
             <div class="admin-panel" style="margin-bottom: 20px;">
                 <h3>🏛️ Institutional Canteen & PIN Directory (Creator View)</h3>
-                <p class="sub">Complete breakdown of VPIET canteens, locked VPA handles, custom Admin/Counter PINs, and menu item counts.</p>
+                <p class="sub">Complete breakdown of registered colleges, canteens, locked VPA handles, custom Admin/Counter PINs, and menu item counts.</p>
                 <div class="statement-table-wrapper" style="margin-top: 10px;">
                     <table class="statement-table">
                         <thead>
                             <tr>
                                 <th>Institution & Custom PINs</th>
                                 <th>Universal Join QR Link</th>
-                                <th>Active VPIET Canteens</th>
+                                <th>Active Canteens</th>
                                 <th>Locked Official VPAs</th>
                                 <th>Total Menu Items</th>
                             </tr>
@@ -1457,13 +1596,13 @@
 
         <!-- SYMMETRICALLY CENTERED UPI QR CODE IN CHECKOUT DRAWER -->
         <div id="qrDisplayContainer">
-            <p style="font-size: 13px; font-weight: 900; color: #059669; margin-bottom: 4px;">🛡️ Official VPIET UPI QR Code</p>
+            <p style="font-size: 13px; font-weight: 900; color: #059669; margin-bottom: 4px;">🛡️ Official Canteen UPI QR Code</p>
             <div class="qr-checkout-frame">
                 <img id="upiQrImg" src="" alt="UPI QR" />
             </div>
-            <p style="font-size: 12px; color: var(--text-main); margin-top: 4px; font-weight: 800;">Official VPA: <span id="qrVpaText" style="color: var(--primary);">vpietcanteen@sbi</span></p>
+            <p style="font-size: 12px; color: var(--text-main); margin-top: 4px; font-weight: 800;">Official VPA: <span id="qrVpaText" style="color: var(--primary);">canteen@sbi</span></p>
             <div style="background: #fef3c7; border: 1px solid #fde68a; color: #92400e; font-size: 11px; font-weight: 800; padding: 6px 10px; border-radius: 8px; margin-top: 6px;">
-                ⚠️ Verify banking name shows <u id="qrMerchantNameText">VPIET OFFICIAL</u> in GPay/PhonePe before entering UPI PIN.
+                ⚠️ Verify banking name shows <u id="qrMerchantNameText">CANTEEN OFFICIAL</u> in GPay/PhonePe before entering UPI PIN.
             </div>
         </div>
 
@@ -1490,21 +1629,18 @@
     <!-- JAVASCRIPT LOGIC -->
     <script>
         const VERCEL_DOMAIN = "https://campus-bites-liart.vercel.app";
-        const LOCKED_COLLEGE = "VPIET";
-        const UNIVERSAL_JOIN_URL = `${VERCEL_DOMAIN}/?college=VPIET`;
-        const MQTT_SYNC_TOPIC = "campusbites/vpiet_exclusive_sync_2026/state_v1";
+        const MQTT_SYNC_TOPIC = "campusbites/vpiet_exclusive_sync_2026/state_v3";
 
         /* =====================================================================
-           1. DEAD-CENTER SYMMETRICAL QR CODE GENERATOR (Fixes QRious Padding Bug)
+           1. DEAD-CENTER SYMMETRICAL QR CODE GENERATOR
            ===================================================================== */
         function generateQrDataUrl(textData, sizePx = 240) {
-            const cleanText = String(textData || UNIVERSAL_JOIN_URL).trim();
+            const cleanText = String(textData || VERCEL_DOMAIN).trim();
             if (window.QRious) {
                 try {
                     const margin = Math.round(sizePx * 0.08);
                     const innerSize = sizePx - (margin * 2);
 
-                    // padding: null prevents QRious from shifting the QR matrix to the top-left corner
                     const rawQr = new QRious({
                         value: cleanText,
                         size: innerSize,
@@ -1529,18 +1665,24 @@
             return `https://api.qrserver.com/v1/create-qr-code/?size=${sizePx}x${sizePx}&margin=10&data=${encodeURIComponent(cleanText)}`;
         }
 
-        function downloadVpietQrCode() {
-            const dataUrl = generateQrDataUrl(UNIVERSAL_JOIN_URL, 420);
+        function getCollegeInviteUrl(colName) {
+            const target = colName || currentAdminCollege || currentUser.college || "VPIET";
+            return `${VERCEL_DOMAIN}/?college=${encodeURIComponent(target)}`;
+        }
+
+        function downloadCollegeQrCode() {
+            const col = (currentRole === 'admin' || currentRole === 'staff') ? currentAdminCollege : (currentUser.college || "VPIET");
+            const dataUrl = generateQrDataUrl(getCollegeInviteUrl(col), 420);
             const a = document.createElement('a');
             a.href = dataUrl;
-            a.download = "VPIET_All_Canteens_Join_QR.png";
+            a.download = `${col}_All_Canteens_Join_QR.png`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
         }
 
         /* =====================================================================
-           2. VPIET INITIALIZATION & CUSTOM ADMIN/STAFF PIN STORAGE
+           2. REGISTERED COLLEGES & CANTEENS INITIALIZATION
            ===================================================================== */
         const VPIET_DEFAULT_COLLEGE = {
             id: "col_vpiet",
@@ -1554,16 +1696,25 @@
 
         const VPIET_DEFAULT_CANTEEN = {
             id: "can_vpiet_main",
-            name: "VPIET Main Canteen",
+            name: "Main",
             college: "VPIET",
             location: "Main Block",
             upi: "vpietcanteen@sbi",
             merchant: "VPIET OFFICIAL"
         };
 
-        let storedColleges = JSON.parse(localStorage.getItem('cb_colleges')) || [VPIET_DEFAULT_COLLEGE];
-        let colleges = [storedColleges.find(c => c.name === LOCKED_COLLEGE) || VPIET_DEFAULT_COLLEGE];
+        let colleges = JSON.parse(localStorage.getItem('cb_colleges')) || [VPIET_DEFAULT_COLLEGE];
+        if (!Array.isArray(colleges) || colleges.length === 0) {
+            colleges = [VPIET_DEFAULT_COLLEGE];
+        }
         let canteens = JSON.parse(localStorage.getItem('cb_canteens')) || [VPIET_DEFAULT_CANTEEN];
+        if (!Array.isArray(canteens) || canteens.length === 0) {
+            canteens = [VPIET_DEFAULT_CANTEEN];
+        }
+        canteens.forEach(c => {
+            if (c.name === "VPIET Main Canteen") c.name = "Main";
+        });
+
         let menuItems = JSON.parse(localStorage.getItem('cb_menu')) || [];
         let offersEvents = JSON.parse(localStorage.getItem('cb_offers')) || [];
         let activeOrders = JSON.parse(localStorage.getItem('cb_orders')) || [];
@@ -1571,18 +1722,7 @@
         let dailySecurityWord = localStorage.getItem('cb_daily_word') || "VPIET-27";
         let lastStateTimestamp = Number(localStorage.getItem('cb_state_ts')) || 0;
 
-        function enforceVpietExclusiveState() {
-            const existingVpiet = colleges.find(c => c.name === LOCKED_COLLEGE) || VPIET_DEFAULT_COLLEGE;
-            colleges = [existingVpiet];
-            canteens = canteens.filter(c => c.college === LOCKED_COLLEGE);
-            if (canteens.length === 0) {
-                canteens = [VPIET_DEFAULT_CANTEEN];
-            }
-            menuItems = menuItems.filter(m => m.college === LOCKED_COLLEGE);
-            offersEvents = offersEvents.filter(e => e.college === LOCKED_COLLEGE);
-            activeOrders = activeOrders.filter(o => !o.collegePass || o.collegePass === LOCKED_COLLEGE);
-        }
-        enforceVpietExclusiveState();
+        let pendingQrCollege = "";
 
         /* =====================================================================
            3. HIDDEN APP CREATOR (AUDITOR) TRIGGER (5 TAPS ON 🍴 LOGO OR ?creator=1)
@@ -1620,8 +1760,8 @@
             }
             closeCreatorModal();
             currentRole = "auditor";
-            currentAdminCollege = LOCKED_COLLEGE;
-            document.getElementById('activeUserPill').innerText = `👑 Creator • VPIET`;
+            currentAdminCollege = colleges[0] ? colleges[0].name : "VPIET";
+            document.getElementById('activeUserPill').innerText = `👑 Creator`;
             document.getElementById('headerSubTitle').innerText = `App Creator Security & Sync Audit Portal`;
 
             document.getElementById('studentNavTabs').style.display = 'none';
@@ -1640,11 +1780,12 @@
            4. PERSISTENT SESSION STORAGE (STAYS LOGGED IN ON PAGE RELOAD)
            ===================================================================== */
         let currentRole = "student";
-        let currentUser = { rollNo: "STUDENT", name: "Student", email: "", phone: "", college: LOCKED_COLLEGE };
-        let currentAdminCollege = LOCKED_COLLEGE;
+        let currentUser = { rollNo: "STUDENT", name: "Student", email: "", phone: "", college: "" };
+        let currentAdminCollege = colleges[0] ? colleges[0].name : "VPIET";
         let currentStaffCanteen = "";
+        let isCounterCanteenUnlocked = false;
         let currentActiveTab = "menu";
-        let activeStudentCanteenFilter = "ALL";
+        let activeStudentCanteenFilter = "";
         let generatedStudentOtp = null;
         let generatedCollegeOtp = null;
         let prepFilterMode = "pending";
@@ -1662,6 +1803,7 @@
                 user: currentUser,
                 adminCollege: currentAdminCollege,
                 staffCanteen: currentStaffCanteen,
+                counterUnlocked: isCounterCanteenUnlocked,
                 activeTab: currentActiveTab
             };
             localStorage.setItem('cb_active_session', JSON.stringify(sessionObj));
@@ -1677,31 +1819,39 @@
 
                 currentRole = session.role || "student";
                 currentUser = session.user || currentUser;
-                currentAdminCollege = LOCKED_COLLEGE;
+                currentAdminCollege = session.adminCollege || (colleges[0] ? colleges[0].name : "VPIET");
                 currentStaffCanteen = session.staffCanteen || "";
+                isCounterCanteenUnlocked = Boolean(session.counterUnlocked);
                 currentActiveTab = session.activeTab || "menu";
+
+                if (currentRole === "student" && pendingQrCollege) {
+                    currentUser.college = pendingQrCollege;
+                    if (currentUser.phone && studentVault[currentUser.phone]) {
+                        studentVault[currentUser.phone].college = pendingQrCollege;
+                        saveState();
+                    }
+                }
 
                 document.getElementById('authGate').classList.add('hidden');
 
                 if (currentRole === "student") {
                     document.getElementById('activeUserPill').innerText = `🎓 ${currentUser.name} • ${currentUser.phone || currentUser.email}`;
-                    document.getElementById('headerSubTitle').innerText = `Logged in: ${currentUser.email || currentUser.phone}`;
+                    document.getElementById('headerSubTitle').innerText = currentUser.college ? `Joined College: ${currentUser.college}` : `Scan QR to Add College Canteen`;
                     document.getElementById('previewReturnBanner').style.display = 'none';
                     document.getElementById('studentNavTabs').style.display = 'flex';
                     document.getElementById('adminNavTabs').style.display = 'none';
                     updateStudentOrderFields();
                     refreshStudentPassEnvironment();
                     switchTab(currentActiveTab === 'receipts' ? 'receipts' : 'menu');
-                } else if (currentRole === "admin" || currentRole === "staff") {
-                    const pill = currentRole === "admin" ? `🏛️ Admin • VPIET` : `👨‍🍳 Counter • VPIET`;
-                    const sub = currentRole === "admin" ? `VPIET Administration Studio` : `VPIET Counter Desk, Menu & Offer Studio`;
-                    document.getElementById('activeUserPill').innerText = pill;
-                    document.getElementById('headerSubTitle').innerText = sub;
+                } else if (currentRole === "admin") {
+                    document.getElementById('activeUserPill').innerText = `🏛️ Admin • ${currentAdminCollege}`;
+                    document.getElementById('headerSubTitle').innerText = `${currentAdminCollege} Administration Studio`;
                     document.getElementById('studentNavTabs').style.display = 'none';
                     document.getElementById('adminNavTabs').style.display = 'flex';
                     document.getElementById('navBtnAdminStudio').style.display = 'inline-block';
                     document.getElementById('navBtnAdminLedger').style.display = 'inline-block';
                     document.getElementById('navBtnAuditorPortal').style.display = 'none';
+                    document.getElementById('changeStaffCanteenBtn').style.display = 'none';
                     document.getElementById('backToStudioBtn').style.display = 'inline-block';
                     refreshAdminStudio();
                     if (currentActiveTab === 'admin-ledger') {
@@ -1711,8 +1861,30 @@
                     } else {
                         switchAdminTab('admin-studio');
                     }
+                } else if (currentRole === "staff") {
+                    if (!isCounterCanteenUnlocked || !currentStaffCanteen) {
+                        showCounterCanteenGate();
+                    } else {
+                        document.getElementById('activeUserPill').innerText = `👨‍🍳 Counter • ${currentStaffCanteen} (${currentAdminCollege})`;
+                        document.getElementById('headerSubTitle').innerText = `Canteen: ${currentStaffCanteen} • ${currentAdminCollege}`;
+                        document.getElementById('studentNavTabs').style.display = 'none';
+                        document.getElementById('adminNavTabs').style.display = 'flex';
+                        document.getElementById('navBtnAdminStudio').style.display = 'inline-block';
+                        document.getElementById('navBtnAdminLedger').style.display = 'inline-block';
+                        document.getElementById('navBtnAuditorPortal').style.display = 'none';
+                        document.getElementById('changeStaffCanteenBtn').style.display = 'inline-block';
+                        document.getElementById('backToStudioBtn').style.display = 'inline-block';
+                        refreshAdminStudio();
+                        if (currentActiveTab === 'admin-studio') {
+                            switchAdminTab('admin-studio');
+                        } else if (currentActiveTab === 'menu') {
+                            switchTab('menu');
+                        } else {
+                            switchAdminTab('admin-ledger');
+                        }
+                    }
                 } else if (currentRole === "auditor") {
-                    document.getElementById('activeUserPill').innerText = `👑 Creator • VPIET`;
+                    document.getElementById('activeUserPill').innerText = `👑 Creator`;
                     document.getElementById('headerSubTitle').innerText = `App Creator Security & Sync Audit Portal`;
                     document.getElementById('studentNavTabs').style.display = 'none';
                     document.getElementById('adminNavTabs').style.display = 'flex';
@@ -1730,31 +1902,51 @@
         }
 
         function logoutAndOpenAuthGate() {
+            stopLiveCameraScanner();
             localStorage.removeItem('cb_active_session');
+            isCounterCanteenUnlocked = false;
             document.getElementById('prepFloatingFab').classList.remove('visible');
-            populateStaffCanteenSelect();
+            renderRegisteredCollegeSelects();
             document.getElementById('authGate').classList.remove('hidden');
         }
 
         /* =====================================================================
            5. COUNTER FOOD PREPARATION RANKING POPUP (HIGHEST TO LOWEST)
            ===================================================================== */
+        function getRelevantOrdersForCurrentOperator() {
+            return activeOrders.filter(o => {
+                const matchesCol = (!currentAdminCollege || !o.collegePass || o.collegePass === currentAdminCollege);
+                if (!matchesCol) return false;
+                if (currentRole === 'staff' && currentStaffCanteen) {
+                    const hasCanteenItem = Array.isArray(o.items) && o.items.some(it => it.canteen === currentStaffCanteen);
+                    const matchesOrderCan = (o.orderedCanteen && o.orderedCanteen.includes(currentStaffCanteen));
+                    return hasCanteenItem || matchesOrderCan;
+                }
+                return true;
+            });
+        }
+
         function updateFloatingPrepButtonVisibility() {
             const fab = document.getElementById('prepFloatingFab');
             const badge = document.getElementById('prepFabBadgeCount');
             if (!fab) return;
 
             let unservedPortions = 0;
-            activeOrders.forEach(o => {
+            const operatorOrders = getRelevantOrdersForCurrentOperator();
+            operatorOrders.forEach(o => {
                 if (o.status !== 'served' && Array.isArray(o.items)) {
-                    o.items.forEach(it => { unservedPortions += (Number(it.qty) || 0); });
+                    o.items.forEach(it => {
+                        if (currentRole === 'staff' && currentStaffCanteen && it.canteen && it.canteen !== currentStaffCanteen) return;
+                        unservedPortions += (Number(it.qty) || 0);
+                    });
                 }
             });
             if (badge) badge.innerText = unservedPortions;
 
-            const isStaffOrAdmin = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor');
+            const isStaffUnlocked = (currentRole === 'staff' && isCounterCanteenUnlocked);
+            const isAdminOrCreator = (currentRole === 'admin' || currentRole === 'auditor');
             const authHidden = document.getElementById('authGate').classList.contains('hidden');
-            if (isStaffOrAdmin && authHidden) {
+            if ((isStaffUnlocked || isAdminOrCreator) && authHidden) {
                 fab.classList.add('visible');
             } else {
                 fab.classList.remove('visible');
@@ -1783,7 +1975,7 @@
             const uniqueDishesEl = document.getElementById('prepUniqueDishesCount');
             if (!listEl) return;
 
-            const relevantOrders = activeOrders.filter(o => {
+            const relevantOrders = getRelevantOrdersForCurrentOperator().filter(o => {
                 if (prepFilterMode === 'pending') return o.status !== 'served';
                 return true;
             });
@@ -1794,9 +1986,10 @@
             relevantOrders.forEach(order => {
                 if (!Array.isArray(order.items)) return;
                 order.items.forEach(it => {
+                    if (currentRole === 'staff' && currentStaffCanteen && it.canteen && it.canteen !== currentStaffCanteen) return;
                     const qty = Number(it.qty) || 0;
                     if (qty <= 0) return;
-                    const cName = it.canteen || order.orderedCanteen || 'VPIET Main Canteen';
+                    const cName = it.canteen || order.orderedCanteen || 'Main';
                     const key = `${it.name}__${cName}`;
                     if (!dishMap[key]) {
                         dishMap[key] = {
@@ -1864,7 +2057,7 @@
 
             try {
                 mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt', {
-                    clientId: 'cb_vpiet_' + Math.random().toString(16).substring(2, 10),
+                    clientId: 'cb_sync_' + Math.random().toString(16).substring(2, 10),
                     clean: true,
                     connectTimeout: 5000,
                     reconnectPeriod: 3000
@@ -1908,21 +2101,23 @@
         function applyRemoteStatePayload(data) {
             isApplyingRemoteSync = true;
             if (Array.isArray(data.colleges) && data.colleges.length > 0) {
-                const remoteVpiet = data.colleges.find(c => c.name === LOCKED_COLLEGE);
-                if (remoteVpiet) colleges = [remoteVpiet];
+                data.colleges.forEach(rc => {
+                    const idx = colleges.findIndex(c => c.name.toLowerCase() === rc.name.toLowerCase());
+                    if (idx !== -1) colleges[idx] = rc;
+                    else colleges.push(rc);
+                });
             }
             if (Array.isArray(data.canteens) && data.canteens.length > 0) {
-                canteens = data.canteens.filter(c => c.college === LOCKED_COLLEGE);
-                if (canteens.length === 0) canteens = [VPIET_DEFAULT_CANTEEN];
+                canteens = data.canteens;
             }
             if (Array.isArray(data.menuItems)) {
-                menuItems = data.menuItems.filter(m => m.college === LOCKED_COLLEGE);
+                menuItems = data.menuItems;
             }
             if (Array.isArray(data.offersEvents)) {
-                offersEvents = data.offersEvents.filter(e => e.college === LOCKED_COLLEGE);
+                offersEvents = data.offersEvents;
             }
             if (Array.isArray(data.activeOrders)) {
-                activeOrders = data.activeOrders.filter(o => !o.collegePass || o.collegePass === LOCKED_COLLEGE);
+                activeOrders = data.activeOrders;
             }
             if (data.studentVault && typeof data.studentVault === 'object') {
                 studentVault = { ...studentVault, ...data.studentVault };
@@ -1939,7 +2134,7 @@
             localStorage.setItem('cb_orders', JSON.stringify(activeOrders));
             localStorage.setItem('cb_student_vault', JSON.stringify(studentVault));
 
-            populateStaffCanteenSelect();
+            renderRegisteredCollegeSelects();
             refreshStudentPassEnvironment();
             if (document.getElementById('tab-admin-studio').classList.contains('active')) {
                 refreshAdminStudio();
@@ -1949,6 +2144,9 @@
             }
             if (document.getElementById('tab-receipts').classList.contains('active')) {
                 renderReceipts();
+            }
+            if (document.getElementById('tab-counter-canteen-gate').classList.contains('active')) {
+                updateStaffGateRequirementsPreview();
             }
             if (document.getElementById('foodPrepModal').classList.contains('active')) {
                 renderFoodPrepList();
@@ -1981,7 +2179,6 @@
         }
 
         function saveState() {
-            enforceVpietExclusiveState();
             lastStateTimestamp = Date.now();
             localStorage.setItem('cb_state_ts', String(lastStateTimestamp));
             localStorage.setItem('cb_colleges', JSON.stringify(colleges));
@@ -2012,11 +2209,11 @@
 
         function forceManualCloudSync() {
             saveState();
-            alert("✅ Synced! Canteens, custom PINs, menu items, offers, and orders have been broadcast to all connected devices.");
+            alert("✅ Synced! Registered colleges, canteens, custom PINs, menu items, offers, and orders have been broadcast to all connected devices.");
         }
 
         function generateOrderSignature(token, rollNo, total, pin) {
-            const raw = `${token}|${rollNo}|${total}|${pin}|${dailySecurityWord}|VPIET_2026`;
+            const raw = `${token}|${rollNo}|${total}|${pin}|${dailySecurityWord}|CB_2026`;
             let hash = 5381;
             for (let i = 0; i < raw.length; i++) {
                 hash = ((hash << 5) + hash) + raw.charCodeAt(i);
@@ -2024,19 +2221,51 @@
             return "SIG-" + Math.abs(hash).toString(16).toUpperCase().padStart(8, '0');
         }
 
+        function checkUrlQrCollegeInvite() {
+            const params = new URLSearchParams(window.location.search);
+            const colParam = (params.get('college') || '').trim();
+            if (colParam) {
+                let matched = colleges.find(c => c.name.toLowerCase() === colParam.toLowerCase());
+                if (!matched) {
+                    const cleanName = colParam.toUpperCase();
+                    matched = {
+                        id: 'col_' + Date.now(),
+                        name: cleanName,
+                        city: 'Campus Network',
+                        domain: `${cleanName.toLowerCase().replace(/\s+/g, '')}.ac.in`,
+                        adminPin: '2727',
+                        staffPin: '1111'
+                    };
+                    colleges.push(matched);
+                    if (!canteens.some(c => c.college === matched.name)) {
+                        canteens.push({
+                            id: 'can_' + Date.now(),
+                            name: 'Main',
+                            college: matched.name,
+                            location: 'Main Block',
+                            upi: `${cleanName.toLowerCase().replace(/\s+/g, '')}@sbi`,
+                            merchant: `${cleanName} OFFICIAL`
+                        });
+                    }
+                    saveState();
+                }
+                pendingQrCollege = matched.name;
+            }
+        }
+
         window.onload = async function() {
             if (cloudConfig.emailPublicKey && window.emailjs) {
                 try { emailjs.init(cloudConfig.emailPublicKey); } catch (e) {}
             }
+            checkUrlQrCollegeInvite();
             initZeroConfigMqttSync();
-            populateStaffCanteenSelect();
+            renderRegisteredCollegeSelects();
             updateStudentOrderFields();
             refreshStudentPassEnvironment();
             refreshAdminStudio();
             renderReceipts();
             renderStaffCounter();
 
-            // Check if creator URL parameter is present
             const params = new URLSearchParams(window.location.search);
             if (params.get('creator') === '1' || params.get('creator') === 'true') {
                 openCreatorModal();
@@ -2048,6 +2277,23 @@
             setInterval(updateLiveClocks, 250);
             setInterval(pullFromCloudDatabase, 4000);
         };
+
+        function renderRegisteredCollegeSelects() {
+            const adminColSel = document.getElementById('loginAdminCollegeSelect');
+            const staffColSel = document.getElementById('loginStaffCollege');
+            const optionsHtml = colleges.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+
+            if (adminColSel) {
+                const prev = adminColSel.value;
+                adminColSel.innerHTML = optionsHtml;
+                if (prev && colleges.some(c => c.name === prev)) adminColSel.value = prev;
+            }
+            if (staffColSel) {
+                const prev = staffColSel.value;
+                staffColSel.innerHTML = optionsHtml;
+                if (prev && colleges.some(c => c.name === prev)) staffColSel.value = prev;
+            }
+        }
 
         function openCloudConfigModal() {
             document.getElementById('cfgDbUrlInput').value = cloudConfig.dbUrl || "";
@@ -2132,7 +2378,7 @@
             document.getElementById('gatewayCollegeCard').classList.toggle('active', !isStudent);
             document.getElementById('studentSectionContainer').style.display = isStudent ? 'block' : 'none';
             document.getElementById('collegeSectionContainer').style.display = isStudent ? 'none' : 'block';
-            populateStaffCanteenSelect();
+            renderRegisteredCollegeSelects();
         }
 
         function switchStudentSubMode(subMode) {
@@ -2151,12 +2397,12 @@
             document.getElementById('subFormAdmin').style.display = subMode === 'admin' ? 'block' : 'none';
             document.getElementById('subFormStaff').style.display = subMode === 'staff' ? 'block' : 'none';
             document.getElementById('subFormSignup').style.display = subMode === 'signup' ? 'block' : 'none';
-            populateStaffCanteenSelect();
+            renderRegisteredCollegeSelects();
         }
 
-        /* ================= COLLEGE SIGN UP (CUSTOM ADMIN & COUNTER PINS + EMAIL OTP) ================= */
+        /* ================= COLLEGE SIGN UP (MULTI-COLLEGE + CUSTOM ADMIN & COUNTER PINS) ================= */
         async function sendCollegeSignupOtp() {
-            const cName = document.getElementById('signupCollegeName').value.trim() || LOCKED_COLLEGE;
+            const cName = document.getElementById('signupCollegeName').value.trim();
             const initCan = document.getElementById('signupInitialCanteen').value.trim();
             const cEmail = document.getElementById('signupAdminEmail').value.trim().toLowerCase();
             const initUpi = document.getElementById('signupInitialUpi').value.trim();
@@ -2164,7 +2410,7 @@
             const staffPin = document.getElementById('signupStaffPin').value.trim();
 
             if (!cName || !initCan || !cEmail || !initUpi || !adminPin || !staffPin) {
-                alert("Please fill in all fields, including your Admin Email, UPI ID, Custom Admin PIN, and Custom Counter PIN!");
+                alert("Please fill in College Name, Primary Canteen Name, Admin Email, UPI ID, Custom Admin PIN, and Custom Counter PIN!");
                 return;
             }
             if (!cEmail.includes('@')) {
@@ -2179,7 +2425,6 @@
             generatedCollegeOtp = await dispatchEmailOtp(cEmail, `${cName} Admin`, 'sendCollegeOtpBtn');
             document.getElementById('collegeOtpSentLabel').innerText = `🔒 Enter 6-Digit OTP Sent to ${cEmail}`;
             document.getElementById('collegeOtpVerifyBox').classList.add('active');
-            // Leave input empty so the user must enter the received OTP
             document.getElementById('collegeOtpInput').value = '';
             document.getElementById('collegeOtpInput').focus();
         }
@@ -2191,48 +2436,57 @@
                 return;
             }
 
-            const initCan = document.getElementById('signupInitialCanteen').value.trim() || "VPIET Main Canteen";
+            const cName = document.getElementById('signupCollegeName').value.trim();
+            const initCan = document.getElementById('signupInitialCanteen').value.trim() || "Main";
             const cEmail = document.getElementById('signupAdminEmail').value.trim().toLowerCase();
-            const initUpi = document.getElementById('signupInitialUpi').value.trim() || "vpietcanteen@sbi";
+            const initUpi = document.getElementById('signupInitialUpi').value.trim() || "canteen@sbi";
             const adminPin = document.getElementById('signupAdminPin').value.trim();
             const staffPin = document.getElementById('signupStaffPin').value.trim();
 
-            colleges = [{
-                id: 'col_vpiet',
-                name: LOCKED_COLLEGE,
+            const newColObj = {
+                id: 'col_' + Date.now(),
+                name: cName,
                 city: 'Campus Network',
-                domain: 'vpiet.ac.in',
+                domain: `${cName.toLowerCase().replace(/\s+/g, '')}.ac.in`,
                 email: cEmail,
                 adminPin: adminPin,
                 staffPin: staffPin
-            }];
+            };
 
-            const existingCanIdx = canteens.findIndex(c => c.name.toLowerCase() === initCan.toLowerCase());
+            const existingColIdx = colleges.findIndex(c => c.name.toLowerCase() === cName.toLowerCase());
+            if (existingColIdx !== -1) {
+                colleges[existingColIdx] = newColObj;
+            } else {
+                colleges.push(newColObj);
+            }
+
+            const existingCanIdx = canteens.findIndex(c => c.college.toLowerCase() === cName.toLowerCase() && c.name.toLowerCase() === initCan.toLowerCase());
             if (existingCanIdx !== -1) {
                 canteens[existingCanIdx].upi = initUpi;
             } else {
                 canteens.push({
                     id: 'can_' + Date.now(),
                     name: initCan,
-                    college: LOCKED_COLLEGE,
+                    college: cName,
                     location: 'Main Campus',
                     upi: initUpi,
-                    merchant: `VPIET OFFICIAL`
+                    merchant: `${cName.toUpperCase()} OFFICIAL`
                 });
             }
 
             saveState();
+            renderRegisteredCollegeSelects();
             generatedCollegeOtp = null;
             document.getElementById('collegeOtpVerifyBox').classList.remove('active');
-            alert(`✅ College Sign Up Successful!\n\nYour custom Admin PIN and Counter Staff PIN are now active.`);
+            alert(`✅ College "${cName}" Registered Successfully!\n\nYour custom Admin PIN and Counter Staff PIN are now active.`);
 
             currentRole = "admin";
-            currentAdminCollege = LOCKED_COLLEGE;
+            currentAdminCollege = cName;
             currentStaffCanteen = "";
-            openManagementWorkspace(`🏛️ Admin • VPIET`, `VPIET Administration Studio`, 'admin-studio');
+            openManagementWorkspace(`🏛️ Admin • ${currentAdminCollege}`, `${currentAdminCollege} Administration Studio`, 'admin-studio');
         }
 
-        /* ================= STUDENT SIGN UP (EMAIL OTP — NO EMOJI/PHRASE) & LOGIN ================= */
+        /* ================= STUDENT SIGN UP (STARTS UNJOINED UNLESS QR SCANNED) & LOGIN ================= */
         async function sendStudentSignupOtp() {
             const name = document.getElementById('signupStudentName').value.trim();
             const phone = document.getElementById('signupStudentPhone').value.trim();
@@ -2259,7 +2513,6 @@
             generatedStudentOtp = await dispatchEmailOtp(email, name, 'sendStudentOtpBtn');
             document.getElementById('studentOtpSentLabel').innerText = `🔒 Enter 6-Digit OTP Sent to ${email}`;
             document.getElementById('studentOtpVerifyBox').classList.add('active');
-            // Leave input blank so the student must type the received OTP
             document.getElementById('studentOtpInput').value = '';
             document.getElementById('studentOtpInput').focus();
         }
@@ -2276,19 +2529,20 @@
             const email = document.getElementById('signupStudentEmail').value.trim().toLowerCase();
             const pin = document.getElementById('signupStudentPin').value.trim();
 
+            // New student account always starts unjoined ("") unless they opened via a QR scan link
             studentVault[phone] = {
                 rollNo: phone,
                 pin: pin,
                 name: name,
                 email: email,
                 phone: phone,
-                college: LOCKED_COLLEGE
+                college: pendingQrCollege || ""
             };
             saveState();
 
             generatedStudentOtp = null;
             document.getElementById('studentOtpVerifyBox').classList.remove('active');
-            alert("✅ Sign Up Successful! Welcome to CampusBites.");
+            alert("✅ Sign Up Successful!");
 
             loginStudentIntoApp(studentVault[phone]);
         }
@@ -2302,7 +2556,6 @@
                 return;
             }
 
-            // Secret creator shortcut if creator types #creator
             if (identifier.toLowerCase() === '#creator') {
                 openCreatorModal();
                 return;
@@ -2331,7 +2584,10 @@
                 return;
             }
 
-            matchedStudent.college = LOCKED_COLLEGE;
+            if (pendingQrCollege) {
+                matchedStudent.college = pendingQrCollege;
+                saveState();
+            }
             loginStudentIntoApp(matchedStudent);
         }
 
@@ -2342,11 +2598,11 @@
                 name: stuObj.name,
                 email: stuObj.email,
                 phone: stuObj.phone,
-                college: LOCKED_COLLEGE
+                college: stuObj.college || ""
             };
 
             document.getElementById('activeUserPill').innerText = `🎓 ${currentUser.name} • ${currentUser.phone || currentUser.email}`;
-            document.getElementById('headerSubTitle').innerText = `Logged in: ${currentUser.email || currentUser.phone}`;
+            document.getElementById('headerSubTitle').innerText = currentUser.college ? `Joined College: ${currentUser.college}` : `Scan QR to Add College Canteen`;
             document.getElementById('previewReturnBanner').style.display = 'none';
 
             document.getElementById('studentNavTabs').style.display = 'flex';
@@ -2359,16 +2615,135 @@
             saveActiveSession('menu');
         }
 
-        function populateStaffCanteenSelect() {
-            const staffCanSel = document.getElementById('loginStaffCanteen');
-            if (!staffCanSel) return;
+        /* ================= LIVE CAMERA & IMAGE QR SCANNER FOR STUDENTS ================= */
+        let qrVideoStream = null;
+        let qrScanAnimationFrame = null;
 
-            const matchedCanteens = canteens.filter(c => c.college === LOCKED_COLLEGE);
-            if (matchedCanteens.length === 0) {
-                staffCanSel.innerHTML = `<option value="VPIET Main Canteen">VPIET Main Canteen</option>`;
-            } else {
-                staffCanSel.innerHTML = matchedCanteens.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+        async function startLiveCameraScanner() {
+            const box = document.getElementById('liveCameraScannerBox');
+            const video = document.getElementById('qrVideoElement');
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert("Live camera access is not supported in this browser. Please use 'Upload QR Image' instead.");
+                return;
             }
+            try {
+                qrVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = qrVideoStream;
+                video.setAttribute("playsinline", true);
+                await video.play();
+                box.classList.add('active');
+                requestAnimationFrame(scanLiveVideoFrame);
+            } catch (err) {
+                alert("Camera permission denied or unavailable. Please use 'Upload QR Image' or paste the QR link.");
+            }
+        }
+
+        function stopLiveCameraScanner() {
+            if (qrScanAnimationFrame) cancelAnimationFrame(qrScanAnimationFrame);
+            if (qrVideoStream) {
+                qrVideoStream.getTracks().forEach(t => t.stop());
+                qrVideoStream = null;
+            }
+            const box = document.getElementById('liveCameraScannerBox');
+            if (box) box.classList.remove('active');
+        }
+
+        function scanLiveVideoFrame() {
+            const video = document.getElementById('qrVideoElement');
+            if (!qrVideoStream || !video) return;
+
+            if (video.readyState === video.HAVE_ENOUGH_DATA && window.jsQR) {
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+                if (code && code.data) {
+                    stopLiveCameraScanner();
+                    processScannedCollegeQrData(code.data);
+                    return;
+                }
+            }
+            qrScanAnimationFrame = requestAnimationFrame(scanLiveVideoFrame);
+        }
+
+        function handleStudentQrImageScan(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+                    if (window.jsQR) {
+                        const code = jsQR(imageData.data, imageData.width, imageData.height);
+                        if (code && code.data) {
+                            processScannedCollegeQrData(code.data);
+                            return;
+                        }
+                    }
+                    alert("Could not detect a valid QR code in that image. Please try a clearer QR image or paste the QR join link below.");
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleManualQrJoin() {
+            const rawInput = document.getElementById('manualQrLinkInput').value.trim();
+            if (!rawInput) {
+                alert("Please paste the College QR Join Link or enter the registered college name!");
+                return;
+            }
+            processScannedCollegeQrData(rawInput);
+        }
+
+        function processScannedCollegeQrData(rawText) {
+            let extractedCol = rawText.trim();
+            try {
+                if (rawText.includes('?')) {
+                    const urlObj = new URL(rawText.startsWith('http') ? rawText : `https://dummy.app/${rawText}`);
+                    const cParam = urlObj.searchParams.get('college');
+                    if (cParam) extractedCol = cParam.trim();
+                }
+            } catch (e) {}
+
+            const matchedCol = colleges.find(c => c.name.toLowerCase() === extractedCol.toLowerCase());
+            if (!matchedCol) {
+                alert(`❌ College "${extractedCol}" was not found in registered colleges. Please scan a valid registered college QR code.`);
+                return;
+            }
+
+            currentUser.college = matchedCol.name;
+            if (currentUser.phone && studentVault[currentUser.phone]) {
+                studentVault[currentUser.phone].college = matchedCol.name;
+            }
+            saveState();
+            saveActiveSession('menu');
+            document.getElementById('headerSubTitle').innerText = `Joined College: ${currentUser.college}`;
+            refreshStudentPassEnvironment();
+            alert(`✅ Joined ${matchedCol.name} Canteens via QR!`);
+        }
+
+        function switchStudentCollegeQr() {
+            stopLiveCameraScanner();
+            currentUser.college = "";
+            if (currentUser.phone && studentVault[currentUser.phone]) {
+                studentVault[currentUser.phone].college = "";
+            }
+            tray = {};
+            saveState();
+            saveActiveSession('menu');
+            refreshStudentPassEnvironment();
         }
 
         function updateStudentOrderFields() {
@@ -2376,13 +2751,12 @@
             document.getElementById('orderStudentName').value = currentUser.name;
         }
 
-        /* ================= VPIET ADMIN & COUNTER STAFF LOGINS (USES CUSTOM PINS) ================= */
+        /* ================= ADMIN & TWO-STEP COUNTER STAFF LOGINS ================= */
         function openManagementWorkspace(pillText, subTitleText, initialTab = 'admin-studio') {
             document.getElementById('activeUserPill').innerText = pillText;
             document.getElementById('headerSubTitle').innerText = subTitleText;
 
-            currentUser.college = LOCKED_COLLEGE;
-            currentAdminCollege = LOCKED_COLLEGE;
+            currentUser.college = currentAdminCollege;
             refreshStudentPassEnvironment();
 
             document.getElementById('studentNavTabs').style.display = 'none';
@@ -2391,6 +2765,7 @@
             document.getElementById('navBtnAdminStudio').style.display = 'inline-block';
             document.getElementById('navBtnAdminLedger').style.display = 'inline-block';
             document.getElementById('navBtnAuditorPortal').style.display = 'none';
+            document.getElementById('changeStaffCanteenBtn').style.display = (currentRole === 'staff') ? 'inline-block' : 'none';
             document.getElementById('backToStudioBtn').style.display = 'inline-block';
             document.getElementById('floatingTray').classList.add('hidden');
 
@@ -2401,110 +2776,225 @@
         }
 
         function completeAdminLogin() {
+            const colName = document.getElementById('loginAdminCollegeSelect').value.trim();
             const pin = document.getElementById('loginAdminPin').value.trim();
-            const vpietCol = colleges[0] || VPIET_DEFAULT_COLLEGE;
-            const savedAdminPin = vpietCol.adminPin || "2727";
+
+            if (!colName) {
+                alert("Please select a Registered College!");
+                return;
+            }
+            const colObj = colleges.find(c => c.name === colName);
+            const savedAdminPin = (colObj && colObj.adminPin) ? colObj.adminPin : "2727";
 
             if (!pin || pin !== savedAdminPin) {
-                alert("❌ Incorrect College Admin PIN! Please enter the Admin PIN created during College Sign Up.");
+                alert(`❌ Incorrect Admin PIN for ${colName}!`);
                 return;
             }
             currentRole = "admin";
-            currentAdminCollege = LOCKED_COLLEGE;
+            currentAdminCollege = colName;
             currentStaffCanteen = "";
-            openManagementWorkspace(`🏛️ Admin • VPIET`, `VPIET Administration Studio`, 'admin-studio');
+            isCounterCanteenUnlocked = true;
+            openManagementWorkspace(`🏛️ Admin • ${currentAdminCollege}`, `${currentAdminCollege} Administration Studio`, 'admin-studio');
         }
 
+        // STEP 1 OF COUNTER LOGIN: Verify College & Counter PIN on Auth Gate -> Open Canteen Selection Gate
         function completeStaffLogin() {
-            const canName = document.getElementById('loginStaffCanteen').value;
+            const colName = document.getElementById('loginStaffCollege').value;
             const pin = document.getElementById('loginStaffPin').value.trim();
-            const vpietCol = colleges[0] || VPIET_DEFAULT_COLLEGE;
-            const savedStaffPin = vpietCol.staffPin || "1111";
+
+            if (!colName) {
+                alert("Please select your Registered College!");
+                return;
+            }
+            const colObj = colleges.find(c => c.name === colName);
+            const savedStaffPin = (colObj && colObj.staffPin) ? colObj.staffPin : "1111";
 
             if (!pin || pin !== savedStaffPin) {
-                alert("❌ Incorrect Counter Staff PIN! Please enter the Counter PIN created during College Sign Up.");
+                alert(`❌ Incorrect Counter Staff PIN for ${colName}!`);
                 return;
             }
 
             currentRole = "staff";
-            currentAdminCollege = LOCKED_COLLEGE;
-            currentStaffCanteen = canName || "";
-            openManagementWorkspace(`👨‍🍳 Counter • VPIET`, `VPIET Counter Desk, Menu & Offer Studio`, 'admin-ledger');
+            currentAdminCollege = colName;
+            currentStaffCanteen = "";
+            isCounterCanteenUnlocked = false;
+
+            document.getElementById('authGate').classList.add('hidden');
+            showCounterCanteenGate();
         }
 
+        // STEP 2 OF COUNTER LOGIN: Show ONLY Canteen Selection + Canteen Requirements + PIN Gate
+        function showCounterCanteenGate() {
+            isCounterCanteenUnlocked = false;
+            document.getElementById('studentNavTabs').style.display = 'none';
+            document.getElementById('adminNavTabs').style.display = 'none';
+            document.getElementById('floatingTray').classList.add('hidden');
+            document.getElementById('prepFloatingFab').classList.remove('visible');
+
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('tab-counter-canteen-gate').classList.add('active');
+
+            document.getElementById('activeUserPill').innerText = `👨‍🍳 Counter • ${currentAdminCollege}`;
+            document.getElementById('headerSubTitle').innerText = `Select Canteen to Unlock Counter`;
+            document.getElementById('staffGateCollegeBadge').innerText = `🏛️ ${currentAdminCollege} COUNTER PORTAL`;
+
+            const gateCanSel = document.getElementById('staffGateCanteenSelect');
+            const collegeCanteens = canteens.filter(c => c.college === currentAdminCollege);
+            gateCanSel.innerHTML = collegeCanteens.map(c => `<option value="${c.name}">🏪 ${c.name}</option>`).join('');
+            document.getElementById('staffGatePinInput').value = '';
+
+            updateStaffGateRequirementsPreview();
+            saveActiveSession('counter-gate');
+        }
+
+        function updateStaffGateRequirementsPreview() {
+            const selectedCan = document.getElementById('staffGateCanteenSelect').value;
+            let pendingOrdersCount = 0;
+            let pendingPortionsCount = 0;
+            const dishTotals = {};
+
+            activeOrders.forEach(o => {
+                if (o.collegePass === currentAdminCollege && o.status !== 'served' && Array.isArray(o.items)) {
+                    let hasItemInCan = false;
+                    o.items.forEach(it => {
+                        if (it.canteen === selectedCan) {
+                            hasItemInCan = true;
+                            const q = Number(it.qty) || 0;
+                            pendingPortionsCount += q;
+                            dishTotals[it.name] = (dishTotals[it.name] || 0) + q;
+                        }
+                    });
+                    if (hasItemInCan) pendingOrdersCount += 1;
+                }
+            });
+
+            document.getElementById('staffGatePendingOrders').innerText = pendingOrdersCount;
+            document.getElementById('staffGatePendingPortions').innerText = pendingPortionsCount;
+
+            const topDishes = Object.entries(dishTotals).sort((a, b) => b[1] - a[1]);
+            const previewEl = document.getElementById('staffGateTopDishesPreview');
+            if (topDishes.length === 0) {
+                previewEl.innerText = `✔ No pending unserved dishes for ${selectedCan} right now.`;
+            } else {
+                previewEl.innerHTML = `Required to prepare: ` + topDishes.map(([n, q]) => `<span style="background:#fff; padding:3px 9px; border-radius:6px; border:1px solid #a7f3d0; margin-right:5px; display:inline-block; margin-top:4px;"><b>${q}×</b> ${n}</span>`).join('');
+            }
+        }
+
+        function unlockCounterCanteenWorkspace() {
+            const selectedCan = document.getElementById('staffGateCanteenSelect').value;
+            const enteredPin = document.getElementById('staffGatePinInput').value.trim();
+
+            if (!selectedCan) {
+                alert("Please select a Canteen!");
+                return;
+            }
+            const colObj = colleges.find(c => c.name === currentAdminCollege);
+            const expectedPin = (colObj && colObj.staffPin) ? colObj.staffPin : "1111";
+
+            if (!enteredPin || enteredPin !== expectedPin) {
+                alert("❌ Incorrect PIN! Please enter your valid Counter Staff PIN to unlock this canteen.");
+                return;
+            }
+
+            currentStaffCanteen = selectedCan;
+            isCounterCanteenUnlocked = true;
+            openManagementWorkspace(
+                `👨‍🍳 Counter • ${currentStaffCanteen} (${currentAdminCollege})`,
+                `Canteen: ${currentStaffCanteen} • ${currentAdminCollege}`,
+                'admin-ledger'
+            );
+        }
+
+        /* ================= STUDENT ENVIRONMENT & CANTEEN PILLS (ONLY SHOWS MAIN OR ENTERED NAME, NO NUMBERS) ================= */
         function refreshStudentPassEnvironment() {
-            const matchedCanteens = canteens.filter(c => c.college === LOCKED_COLLEGE);
+            const col = currentUser.college;
+            const unjoinedBox = document.getElementById('studentNoCollegeJoinedBox');
+            const joinedContent = document.getElementById('studentJoinedCollegeContent');
+
+            const isStaffOrAdminPreview = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor');
+            const activeCol = isStaffOrAdminPreview ? currentAdminCollege : col;
+
+            if (!activeCol) {
+                if (unjoinedBox) unjoinedBox.style.display = 'block';
+                if (joinedContent) joinedContent.style.display = 'none';
+                document.getElementById('floatingTray').classList.add('hidden');
+                return;
+            }
+
+            if (unjoinedBox) unjoinedBox.style.display = 'none';
+            if (joinedContent) joinedContent.style.display = 'block';
+
+            const matchedCanteens = canteens.filter(c => c.college === activeCol);
             if (matchedCanteens.length > 0) {
                 document.getElementById('studentActiveUpi').innerText = matchedCanteens[0].upi;
             }
 
             const stuQrImg = document.getElementById('studentViewPassQrImg');
             if (stuQrImg) {
-                stuQrImg.src = generateQrDataUrl(UNIVERSAL_JOIN_URL, 240);
+                stuQrImg.src = generateQrDataUrl(getCollegeInviteUrl(activeCol), 240);
             }
-            document.getElementById('studentPassTitle').innerText = `Scan to Join All VPIET Canteens (${matchedCanteens.length} Active)`;
-            document.getElementById('studentPassDesc').innerText = `One universal QR code gives access to all ${matchedCanteens.length} canteen(s) in VPIET.`;
+            document.getElementById('studentPassTitle').innerText = `Scan to Join ${activeCol} Canteens`;
+            document.getElementById('studentPassDesc').innerText = `One universal QR code gives access to all canteens in ${activeCol}.`;
 
+            // Render ONLY the entered canteen names (e.g. "Main") with NO numbers and NO "All VPIET Canteen (1)" pill
             const pillsBox = document.getElementById('canteenPillsContainer');
             pillsBox.innerHTML = '';
 
-            const allBtn = document.createElement('button');
-            allBtn.className = 'cat-pill active';
-            allBtn.dataset.canteen = 'ALL';
-            allBtn.innerText = `🏪 All VPIET Canteens (${matchedCanteens.length})`;
-            allBtn.onclick = () => filterStudentCanteen('ALL');
-            pillsBox.appendChild(allBtn);
+            if (matchedCanteens.length > 0) {
+                if (!activeStudentCanteenFilter || !matchedCanteens.some(c => c.name === activeStudentCanteenFilter)) {
+                    activeStudentCanteenFilter = matchedCanteens[0].name;
+                }
+            } else {
+                activeStudentCanteenFilter = "";
+            }
 
             matchedCanteens.forEach(c => {
                 const btn = document.createElement('button');
-                btn.className = 'cat-pill';
+                btn.className = (c.name === activeStudentCanteenFilter) ? 'cat-pill active' : 'cat-pill';
                 btn.dataset.canteen = c.name;
                 btn.innerText = `🏪 ${c.name}`;
                 btn.onclick = () => filterStudentCanteen(c.name);
                 pillsBox.appendChild(btn);
             });
 
-            activeStudentCanteenFilter = "ALL";
             renderOffersCarousel();
             renderMenu();
         }
 
         function filterStudentCanteen(canName) {
             activeStudentCanteenFilter = canName;
+            const activeCol = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor') ? currentAdminCollege : currentUser.college;
 
             document.querySelectorAll('#canteenPillsContainer .cat-pill').forEach(p => {
                 p.classList.toggle('active', p.dataset.canteen === canName);
             });
 
-            if (canName === 'ALL') {
-                const firstCan = canteens.find(c => c.college === LOCKED_COLLEGE);
-                if (firstCan) document.getElementById('studentActiveUpi').innerText = firstCan.upi;
-            } else {
-                const selectedCan = canteens.find(c => c.college === LOCKED_COLLEGE && c.name === canName);
-                if (selectedCan && selectedCan.upi) {
-                    document.getElementById('studentActiveUpi').innerText = selectedCan.upi;
-                }
+            const selectedCan = canteens.find(c => c.college === activeCol && c.name === canName);
+            if (selectedCan && selectedCan.upi) {
+                document.getElementById('studentActiveUpi').innerText = selectedCan.upi;
             }
             renderMenu();
         }
 
         function renderOffersCarousel() {
             const slider = document.getElementById('offersSlider');
-            const visible = offersEvents.filter(ev => ev.college === LOCKED_COLLEGE);
+            const activeCol = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor') ? currentAdminCollege : currentUser.college;
+            const visible = offersEvents.filter(ev => ev.college === activeCol);
 
             if (visible.length === 0) {
-                slider.innerHTML = `<div style="color:var(--text-muted); font-size:13px; padding:10px; font-weight:600;">No active item offers for VPIET today.</div>`;
+                slider.innerHTML = `<div style="color:var(--text-muted); font-size:13px; padding:10px; font-weight:600;">No active item offers today.</div>`;
                 return;
             }
 
+            // Never show "Valid when item is in tray"
             slider.innerHTML = visible.map(ev => `
                 <div class="ad-card" style="background-image: url('${ev.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80'}');">
                     <div class="ad-card-body">
                         <div><div class="ad-badge">${ev.badge}</div></div>
                         <div>
                             <div class="ad-title">${ev.title}</div>
-                            <div class="ad-desc">${ev.desc} (Saves ₹${ev.amount})</div>
-                            <button class="ad-btn" onclick="openDrawerWithOffer('${ev.id}')">Apply Offer in Tray</button>
+                            <div class="ad-desc">Save ₹${ev.amount}</div>
+                            <button class="ad-btn" onclick="openDrawerWithOffer('${ev.id}')">Claim Offer</button>
                         </div>
                     </div>
                 </div>
@@ -2522,6 +3012,7 @@
         }
 
         function switchTab(tabId) {
+            stopLiveCameraScanner();
             document.querySelectorAll('#studentNavTabs .tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
@@ -2531,8 +3022,7 @@
             if (tabId === 'menu') {
                 document.querySelectorAll('#studentNavTabs .tab-btn')[0].classList.add('active');
                 document.getElementById('tab-menu').classList.add('active');
-                renderOffersCarousel();
-                renderMenu();
+                refreshStudentPassEnvironment();
                 if (document.getElementById('authGate').classList.contains('hidden')) saveActiveSession('menu');
             } else if (tabId === 'receipts') {
                 document.querySelectorAll('#studentNavTabs .tab-btn')[1].classList.add('active');
@@ -2562,18 +3052,22 @@
         function renderMenu() {
             const grid = document.getElementById('foodGrid');
             const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const activeCol = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor') ? currentAdminCollege : currentUser.college;
+
+            if (!activeCol) return;
 
             const filtered = menuItems.filter(item => {
-                const matchesCanteen = (activeStudentCanteenFilter === 'ALL' || item.canteen === activeStudentCanteenFilter);
+                const matchesCollege = (item.college === activeCol);
+                const matchesCanteen = (!activeStudentCanteenFilter || item.canteen === activeStudentCanteenFilter);
                 const matchesCat = (currentCategory === 'All' || item.category === currentCategory);
                 const matchesSearch = item.name.toLowerCase().includes(searchVal) ||
                                       item.category.toLowerCase().includes(searchVal) ||
                                       item.canteen.toLowerCase().includes(searchVal);
-                return matchesCanteen && matchesCat && matchesSearch;
+                return matchesCollege && matchesCanteen && matchesCat && matchesSearch;
             });
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div class="glass-surface" style="grid-column: 1 / -1; text-align: center; padding: 36px; border-radius: 16px; color: var(--text-muted); font-weight: 700;">No dishes added yet for VPIET. Use the VPIET Admin or Counter Studio to add menu items!</div>`;
+                grid.innerHTML = `<div class="glass-surface" style="grid-column: 1 / -1; text-align: center; padding: 36px; border-radius: 16px; color: var(--text-muted); font-weight: 700;">No dishes added yet for ${activeStudentCanteenFilter || activeCol}. Use the Admin or Counter Studio to add menu items!</div>`;
                 updateFloatingTray();
                 return;
             }
@@ -2675,19 +3169,20 @@
         }
 
         function openDrawer() {
+            const activeCol = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor') ? currentAdminCollege : currentUser.college;
             let totalCount = 0, subtotal = 0, drawerListHtml = '';
-            let activeUpi = 'vpietcanteen@sbi';
-            let activeMerchant = 'VPIET OFFICIAL';
+            let activeUpi = 'canteen@sbi';
+            let activeMerchant = `${(activeCol || 'CANTEEN').toUpperCase()} OFFICIAL`;
 
             for (let id in tray) {
                 const item = menuItems.find(m => String(m.id) === String(id));
                 if (item) {
                     totalCount += tray[id];
                     subtotal += (item.price * tray[id]);
-                    const matchedCanteen = canteens.find(c => c.name === item.canteen);
+                    const matchedCanteen = canteens.find(c => c.college === item.college && c.name === item.canteen);
                     if (matchedCanteen && matchedCanteen.upi) {
                         activeUpi = matchedCanteen.upi;
-                        activeMerchant = matchedCanteen.merchant || `VPIET OFFICIAL`;
+                        activeMerchant = matchedCanteen.merchant || `${(activeCol || 'CANTEEN').toUpperCase()} OFFICIAL`;
                     }
 
                     drawerListHtml += `
@@ -2714,7 +3209,7 @@
             }
 
             const offersBox = document.getElementById('availableOffersBox');
-            const collegeOffers = offersEvents.filter(ev => ev.college === LOCKED_COLLEGE);
+            const collegeOffers = offersEvents.filter(ev => ev.college === activeCol);
 
             if (collegeOffers.length === 0 || totalCount === 0) {
                 offersBox.innerHTML = `<span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">No item offers available.</span>`;
@@ -2728,9 +3223,9 @@
 
                     if (!hasItem) {
                         return `
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:8px; font-size:13px; opacity: 0.65;">
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:8px; font-size:13px; opacity: 0.7;">
                                 <strong style="color:var(--text-muted);">${ev.title}</strong><br>
-                                <span style="font-size:11px; color:var(--danger); font-weight:700;">❌ Add "${dishName}" to tray to unlock (Saves ₹${ev.amount})</span>
+                                <span style="font-size:11px; color:var(--danger); font-weight:700;">Add "${dishName}" to unlock ₹${ev.amount} OFF</span>
                             </div>
                         `;
                     }
@@ -2738,7 +3233,7 @@
                         <div style="background:${isSelected ? '#eef2ff' : '#f8fafc'}; border:1px solid ${isSelected ? 'var(--primary)' : '#e2e8f0'}; padding:10px 14px; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; font-size:13px;">
                             <div>
                                 <strong style="color:var(--text-main);">${ev.title}</strong><br>
-                                <span style="font-size:11px; color:var(--success); font-weight:700;">✔ Item in tray! Saves ₹${ev.amount}</span>
+                                <span style="font-size:11px; color:var(--success); font-weight:700;">✔ Saves ₹${ev.amount}</span>
                             </div>
                             <button onclick="selectOfferInDrawer('${ev.id}', true)" style="background:${isSelected ? 'var(--primary)' : 'white'}; color:${isSelected ? 'white' : 'var(--text-main)'}; border:1px solid #cbd5e1; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:800; cursor:pointer;">${isSelected ? 'Applied ✓' : 'Apply'}</button>
                         </div>
@@ -2801,6 +3296,7 @@
         }
 
         function placeOrder() {
+            const activeCol = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor') ? currentAdminCollege : currentUser.college;
             let subtotal = 0, orderItems = [];
             let orderCanteens = new Set();
 
@@ -2841,7 +3337,7 @@
                 rollNo: studentId,
                 name: document.getElementById('orderStudentName').value || currentUser.name,
                 email: currentUser.email || "",
-                collegePass: LOCKED_COLLEGE,
+                collegePass: activeCol || "VPIET",
                 orderedCanteen: Array.from(orderCanteens).join(', '),
                 slot: document.getElementById('orderSlot').value,
                 payment: selectedPaymentMethod,
@@ -2892,7 +3388,7 @@
                     <div class="served-hero-banner">
                         <div class="served-hero-icon">✓</div>
                         <div class="served-hero-title">ORDER SERVED & COMPLETED</div>
-                        <div class="served-hero-sub">Handed over at ${order.orderedCanteen || 'VPIET Canteen'} • ${order.servedAt || order.timestamp}</div>
+                        <div class="served-hero-sub">Handed over at ${order.orderedCanteen || 'Canteen'} • ${order.servedAt || order.timestamp}</div>
                     </div>
                     <div class="served-diagonal-stamp">SERVED ✓<br><span style="font-size: 16px; letter-spacing: 2px;">REDEEMED</span></div>
                 ` : `
@@ -2930,7 +3426,7 @@
                     <div class="receipt-details">
                         <div><span>Student</span><strong>${order.name} (${order.rollNo})</strong></div>
                         <div><span>Email</span><strong>${order.email || 'Verified'}</strong></div>
-                        <div><span>Canteen</span><strong>🏪 ${order.orderedCanteen || 'VPIET Main Canteen'}</strong></div>
+                        <div><span>Canteen</span><strong>🏪 ${order.orderedCanteen || 'Main'}</strong></div>
                         <div><span>Slot</span><strong>⏱ ${order.slot || 'Immediate'}</strong></div>
                     </div>
                     <div class="receipt-items-list">${itemsHtml}</div>
@@ -2967,17 +3463,23 @@
             if (!rawToken || !rawPin) { alert("Please enter Token # and 2-Digit Handshake PIN!"); return; }
 
             const matchedOrder = activeOrders.find(o => o.token.toUpperCase() === rawToken);
-            if (!matchedOrder) { alert(`❌ FRAUD ALERT: Token #${rawToken} does NOT exist in VPIET ledger!`); return; }
+            if (!matchedOrder) { alert(`❌ FRAUD ALERT: Token #${rawToken} does NOT exist in ledger!`); return; }
 
             if (String(matchedOrder.handshakePin || '84') !== rawPin) { alert(`❌ PIN MISMATCH: Token exists, but PIN "${rawPin}" is invalid!`); return; }
 
             if (matchedOrder.status === 'served') { alert(`⚠️ ALREADY REDEEMED: Token #${rawToken} was already served!`); return; }
 
-            alert(`✅ AUTHENTIC VPIET ORDER VERIFIED!\n\nToken: #${matchedOrder.token} (PIN: ${matchedOrder.handshakePin})\nStudent: ${matchedOrder.name} (${matchedOrder.rollNo})\nAmount: ₹${matchedOrder.total}`);
+            alert(`✅ AUTHENTIC ORDER VERIFIED!\n\nToken: #${matchedOrder.token} (PIN: ${matchedOrder.handshakePin})\nStudent: ${matchedOrder.name} (${matchedOrder.rollNo})\nAmount: ₹${matchedOrder.total}`);
         }
 
-        /* ================= VPIET ADMIN & COUNTER STUDIO FUNCTIONS ================= */
+        /* ================= ADMIN & COUNTER STUDIO FUNCTIONS ================= */
         function switchAdminTab(tabId) {
+            stopLiveCameraScanner();
+            if (currentRole === 'staff' && !isCounterCanteenUnlocked) {
+                showCounterCanteenGate();
+                return;
+            }
+
             document.querySelectorAll('#adminNavTabs .tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
@@ -3000,29 +3502,35 @@
         }
 
         function refreshAdminStudio() {
-            currentAdminCollege = LOCKED_COLLEGE;
             const studioTitle = document.getElementById('adminStudioTitle');
             const roleBadge = document.getElementById('adminRoleBadge');
+            const qrHeading = document.getElementById('adminQrHeadingText');
 
             if (studioTitle) {
-                studioTitle.innerText = `Managing: VPIET`;
+                studioTitle.innerText = currentRole === 'staff' && currentStaffCanteen
+                    ? `Managing: ${currentStaffCanteen} (${currentAdminCollege})`
+                    : `Managing: ${currentAdminCollege}`;
             }
             if (roleBadge) {
                 roleBadge.innerText = currentRole === 'staff'
-                    ? `👨‍🍳 VPIET Counter Studio • Menu & Offer Editor (${currentStaffCanteen || 'All Canteens'})`
-                    : `🏛️ VPIET Admin Studio (Live Multi-Device Sync)`;
+                    ? `👨‍🍳 Counter Studio • Canteen: ${currentStaffCanteen}`
+                    : `🏛️ College Admin Studio (Live Multi-Device Sync)`;
+            }
+            if (qrHeading) {
+                qrHeading.innerText = `Scan to Join All ${currentAdminCollege} Canteens`;
             }
 
+            const inviteUrl = getCollegeInviteUrl(currentAdminCollege);
             const linkTextEl = document.getElementById('adminPassLinkText');
             const qrImgEl = document.getElementById('adminPassQrImg');
-            if (linkTextEl) linkTextEl.innerText = UNIVERSAL_JOIN_URL;
-            if (qrImgEl) qrImgEl.src = generateQrDataUrl(UNIVERSAL_JOIN_URL, 240);
+            if (linkTextEl) linkTextEl.innerText = inviteUrl;
+            if (qrImgEl) qrImgEl.src = generateQrDataUrl(inviteUrl, 240);
 
-            const collegeCanteens = canteens.filter(c => c.college === LOCKED_COLLEGE);
+            const collegeCanteens = canteens.filter(c => c.college === currentAdminCollege);
             const canListEl = document.getElementById('adminCanteenList');
             if (canListEl) {
                 if (collegeCanteens.length === 0) {
-                    canListEl.innerHTML = `<p style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No canteens in VPIET yet.</p>`;
+                    canListEl.innerHTML = `<p style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No canteens in ${currentAdminCollege} yet.</p>`;
                 } else {
                     canListEl.innerHTML = collegeCanteens.map(c => `
                         <div class="item-list-row">
@@ -3039,11 +3547,14 @@
             const menuCanSel = document.getElementById('adminMenuCanteenSelect');
             if (menuCanSel) {
                 const prevCan = menuCanSel.value;
-                menuCanSel.innerHTML = collegeCanteens.map(c => `<option value="${c.name}">🏪 ${c.name}</option>`).join('');
-                if (prevCan && collegeCanteens.some(c => c.name === prevCan)) {
-                    menuCanSel.value = prevCan;
-                } else if (currentRole === 'staff' && currentStaffCanteen && collegeCanteens.some(c => c.name === currentStaffCanteen)) {
+                if (currentRole === 'staff' && currentStaffCanteen) {
+                    menuCanSel.innerHTML = `<option value="${currentStaffCanteen}">🏪 ${currentStaffCanteen}</option>`;
                     menuCanSel.value = currentStaffCanteen;
+                } else {
+                    menuCanSel.innerHTML = collegeCanteens.map(c => `<option value="${c.name}">🏪 ${c.name}</option>`).join('');
+                    if (prevCan && collegeCanteens.some(c => c.name === prevCan)) {
+                        menuCanSel.value = prevCan;
+                    }
                 }
             }
 
@@ -3052,39 +3563,42 @@
         }
 
         function renderAuditorPortal() {
-            document.getElementById('auditorTotalColleges').innerText = "VPIET";
+            document.getElementById('auditorTotalColleges').innerText = colleges.length;
             document.getElementById('auditorTotalCanteens').innerText = canteens.length;
             
             let globalRev = 0;
             activeOrders.forEach(o => { if(o.status==='paid'||o.status==='served') globalRev += o.total; });
             document.getElementById('auditorGlobalRevenue').innerText = `₹${globalRev}`;
 
-            const vpietCol = colleges[0] || VPIET_DEFAULT_COLLEGE;
             const dirBody = document.getElementById('auditorCollegeDirectoryBody');
-            const vpasStr = canteens.map(c => `<b>${c.name}</b>: <code>${c.upi}</code>`).join('<br>');
-            const canteensStr = canteens.map(c => c.name).join(', ') || 'None';
+            dirBody.innerHTML = colleges.map(col => {
+                const colCanteens = canteens.filter(c => c.college === col.name);
+                const colItems = menuItems.filter(m => m.college === col.name);
+                const vpasStr = colCanteens.map(c => `<b>${c.name}</b>: <code>${c.upi}</code>`).join('<br>') || 'None';
+                const canteensStr = colCanteens.map(c => c.name).join(', ') || 'None';
+                const joinUrl = getCollegeInviteUrl(col.name);
 
-            dirBody.innerHTML = `
-                <tr>
-                    <td>
-                        <strong>🏛️ VPIET</strong><br>
-                        <span style="font-size:11px; color:var(--primary); font-weight:800;">Admin PIN: ${vpietCol.adminPin || '2727'} | Counter PIN: ${vpietCol.staffPin || '1111'}</span>
-                    </td>
-                    <td><code>${UNIVERSAL_JOIN_URL}</code></td>
-                    <td>${canteensStr}</td>
-                    <td>${vpasStr}</td>
-                    <td><strong>${menuItems.length} Items</strong></td>
-                </tr>
-            `;
+                return `
+                    <tr>
+                        <td>
+                            <strong>🏛️ ${col.name}</strong><br>
+                            <span style="font-size:11px; color:var(--primary); font-weight:800;">Admin PIN: ${col.adminPin || '2727'} | Counter PIN: ${col.staffPin || '1111'}</span>
+                        </td>
+                        <td><code>${joinUrl}</code></td>
+                        <td>${canteensStr}</td>
+                        <td>${vpasStr}</td>
+                        <td><strong>${colItems.length} Items</strong></td>
+                    </tr>
+                `;
+            }).join('');
 
             const logBox = document.getElementById('auditorAuditLogBox');
             let logHtml = `[CREATOR_AUDIT_INIT] Hidden Creator Portal active at ${new Date().toLocaleTimeString()}\n`;
-            logHtml += `[CUSTOM_PINS] VPIET Admin PIN: ${vpietCol.adminPin || '2727'} | Counter PIN: ${vpietCol.staffPin || '1111'}\n`;
-            logHtml += `[UNIVERSAL_QR] Single QR joins all ${canteens.length} VPIET canteen(s): ${UNIVERSAL_JOIN_URL}\n`;
+            logHtml += `[REGISTERED_COLLEGES] ${colleges.map(c => `${c.name} (Admin:${c.adminPin}, Staff:${c.staffPin})`).join(' | ')}\n`;
             logHtml += `[LIVE_CLOUD_SYNC] MQTT WSS Broker (${mqttClient && mqttClient.connected ? 'CONNECTED' : 'CONNECTING'}) | Topic: ${MQTT_SYNC_TOPIC}\n`;
             logHtml += `[STUDENT_VAULT] ${Object.keys(studentVault).length} student accounts synced.\n`;
             activeOrders.forEach((ord, idx) => {
-                logHtml += `[TX_${idx+1}] Token #${ord.token} | Student: ${ord.name} (${ord.rollNo}) | Amount: ₹${ord.total} | Hash: ${ord.signature || 'OK'}\n`;
+                logHtml += `[TX_${idx+1}] Token #${ord.token} | College: ${ord.collegePass} | Student: ${ord.name} (${ord.rollNo}) | Amount: ₹${ord.total}\n`;
             });
             logBox.innerText = logHtml;
         }
@@ -3094,10 +3608,10 @@
             const dropdown = document.getElementById('offerSuggestionsDropdown');
 
             if (!query) { dropdown.style.display = 'none'; dropdown.innerHTML = ''; return; }
-            const matches = menuItems.filter(m => m.name.toLowerCase().includes(query));
+            const matches = menuItems.filter(m => m.college === currentAdminCollege && m.name.toLowerCase().includes(query));
 
             if (matches.length === 0) {
-                dropdown.innerHTML = `<div style="padding:10px; font-size:12px; color:var(--text-muted);">No matching dishes found in VPIET</div>`;
+                dropdown.innerHTML = `<div style="padding:10px; font-size:12px; color:var(--text-muted);">No matching dishes found in ${currentAdminCollege}</div>`;
                 dropdown.style.display = 'block';
                 return;
             }
@@ -3129,8 +3643,10 @@
         }
 
         function copyCollegeInviteLink() {
-            navigator.clipboard.writeText(UNIVERSAL_JOIN_URL);
-            alert(`Copied Universal VPIET Canteen Join Link:\n${UNIVERSAL_JOIN_URL}`);
+            const col = (currentRole === 'admin' || currentRole === 'staff') ? currentAdminCollege : (currentUser.college || "VPIET");
+            const url = getCollegeInviteUrl(col);
+            navigator.clipboard.writeText(url);
+            alert(`Copied Universal ${col} Canteen Join Link:\n${url}`);
         }
 
         function adminAddCanteen() {
@@ -3140,7 +3656,7 @@
 
             if (!name || !upi) { alert("Please enter Canteen Name and official UPI ID (VPA)!"); return; }
 
-            canteens.push({ id: 'can_' + Date.now(), name: name, college: LOCKED_COLLEGE, location: loc, upi: upi, merchant: `${name.toUpperCase()} OFFICIAL` });
+            canteens.push({ id: 'can_' + Date.now(), name: name, college: currentAdminCollege, location: loc, upi: upi, merchant: `${currentAdminCollege.toUpperCase()} OFFICIAL` });
             document.getElementById('newCanteenName').value = '';
             document.getElementById('newCanteenLocation').value = '';
             document.getElementById('newCanteenUpi').value = '';
@@ -3150,8 +3666,9 @@
         }
 
         function adminDeleteCanteen(canId) {
-            if (canteens.length <= 1) {
-                alert("VPIET must have at least one active canteen!");
+            const colCanteens = canteens.filter(c => c.college === currentAdminCollege);
+            if (colCanteens.length <= 1) {
+                alert(`${currentAdminCollege} must have at least one active canteen!`);
                 return;
             }
             canteens = canteens.filter(c => c.id !== canId);
@@ -3163,10 +3680,10 @@
         function renderAdminMenuList() {
             const selectedCanteen = document.getElementById('adminMenuCanteenSelect').value;
             const box = document.getElementById('adminMenuItemsList');
-            const items = menuItems.filter(m => m.canteen === selectedCanteen);
+            const items = menuItems.filter(m => m.college === currentAdminCollege && m.canteen === selectedCanteen);
 
             if (items.length === 0) {
-                box.innerHTML = `<p style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No dishes in this canteen yet. Add one above!</p>`;
+                box.innerHTML = `<p style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No dishes in ${selectedCanteen || 'this canteen'} yet. Add one above!</p>`;
                 return;
             }
 
@@ -3210,20 +3727,20 @@
             const time = document.getElementById('newMenuTime').value.trim() || "5 mins";
 
             if (!name || isNaN(price) || price <= 0 || !selectedCanteen) {
-                alert("Please select a VPIET canteen and enter a valid Dish Name and Rate!");
+                alert("Please select a canteen and enter a valid Dish Name and Rate!");
                 return;
             }
 
             if (editId) {
                 const idx = menuItems.findIndex(m => String(m.id) === String(editId));
                 if (idx !== -1) {
-                    menuItems[idx] = { ...menuItems[idx], name, price, category: cat, veg, time, canteen: selectedCanteen, college: LOCKED_COLLEGE };
+                    menuItems[idx] = { ...menuItems[idx], name, price, category: cat, veg, time, canteen: selectedCanteen, college: currentAdminCollege };
                 }
             } else {
                 menuItems.unshift({
                     id: 'item_' + Date.now(),
                     name, category: cat, price, veg, time,
-                    college: LOCKED_COLLEGE,
+                    college: currentAdminCollege,
                     canteen: selectedCanteen
                 });
             }
@@ -3253,23 +3770,20 @@
 
         function adminPostSingleItemOffer() {
             const targetItemId = document.getElementById('selectedOfferTargetItemId').value;
-            const badge = document.getElementById('newOfferBadge').value.trim() || "🔥 VPIET Offer";
+            const badge = document.getElementById('newOfferBadge').value.trim() || "🔥 Special Offer";
             const title = document.getElementById('newOfferTitle').value.trim();
             const img = document.getElementById('newOfferImg').value.trim() || "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80";
             const amount = parseFloat(document.getElementById('newOfferAmount').value) || 20;
 
             if (!targetItemId || !title) { alert("Please search and select a target menu item and enter an offer headline!"); return; }
 
-            const targetDish = menuItems.find(m => String(m.id) === String(targetItemId));
-            const dishName = targetDish ? targetDish.name : 'Item';
-
             offersEvents.unshift({
                 id: 'ev_' + Date.now(),
-                college: LOCKED_COLLEGE,
+                college: currentAdminCollege,
                 targetItemId: targetItemId,
                 badge: badge,
                 title: title,
-                desc: `Valid when "${dishName}" is in your tray.`,
+                desc: `Save ₹${amount}`,
                 amount: amount,
                 img: img
             });
@@ -3283,18 +3797,19 @@
 
         function renderAdminOffersList() {
             const box = document.getElementById('adminOffersList');
-            if (offersEvents.length === 0) {
-                box.innerHTML = `<p style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No VPIET offers posted yet.</p>`;
+            const colOffers = offersEvents.filter(e => e.college === currentAdminCollege);
+            if (colOffers.length === 0) {
+                box.innerHTML = `<p style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No offers posted yet.</p>`;
                 return;
             }
-            box.innerHTML = offersEvents.map(ev => {
+            box.innerHTML = colOffers.map(ev => {
                 const d = menuItems.find(m => String(m.id) === String(ev.targetItemId));
                 const dishName = d ? d.name : 'Item';
                 return `
                     <div class="item-list-row" onclick="loadOfferForEditing('${ev.id}')" title="Click to load offer into form">
                         <div>
                             <strong>${ev.title}</strong><br>
-                            <span style="font-size:11px; color:var(--primary);">Required Item: ${dishName} • Discount: ₹${ev.amount}</span>
+                            <span style="font-size:11px; color:var(--primary);">Dish: ${dishName} • Discount: ₹${ev.amount}</span>
                         </div>
                         <button class="remove-item-symbol" onclick="event.stopPropagation(); adminDeleteOffer('${ev.id}')">✕</button>
                     </div>
@@ -3330,11 +3845,20 @@
             const searchVal = searchInput ? searchInput.value.toLowerCase() : '';
             ledgerBody.innerHTML = '';
 
+            const ledgerHeading = document.getElementById('ledgerHeadingTitle');
+            if (ledgerHeading) {
+                ledgerHeading.innerText = (currentRole === 'staff' && currentStaffCanteen)
+                    ? `👨‍🍳 ${currentStaffCanteen} (${currentAdminCollege}) — Orders & Counter Ledger`
+                    : `👨‍🍳 ${currentAdminCollege} — Orders & Counter Ledger`;
+            }
+
             let todayTotal = 0;
             let monthlyTotal = 0;
             let unservedPortions = 0;
 
-            const filtered = activeOrders.filter(o => {
+            const operatorOrders = getRelevantOrdersForCurrentOperator();
+
+            const filtered = operatorOrders.filter(o => {
                 const matchesSearch = o.token.toLowerCase().includes(searchVal) ||
                                       o.rollNo.toLowerCase().includes(searchVal) ||
                                       o.name.toLowerCase().includes(searchVal) ||
@@ -3342,13 +3866,16 @@
                 return matchesSearch;
             });
 
-            activeOrders.forEach(o => {
+            operatorOrders.forEach(o => {
                 if (o.status === 'paid' || o.status === 'served') {
                     todayTotal += o.total;
                     monthlyTotal += o.total;
                 }
                 if (o.status !== 'served' && Array.isArray(o.items)) {
-                    o.items.forEach(it => { unservedPortions += (Number(it.qty) || 0); });
+                    o.items.forEach(it => {
+                        if (currentRole === 'staff' && currentStaffCanteen && it.canteen && it.canteen !== currentStaffCanteen) return;
+                        unservedPortions += (Number(it.qty) || 0);
+                    });
                 }
             });
 
@@ -3358,7 +3885,7 @@
             updateFloatingPrepButtonVisibility();
 
             if (filtered.length === 0) {
-                ledgerBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted); font-weight:600;">No VPIET transactions recorded yet.</td></tr>`;
+                ledgerBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted); font-weight:600;">No transactions recorded for this canteen yet.</td></tr>`;
                 return;
             }
 
@@ -3388,7 +3915,7 @@
                             <span class="ledger-item-qty">${it.qty}×</span>
                             <div>
                                 <div class="ledger-item-name">${it.name}</div>
-                                <span class="ledger-item-canteen-sub">🏪 ${it.canteen || order.orderedCanteen || 'VPIET Main Canteen'}</span>
+                                <span class="ledger-item-canteen-sub">🏪 ${it.canteen || order.orderedCanteen || 'Main'}</span>
                             </div>
                         </div>
                         <span class="ledger-item-price">₹${it.price * it.qty}</span>
@@ -3401,7 +3928,7 @@
                     <td><strong>${order.name}</strong><br><span style="font-size:11px; color:var(--text-muted);">📱 ${order.rollNo}${order.email ? '<br>📧 ' + order.email : ''}</span></td>
                     <td>
                         <div class="ledger-canteen-header">
-                            <span class="ledger-canteen-badge">🏪 ${order.orderedCanteen || 'VPIET Main Canteen'}</span>
+                            <span class="ledger-canteen-badge">🏪 ${order.orderedCanteen || 'Main'}</span>
                             <span class="ledger-slot-badge">⏱ ${order.slot || 'Immediate'}</span>
                         </div>
                         <div class="ledger-items-stack">${itemsLineByLineHtml}</div>
