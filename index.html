@@ -1,6 +1,7 @@
 
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -14,6 +15,9 @@
     <!-- EmailJS SDK for Real Inbox Email OTP Delivery -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
+        /* =========================================================================
+           LIGHT MODE & DARK MODE APPLE LIQUID GLASS DESIGN SYSTEM
+           ========================================================================= */
         :root {
             --primary: #4f46e5;
             --primary-dark: #4338ca;
@@ -22,15 +26,46 @@
             --warning: #d97706;
             --danger: #ef4444;
             --text-main: #0f172a;
-            --text-muted: #334155;
+            --text-muted: #475569;
+            --body-bg: #dbeafe;
 
-            /* Authentic Apple iOS 26 / visionOS Liquid Glass Tokens */
-            --liquid-glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.56) 0%, rgba(255, 255, 255, 0.26) 50%, rgba(255, 255, 255, 0.44) 100%);
-            --liquid-glass-strong: linear-gradient(135deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.42) 55%, rgba(255, 255, 255, 0.62) 100%);
-            --liquid-glass-border: rgba(255, 255, 255, 0.82);
+            /* Light Mode Apple Liquid Glass Tokens */
+            --liquid-glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0.28) 50%, rgba(255, 255, 255, 0.46) 100%);
+            --liquid-glass-strong: linear-gradient(135deg, rgba(255, 255, 255, 0.76) 0%, rgba(255, 255, 255, 0.46) 55%, rgba(255, 255, 255, 0.66) 100%);
+            --liquid-glass-border: rgba(255, 255, 255, 0.84);
             --liquid-glass-shadow: 0 10px 28px -6px rgba(15, 23, 42, 0.12), inset 0 1.5px 2px rgba(255, 255, 255, 0.96), inset 0 -1px 1.5px rgba(255, 255, 255, 0.45);
             --liquid-blur: blur(14px) saturate(190%);
+            --surface-sub-bg: rgba(255, 255, 255, 0.66);
+            --surface-row-bg: rgba(255, 255, 255, 0.78);
+            --input-glass-bg: rgba(255, 255, 255, 0.72);
+            --input-glass-focus: rgba(255, 255, 255, 0.95);
+            --header-glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.38) 100%);
+            --nav-glass-bg: rgba(255, 255, 255, 0.46);
+            --drawer-glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 255, 255, 0.72) 100%);
+            --modal-glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 255, 255, 0.68) 100%);
             --radius: 20px;
+        }
+
+        [data-theme="dark"] {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+            --body-bg: #030712;
+
+            /* Dark Mode Apple Liquid Glass Tokens (Smoked Obsidian Glass + Specular Rim) */
+            --liquid-glass-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.62) 0%, rgba(15, 23, 42, 0.38) 50%, rgba(30, 41, 59, 0.52) 100%);
+            --liquid-glass-strong: linear-gradient(135deg, rgba(30, 41, 59, 0.78) 0%, rgba(15, 23, 42, 0.56) 55%, rgba(30, 41, 59, 0.68) 100%);
+            --liquid-glass-border: rgba(255, 255, 255, 0.18);
+            --liquid-glass-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.55), inset 0 1.5px 2px rgba(255, 255, 255, 0.24), inset 0 -1px 1.5px rgba(255, 255, 255, 0.08);
+            --surface-sub-bg: rgba(15, 23, 42, 0.58);
+            --surface-row-bg: rgba(30, 41, 59, 0.72);
+            --input-glass-bg: rgba(15, 23, 42, 0.65);
+            --input-glass-focus: rgba(30, 41, 59, 0.92);
+            --header-glass-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.72) 0%, rgba(15, 23, 42, 0.48) 100%);
+            --nav-glass-bg: rgba(15, 23, 42, 0.52);
+            --drawer-glass-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(30, 41, 59, 0.78) 100%);
+            --modal-glass-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(30, 41, 59, 0.76) 100%);
         }
 
         * {
@@ -46,7 +81,7 @@
         }
 
         body {
-            background-color: #dbeafe;
+            background-color: var(--body-bg);
             color: var(--text-main);
             padding-bottom: 110px;
             min-height: 100vh;
@@ -54,9 +89,10 @@
             overflow-x: hidden;
             -webkit-text-size-adjust: 100%;
             position: relative;
+            transition: background-color 0.25s ease, color 0.25s ease;
         }
 
-        /* Vivid Apple Liquid Wallpaper Orbs (Shines & Refracts Through Frosted Glass) */
+        /* Vivid Apple Liquid Wallpaper Orbs (Light & Dark Mode) */
         .ambient-mesh {
             position: fixed;
             inset: 0;
@@ -70,6 +106,16 @@
                 radial-gradient(circle at 50% 48%, rgba(236, 72, 153, 0.28) 0%, transparent 50%),
                 linear-gradient(135deg, #c7d2fe 0%, #e0e7ff 45%, #fde68a 100%);
             transform: translate3d(0, 0, 0);
+        }
+
+        [data-theme="dark"] .ambient-mesh {
+            background: 
+                radial-gradient(circle at 14% 18%, rgba(79, 70, 229, 0.42) 0%, transparent 45%),
+                radial-gradient(circle at 86% 15%, rgba(16, 185, 129, 0.3) 0%, transparent 45%),
+                radial-gradient(circle at 84% 80%, rgba(217, 119, 6, 0.26) 0%, transparent 48%),
+                radial-gradient(circle at 16% 82%, rgba(6, 182, 212, 0.34) 0%, transparent 48%),
+                radial-gradient(circle at 50% 48%, rgba(236, 72, 153, 0.2) 0%, transparent 52%),
+                linear-gradient(135deg, #030712 0%, #0f172a 48%, #1e1b4b 100%);
         }
 
         .glass-surface {
@@ -88,13 +134,32 @@
             box-shadow: var(--liquid-glass-shadow);
         }
 
+        /* Theme Toggle Pill Button (Liquid Glass) */
+        .theme-toggle-pill {
+            background: var(--liquid-glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--liquid-glass-border);
+            color: var(--text-main);
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: var(--liquid-glass-shadow);
+            white-space: nowrap;
+        }
+
         /* Live Email OTP Notification Banner */
         .otp-gateway-toast {
             position: fixed;
             top: 16px;
             left: 50%;
             transform: translate3d(-50%, -150%, 0);
-            background: rgba(15, 23, 42, 0.82);
+            background: rgba(15, 23, 42, 0.88);
             backdrop-filter: blur(18px) saturate(190%);
             -webkit-backdrop-filter: blur(18px) saturate(190%);
             color: #ffffff;
@@ -102,7 +167,7 @@
             border-radius: 18px;
             padding: 14px 20px;
             z-index: 1000;
-            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.4), inset 0 1px 1.5px rgba(255, 255, 255, 0.35);
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.45), inset 0 1px 1.5px rgba(255, 255, 255, 0.35);
             display: flex;
             align-items: center;
             gap: 14px;
@@ -143,15 +208,15 @@
         .auth-gate.hidden { display: none; }
 
         .auth-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.76) 0%, rgba(255, 255, 255, 0.52) 100%);
+            background: var(--modal-glass-bg);
             backdrop-filter: blur(24px) saturate(200%);
             -webkit-backdrop-filter: blur(24px) saturate(200%);
-            border: 1.5px solid rgba(255, 255, 255, 0.92);
+            border: 1.5px solid var(--liquid-glass-border);
             width: 100%;
             max-width: 490px;
             border-radius: 28px;
             padding: 22px;
-            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.35), inset 0 2px 3px rgba(255, 255, 255, 0.98);
+            box-shadow: var(--liquid-glass-shadow);
             margin: auto;
         }
 
@@ -187,22 +252,22 @@
         }
 
         .gateway-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0.32) 100%);
+            background: var(--liquid-glass-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1.5px solid rgba(255, 255, 255, 0.88);
+            border: 1.5px solid var(--liquid-glass-border);
             border-radius: 18px;
             padding: 14px 10px;
             text-align: center;
             cursor: pointer;
-            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06), inset 0 1.5px 2px rgba(255, 255, 255, 0.95);
+            box-shadow: var(--liquid-glass-shadow);
             transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
         }
 
         .gateway-card.active {
             border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(238, 242, 255, 0.85) 0%, rgba(224, 231, 255, 0.58) 100%);
-            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.18), inset 0 1.5px 2px rgba(255, 255, 255, 0.98);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(79, 70, 229, 0.15) 100%);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.22), inset 0 1.5px 2px rgba(255, 255, 255, 0.45);
         }
 
         .gateway-icon { font-size: 26px; margin-bottom: 4px; }
@@ -212,14 +277,13 @@
         .sub-switch-bar {
             display: grid;
             gap: 4px;
-            background: rgba(241, 245, 249, 0.58);
+            background: var(--surface-sub-bg);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             padding: 4px;
             border-radius: 14px;
             margin-bottom: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.82);
-            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05);
+            border: 1px solid var(--liquid-glass-border);
         }
 
         .sub-switch-2 { grid-template-columns: 1fr 1fr; }
@@ -238,13 +302,13 @@
         }
 
         .college-sub-tab.active {
-            background: rgba(255, 255, 255, 0.92);
+            background: var(--surface-row-bg);
             color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08), inset 0 1px 1px #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
         }
 
         .otp-verify-box {
-            background: rgba(240, 253, 244, 0.78);
+            background: rgba(16, 185, 129, 0.15);
             backdrop-filter: blur(10px);
             border: 2px dashed #10b981;
             border-radius: 14px;
@@ -267,11 +331,11 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 8px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0.36) 100%);
+            background: var(--header-glass-bg);
             backdrop-filter: blur(16px) saturate(190%);
             -webkit-backdrop-filter: blur(16px) saturate(190%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.85);
-            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid var(--liquid-glass-border);
+            box-shadow: var(--liquid-glass-shadow);
         }
 
         @media(min-width: 768px) { header { padding: 12px 24px; } }
@@ -297,10 +361,10 @@
         .header-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
         .user-pill {
-            background: rgba(255, 255, 255, 0.58);
+            background: var(--surface-sub-bg);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.92);
+            border: 1px solid var(--liquid-glass-border);
             color: var(--primary);
             padding: 5px 11px;
             border-radius: 20px;
@@ -311,7 +375,10 @@
             gap: 5px;
             cursor: pointer;
             white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05), inset 0 1px 1px #ffffff;
+        }
+
+        [data-theme="dark"] .user-pill {
+            color: #a5b4fc;
         }
 
         .switch-auth-btn {
@@ -333,10 +400,10 @@
             display: flex;
             justify-content: flex-start;
             gap: 14px;
-            background: rgba(255, 255, 255, 0.44);
+            background: var(--nav-glass-bg);
             backdrop-filter: blur(14px) saturate(180%);
             -webkit-backdrop-filter: blur(14px) saturate(180%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.78);
+            border-bottom: 1px solid var(--liquid-glass-border);
             padding: 0 14px;
             overflow-x: auto;
             scrollbar-width: none;
@@ -358,6 +425,7 @@
         }
 
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+        [data-theme="dark"] .tab-btn.active { color: #818cf8; border-bottom-color: #818cf8; }
 
         .container { max-width: 1280px; margin: 0 auto; padding: 12px; width: 100%; }
         @media(min-width: 768px) { .container { padding: 22px; } }
@@ -385,18 +453,18 @@
         .compact-bar-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
         .compact-college-badge {
-            background: rgba(255, 255, 255, 0.72);
+            background: var(--surface-row-bg);
             color: var(--primary);
-            border: 1px solid rgba(255, 255, 255, 0.96);
+            border: 1px solid var(--liquid-glass-border);
             padding: 5px 11px;
             border-radius: 10px;
             font-size: 12px;
             font-weight: 900;
-            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04), inset 0 1px 1px #ffffff;
         }
+        [data-theme="dark"] .compact-college-badge { color: #a5b4fc; }
 
         .college-switcher-select {
-            background: rgba(255, 255, 255, 0.85);
+            background: var(--surface-row-bg);
             color: var(--primary);
             border: 1.5px solid rgba(99, 102, 241, 0.55);
             padding: 5px 10px;
@@ -405,7 +473,10 @@
             font-weight: 900;
             outline: none;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.12), inset 0 1px 1px #ffffff;
+        }
+        [data-theme="dark"] .college-switcher-select {
+            color: #a5b4fc;
+            background: #1e293b;
         }
 
         .compact-vpa-tag { font-size: 11px; color: var(--text-muted); font-weight: 700; }
@@ -575,9 +646,9 @@
             border-radius: 10px;
             font-size: 12px;
             font-weight: 800;
-            background: rgba(238, 242, 255, 0.85);
+            background: var(--surface-row-bg);
             color: var(--primary);
-            border: 1px solid #c7d2fe;
+            border: 1px solid var(--liquid-glass-border);
         }
 
         .qr-scan-status.active { display: block; }
@@ -591,7 +662,7 @@
             background: var(--liquid-glass-strong);
             backdrop-filter: var(--liquid-blur);
             -webkit-backdrop-filter: var(--liquid-blur);
-            border: 1.5px solid rgba(167, 243, 208, 0.9);
+            border: 1.5px solid rgba(16, 185, 129, 0.55);
             box-shadow: var(--liquid-glass-shadow);
         }
 
@@ -623,20 +694,19 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(255, 255, 255, 0.68);
-            border: 1px solid rgba(255, 255, 255, 0.92);
+            background: var(--surface-row-bg);
+            border: 1px solid var(--liquid-glass-border);
             border-radius: 12px;
             padding: 10px 12px;
             margin-bottom: 8px;
             gap: 10px;
-            box-shadow: inset 0 1px 1px #ffffff;
         }
 
         .prep-rank-badge {
             width: 30px;
             height: 30px;
             border-radius: 8px;
-            background: rgba(238, 242, 255, 0.9);
+            background: rgba(99, 102, 241, 0.18);
             color: var(--primary);
             font-weight: 900;
             font-size: 12px;
@@ -647,8 +717,8 @@
         }
 
         .prep-rank-row.top-1 .prep-rank-badge {
-            background: #fef3c7;
-            color: #b45309;
+            background: rgba(245, 158, 11, 0.25);
+            color: #f59e0b;
             border: 1px solid #f59e0b;
         }
 
@@ -667,7 +737,7 @@
         .prep-progress-track {
             width: 100%;
             height: 5px;
-            background: rgba(241, 245, 249, 0.8);
+            background: rgba(148, 163, 184, 0.25);
             border-radius: 4px;
             margin-top: 5px;
             overflow: hidden;
@@ -695,9 +765,10 @@
             box-shadow: var(--liquid-glass-shadow);
             color: var(--text-main);
         }
+        .search-box input::placeholder { color: var(--text-muted); }
         .search-box input:focus {
             border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.78);
+            background: var(--input-glass-focus);
         }
         .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; z-index: 2; }
 
@@ -722,14 +793,14 @@
             border-radius: 20px;
             overflow: hidden;
             scroll-snap-align: start;
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16), inset 0 1.5px 2px rgba(255, 255, 255, 0.75);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18), inset 0 1.5px 2px rgba(255, 255, 255, 0.65);
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             background-size: cover;
             background-position: center;
-            border: 1px solid rgba(255, 255, 255, 0.85);
+            border: 1px solid var(--liquid-glass-border);
             contain: layout style paint;
         }
         @media(min-width: 768px) { .ad-card { flex: 0 0 330px; height: 176px; } }
@@ -774,7 +845,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2), inset 0 1px 1px #ffffff;
         }
 
-        /* APPLE LIQUID GLASS CATEGORY PILLS */
+        /* APPLE LIQUID GLASS CATEGORY & CANTEEN PILLS */
         .cat-scroll {
             display: flex;
             gap: 8px;
@@ -798,13 +869,13 @@
             color: var(--text-main);
             cursor: pointer;
             white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05), inset 0 1.5px 1.5px rgba(255, 255, 255, 0.95);
+            box-shadow: var(--liquid-glass-shadow);
         }
         .cat-pill.active {
-            background: linear-gradient(135deg, rgba(79, 70, 229, 0.88), rgba(67, 56, 202, 0.94));
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.9), rgba(67, 56, 202, 0.96));
             color: #ffffff;
             border-color: rgba(255, 255, 255, 0.55);
-            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.32), inset 0 1.5px 1.5px rgba(255, 255, 255, 0.55);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35), inset 0 1.5px 1.5px rgba(255, 255, 255, 0.55);
         }
 
         /* =========================================================================
@@ -840,8 +911,8 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            border: 1.2px solid rgba(255, 255, 255, 0.86);
-            box-shadow: 0 10px 26px -6px rgba(15, 23, 42, 0.16), inset 0 1.5px 2px rgba(255, 255, 255, 0.95);
+            border: 1.2px solid var(--liquid-glass-border);
+            box-shadow: var(--liquid-glass-shadow);
             transform: translateZ(0);
             contain: layout style paint;
         }
@@ -865,11 +936,11 @@
 
         /* When no image is uploaded: True Apple visionOS / iOS 26 Translucent Liquid Glass Card */
         .food-card.no-bg-img {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.54) 0%, rgba(255, 255, 255, 0.22) 50%, rgba(255, 255, 255, 0.42) 100%);
+            background: var(--liquid-glass-bg);
             backdrop-filter: var(--liquid-blur);
             -webkit-backdrop-filter: var(--liquid-blur);
-            border: 1.2px solid rgba(255, 255, 255, 0.88);
-            box-shadow: 0 10px 28px -6px rgba(15, 23, 42, 0.1), inset 0 2px 3px rgba(255, 255, 255, 0.98), inset 0 -1px 2px rgba(255, 255, 255, 0.5);
+            border: 1.2px solid var(--liquid-glass-border);
+            box-shadow: var(--liquid-glass-shadow);
         }
 
         /* Soft refractive color glow inside no-image Liquid Glass cards */
@@ -950,11 +1021,13 @@
         }
 
         .food-card.no-bg-img .food-college-tag {
-            background: rgba(255, 255, 255, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.95);
+            background: var(--surface-row-bg);
+            border: 1px solid var(--liquid-glass-border);
             color: var(--primary);
             text-shadow: none;
-            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04), inset 0 1px 1px #ffffff;
+        }
+        [data-theme="dark"] .food-card.no-bg-img .food-college-tag {
+            color: #a5b4fc;
         }
 
         .veg-badge {
@@ -966,7 +1039,7 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
         .veg-dot { width: 7px; height: 7px; background: var(--success); border-radius: 50%; }
@@ -994,11 +1067,11 @@
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.24), inset 0 1px 1.5px rgba(255, 255, 255, 0.55);
         }
 
-        /* On No-Image Cards: Translucent White Apple Liquid Glass Capsule */
+        /* On No-Image Cards: Translucent Liquid Glass Capsule (Adapts to Light & Dark Mode) */
         .food-card.no-bg-img .food-glass-dock {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.66) 0%, rgba(255, 255, 255, 0.38) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.92);
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05), inset 0 1.5px 2px rgba(255, 255, 255, 0.98);
+            background: var(--surface-row-bg);
+            border: 1px solid var(--liquid-glass-border);
+            box-shadow: var(--liquid-glass-shadow);
         }
 
         .food-name {
@@ -1019,7 +1092,7 @@
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
         }
         .food-card.no-bg-img .food-name {
-            color: #0f172a;
+            color: var(--text-main);
         }
 
         .food-meta-pill {
@@ -1034,7 +1107,7 @@
         }
 
         .food-card.has-bg-img .food-meta-pill { color: #e2e8f0; }
-        .food-card.no-bg-img .food-meta-pill { color: #334155; }
+        .food-card.no-bg-img .food-meta-pill { color: var(--text-muted); }
 
         .food-footer {
             display: flex;
@@ -1045,7 +1118,7 @@
             border-top: 1px solid rgba(255, 255, 255, 0.25);
         }
         .food-card.no-bg-img .food-footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.65);
+            border-top: 1px solid var(--liquid-glass-border);
         }
 
         .food-price {
@@ -1061,11 +1134,11 @@
             color: #ffffff;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
         }
-        .food-card.no-bg-img .food-price { color: #0f172a; }
+        .food-card.no-bg-img .food-price { color: var(--text-main); }
 
         /* Apple Liquid Glass Add Button */
         .add-btn {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             color: #0f172a;
             border: 1px solid #ffffff;
             padding: 5.5px 11px;
@@ -1087,7 +1160,7 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             border: 1px solid #ffffff;
             padding: 2px 5px;
             border-radius: 9px;
@@ -1143,9 +1216,9 @@
         .admin-panel h3 { font-size: 15px; font-weight: 900; margin-bottom: 4px; color: var(--text-main); }
         .admin-panel p.sub { font-size: 11.5px; color: var(--text-muted); margin-bottom: 12px; }
 
-        .item-list-box { max-height: 220px; overflow-y: auto; border: 1px solid rgba(255, 255, 255, 0.82); border-radius: 14px; padding: 8px; background: rgba(255, 255, 255, 0.42); }
-        .item-list-row { background: rgba(255, 255, 255, 0.76); border: 1px solid rgba(255, 255, 255, 0.95); border-radius: 10px; padding: 9px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; cursor: pointer; gap: 8px; box-shadow: inset 0 1px 1px #ffffff; }
-        .item-list-row.editing-active { background: rgba(238, 242, 255, 0.92); border: 2px solid var(--primary); }
+        .item-list-box { max-height: 220px; overflow-y: auto; border: 1px solid var(--liquid-glass-border); border-radius: 14px; padding: 8px; background: var(--surface-sub-bg); }
+        .item-list-row { background: var(--surface-row-bg); border: 1px solid var(--liquid-glass-border); border-radius: 10px; padding: 9px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; cursor: pointer; gap: 8px; color: var(--text-main); }
+        .item-list-row.editing-active { background: rgba(99, 102, 241, 0.22); border: 2px solid var(--primary); }
 
         .menu-thumb-mini {
             width: 34px;
@@ -1161,16 +1234,16 @@
 
         /* MULTI-SELECT TARGET FOOD ITEMS IN OFFER EDITOR */
         .search-suggestions-container { position: relative; }
-        .suggestions-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(14px); border: 1px solid #cbd5e1; border-radius: 12px; max-height: 210px; overflow-y: auto; z-index: 60; display: none; margin-top: 4px; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.15); }
-        .suggestion-item { padding: 9px 12px; font-size: 12px; font-weight: 700; cursor: pointer; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-        .suggestion-item:hover { background: #eef2ff; }
-        .suggestion-item.is-selected { background: #f0fdf4; border-left: 4px solid #10b981; }
+        .suggestions-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--modal-glass-bg); backdrop-filter: blur(18px); border: 1px solid var(--liquid-glass-border); border-radius: 12px; max-height: 210px; overflow-y: auto; z-index: 60; display: none; margin-top: 4px; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25); }
+        .suggestion-item { padding: 9px 12px; font-size: 12px; font-weight: 700; cursor: pointer; border-bottom: 1px solid var(--liquid-glass-border); display: flex; justify-content: space-between; align-items: center; gap: 8px; color: var(--text-main); }
+        .suggestion-item:hover { background: rgba(99, 102, 241, 0.15); }
+        .suggestion-item.is-selected { background: rgba(16, 185, 129, 0.18); border-left: 4px solid #10b981; }
 
         .multi-selected-tags-box { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 
         .selected-food-chip {
-            background: rgba(238, 242, 255, 0.9);
-            border: 1px solid #c7d2fe;
+            background: rgba(99, 102, 241, 0.18);
+            border: 1px solid rgba(99, 102, 241, 0.45);
             color: var(--primary);
             padding: 4px 9px;
             border-radius: 20px;
@@ -1180,6 +1253,7 @@
             align-items: center;
             gap: 6px;
         }
+        [data-theme="dark"] .selected-food-chip { color: #a5b4fc; }
 
         .selected-food-chip button {
             background: #fee2e2;
@@ -1205,7 +1279,7 @@
             right: 12px;
             max-width: 620px;
             margin: 0 auto;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.82) 0%, rgba(30, 27, 75, 0.72) 100%);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.84) 0%, rgba(30, 27, 75, 0.74) 100%);
             backdrop-filter: blur(18px) saturate(190%);
             -webkit-backdrop-filter: blur(18px) saturate(190%);
             color: white;
@@ -1214,7 +1288,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.35), inset 0 1.5px 2px rgba(255, 255, 255, 0.32);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), inset 0 1.5px 2px rgba(255, 255, 255, 0.32);
             z-index: 150;
             cursor: pointer;
             border: 1px solid rgba(255, 255, 255, 0.28);
@@ -1227,7 +1301,7 @@
         .tray-action-pill { background: rgba(255, 255, 255, 0.95); color: #0f172a; padding: 8px 14px; border-radius: 12px; font-size: 12.5px; font-weight: 900; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
         /* LIQUID GLASS DRAWER */
-        .drawer-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.42); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 200; display: none; }
+        .drawer-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 200; display: none; }
         .drawer-overlay.active { display: block; }
         .drawer {
             position: fixed;
@@ -1236,10 +1310,10 @@
             right: 0;
             max-width: 600px;
             margin: 0 auto;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.84) 0%, rgba(255, 255, 255, 0.68) 100%);
+            background: var(--drawer-glass-bg);
             backdrop-filter: blur(24px) saturate(200%);
             -webkit-backdrop-filter: blur(24px) saturate(200%);
-            border-top: 1.5px solid rgba(255, 255, 255, 0.96);
+            border-top: 1.5px solid var(--liquid-glass-border);
             border-top-left-radius: 28px;
             border-top-right-radius: 28px;
             max-height: 90vh;
@@ -1248,7 +1322,7 @@
             padding: 16px 18px 20px 18px;
             transform: translate3d(0, 100%, 0);
             transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-            box-shadow: 0 -10px 36px rgba(0,0,0,0.22), inset 0 2px 3px rgba(255, 255, 255, 0.98);
+            box-shadow: 0 -10px 36px rgba(0,0,0,0.3), inset 0 2px 3px rgba(255, 255, 255, 0.35);
             will-change: transform;
         }
         @media(min-width: 768px) { .drawer { padding: 22px 24px; } }
@@ -1257,37 +1331,38 @@
         .drawer-pill-handle {
             width: 42px;
             height: 5px;
-            background: rgba(100, 116, 139, 0.4);
+            background: rgba(148, 163, 184, 0.45);
             border-radius: 10px;
             margin: 0 auto 10px auto;
             cursor: pointer;
         }
 
-        .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.75); padding-bottom: 10px; gap: 8px; }
-        .drawer-header h2 { font-size: 16.5px; font-weight: 900; }
-        .close-drawer { background: rgba(255, 255, 255, 0.75); border: 1px solid rgba(255, 255, 255, 0.95); width: 30px; height: 30px; border-radius: 50%; font-weight: 800; cursor: pointer; font-size: 16px; color: var(--text-muted); box-shadow: inset 0 1px 1px #ffffff; }
+        .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--liquid-glass-border); padding-bottom: 10px; gap: 8px; }
+        .drawer-header h2 { font-size: 16.5px; font-weight: 900; color: var(--text-main); }
+        .close-drawer { background: var(--surface-row-bg); border: 1px solid var(--liquid-glass-border); width: 30px; height: 30px; border-radius: 50%; font-weight: 800; cursor: pointer; font-size: 16px; color: var(--text-muted); }
 
         .form-group { margin-bottom: 10px; }
         .form-group label { display: block; font-size: 10.5px; font-weight: 800; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
-        .form-control { width: 100%; padding: 9px 11px; border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px; font-size: 13px; outline: none; background: rgba(255, 255, 255, 0.68); font-weight: 600; color: var(--text-main); box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04); }
-        .form-control:focus { border-color: var(--primary); background: rgba(255, 255, 255, 0.94); }
+        .form-control { width: 100%; padding: 9px 11px; border: 1px solid var(--liquid-glass-border); border-radius: 12px; font-size: 13px; outline: none; background: var(--input-glass-bg); font-weight: 600; color: var(--text-main); }
+        .form-control:focus { border-color: var(--primary); background: var(--input-glass-focus); }
+        [data-theme="dark"] select.form-control option { background: #0f172a; color: #f8fafc; }
 
         .payment-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-        .payment-card { border: 1.5px solid rgba(255, 255, 255, 0.88); border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; background: rgba(255, 255, 255, 0.58); box-shadow: inset 0 1px 1px #ffffff; }
-        .payment-card.selected { border-color: var(--primary); background: rgba(238, 242, 255, 0.88); }
+        .payment-card { border: 1.5px solid var(--liquid-glass-border); border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; background: var(--surface-sub-bg); }
+        .payment-card.selected { border-color: var(--primary); background: rgba(99, 102, 241, 0.2); }
         .payment-card h4 { font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
         .payment-card p { font-size: 11px; color: var(--text-muted); font-weight: 500; }
 
-        #qrDisplayContainer { background: rgba(255, 255, 255, 0.82); border: 2px solid #a7f3d0; border-radius: 16px; padding: 14px; text-align: center; margin-bottom: 14px; display: block; box-shadow: inset 0 1px 2px #ffffff; }
-        .bill-summary { background: rgba(255, 255, 255, 0.65); border: 1px solid rgba(255, 255, 255, 0.92); border-radius: 14px; padding: 14px; margin-bottom: 14px; box-shadow: inset 0 1px 1px #ffffff; }
+        #qrDisplayContainer { background: var(--surface-row-bg); border: 2px solid rgba(16, 185, 129, 0.6); border-radius: 16px; padding: 14px; text-align: center; margin-bottom: 14px; display: block; }
+        .bill-summary { background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); border-radius: 14px; padding: 14px; margin-bottom: 14px; }
         .bill-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; color: var(--text-muted); font-weight: 600; }
-        .bill-row.total { font-size: 16px; font-weight: 900; color: var(--text-main); border-top: 1px dashed #cbd5e1; padding-top: 8px; margin-top: 8px; }
+        .bill-row.total { font-size: 16px; font-weight: 900; color: var(--text-main); border-top: 1px dashed rgba(148, 163, 184, 0.4); padding-top: 8px; margin-top: 8px; }
         .checkout-btn { width: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: 1px solid rgba(255, 255, 255, 0.4); padding: 12px; border-radius: 14px; font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 18px rgba(79, 70, 229, 0.28), inset 0 1px 1.5px rgba(255, 255, 255, 0.45); }
         .checkout-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .toast-modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 600; display: none; align-items: center; justify-content: center; padding: 16px; }
+        .toast-modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.52); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 600; display: none; align-items: center; justify-content: center; padding: 16px; }
         .toast-modal.active { display: flex; }
-        .toast-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.84) 0%, rgba(255, 255, 255, 0.66) 100%); backdrop-filter: blur(22px) saturate(200%); -webkit-backdrop-filter: blur(22px) saturate(200%); width: 100%; max-width: 420px; border-radius: 26px; padding: 22px; text-align: center; box-shadow: 0 20px 44px rgba(0,0,0,0.25), inset 0 2px 3px rgba(255, 255, 255, 0.98); border: 1.5px solid rgba(255, 255, 255, 0.92); }
+        .toast-card { background: var(--modal-glass-bg); backdrop-filter: blur(22px) saturate(200%); -webkit-backdrop-filter: blur(22px) saturate(200%); width: 100%; max-width: 420px; border-radius: 26px; padding: 22px; text-align: center; box-shadow: var(--liquid-glass-shadow); border: 1.5px solid var(--liquid-glass-border); color: var(--text-main); }
         .toast-icon { width: 52px; height: 52px; background: #dcfce7; color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 12px auto; }
 
         /* DIGITAL RECEIPTS WITH PROMINENT COLLEGE BADGE */
@@ -1307,7 +1382,7 @@
             overflow: hidden;
             contain: content;
         }
-        .receipt-card.is-served { border: 2px solid #10b981; background: linear-gradient(145deg, rgba(240, 253, 244, 0.82) 0%, rgba(255, 255, 255, 0.72) 100%); }
+        .receipt-card.is-served { border: 2px solid #10b981; }
 
         .receipt-college-banner {
             display: flex;
@@ -1328,12 +1403,13 @@
         .served-hero-icon { width: 44px; height: 44px; background: rgba(255, 255, 255, 0.22); border: 2px solid #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; margin: 0 auto 6px auto; }
         .served-hero-title { font-size: 18px; font-weight: 900; text-transform: uppercase; }
         .served-hero-sub { font-size: 11.5px; font-weight: 700; opacity: 0.95; margin-top: 3px; }
-        .served-diagonal-stamp { position: absolute; top: 56%; left: 50%; transform: translate(-50%, -50%) rotate(-14deg); border: 4px solid rgba(5, 150, 105, 0.2); color: rgba(5, 150, 105, 0.2); font-size: 32px; font-weight: 900; padding: 6px 18px; border-radius: 12px; text-transform: uppercase; pointer-events: none; z-index: 2; white-space: nowrap; }
-        .served-redemption-box { background: rgba(220, 252, 231, 0.85); border: 2px dashed #10b981; color: #065f46; padding: 10px; border-radius: 12px; text-align: center; margin-bottom: 12px; }
+        .served-diagonal-stamp { position: absolute; top: 56%; left: 50%; transform: translate(-50%, -50%) rotate(-14deg); border: 4px solid rgba(16, 185, 129, 0.24); color: rgba(16, 185, 129, 0.24); font-size: 32px; font-weight: 900; padding: 6px 18px; border-radius: 12px; text-transform: uppercase; pointer-events: none; z-index: 2; white-space: nowrap; }
+        .served-redemption-box { background: rgba(16, 185, 129, 0.16); border: 2px dashed #10b981; color: var(--text-main); padding: 10px; border-radius: 12px; text-align: center; margin-bottom: 12px; }
 
-        .receipt-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 12px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+        .receipt-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed rgba(148, 163, 184, 0.4); padding-bottom: 12px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
         .token-number { font-size: 28px; font-weight: 900; color: var(--primary); }
-        .receipt-card.is-served .token-number { color: #059669; }
+        [data-theme="dark"] .token-number { color: #818cf8; }
+        .receipt-card.is-served .token-number { color: #10b981; }
 
         .handshake-pin-box { background: #1e1b4b; color: #38bdf8; border: 2px solid #6366f1; padding: 5px 10px; border-radius: 10px; text-align: center; }
         .handshake-pin-box span { display: block; font-size: 9px; text-transform: uppercase; color: #c7d2fe; font-weight: 800; }
@@ -1346,13 +1422,14 @@
 
         .receipt-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; font-size: 12.5px; }
         .receipt-details div span { display: block; font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
-        .receipt-items-list { border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 8px 0; margin-bottom: 12px; }
+        .receipt-items-list { border-top: 1px solid rgba(148, 163, 184, 0.35); border-bottom: 1px solid rgba(148, 163, 184, 0.35); padding: 8px 0; margin-bottom: 12px; }
         .receipt-item-row { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 5px; font-weight: 600; }
 
         .hologram-security-strip { background: linear-gradient(90deg, #4f46e5, #10b981, #f59e0b); color: #ffffff; padding: 6px 12px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 10.5px; font-weight: 900; }
 
-        .live-clock { font-family: monospace; background: #0f172a; color: #38bdf8; padding: 7px 10px; border-radius: 8px; text-align: center; font-size: 14px; font-weight: 800; margin-bottom: 10px; }
-        .live-test-btn { width: 100%; background: rgba(238, 242, 255, 0.8); color: var(--primary); border: 1px dashed var(--primary); padding: 9px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; margin-bottom: 6px; }
+        .live-clock { font-family: monospace; background: #0f172a; color: #38bdf8; padding: 7px 10px; border-radius: 8px; text-align: center; font-size: 14px; font-weight: 800; margin-bottom: 10px; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .live-test-btn { width: 100%; background: rgba(99, 102, 241, 0.15); color: var(--primary); border: 1px dashed var(--primary); padding: 9px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; margin-bottom: 6px; }
+        [data-theme="dark"] .live-test-btn { color: #a5b4fc; border-color: #818cf8; }
 
         .finance-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px; }
         .finance-card { background: var(--liquid-glass-strong); backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur); border: 1px solid var(--liquid-glass-border); border-radius: var(--radius); padding: 16px; box-shadow: var(--liquid-glass-shadow); }
@@ -1361,19 +1438,20 @@
 
         .statement-table-wrapper { background: var(--liquid-glass-strong); backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur); border: 1px solid var(--liquid-glass-border); border-radius: var(--radius); overflow-x: auto; box-shadow: var(--liquid-glass-shadow); }
         .statement-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12.5px; }
-        .statement-table th { background: rgba(255, 255, 255, 0.55); padding: 11px 14px; font-weight: 800; color: var(--text-muted); font-size: 10.5px; text-transform: uppercase; border-bottom: 1px solid rgba(255, 255, 255, 0.8); white-space: nowrap; }
-        .statement-table td { padding: 12px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.55); color: var(--text-main); vertical-align: top; font-weight: 600; }
+        .statement-table th { background: var(--surface-sub-bg); padding: 11px 14px; font-weight: 800; color: var(--text-muted); font-size: 10.5px; text-transform: uppercase; border-bottom: 1px solid var(--liquid-glass-border); white-space: nowrap; }
+        .statement-table td { padding: 12px 14px; border-bottom: 1px solid var(--liquid-glass-border); color: var(--text-main); vertical-align: top; font-weight: 600; }
 
         .ledger-canteen-header { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
-        .ledger-canteen-badge { background: rgba(238, 242, 255, 0.9); color: var(--primary); border: 1px solid #c7d2fe; font-size: 10.5px; font-weight: 800; padding: 3px 8px; border-radius: 6px; }
-        .ledger-slot-badge { background: rgba(241, 245, 249, 0.9); color: #475569; border: 1px solid #cbd5e1; font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 6px; }
+        .ledger-canteen-badge { background: rgba(99, 102, 241, 0.18); color: var(--primary); border: 1px solid rgba(99, 102, 241, 0.4); font-size: 10.5px; font-weight: 800; padding: 3px 8px; border-radius: 6px; }
+        [data-theme="dark"] .ledger-canteen-badge { color: #a5b4fc; }
+        .ledger-slot-badge { background: var(--surface-sub-bg); color: var(--text-muted); border: 1px solid var(--liquid-glass-border); font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 6px; }
         .ledger-items-stack { display: flex; flex-direction: column; gap: 5px; min-width: 220px; }
-        .ledger-item-line { display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.82); border: 1px solid rgba(255, 255, 255, 0.95); border-left: 3px solid var(--primary); border-radius: 7px; padding: 6px 9px; gap: 8px; }
+        .ledger-item-line { display: flex; align-items: center; justify-content: space-between; background: var(--surface-row-bg); border: 1px solid var(--liquid-glass-border); border-left: 3px solid var(--primary); border-radius: 7px; padding: 6px 9px; gap: 8px; }
         .ledger-item-left { display: flex; align-items: center; gap: 7px; }
         .ledger-item-qty { background: var(--primary); color: #ffffff; font-size: 11px; font-weight: 900; padding: 2px 7px; border-radius: 5px; min-width: 26px; text-align: center; }
         .ledger-item-name { font-size: 12.5px; font-weight: 800; color: var(--text-main); }
         .ledger-item-canteen-sub { display: block; font-size: 10px; color: var(--text-muted); font-weight: 700; }
-        .ledger-item-price { font-size: 11.5px; font-weight: 800; color: var(--text-main); background: rgba(248, 250, 252, 0.9); border: 1px solid #e2e8f0; padding: 2px 6px; border-radius: 5px; white-space: nowrap; }
+        .ledger-item-price { font-size: 11.5px; font-weight: 800; color: var(--text-main); background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); padding: 2px 6px; border-radius: 5px; white-space: nowrap; }
 
         .staff-actions-group { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
         .btn-collect-lg { background: #f59e0b; color: #ffffff; border: none; padding: 9px 14px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap; }
@@ -1387,8 +1465,8 @@
             flex-wrap: wrap;
             gap: 10px;
             padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.55);
-            border-top: 1px solid rgba(255, 255, 255, 0.8);
+            background: var(--surface-sub-bg);
+            border-top: 1px solid var(--liquid-glass-border);
         }
 
         .ledger-page-info {
@@ -1402,9 +1480,9 @@
         }
 
         .ledger-search-active-pill {
-            background: #eef2ff;
+            background: rgba(99, 102, 241, 0.18);
             color: var(--primary);
-            border: 1px solid #c7d2fe;
+            border: 1px solid rgba(99, 102, 241, 0.4);
             padding: 3px 8px;
             border-radius: 6px;
             font-size: 10.5px;
@@ -1419,8 +1497,8 @@
         }
 
         .page-btn {
-            background: rgba(255, 255, 255, 0.82);
-            border: 1px solid rgba(255, 255, 255, 0.95);
+            background: var(--surface-row-bg);
+            border: 1px solid var(--liquid-glass-border);
             color: var(--text-main);
             min-width: 32px;
             height: 32px;
@@ -1432,7 +1510,6 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 5px rgba(15, 23, 42, 0.04), inset 0 1px 1px #ffffff;
         }
 
         .page-btn.active {
@@ -1489,7 +1566,7 @@
     <div class="toast-modal" id="creatorSecretModal">
         <div class="toast-card" style="text-align: left; max-width: 400px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 style="font-size: 17px; font-weight: 900; color: #4f46e5;">👑 App Creator Portal</h3>
+                <h3 style="font-size: 17px; font-weight: 900; color: var(--primary);">👑 App Creator Portal</h3>
                 <button class="close-drawer" onclick="closeCreatorModal()">×</button>
             </div>
             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">
@@ -1506,9 +1583,9 @@
     <!-- KITCHEN & COUNTER FOOD PREPARATION POPUP MODAL (SORTED HIGHEST TO LOWEST) -->
     <div class="toast-modal" id="foodPrepModal">
         <div class="toast-card" style="text-align: left; max-width: 520px; max-height: 88vh; display: flex; flex-direction: column; padding: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.75); padding-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--liquid-glass-border); padding-bottom: 10px;">
                 <div>
-                    <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: #d97706; letter-spacing: 0.6px;">🍲 Counter & Kitchen Prep Tracker</span>
+                    <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: #f59e0b; letter-spacing: 0.6px;">🍲 Counter & Kitchen Prep Tracker</span>
                     <h3 style="font-size: 17px; font-weight: 900; color: var(--text-main);">Ordered Food Items (High to Low)</h3>
                 </div>
                 <button class="close-drawer" onclick="closeFoodPrepModal()">×</button>
@@ -1520,13 +1597,13 @@
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
-                <div style="background: rgba(238, 242, 255, 0.78); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 9px 12px;">
+                <div style="background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 9px 12px;">
                     <span style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block;">Total Portions / Plates</span>
                     <strong style="font-size: 19px; font-weight: 900; color: var(--primary);" id="prepTotalPortionsCount">0</strong>
                 </div>
-                <div style="background: rgba(236, 253, 245, 0.78); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 9px 12px;">
+                <div style="background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 9px 12px;">
                     <span style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block;">Unique Dishes Ordered</span>
-                    <strong style="font-size: 19px; font-weight: 900; color: #059669;" id="prepUniqueDishesCount">0</strong>
+                    <strong style="font-size: 19px; font-weight: 900; color: #10b981;" id="prepUniqueDishesCount">0</strong>
                 </div>
             </div>
 
@@ -1551,14 +1628,14 @@
                 <h3 style="font-size: 16px; font-weight: 900; color: var(--text-main);">⚡ Creator High-Speed Sync & OTP Settings</h3>
                 <button class="close-drawer" onclick="closeCloudConfigModal()">×</button>
             </div>
-            <p style="font-size: 11px; color: #065f46; background: rgba(236, 253, 245, 0.85); border: 1px solid #6ee7b7; padding: 8px 10px; border-radius: 8px; margin-bottom: 12px; line-height: 1.4;">
+            <p style="font-size: 11px; color: #10b981; background: rgba(16, 185, 129, 0.14); border: 1px solid rgba(16, 185, 129, 0.4); padding: 8px 10px; border-radius: 8px; margin-bottom: 12px; line-height: 1.4;">
                 👑 <b>Creator-Only Configuration:</b> Hidden from the public. Configure optional Firebase backup URL and EmailJS credentials here.
             </p>
             <div class="form-group">
                 <label>Optional Firebase Realtime DB URL (Extra Backup)</label>
                 <input type="text" class="form-control" id="cfgDbUrlInput" placeholder="https://your-project-default-rtdb.firebaseio.com">
             </div>
-            <hr style="border: none; border-top: 1px dashed #cbd5e1; margin: 12px 0;">
+            <hr style="border: none; border-top: 1px dashed rgba(148,163,184,0.4); margin: 12px 0;">
             <div class="form-group">
                 <label>EmailJS Public Key (Optional - For Real Gmail Inbox OTP)</label>
                 <input type="text" class="form-control" id="cfgEmailPublicKey" placeholder="e.g. user_xxxxxx">
@@ -1580,7 +1657,7 @@
         </div>
     </div>
 
-    <!-- 2-OPTION ENTRY GATE (HIGH-SPEED SYNC HIDDEN FROM PUBLIC) -->
+    <!-- 2-OPTION ENTRY GATE (WITH DARK/LIGHT GLASS TOGGLE) -->
     <div class="auth-gate" id="authGate">
         <div class="auth-card">
             <div class="auth-brand">
@@ -1591,6 +1668,9 @@
                         <p style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Fast Canteen Ordering & Digital Pass</p>
                     </div>
                 </div>
+                <button type="button" class="theme-toggle-pill" onclick="toggleThemeMode()" id="authThemeToggleBtn">
+                    🌙 Dark
+                </button>
             </div>
 
             <!-- 2 Main Entry Options -->
@@ -1616,7 +1696,7 @@
 
                 <!-- 1A. STUDENT LOGIN FORM -->
                 <div id="studentLoginForm">
-                    <div style="background: rgba(238, 242, 255, 0.72); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--primary); font-weight: 700;">
+                    <div style="background: rgba(99, 102, 241, 0.14); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--text-main); font-weight: 700;">
                         🔑 Log in using your <b>Personal Mobile Number or Email ID</b> & 4-Digit PIN.
                     </div>
                     <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 10px;">
@@ -1634,7 +1714,7 @@
 
                 <!-- 1B. STUDENT SIGN UP FORM -->
                 <div id="studentSignupForm" style="display: none;">
-                    <div style="background: rgba(240, 253, 244, 0.75); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 9px 12px; margin-bottom: 10px; font-size: 11px; color: #065f46; font-weight: 700;">
+                    <div style="background: rgba(16, 185, 129, 0.14); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 9px 12px; margin-bottom: 10px; font-size: 11px; color: var(--text-main); font-weight: 700;">
                         📧 Register with your personal details. Once registered, scan your college QR code to join all canteens of your college.
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -1661,7 +1741,7 @@
                     <button type="button" class="checkout-btn" id="sendStudentOtpBtn" onclick="sendStudentSignupOtp()" style="background: #0f172a; padding: 11px; margin-top: 4px;">📧 Send 6-Digit OTP to Email</button>
 
                     <div class="otp-verify-box" id="studentOtpVerifyBox">
-                        <label style="font-size: 11px; font-weight: 900; color: #065f46; display: block; margin-bottom: 6px;" id="studentOtpSentLabel">🔒 Enter 6-Digit OTP Received in Your Email</label>
+                        <label style="font-size: 11px; font-weight: 900; color: var(--text-main); display: block; margin-bottom: 6px;" id="studentOtpSentLabel">🔒 Enter 6-Digit OTP Received in Your Email</label>
                         <div style="display: flex; gap: 8px;">
                             <input type="text" class="form-control" id="studentOtpInput" maxlength="6" placeholder="Enter 6-digit OTP" style="font-family: monospace; font-size: 16px; font-weight: 900; letter-spacing: 2px; text-align: center;">
                             <button type="button" class="checkout-btn" id="verifyStudentOtpBtn" onclick="verifyStudentOtpAndCreate()" style="background: #10b981; width: auto; padding: 0 18px; white-space: nowrap;">✔ Verify & Sign Up</button>
@@ -1680,7 +1760,7 @@
 
                 <!-- 2A. College Admin Login -->
                 <div id="subFormAdmin">
-                    <div style="background: rgba(254, 243, 199, 0.78); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #92400e; font-weight: 700; line-height: 1.4;">
+                    <div style="background: rgba(245, 158, 11, 0.16); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: var(--text-main); font-weight: 700; line-height: 1.4;">
                         🏛️ <b>College Admin Portal:</b> Select your registered college and enter your Admin PIN to add canteens, edit menus, and view financial ledgers.
                     </div>
                     <div class="form-group">
@@ -1696,7 +1776,7 @@
 
                 <!-- 2B. Counter Staff Login -->
                 <div id="subFormStaff" style="display: none;">
-                    <div style="background: rgba(236, 253, 245, 0.78); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #065f46; font-weight: 700; line-height: 1.4;">
+                    <div style="background: rgba(16, 185, 129, 0.16); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: var(--text-main); font-weight: 700; line-height: 1.4;">
                         👨‍🍳 <b>Counter Staff Login:</b> Select your registered college and enter the Counter PIN. After logging in, select your canteen and view required dishes.
                     </div>
                     <div class="form-group">
@@ -1712,7 +1792,7 @@
 
                 <!-- 2C. College Sign Up -->
                 <div id="subFormSignup" style="display: none;">
-                    <div style="background: rgba(238, 242, 255, 0.78); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: #3730a3; font-weight: 700; line-height: 1.4;">
+                    <div style="background: rgba(99, 102, 241, 0.15); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--text-main); font-weight: 700; line-height: 1.4;">
                         📝 <b>College Sign Up & PIN Setup:</b> Register your college, verify via Email OTP, and create your custom <b>Admin PIN</b> and <b>Counter Staff PIN</b>.
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
@@ -1749,7 +1829,7 @@
                     <button type="button" class="checkout-btn" id="sendCollegeOtpBtn" onclick="sendCollegeSignupOtp()" style="background: #0f172a; padding: 11px;">📧 Send 6-Digit OTP to Admin Email</button>
 
                     <div class="otp-verify-box" id="collegeOtpVerifyBox">
-                        <label style="font-size: 11px; font-weight: 900; color: #065f46; display: block; margin-bottom: 6px;" id="collegeOtpSentLabel">🔒 Enter 6-Digit OTP Received in Admin Email</label>
+                        <label style="font-size: 11px; font-weight: 900; color: var(--text-main); display: block; margin-bottom: 6px;" id="collegeOtpSentLabel">🔒 Enter 6-Digit OTP Received in Admin Email</label>
                         <div style="display: flex; gap: 8px;">
                             <input type="text" class="form-control" id="collegeOtpInput" maxlength="6" placeholder="Enter 6-digit OTP" style="font-family: monospace; font-size: 16px; font-weight: 900; letter-spacing: 2px; text-align: center;">
                             <button type="button" class="checkout-btn" id="verifyCollegeOtpBtn" onclick="verifyCollegeOtpAndCreate()" style="background: #10b981; width: auto; padding: 0 18px; white-space: nowrap;">✔ Verify & Register</button>
@@ -1771,6 +1851,9 @@
             </div>
         </div>
         <div class="header-actions">
+            <button type="button" class="theme-toggle-pill" onclick="toggleThemeMode()" id="headerThemeToggleBtn" title="Switch Dark / Light Mode">
+                🌙 Dark
+            </button>
             <div class="user-pill" id="activeUserPill" onclick="logoutAndOpenAuthGate()">🎓 Student Pass</div>
             <button class="switch-auth-btn" onclick="logoutAndOpenAuthGate()">🚪 Switch Role / Logout</button>
         </div>
@@ -1786,8 +1869,8 @@
     <div class="nav-tabs" id="adminNavTabs" style="display: none;">
         <button class="tab-btn active" id="navBtnAdminStudio" onclick="switchAdminTab('admin-studio')">🏗️ Canteens, Edit Menu & Offers</button>
         <button class="tab-btn" id="navBtnAdminLedger" onclick="switchAdminTab('admin-ledger')">👨‍🍳 Orders & Counter Ledger</button>
-        <button class="tab-btn" id="navBtnAuditorPortal" onclick="switchAdminTab('auditor-portal')" style="display:none; color:#4f46e5;">👑 App Creator Audit Log</button>
-        <button class="tab-btn" onclick="switchTab('menu')" style="color:#059669; font-weight:900;">👀 Preview Student View</button>
+        <button class="tab-btn" id="navBtnAuditorPortal" onclick="switchAdminTab('auditor-portal')" style="display:none; color:#6366f1;">👑 App Creator Audit Log</button>
+        <button class="tab-btn" onclick="switchTab('menu')" style="color:#10b981; font-weight:900;">👀 Preview Student View</button>
     </div>
 
     <!-- MAIN CONTAINER -->
@@ -1798,7 +1881,7 @@
             <div class="counter-canteen-gate-card">
                 <div style="text-align: center; margin-bottom: 18px;">
                     <div style="font-size: 36px; margin-bottom: 6px;">👨‍🍳</div>
-                    <span style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #059669; letter-spacing: 0.6px;" id="staffGateCollegeBadge">COLLEGE COUNTER PORTAL</span>
+                    <span style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #10b981; letter-spacing: 0.6px;" id="staffGateCollegeBadge">COLLEGE COUNTER PORTAL</span>
                     <h2 style="font-size: 20px; font-weight: 900; color: var(--text-main); margin-top: 2px;">Select Canteen & Verify PIN</h2>
                     <p style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 4px;">
                         Select your canteen to view its required food preparation and enter your PIN to access all counter & menu tools.
@@ -1810,18 +1893,18 @@
                     <select class="form-control" id="staffGateCanteenSelect" onchange="updateStaffGateRequirementsPreview()" style="font-weight: 800; font-size: 14px;"></select>
                 </div>
 
-                <div style="background: rgba(240, 253, 244, 0.72); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 14px; padding: 14px; margin: 14px 0;">
-                    <div style="font-size: 11px; font-weight: 900; color: #065f46; text-transform: uppercase; margin-bottom: 8px;">
+                <div style="background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); border-radius: 14px; padding: 14px; margin: 14px 0;">
+                    <div style="font-size: 11px; font-weight: 900; color: #10b981; text-transform: uppercase; margin-bottom: 8px;">
                         🍲 Required Food to Prepare for Selected Canteen
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                        <div style="background: rgba(255, 255, 255, 0.85); padding: 8px 12px; border-radius: 10px; border: 1px solid #dcfce7;">
+                        <div style="background: var(--surface-row-bg); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--liquid-glass-border);">
                             <span style="font-size: 10px; color: var(--text-muted); font-weight: 800; display: block;">PENDING ORDERS</span>
                             <strong style="font-size: 18px; color: var(--primary);" id="staffGatePendingOrders">0</strong>
                         </div>
-                        <div style="background: rgba(255, 255, 255, 0.85); padding: 8px 12px; border-radius: 10px; border: 1px solid #dcfce7;">
+                        <div style="background: var(--surface-row-bg); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--liquid-glass-border);">
                             <span style="font-size: 10px; color: var(--text-muted); font-weight: 800; display: block;">PORTIONS TO PREPARE</span>
-                            <strong style="font-size: 18px; color: #d97706;" id="staffGatePendingPortions">0</strong>
+                            <strong style="font-size: 18px; color: #f59e0b;" id="staffGatePendingPortions">0</strong>
                         </div>
                     </div>
                     <div id="staffGateTopDishesPreview" style="font-size: 12px; color: var(--text-main); font-weight: 700;"></div>
@@ -1894,7 +1977,7 @@
                     <div class="compact-bar-left">
                         <!-- Single College Badge (shown when 1 college) -->
                         <span class="compact-college-badge" id="studentCompactCollegeName">🏛️ College</span>
-                        <!-- Interactive College Switcher Dropdown in Top Bar (shown when >1 college is available/joined) -->
+                        <!-- Interactive College Switcher Dropdown in Top Bar ONLY -->
                         <select id="studentCollegeSwitcherSelect" class="college-switcher-select" style="display: none;" onchange="switchActiveStudentCollege(this.value)" title="Switch Active College"></select>
                         <span class="compact-vpa-tag">🔒 VPA: <strong style="color: var(--primary);" id="studentActiveUpi">canteen@sbi</strong></span>
                     </div>
@@ -1902,13 +1985,13 @@
                         <button class="qr-popup-trigger-btn" onclick="openStudentQrPopup()">
                             📲 College QR
                         </button>
-                        <button onclick="switchStudentCollegeQr()" style="background: rgba(255, 255, 255, 0.68); color: var(--text-main); border: 1px solid rgba(255, 255, 255, 0.95); padding: 6px 10px; border-radius: 10px; font-size: 11px; font-weight: 800; cursor: pointer; box-shadow: inset 0 1px 1px #ffffff;">
+                        <button onclick="switchStudentCollegeQr()" style="background: var(--surface-row-bg); color: var(--text-main); border: 1px solid var(--liquid-glass-border); padding: 6px 10px; border-radius: 10px; font-size: 11px; font-weight: 800; cursor: pointer;">
                             📷 Scan / Add College
                         </button>
                     </div>
                 </div>
 
-                <!-- CANTEEN PILLS -->
+                <!-- CANTEEN PILLS (ONLY FOR CANTEENS OF SELECTED COLLEGE) -->
                 <div class="cat-scroll" id="canteenPillsContainer" style="margin-bottom: 10px;"></div>
 
                 <div class="search-box">
@@ -1937,14 +2020,12 @@
             </div>
         </div>
 
-        <!-- STUDENT TAB 2: MY DIGITAL RECEIPTS (WITH COLLEGE BADGES & COLLEGE FILTER PILLS) -->
+        <!-- STUDENT TAB 2: MY DIGITAL RECEIPTS (WITH COLLEGE NAME ON EVERY RECEIPT) -->
         <div id="tab-receipts" class="tab-content">
             <div style="max-width: 600px; margin: 0 auto 12px auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                 <button type="button" class="app-back-pill-btn" onclick="switchTab('menu')">← Back to Canteen Menu</button>
                 <span style="font-size: 11px; font-weight: 800; color: var(--text-muted);" id="receiptsCountSummary"></span>
             </div>
-            <!-- Multi-College Receipt Filter Bar (shown automatically when orders exist from 2+ colleges) -->
-            <div class="cat-scroll" id="receiptCollegeFilterBar" style="max-width: 600px; margin: 0 auto 14px auto; display: none;"></div>
             <div id="receiptsContainer"></div>
         </div>
 
@@ -2016,7 +2097,7 @@
 
                     <div class="form-group">
                         <label>Select Canteen *</label>
-                        <select class="form-control" id="adminMenuCanteenSelect" onchange="renderAdminMenuList()" style="font-weight: 700; background: rgba(238, 242, 255, 0.85);"></select>
+                        <select class="form-control" id="adminMenuCanteenSelect" onchange="renderAdminMenuList()" style="font-weight: 700;"></select>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 8px;">
@@ -2089,7 +2170,7 @@
 
                         <div style="display: flex; gap: 6px;">
                             <input type="text" id="offerSearchInput" class="form-control" placeholder="Search or click to add multiple dishes..." oninput="handleOfferSearchInput()" onfocus="handleOfferSearchInput(true)" autocomplete="off">
-                            <button type="button" onclick="toggleOfferDropdownList()" style="background: rgba(238, 242, 255, 0.85); color: var(--primary); border: 1px solid #c7d2fe; border-radius: 10px; padding: 0 12px; font-size: 11px; font-weight: 900; cursor: pointer; white-space: nowrap;">+ Browse</button>
+                            <button type="button" onclick="toggleOfferDropdownList()" style="background: var(--surface-row-bg); color: var(--primary); border: 1px solid var(--liquid-glass-border); border-radius: 10px; padding: 0 12px; font-size: 11px; font-weight: 900; cursor: pointer; white-space: nowrap;">+ Browse</button>
                         </div>
 
                         <!-- Interactive Multi-Item Chips -->
@@ -2141,12 +2222,12 @@
                         🍲 Food Prep Count (High &rarr; Low)
                     </button>
                     <button id="changeStaffCanteenBtn" onclick="showCounterCanteenGate()" style="display: none; background: #0f172a; color: #38bdf8; border: none; padding: 8px 13px; border-radius: 9px; font-size: 12px; font-weight: 800; cursor: pointer;">🏪 Switch Canteen</button>
-                    <button id="backToStudioBtn" onclick="switchAdminTab('admin-studio')" style="background:rgba(255,255,255,0.75); color:var(--primary); border:1px solid #c7d2fe; padding:8px 14px; border-radius:9px; font-size: 12px; font-weight:800; cursor:pointer;">🏗️ Edit Menu & Offers</button>
+                    <button id="backToStudioBtn" onclick="switchAdminTab('admin-studio')" style="background:var(--surface-row-bg); color:var(--primary); border:1px solid var(--liquid-glass-border); padding:8px 14px; border-radius:9px; font-size: 12px; font-weight:800; cursor:pointer;">🏗️ Edit Menu & Offers</button>
                 </div>
             </div>
 
-            <div class="glass-surface-strong" style="padding: 14px; border-radius: 16px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; border: 1px solid #a7f3d0;">
-                <div style="font-size: 12.5px; font-weight: 800; color: #065f46;">
+            <div class="glass-surface-strong" style="padding: 14px; border-radius: 16px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; border: 1px solid rgba(16, 185, 129, 0.5);">
+                <div style="font-size: 12.5px; font-weight: 800; color: #10b981;">
                     🛡️ Instant Receipt Verifier <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; display: block;">Enter Token # and 2-Digit Handshake PIN to verify authenticity</span>
                 </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
@@ -2167,9 +2248,9 @@
                     <div class="amount" id="monthlyRevenueDisplay">₹0</div>
                     <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 600;">Current Cycle</p>
                 </div>
-                <div class="finance-card" onclick="openFoodPrepModal()" style="cursor: pointer; border: 1.5px solid #fde68a;">
+                <div class="finance-card" onclick="openFoodPrepModal()" style="cursor: pointer; border: 1.5px solid rgba(245, 158, 11, 0.6);">
                     <h4>🍲 Pending Kitchen Prep</h4>
-                    <div class="amount" id="totalOrdersCount" style="color: #d97706;">0</div>
+                    <div class="amount" id="totalOrdersCount" style="color: #f59e0b;">0</div>
                     <p style="font-size: 11px; color: var(--primary); margin-top: 4px; font-weight: 800;">Tap to view High &rarr; Low dish count</p>
                 </div>
             </div>
@@ -2285,8 +2366,8 @@
         <div class="form-group">
             <label>Student Details (Mobile / Email & Name)</label>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <input type="text" class="form-control" id="orderRollNo" readonly style="background: rgba(241, 245, 249, 0.78);">
-                <input type="text" class="form-control" id="orderStudentName" readonly style="background: rgba(241, 245, 249, 0.78);">
+                <input type="text" class="form-control" id="orderRollNo" readonly>
+                <input type="text" class="form-control" id="orderStudentName" readonly>
             </div>
         </div>
 
@@ -2304,7 +2385,7 @@
                 <label style="margin-bottom: 0;">Tray Items</label>
                 <button onclick="clearTrayCompletely()" style="background: none; border: none; color: var(--danger); font-size: 11px; font-weight: 800; cursor: pointer;">Clear All Tray</button>
             </div>
-            <div id="drawerItemsList" style="max-height: 180px; overflow-y: auto; margin-bottom: 12px; border: 1px solid rgba(255, 255, 255, 0.88); border-radius: 14px; padding: 10px; background: rgba(255, 255, 255, 0.52);"></div>
+            <div id="drawerItemsList" style="max-height: 180px; overflow-y: auto; margin-bottom: 12px; border: 1px solid var(--liquid-glass-border); border-radius: 14px; padding: 10px; background: var(--surface-sub-bg);"></div>
         </div>
 
         <div class="form-group">
@@ -2327,12 +2408,12 @@
         </div>
 
         <div id="qrDisplayContainer">
-            <p style="font-size: 13px; font-weight: 900; color: #059669; margin-bottom: 4px;">🛡️ Official Canteen UPI QR Code</p>
+            <p style="font-size: 13px; font-weight: 900; color: #10b981; margin-bottom: 4px;">🛡️ Official Canteen UPI QR Code</p>
             <div class="qr-checkout-frame">
                 <img id="upiQrImg" src="" alt="UPI QR" />
             </div>
             <p style="font-size: 12px; color: var(--text-main); margin-top: 4px; font-weight: 800;">Official VPA: <span id="qrVpaText" style="color: var(--primary);">canteen@sbi</span></p>
-            <div style="background: #fef3c7; border: 1px solid #fde68a; color: #92400e; font-size: 11px; font-weight: 800; padding: 6px 10px; border-radius: 8px; margin-top: 6px;">
+            <div style="background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.5); color: var(--text-main); font-size: 11px; font-weight: 800; padding: 6px 10px; border-radius: 8px; margin-top: 6px;">
                 ⚠️ Verify banking name shows <u id="qrMerchantNameText">CANTEEN OFFICIAL</u> in GPay/PhonePe before entering UPI PIN.
             </div>
         </div>
@@ -2352,7 +2433,7 @@
             <div class="toast-icon">✓</div>
             <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main);">Order Generated!</h3>
             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px; font-weight: 600;">Secured with 2-digit Handshake PIN & synced to Counter.</p>
-            <div id="toastTokenDisplay" style="font-size: 22px; font-weight: 900; color: var(--primary); background: #eef2ff; padding: 10px; border-radius: 12px; margin-bottom: 12px; border: 1px solid #c7d2fe;">#TK-000 • PIN: 00</div>
+            <div id="toastTokenDisplay" style="font-size: 22px; font-weight: 900; color: var(--primary); background: rgba(99, 102, 241, 0.15); padding: 10px; border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(99, 102, 241, 0.4);">#TK-000 • PIN: 00</div>
             <p style="font-size: 12px; color: var(--success); font-weight: 800;">Opening your personal receipt...</p>
         </div>
     </div>
@@ -2364,12 +2445,35 @@
         const LEDGER_PAGE_SIZE = 25; // Strictly 25 requests per page in Counter Ledger
 
         /* =====================================================================
-           0. NATIVE PHONE BACK BUTTON (POPSTATE) & OVERLAY NAVIGATION MANAGER
+           0. DARK & LIGHT LIQUID GLASS THEME ENGINE
+           ===================================================================== */
+        let currentThemeMode = localStorage.getItem('cb_theme_mode') || 'light';
+
+        function applyThemeMode(mode) {
+            currentThemeMode = (mode === 'dark') ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentThemeMode);
+            localStorage.setItem('cb_theme_mode', currentThemeMode);
+
+            const labelHtml = (currentThemeMode === 'dark') ? '☀️ Light' : '🌙 Dark';
+            const btn1 = document.getElementById('headerThemeToggleBtn');
+            const btn2 = document.getElementById('authThemeToggleBtn');
+            if (btn1) btn1.innerHTML = labelHtml;
+            if (btn2) btn2.innerHTML = labelHtml;
+        }
+
+        function toggleThemeMode() {
+            applyThemeMode(currentThemeMode === 'dark' ? 'light' : 'dark');
+        }
+
+        // Apply saved theme immediately to prevent flash
+        applyThemeMode(currentThemeMode);
+
+        /* =====================================================================
+           0B. NATIVE PHONE BACK BUTTON (POPSTATE) & OVERLAY NAVIGATION MANAGER
            ===================================================================== */
         let isTemporaryQrScanMode = false;
         let isHandlingPopState = false;
         let liveClockTimerId = null;
-        let activeReceiptCollegeFilter = "All";
 
         function pushOverlayHistoryState(overlayType) {
             if (isHandlingPopState) return;
@@ -2427,7 +2531,7 @@
         });
 
         /* =====================================================================
-           0B. HIGH-SPEED UTILITIES (DEBOUNCE, O(1) MAPS, IMAGE COMPRESSION)
+           0C. HIGH-SPEED UTILITIES (DEBOUNCE, O(1) MAPS, IMAGE COMPRESSION)
            ===================================================================== */
         function debounce(fn, delayMs = 130) {
             let timer = null;
@@ -2607,7 +2711,7 @@
             return phone || email || (roll !== "STUDENT" ? roll : "");
         }
 
-        // Returns all colleges available for the student to switch between in the top bar
+        // Returns all colleges available for the student to switch between in the top bar dropdown
         function getStudentSwitchableColleges() {
             const set = new Set();
             if (currentUser && currentUser.college) {
@@ -3260,6 +3364,7 @@
         }, { passive: true });
 
         window.onload = async function() {
+            applyThemeMode(currentThemeMode);
             if (cloudConfig.emailPublicKey && window.emailjs) {
                 try { emailjs.init(cloudConfig.emailPublicKey); } catch (e) {}
             }
@@ -4126,7 +4231,7 @@
             if (topDishes.length === 0) {
                 previewEl.innerText = `✔ No pending unserved dishes for ${selectedCan} right now.`;
             } else {
-                previewEl.innerHTML = `Required to prepare: ` + topDishes.map(([n, q]) => `<span style="background:#fff; padding:3px 9px; border-radius:6px; border:1px solid #a7f3d0; margin-right:5px; display:inline-block; margin-top:4px;"><b>${q}×</b> ${n}</span>`).join('');
+                previewEl.innerHTML = `Required to prepare: ` + topDishes.map(([n, q]) => `<span style="background:var(--surface-row-bg); padding:3px 9px; border-radius:6px; border:1px solid var(--liquid-glass-border); margin-right:5px; display:inline-block; margin-top:4px;"><b>${q}×</b> ${n}</span>`).join('');
             }
         }
 
@@ -4193,7 +4298,7 @@
                 document.getElementById('studentActiveUpi').innerText = matchedCanteens[0].upi;
             }
 
-            // Top Bar College Switcher ONLY (No separate pill bar below)
+            // Top Bar College Switcher ONLY (No horizontal college pills anywhere)
             const compactColEl = document.getElementById('studentCompactCollegeName');
             const colSelectEl = document.getElementById('studentCollegeSwitcherSelect');
 
@@ -4541,16 +4646,16 @@
                     }
 
                     drawerListHtml += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px; background: rgba(255,255,255,0.85); padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.95);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px; background: var(--surface-row-bg); padding: 8px 10px; border-radius: 10px; border: 1px solid var(--liquid-glass-border); color: var(--text-main);">
                             <div>
                                 <strong>${item.name}</strong><br>
                                 <span style="font-size: 11px; color: var(--primary); font-weight: 700;">🏛️ ${item.college} • 🏪 ${item.canteen}</span><br>
                                 <span style="font-size: 11.5px; color: var(--text-muted);">₹${item.price} x ${tray[id]} = <strong>₹${item.price * tray[id]}</strong></span>
                             </div>
                             <div style="display: flex; align-items: center;">
-                                <button onclick="updateQty('${id}', -1)" style="background:#eef2ff; color:var(--primary); border:none; width:24px; height:24px; border-radius:6px; font-weight:800; cursor:pointer;">-</button>
+                                <button onclick="updateQty('${id}', -1)" style="background:rgba(99,102,241,0.18); color:var(--primary); border:none; width:24px; height:24px; border-radius:6px; font-weight:800; cursor:pointer;">-</button>
                                 <span style="margin: 0 8px; font-weight: 800;">${tray[id]}</span>
-                                <button onclick="updateQty('${id}', 1)" style="background:#eef2ff; color:var(--primary); border:none; width:24px; height:24px; border-radius:6px; font-weight:800; cursor:pointer;">+</button>
+                                <button onclick="updateQty('${id}', 1)" style="background:rgba(99,102,241,0.18); color:var(--primary); border:none; width:24px; height:24px; border-radius:6px; font-weight:800; cursor:pointer;">+</button>
                                 <button class="remove-item-symbol" onclick="removeCartItem('${id}')" title="Remove item">✕</button>
                             </div>
                         </div>
@@ -4581,19 +4686,19 @@
 
                     if (!hasItem) {
                         return `
-                            <div style="background:rgba(255,255,255,0.6); border:1px solid rgba(255,255,255,0.9); padding:9px 12px; border-radius:10px; margin-bottom:6px; font-size:12.5px; opacity: 0.75;">
+                            <div style="background:var(--surface-sub-bg); border:1px solid var(--liquid-glass-border); padding:9px 12px; border-radius:10px; margin-bottom:6px; font-size:12.5px; opacity: 0.75;">
                                 <strong style="color:var(--text-muted);">${ev.title}</strong><br>
                                 <span style="font-size:11px; color:var(--danger); font-weight:700;">Add "${dishNames}" to unlock ₹${ev.amount} OFF</span>
                             </div>
                         `;
                     }
                     return `
-                        <div style="background:${isSelected ? 'rgba(238, 242, 255, 0.9)' : 'rgba(255,255,255,0.75)'}; border:1px solid ${isSelected ? 'var(--primary)' : 'rgba(255,255,255,0.95)'}; padding:9px 12px; border-radius:10px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; font-size:12.5px;">
+                        <div style="background:${isSelected ? 'rgba(99, 102, 241, 0.22)' : 'var(--surface-row-bg)'}; border:1px solid ${isSelected ? 'var(--primary)' : 'var(--liquid-glass-border)'}; padding:9px 12px; border-radius:10px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; font-size:12.5px;">
                             <div>
                                 <strong style="color:var(--text-main);">${ev.title}</strong><br>
                                 <span style="font-size:11px; color:var(--success); font-weight:700;">✔ Valid on ${dishNames} (Saves ₹${ev.amount})</span>
                             </div>
-                            <button onclick="selectOfferInDrawer('${ev.id}', true)" style="background:${isSelected ? 'var(--primary)' : 'white'}; color:${isSelected ? 'white' : 'var(--text-main)'}; border:1px solid #cbd5e1; padding:5px 11px; border-radius:8px; font-size:11.5px; font-weight:800; cursor:pointer;">${isSelected ? 'Applied ✓' : 'Apply'}</button>
+                            <button onclick="selectOfferInDrawer('${ev.id}', true)" style="background:${isSelected ? 'var(--primary)' : 'var(--surface-sub-bg)'}; color:${isSelected ? 'white' : 'var(--text-main)'}; border:1px solid var(--liquid-glass-border); padding:5px 11px; border-radius:8px; font-size:11.5px; font-weight:800; cursor:pointer;">${isSelected ? 'Applied ✓' : 'Apply'}</button>
                         </div>
                     `;
                 }).join('');
@@ -4731,19 +4836,12 @@
 
             setTimeout(() => {
                 document.getElementById('successToastModal').classList.remove('active');
-                activeReceiptCollegeFilter = "All";
                 switchTab('receipts');
             }, 950);
         }
 
-        function filterReceiptsByCollege(colName) {
-            activeReceiptCollegeFilter = colName || "All";
-            renderReceipts();
-        }
-
         function renderReceipts() {
             const container = document.getElementById('receiptsContainer');
-            const filterBar = document.getElementById('receiptCollegeFilterBar');
             const summaryEl = document.getElementById('receiptsCountSummary');
             if (!container) return;
             container.innerHTML = '';
@@ -4751,46 +4849,17 @@
             const myPersonalOrders = activeOrders.filter(o => orderBelongsToCurrentStudent(o));
 
             if (myPersonalOrders.length === 0) {
-                if (filterBar) filterBar.style.display = 'none';
                 if (summaryEl) summaryEl.innerText = '';
                 container.innerHTML = `<div class="glass-surface" style="text-align: center; padding: 36px 18px; border-radius: 18px; color: var(--text-muted); font-weight: 700; font-size: 13px;">No digital receipts for your account yet. Orders you place will appear privately here.</div>`;
                 return;
             }
 
-            // Collect distinct colleges from the student's orders so they can easily distinguish & filter
-            const collegeCounts = {};
-            myPersonalOrders.forEach(o => {
-                const cName = o.collegePass || "VPIET";
-                collegeCounts[cName] = (collegeCounts[cName] || 0) + 1;
-            });
-            const distinctOrderColleges = Object.keys(collegeCounts);
-
-            if (filterBar) {
-                if (distinctOrderColleges.length > 1) {
-                    filterBar.style.display = 'flex';
-                    let pillsHtml = `<button type="button" class="cat-pill ${activeReceiptCollegeFilter === 'All' ? 'active' : ''}" onclick="filterReceiptsByCollege('All')">All Colleges (${myPersonalOrders.length})</button>`;
-                    distinctOrderColleges.forEach(cName => {
-                        pillsHtml += `<button type="button" class="cat-pill ${activeReceiptCollegeFilter === cName ? 'active' : ''}" onclick="filterReceiptsByCollege('${cName}')">🏛️ ${cName} (${collegeCounts[cName]})</button>`;
-                    });
-                    filterBar.innerHTML = pillsHtml;
-                } else {
-                    filterBar.style.display = 'none';
-                    activeReceiptCollegeFilter = "All";
-                }
-            }
-
-            const displayedOrders = (activeReceiptCollegeFilter === 'All')
-                ? myPersonalOrders
-                : myPersonalOrders.filter(o => (o.collegePass || 'VPIET') === activeReceiptCollegeFilter);
-
             if (summaryEl) {
-                summaryEl.innerText = distinctOrderColleges.length > 1
-                    ? `${displayedOrders.length} Receipt${displayedOrders.length !== 1 ? 's' : ''} (${distinctOrderColleges.length} Colleges)`
-                    : `${displayedOrders.length} Receipt${displayedOrders.length !== 1 ? 's' : ''}`;
+                summaryEl.innerText = `${myPersonalOrders.length} Receipt${myPersonalOrders.length !== 1 ? 's' : ''}`;
             }
 
             const fragment = document.createDocumentFragment();
-            displayedOrders.forEach((order, index) => {
+            myPersonalOrders.forEach((order, index) => {
                 const isServed = (order.status === 'served');
                 const pinCode = order.handshakePin || "84";
                 const sigCode = order.signature || generateOrderSignature(order.token, order.rollNo, order.total, pinCode);
@@ -4856,7 +4925,7 @@
                     <div class="receipt-items-list">${itemsHtml}</div>
                     ${verificationFooterHtml}
                     <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 900; margin-top: 12px; position: relative; z-index: 3;">
-                        <span>Total Amount (${orderCollegeName})</span><span style="color:${isServed ? '#059669' : 'var(--primary)'};">₹${order.total}</span>
+                        <span>Total Amount (${orderCollegeName})</span><span style="color:${isServed ? '#10b981' : 'var(--primary)'};">₹${order.total}</span>
                     </div>
                 `;
                 fragment.appendChild(card);
@@ -5081,7 +5150,7 @@
                     <div>
                         <strong>${d.name}</strong> (₹${d.price}) <small style="color:var(--text-muted);">[${d.canteen}]</small>
                     </div>
-                    <span style="font-size:11px; font-weight:900; padding:3px 8px; border-radius:6px; background:${isSelected ? '#fee2e2' : '#eef2ff'}; color:${isSelected ? '#dc2626' : 'var(--primary)'};">
+                    <span style="font-size:11px; font-weight:900; padding:3px 8px; border-radius:6px; background:${isSelected ? '#fee2e2' : 'rgba(99,102,241,0.18)'}; color:${isSelected ? '#dc2626' : 'var(--primary)'};">
                         ${isSelected ? '✕ Cancel' : '+ Add'}
                     </span>
                 `;
@@ -5587,7 +5656,7 @@
                 let statusHtml = '';
                 if (order.status === 'paid') statusHtml = `<span style="color:var(--success); font-weight:800;">Paid ✔</span>`;
                 else if (order.status === 'cash_pending') statusHtml = `<span style="color:var(--warning); font-weight:800;">Cash Pending</span>`;
-                else statusHtml = `<span style="color:#059669; font-weight:900;">ORDER SERVED ✔</span>`;
+                else statusHtml = `<span style="color:#10b981; font-weight:900;">ORDER SERVED ✔</span>`;
 
                 let actionHtml = '';
                 if (order.status === 'cash_pending') {
@@ -5596,7 +5665,7 @@
                 if (order.status !== 'served') {
                     actionHtml += `<button class="staff-action-sm" onclick="updateStatus(${origIdx}, 'served')">✔ Verify PIN (${pinCode}) & Serve</button>`;
                 } else {
-                    actionHtml += `<span style="font-size:11px; color:#059669; font-weight:800;">Served at ${order.servedAt || order.timestamp}</span>`;
+                    actionHtml += `<span style="font-size:11px; color:#10b981; font-weight:800;">Served at ${order.servedAt || order.timestamp}</span>`;
                 }
 
                 const itemsLineByLineHtml = order.items.map(it => `
