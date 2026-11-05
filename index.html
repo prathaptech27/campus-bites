@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -165,26 +166,18 @@
         }
 
         .sync-status-pill {
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 800;
-            padding: 5px 10px;
+            padding: 7px 14px;
             border-radius: 20px;
             cursor: pointer;
             border: 1px solid rgba(255, 255, 255, 0.85);
-            background: rgba(255, 255, 255, 0.55);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: var(--text-main);
+            background: rgba(220, 252, 231, 0.9);
+            color: #065f46;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9);
-        }
-
-        .sync-status-pill.live {
-            background: rgba(220, 252, 231, 0.78);
-            border-color: rgba(16, 185, 129, 0.8);
-            color: #065f46;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12), inset 0 1px 1px rgba(255, 255, 255, 0.9);
         }
 
         .main-gateway-grid {
@@ -373,7 +366,7 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* APPLE LIQUID GLASS COMPACT STUDENT BAR */
+        /* APPLE LIQUID GLASS COMPACT STUDENT BAR & MULTI-COLLEGE SWITCHER */
         .compact-student-bar {
             background: var(--liquid-glass-bg);
             backdrop-filter: var(--liquid-blur);
@@ -381,7 +374,7 @@
             border: 1px solid var(--liquid-glass-border);
             border-radius: 18px;
             padding: 9px 12px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -393,14 +386,27 @@
         .compact-bar-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
         .compact-college-badge {
-            background: rgba(255, 255, 255, 0.68);
+            background: rgba(255, 255, 255, 0.72);
             color: var(--primary);
-            border: 1px solid rgba(255, 255, 255, 0.95);
-            padding: 4px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.96);
+            padding: 5px 11px;
             border-radius: 10px;
             font-size: 12px;
             font-weight: 900;
             box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04), inset 0 1px 1px #ffffff;
+        }
+
+        .college-switcher-select {
+            background: rgba(255, 255, 255, 0.82);
+            color: var(--primary);
+            border: 1.5px solid rgba(99, 102, 241, 0.55);
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 900;
+            outline: none;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.12), inset 0 1px 1px #ffffff;
         }
 
         .compact-vpa-tag { font-size: 11px; color: var(--text-muted); font-weight: 700; }
@@ -1262,21 +1268,6 @@
         .drawer-header h2 { font-size: 16.5px; font-weight: 900; }
         .close-drawer { background: rgba(255, 255, 255, 0.75); border: 1px solid rgba(255, 255, 255, 0.95); width: 30px; height: 30px; border-radius: 50%; font-weight: 800; cursor: pointer; font-size: 16px; color: var(--text-muted); box-shadow: inset 0 1px 1px #ffffff; }
 
-        .minimize-tray-btn {
-            background: rgba(255, 255, 255, 0.75);
-            color: var(--text-main);
-            border: 1px solid rgba(255, 255, 255, 0.95);
-            padding: 6px 11px;
-            border-radius: 10px;
-            font-size: 11.5px;
-            font-weight: 800;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05), inset 0 1px 1px #ffffff;
-        }
-
         .form-group { margin-bottom: 10px; }
         .form-group label { display: block; font-size: 10.5px; font-weight: 800; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
         .form-control { width: 100%; padding: 9px 11px; border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px; font-size: 13px; outline: none; background: rgba(255, 255, 255, 0.68); font-weight: 600; color: var(--text-main); box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04); }
@@ -1300,6 +1291,7 @@
         .toast-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.84) 0%, rgba(255, 255, 255, 0.66) 100%); backdrop-filter: blur(22px) saturate(200%); -webkit-backdrop-filter: blur(22px) saturate(200%); width: 100%; max-width: 420px; border-radius: 26px; padding: 22px; text-align: center; box-shadow: 0 20px 44px rgba(0,0,0,0.25), inset 0 2px 3px rgba(255, 255, 255, 0.98); border: 1.5px solid rgba(255, 255, 255, 0.92); }
         .toast-icon { width: 52px; height: 52px; background: #dcfce7; color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 12px auto; }
 
+        /* DIGITAL RECEIPTS WITH PROMINENT COLLEGE BADGE */
         .receipt-card {
             background: var(--liquid-glass-strong);
             backdrop-filter: var(--liquid-blur);
@@ -1318,7 +1310,22 @@
         }
         .receipt-card.is-served { border: 2px solid #10b981; background: linear-gradient(145deg, rgba(240, 253, 244, 0.82) 0%, rgba(255, 255, 255, 0.72) 100%); }
 
-        .served-hero-banner { background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: #ffffff; margin: -18px -18px 16px -18px; padding: 16px 18px; text-align: center; }
+        .receipt-college-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.92) 0%, rgba(49, 46, 129, 0.95) 100%);
+            color: #ffffff;
+            padding: 8px 14px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        }
+
+        .served-hero-banner { background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: #ffffff; margin: -18px -18px 14px -18px; padding: 16px 18px; text-align: center; }
         .served-hero-icon { width: 44px; height: 44px; background: rgba(255, 255, 255, 0.22); border: 2px solid #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; margin: 0 auto 6px auto; }
         .served-hero-title { font-size: 18px; font-weight: 900; text-transform: uppercase; }
         .served-hero-sub { font-size: 11.5px; font-weight: 700; opacity: 0.95; margin-top: 3px; }
@@ -1461,7 +1468,6 @@
     <div class="toast-modal" id="studentQrPopupModal">
         <div class="toast-card" style="max-width: 360px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <button class="minimize-tray-btn" onclick="closeStudentQrPopup()">← Back</button>
                 <span style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: var(--primary);">📲 Universal College QR</span>
                 <button class="close-drawer" onclick="closeStudentQrPopup()">×</button>
             </div>
@@ -1488,7 +1494,7 @@
                 <button class="close-drawer" onclick="closeCreatorModal()">×</button>
             </div>
             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">
-                Hidden creator-only access. Inspect all registered colleges, canteens, VPAs, and live multi-device sync logs.
+                Hidden creator-only access. Inspect all registered colleges, canteens, VPAs, and configure High-Speed Sync & OTP settings.
             </p>
             <div class="form-group">
                 <label>Creator / Auditor Master PIN *</label>
@@ -1528,7 +1534,7 @@
             <div id="foodPrepRankedList" style="overflow-y: auto; flex: 1; max-height: 360px; padding-right: 4px;"></div>
 
             <div style="margin-top: 12px; display: flex; justify-content: flex-end;">
-                <button class="checkout-btn" onclick="closeFoodPrepModal()" style="padding: 10px 18px;">← Back / Close</button>
+                <button class="checkout-btn" onclick="closeFoodPrepModal()" style="padding: 10px 18px;">Close Prep Summary</button>
             </div>
         </div>
     </div>
@@ -1539,15 +1545,15 @@
         <span>Prep Count (<span id="prepFabBadgeCount">0</span>)</span>
     </button>
 
-    <!-- CLOUD DATABASE SYNC & EMAILJS OTP CONFIGURATION MODAL -->
+    <!-- CLOUD DATABASE SYNC & EMAILJS OTP CONFIGURATION MODAL (CREATOR ONLY) -->
     <div class="toast-modal" id="cloudConfigModal">
         <div class="toast-card" style="text-align: left; max-width: 460px; max-height: 90vh; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h3 style="font-size: 16px; font-weight: 900; color: var(--text-main);">⚡ 60FPS Liquid Glass Sync & OTP Settings</h3>
+                <h3 style="font-size: 16px; font-weight: 900; color: var(--text-main);">⚡ Creator High-Speed Sync & OTP Settings</h3>
                 <button class="close-drawer" onclick="closeCloudConfigModal()">×</button>
             </div>
             <p style="font-size: 11px; color: #065f46; background: rgba(236, 253, 245, 0.85); border: 1px solid #6ee7b7; padding: 8px 10px; border-radius: 8px; margin-bottom: 12px; line-height: 1.4;">
-                ✔ <b>Apple Liquid Glass Engine Active:</b> GPU-accelerated frosted blur, specular rim refraction, hardware Back button navigation, and 25-row ledger pagination are active.
+                👑 <b>Creator-Only Configuration:</b> Hidden from the public. Configure optional Firebase backup URL and EmailJS credentials here.
             </p>
             <div class="form-group">
                 <label>Optional Firebase Realtime DB URL (Extra Backup)</label>
@@ -1575,7 +1581,7 @@
         </div>
     </div>
 
-    <!-- 2-OPTION ENTRY GATE -->
+    <!-- 2-OPTION ENTRY GATE (HIGH-SPEED SYNC HIDDEN FROM PUBLIC) -->
     <div class="auth-gate" id="authGate">
         <div class="auth-card">
             <div class="auth-brand">
@@ -1586,9 +1592,6 @@
                         <p style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Fast Canteen Ordering & Digital Pass</p>
                     </div>
                 </div>
-                <button type="button" class="sync-status-pill live" id="cloudStatusBtn" onclick="openCloudConfigModal()">
-                    🟢 High-Speed Sync
-                </button>
             </div>
 
             <!-- 2 Main Entry Options -->
@@ -1846,7 +1849,7 @@
                 </div>
             </div>
 
-            <!-- STATE A: QR SCANNER / UPLOAD VIEW (WITH BACK BUTTON TO PREVIOUS MENU) -->
+            <!-- STATE A: QR SCANNER / UPLOAD VIEW (WITH BACK BUTTON & JOINED COLLEGES SWITCHER) -->
             <div id="studentNoCollegeJoinedBox" style="display: none;">
                 <div class="scan-college-card">
                     <!-- Back Button (Visible whenever student already has a joined college) -->
@@ -1882,15 +1885,24 @@
                     </div>
 
                     <div class="qr-scan-status" id="qrScanStatusMsg">🔍 AI Vision: Scanning image across multiple passes...</div>
+
+                    <!-- Quick Switcher for Already Joined / Available Colleges -->
+                    <div id="scannerJoinedCollegesBox" style="display: none; margin-top: 18px; padding-top: 14px; border-top: 1px dashed rgba(99, 102, 241, 0.35); text-align: left;">
+                        <span style="font-size: 10.5px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 8px;">🏛️ Switch Between Your Colleges:</span>
+                        <div id="scannerJoinedCollegesList" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- STATE B: STUDENT HAS MANUALLY SCANNED QR & JOINED A COLLEGE -->
+            <!-- STATE B: STUDENT HAS JOINED A COLLEGE -->
             <div id="studentJoinedCollegeContent" style="display: none;">
-                <!-- COMPACT HEADER BAR WITH QR POPUP BUTTON -->
+                <!-- COMPACT HEADER BAR WITH MULTI-COLLEGE SWITCHER & QR POPUP BUTTON -->
                 <div class="compact-student-bar">
                     <div class="compact-bar-left">
+                        <!-- Single College Badge (shown when 1 college) -->
                         <span class="compact-college-badge" id="studentCompactCollegeName">🏛️ College</span>
+                        <!-- Interactive College Switcher Dropdown (shown when >1 college is available/joined) -->
+                        <select id="studentCollegeSwitcherSelect" class="college-switcher-select" style="display: none;" onchange="switchActiveStudentCollege(this.value)" title="Switch Active College"></select>
                         <span class="compact-vpa-tag">🔒 VPA: <strong style="color: var(--primary);" id="studentActiveUpi">canteen@sbi</strong></span>
                     </div>
                     <div class="compact-bar-actions">
@@ -1898,10 +1910,13 @@
                             📲 College QR
                         </button>
                         <button onclick="switchStudentCollegeQr()" style="background: rgba(255, 255, 255, 0.68); color: var(--text-main); border: 1px solid rgba(255, 255, 255, 0.95); padding: 6px 10px; border-radius: 10px; font-size: 11px; font-weight: 800; cursor: pointer; box-shadow: inset 0 1px 1px #ffffff;">
-                            📷 Scan QR
+                            📷 Scan / Add College
                         </button>
                     </div>
                 </div>
+
+                <!-- QUICK MULTI-COLLEGE PILL SWITCHER BAR (Appears automatically when >1 college is joined/added) -->
+                <div class="cat-scroll" id="studentMultiCollegePillsBar" style="display: none; margin-bottom: 10px;"></div>
 
                 <!-- CANTEEN PILLS -->
                 <div class="cat-scroll" id="canteenPillsContainer" style="margin-bottom: 10px;"></div>
@@ -1932,11 +1947,14 @@
             </div>
         </div>
 
-        <!-- STUDENT TAB 2: MY DIGITAL RECEIPTS (STRICTLY PRIVATE TO LOGGED-IN ACCOUNT) -->
+        <!-- STUDENT TAB 2: MY DIGITAL RECEIPTS (WITH COLLEGE BADGES & COLLEGE FILTER PILLS) -->
         <div id="tab-receipts" class="tab-content">
-            <div style="max-width: 600px; margin: 0 auto 12px auto;">
+            <div style="max-width: 600px; margin: 0 auto 12px auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                 <button type="button" class="app-back-pill-btn" onclick="switchTab('menu')">← Back to Canteen Menu</button>
+                <span style="font-size: 11px; font-weight: 800; color: var(--text-muted);" id="receiptsCountSummary"></span>
             </div>
+            <!-- Multi-College Receipt Filter Bar (shown automatically when orders exist from 2+ colleges) -->
+            <div class="cat-scroll" id="receiptCollegeFilterBar" style="max-width: 600px; margin: 0 auto 14px auto; display: none;"></div>
             <div id="receiptsContainer"></div>
         </div>
 
@@ -2194,12 +2212,17 @@
             </div>
         </div>
 
-        <!-- HIDDEN APP CREATOR (AUDITOR) PORTAL -->
+        <!-- HIDDEN APP CREATOR (AUDITOR) PORTAL — HIGH-SPEED SYNC BUTTON VISIBLE ONLY HERE -->
         <div id="tab-auditor-portal" class="tab-content">
-            <div style="background: linear-gradient(135deg, rgba(49, 46, 129, 0.88) 0%, rgba(79, 70, 229, 0.88) 100%); backdrop-filter: blur(18px); color: white; padding: 20px 24px; border-radius: var(--radius); margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.3);">
-                <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 800;">👑 Hidden App Creator Portal (Visible Only to You)</span>
-                <h2 style="font-size: 22px; font-weight: 900; margin-top: 4px;">Master System Creator & Security Audit Dashboard</h2>
-                <p style="font-size: 12.5px; color: #cbd5e1; margin-top: 4px;">Inspect all registered colleges, canteens, custom Admin/Counter PINs, and live cross-device synchronization.</p>
+            <div style="background: linear-gradient(135deg, rgba(49, 46, 129, 0.88) 0%, rgba(79, 70, 229, 0.88) 100%); backdrop-filter: blur(18px); color: white; padding: 20px 24px; border-radius: var(--radius); margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+                <div>
+                    <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 800;">👑 Hidden App Creator Portal (Visible Only to You)</span>
+                    <h2 style="font-size: 22px; font-weight: 900; margin-top: 4px;">Master System Creator & Security Audit Dashboard</h2>
+                    <p style="font-size: 12.5px; color: #cbd5e1; margin-top: 4px;">Inspect all registered colleges, canteens, custom Admin/Counter PINs, and live cross-device synchronization.</p>
+                </div>
+                <button type="button" class="sync-status-pill" id="cloudStatusBtn" onclick="openCloudConfigModal()">
+                    🟢 High-Speed Sync & OTP Settings
+                </button>
             </div>
 
             <div class="finance-summary-grid">
@@ -2260,15 +2283,12 @@
         <div class="tray-action-pill">View Tray ₹<span id="floatingTotal">0</span></div>
     </div>
 
-    <!-- SLIDE-OVER CHECKOUT DRAWER (WITH BACK / MINIMIZE BUTTON SUPPORT) -->
+    <!-- SLIDE-OVER CHECKOUT DRAWER (CLEAN HEADER WITHOUT MINIMIZE/BACK TEXT BUTTON) -->
     <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
     <div class="drawer" id="trayDrawer">
-        <div class="drawer-pill-handle" onclick="closeDrawer()" title="Tap to minimize tray"></div>
+        <div class="drawer-pill-handle" onclick="closeDrawer()"></div>
         <div class="drawer-header">
-            <button type="button" class="minimize-tray-btn" onclick="closeDrawer()">
-                ← Back / Minimize
-            </button>
-            <h2>🛒 Student Tray</h2>
+            <h2>🛒 Student Tray & Checkout</h2>
             <button class="close-drawer" onclick="closeDrawer()" title="Close Tray">×</button>
         </div>
 
@@ -2359,6 +2379,7 @@
         let isTemporaryQrScanMode = false;
         let isHandlingPopState = false;
         let liveClockTimerId = null;
+        let activeReceiptCollegeFilter = "All";
 
         function pushOverlayHistoryState(overlayType) {
             if (isHandlingPopState) return;
@@ -2546,7 +2567,7 @@
         }
 
         /* =====================================================================
-           2. REGISTERED COLLEGES, CANTEENS & ACCOUNT PRIVACY HELPERS
+           2. REGISTERED COLLEGES, CANTEENS & MULTI-COLLEGE STUDENT HELPERS
            ===================================================================== */
         const VPIET_DEFAULT_COLLEGE = {
             id: "col_vpiet",
@@ -2596,6 +2617,78 @@
             return phone || email || (roll !== "STUDENT" ? roll : "");
         }
 
+        // Returns all colleges available for the student to switch between
+        function getStudentSwitchableColleges() {
+            const set = new Set();
+            if (currentUser && currentUser.college) {
+                set.add(currentUser.college);
+            }
+            if (currentUser && Array.isArray(currentUser.joinedColleges)) {
+                currentUser.joinedColleges.forEach(c => { if (c) set.add(c); });
+            }
+            const myKey = getStudentAccountKey(currentUser);
+            if (myKey && studentVault[myKey] && Array.isArray(studentVault[myKey].joinedColleges)) {
+                studentVault[myKey].joinedColleges.forEach(c => { if (c) set.add(c); });
+            }
+            // Also include any registered colleges when more than 1 college is added on the platform
+            if (colleges.length > 1 && set.size > 0) {
+                colleges.forEach(c => { if (c && c.name) set.add(c.name); });
+            }
+            return Array.from(set);
+        }
+
+        function addCollegeToStudentJoinedList(colName) {
+            if (!colName) return;
+            if (!Array.isArray(currentUser.joinedColleges)) {
+                currentUser.joinedColleges = [];
+            }
+            if (!currentUser.joinedColleges.includes(colName)) {
+                currentUser.joinedColleges.push(colName);
+            }
+            const myKey = getStudentAccountKey(currentUser);
+            if (myKey && studentVault[myKey]) {
+                if (!Array.isArray(studentVault[myKey].joinedColleges)) {
+                    studentVault[myKey].joinedColleges = [];
+                }
+                if (!studentVault[myKey].joinedColleges.includes(colName)) {
+                    studentVault[myKey].joinedColleges.push(colName);
+                }
+                studentVault[myKey].college = colName;
+            }
+        }
+
+        // Switches the student's active college with 1 tap!
+        function switchActiveStudentCollege(newColName) {
+            if (!newColName) return;
+            const prevCol = currentUser.college;
+            currentUser.college = newColName;
+            isTemporaryQrScanMode = false;
+            addCollegeToStudentJoinedList(newColName);
+
+            if (prevCol && prevCol !== newColName) {
+                // Save tray per college so items from different colleges don't mix
+                const myKey = getStudentAccountKey(currentUser);
+                if (myKey) {
+                    localStorage.setItem(`cb_tray_${myKey}_${prevCol}`, JSON.stringify(tray || {}));
+                    try {
+                        tray = JSON.parse(localStorage.getItem(`cb_tray_${myKey}_${newColName}`)) || {};
+                    } catch (e) {
+                        tray = {};
+                    }
+                    savePersonalTrayForCurrentStudent();
+                } else {
+                    tray = {};
+                }
+                activeSelectedOfferId = null;
+                activeStudentCanteenFilter = "";
+            }
+
+            document.getElementById('headerSubTitle').innerText = `Joined College: ${currentUser.college}`;
+            saveState();
+            saveActiveSession('menu');
+            refreshStudentPassEnvironment();
+        }
+
         function orderBelongsToCurrentStudent(order) {
             if (!order) return false;
             const myKey = getStudentAccountKey(currentUser);
@@ -2623,6 +2716,9 @@
             const myKey = getStudentAccountKey(currentUser);
             if (myKey) {
                 localStorage.setItem(`cb_tray_${myKey}`, JSON.stringify(tray || {}));
+                if (currentUser.college) {
+                    localStorage.setItem(`cb_tray_${myKey}_${currentUser.college}`, JSON.stringify(tray || {}));
+                }
             }
         }
 
@@ -2633,6 +2729,13 @@
                 return;
             }
             try {
+                if (currentUser.college) {
+                    const colTray = localStorage.getItem(`cb_tray_${myKey}_${currentUser.college}`);
+                    if (colTray) {
+                        tray = JSON.parse(colTray) || {};
+                        return;
+                    }
+                }
                 tray = JSON.parse(localStorage.getItem(`cb_tray_${myKey}`)) || {};
             } catch (e) {
                 tray = {};
@@ -2696,7 +2799,7 @@
            4. PERSISTENT SESSION STORAGE (ISOLATED PER LOGGED-IN USER)
            ===================================================================== */
         let currentRole = "student";
-        let currentUser = { rollNo: "", name: "Student", email: "", phone: "", college: "", createdAt: 0 };
+        let currentUser = { rollNo: "", name: "Student", email: "", phone: "", college: "", joinedColleges: [], createdAt: 0 };
         let currentAdminCollege = colleges[0] ? colleges[0].name : "VPIET";
         let currentStaffCanteen = "";
         let isCounterCanteenUnlocked = false;
@@ -2739,6 +2842,9 @@
 
                 currentRole = session.role || "student";
                 currentUser = session.user || currentUser;
+                if (!Array.isArray(currentUser.joinedColleges)) {
+                    currentUser.joinedColleges = currentUser.college ? [currentUser.college] : [];
+                }
                 currentAdminCollege = session.adminCollege || (colleges[0] ? colleges[0].name : "VPIET");
                 currentStaffCanteen = session.staffCanteen || "";
                 isCounterCanteenUnlocked = Boolean(session.counterUnlocked);
@@ -2992,8 +3098,7 @@
 
                 mqttClient.on('connect', () => {
                     if (statusBtn) {
-                        statusBtn.classList.add('live');
-                        statusBtn.innerText = "🟢 High-Speed Sync";
+                        statusBtn.innerText = "🟢 High-Speed Sync & OTP Settings";
                     }
                     mqttClient.subscribe(MQTT_SYNC_TOPIC, { qos: 0 });
                 });
@@ -3449,6 +3554,7 @@
                 email: email,
                 phone: phone,
                 college: "",
+                joinedColleges: [],
                 createdAt: registrationTime
             };
             localStorage.removeItem(`cb_tray_${phone}`);
@@ -3506,12 +3612,18 @@
         function loginStudentIntoApp(stuObj) {
             currentRole = "student";
             isTemporaryQrScanMode = false;
+            const joinedArr = Array.isArray(stuObj.joinedColleges) ? [...stuObj.joinedColleges] : [];
+            if (stuObj.college && !joinedArr.includes(stuObj.college)) {
+                joinedArr.push(stuObj.college);
+            }
+
             currentUser = {
                 rollNo: stuObj.phone || stuObj.rollNo || "",
                 name: stuObj.name,
                 email: stuObj.email || "",
                 phone: stuObj.phone || "",
-                college: stuObj.college || "",
+                college: stuObj.college || (joinedArr[0] || ""),
+                joinedColleges: joinedArr,
                 createdAt: stuObj.createdAt || 0
             };
 
@@ -3874,23 +3986,8 @@
                 return;
             }
 
-            const switchedToDifferentCollege = (currentUser.college && currentUser.college !== matchedCol.name);
-            currentUser.college = matchedCol.name;
-            isTemporaryQrScanMode = false;
-
-            const myKey = getStudentAccountKey(currentUser);
-            if (myKey && studentVault[myKey]) {
-                studentVault[myKey].college = matchedCol.name;
-            }
-            if (switchedToDifferentCollege) {
-                tray = {};
-                savePersonalTrayForCurrentStudent();
-            }
-
-            saveState();
-            saveActiveSession('menu');
-            document.getElementById('headerSubTitle').innerText = `Joined College: ${currentUser.college}`;
-            refreshStudentPassEnvironment();
+            addCollegeToStudentJoinedList(matchedCol.name);
+            switchActiveStudentCollege(matchedCol.name);
             alert(`✅ Successfully Scanned & Joined ${matchedCol.name} Canteens!`);
         }
 
@@ -4071,7 +4168,7 @@
             );
         }
 
-        /* ================= STUDENT ENVIRONMENT & COMPACT QR BAR ================= */
+        /* ================= STUDENT ENVIRONMENT & MULTI-COLLEGE SWITCHER ================= */
         function refreshStudentPassEnvironment() {
             const col = currentUser.college;
             const unjoinedBox = document.getElementById('studentNoCollegeJoinedBox');
@@ -4081,6 +4178,23 @@
 
             const isStaffOrAdminPreview = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor');
             const activeCol = isStaffOrAdminPreview ? currentAdminCollege : col;
+            const switchableColleges = getStudentSwitchableColleges();
+
+            // Render Joined Colleges list inside the Scanner Box as well
+            const scannerJoinedBox = document.getElementById('scannerJoinedCollegesBox');
+            const scannerJoinedList = document.getElementById('scannerJoinedCollegesList');
+            if (scannerJoinedBox && scannerJoinedList) {
+                if (switchableColleges.length > 0) {
+                    scannerJoinedBox.style.display = 'block';
+                    scannerJoinedList.innerHTML = switchableColleges.map(cName => `
+                        <button type="button" class="cat-pill ${cName === activeCol ? 'active' : ''}" onclick="switchActiveStudentCollege('${cName}')">
+                            🏛️ ${cName}
+                        </button>
+                    `).join('');
+                } else {
+                    scannerJoinedBox.style.display = 'none';
+                }
+            }
 
             if (!activeCol || isTemporaryQrScanMode) {
                 if (unjoinedBox) unjoinedBox.style.display = 'block';
@@ -4107,9 +4221,33 @@
                 document.getElementById('studentActiveUpi').innerText = matchedCanteens[0].upi;
             }
 
+            // Multi-College Switcher in Student Top Bar & Pill Bar
             const compactColEl = document.getElementById('studentCompactCollegeName');
-            if (compactColEl) {
-                compactColEl.innerText = `🏛️ ${activeCol}`;
+            const colSelectEl = document.getElementById('studentCollegeSwitcherSelect');
+            const multiColPillsBar = document.getElementById('studentMultiCollegePillsBar');
+
+            if (switchableColleges.length > 1 && !isStaffOrAdminPreview) {
+                if (compactColEl) compactColEl.style.display = 'none';
+                if (colSelectEl) {
+                    colSelectEl.style.display = 'inline-block';
+                    colSelectEl.innerHTML = switchableColleges.map(cName => `<option value="${cName}">🏛️ ${cName}</option>`).join('');
+                    colSelectEl.value = activeCol;
+                }
+                if (multiColPillsBar) {
+                    multiColPillsBar.style.display = 'flex';
+                    multiColPillsBar.innerHTML = switchableColleges.map(cName => `
+                        <button type="button" class="cat-pill ${cName === activeCol ? 'active' : ''}" onclick="switchActiveStudentCollege('${cName}')">
+                            🏛️ ${cName}
+                        </button>
+                    `).join('');
+                }
+            } else {
+                if (compactColEl) {
+                    compactColEl.style.display = 'inline-block';
+                    compactColEl.innerText = `🏛️ ${activeCol}`;
+                }
+                if (colSelectEl) colSelectEl.style.display = 'none';
+                if (multiColPillsBar) multiColPillsBar.style.display = 'none';
             }
 
             const pillsBox = document.getElementById('canteenPillsContainer');
@@ -4444,7 +4582,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px; background: rgba(255,255,255,0.85); padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.95);">
                             <div>
                                 <strong>${item.name}</strong><br>
-                                <span style="font-size: 11px; color: var(--primary); font-weight: 700;">🏪 ${item.canteen}</span><br>
+                                <span style="font-size: 11px; color: var(--primary); font-weight: 700;">🏛️ ${item.college} • 🏪 ${item.canteen}</span><br>
                                 <span style="font-size: 11.5px; color: var(--text-muted);">₹${item.price} x ${tray[id]} = <strong>₹${item.price * tray[id]}</strong></span>
                             </div>
                             <div style="display: flex; align-items: center;">
@@ -4565,7 +4703,7 @@
             for (let id in tray) {
                 const item = getMenuItemFast(id);
                 if (item) {
-                    orderItems.push({ name: item.name, qty: tray[id], price: item.price, canteen: item.canteen });
+                    orderItems.push({ name: item.name, qty: tray[id], price: item.price, canteen: item.canteen, college: item.college || activeCol });
                     subtotal += (item.price * tray[id]);
                     orderCanteens.add(item.canteen);
                 }
@@ -4631,40 +4769,84 @@
 
             setTimeout(() => {
                 document.getElementById('successToastModal').classList.remove('active');
+                activeReceiptCollegeFilter = "All";
                 switchTab('receipts');
             }, 950);
         }
 
+        function filterReceiptsByCollege(colName) {
+            activeReceiptCollegeFilter = colName || "All";
+            renderReceipts();
+        }
+
         function renderReceipts() {
             const container = document.getElementById('receiptsContainer');
+            const filterBar = document.getElementById('receiptCollegeFilterBar');
+            const summaryEl = document.getElementById('receiptsCountSummary');
             if (!container) return;
             container.innerHTML = '';
 
             const myPersonalOrders = activeOrders.filter(o => orderBelongsToCurrentStudent(o));
 
             if (myPersonalOrders.length === 0) {
+                if (filterBar) filterBar.style.display = 'none';
+                if (summaryEl) summaryEl.innerText = '';
                 container.innerHTML = `<div class="glass-surface" style="text-align: center; padding: 36px 18px; border-radius: 18px; color: var(--text-muted); font-weight: 700; font-size: 13px;">No digital receipts for your account yet. Orders you place will appear privately here.</div>`;
                 return;
             }
+
+            // Collect distinct colleges from the student's orders so they can easily distinguish & filter
+            const collegeCounts = {};
+            myPersonalOrders.forEach(o => {
+                const cName = o.collegePass || "VPIET";
+                collegeCounts[cName] = (collegeCounts[cName] || 0) + 1;
+            });
+            const distinctOrderColleges = Object.keys(collegeCounts);
+
+            if (filterBar) {
+                if (distinctOrderColleges.length > 1) {
+                    filterBar.style.display = 'flex';
+                    let pillsHtml = `<button type="button" class="cat-pill ${activeReceiptCollegeFilter === 'All' ? 'active' : ''}" onclick="filterReceiptsByCollege('All')">All Colleges (${myPersonalOrders.length})</button>`;
+                    distinctOrderColleges.forEach(cName => {
+                        pillsHtml += `<button type="button" class="cat-pill ${activeReceiptCollegeFilter === cName ? 'active' : ''}" onclick="filterReceiptsByCollege('${cName}')">🏛️ ${cName} (${collegeCounts[cName]})</button>`;
+                    });
+                    filterBar.innerHTML = pillsHtml;
+                } else {
+                    filterBar.style.display = 'none';
+                    activeReceiptCollegeFilter = "All";
+                }
+            }
+
+            const displayedOrders = (activeReceiptCollegeFilter === 'All')
+                ? myPersonalOrders
+                : myPersonalOrders.filter(o => (o.collegePass || 'VPIET') === activeReceiptCollegeFilter);
+
+            if (summaryEl) {
+                summaryEl.innerText = distinctOrderColleges.length > 1
+                    ? `${displayedOrders.length} Receipt${displayedOrders.length !== 1 ? 's' : ''} (${distinctOrderColleges.length} Colleges)`
+                    : `${displayedOrders.length} Receipt${displayedOrders.length !== 1 ? 's' : ''}`;
+            }
+
             const fragment = document.createDocumentFragment();
-            myPersonalOrders.forEach((order, index) => {
+            displayedOrders.forEach((order, index) => {
                 const isServed = (order.status === 'served');
                 const pinCode = order.handshakePin || "84";
                 const sigCode = order.signature || generateOrderSignature(order.token, order.rollNo, order.total, pinCode);
                 const wordCode = order.syncWord || dailySecurityWord;
+                const orderCollegeName = order.collegePass || "VPIET";
 
                 let badge = '';
                 if (order.status === 'paid') badge = `<span class="status-badge paid">Online Paid ⚡</span>`;
                 else if (order.status === 'cash_pending') badge = `<span class="status-badge cash">Pay Cash 💵</span>`;
                 else badge = `<span class="status-badge served">✔ ORDER SERVED</span>`;
 
-                let itemsHtml = order.items.map(it => `<div class="receipt-item-row"><span>${it.name} (x${it.qty}) <small style="color:var(--text-muted);">[${it.canteen}]</small></span><span>₹${it.price * it.qty}</span></div>`).join('');
+                let itemsHtml = order.items.map(it => `<div class="receipt-item-row"><span>${it.name} (x${it.qty}) <small style="color:var(--text-muted);">[${orderCollegeName} • ${it.canteen}]</small></span><span>₹${it.price * it.qty}</span></div>`).join('');
                 
                 const servedTopBannerHtml = isServed ? `
                     <div class="served-hero-banner">
                         <div class="served-hero-icon">✓</div>
                         <div class="served-hero-title">ORDER SERVED & COMPLETED</div>
-                        <div class="served-hero-sub">Handed over at ${order.orderedCanteen || 'Canteen'} • ${order.servedAt || order.timestamp}</div>
+                        <div class="served-hero-sub">🏛️ ${orderCollegeName} • 🏪 ${order.orderedCanteen || 'Canteen'} • ${order.servedAt || order.timestamp}</div>
                     </div>
                     <div class="served-diagonal-stamp">SERVED ✓<br><span style="font-size: 15px; letter-spacing: 2px;">REDEEMED</span></div>
                 ` : `
@@ -4677,7 +4859,7 @@
                 const verificationFooterHtml = isServed ? `
                     <div class="served-redemption-box">
                         <h4>🔒 RECEIPT REDEEMED — FOOD DELIVERED</h4>
-                        <p style="font-size:12px;">Token #${order.token} (PIN: ${pinCode}) served at ${order.servedAt || order.timestamp}.</p>
+                        <p style="font-size:12px;">Token #${order.token} (PIN: ${pinCode}) served at ${orderCollegeName} (${order.orderedCanteen || 'Main'}) at ${order.servedAt || order.timestamp}.</p>
                     </div>
                 ` : `
                     <div class="live-clock" id="clock_${index}">00:00:00</div>
@@ -4688,9 +4870,13 @@
                 card.className = isServed ? 'receipt-card is-served' : 'receipt-card';
                 card.innerHTML = `
                     ${servedTopBannerHtml}
+                    <div class="receipt-college-banner">
+                        <span>🏛️ COLLEGE: ${orderCollegeName.toUpperCase()}</span>
+                        <span>🏪 ${order.orderedCanteen || 'Main'}</span>
+                    </div>
                     <div class="receipt-top">
                         <div>
-                            <span style="font-size:10.5px; color:var(--text-muted); font-weight:800;">TOKEN ID</span>
+                            <span style="font-size:10.5px; color:var(--text-muted); font-weight:800;">TOKEN ID (${orderCollegeName})</span>
                             <div class="token-number">#${order.token}</div>
                         </div>
                         <div class="handshake-pin-box">
@@ -4700,15 +4886,15 @@
                         <div>${badge}</div>
                     </div>
                     <div class="receipt-details">
+                        <div><span>College & Canteen</span><strong>🏛️ ${orderCollegeName} • 🏪 ${order.orderedCanteen || 'Main'}</strong></div>
                         <div><span>Student</span><strong>${order.name} (${order.rollNo})</strong></div>
-                        <div><span>Email</span><strong>${order.email || 'Verified'}</strong></div>
-                        <div><span>Canteen</span><strong>🏪 ${order.orderedCanteen || 'Main'}</strong></div>
-                        <div><span>Slot</span><strong>⏱ ${order.slot || 'Immediate'}</strong></div>
+                        <div><span>Pickup Slot</span><strong>⏱ ${order.slot || 'Immediate'}</strong></div>
+                        <div><span>Order Time</span><strong>🕒 ${order.timestamp || 'Today'}</strong></div>
                     </div>
                     <div class="receipt-items-list">${itemsHtml}</div>
                     ${verificationFooterHtml}
                     <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 900; margin-top: 12px; position: relative; z-index: 3;">
-                        <span>Total Amount</span><span style="color:${isServed ? '#059669' : 'var(--primary)'};">₹${order.total}</span>
+                        <span>Total Amount (${orderCollegeName})</span><span style="color:${isServed ? '#059669' : 'var(--primary)'};">₹${order.total}</span>
                     </div>
                 `;
                 fragment.appendChild(card);
@@ -4750,7 +4936,7 @@
 
             if (matchedOrder.status === 'served') { alert(`⚠️ ALREADY REDEEMED: Token #${rawToken} was already served!`); return; }
 
-            alert(`✅ AUTHENTIC ORDER VERIFIED!\n\nToken: #${matchedOrder.token} (PIN: ${matchedOrder.handshakePin})\nStudent: ${matchedOrder.name} (${matchedOrder.rollNo})\nAmount: ₹${matchedOrder.total}`);
+            alert(`✅ AUTHENTIC ORDER VERIFIED!\n\nCollege: ${matchedOrder.collegePass}\nToken: #${matchedOrder.token} (PIN: ${matchedOrder.handshakePin})\nStudent: ${matchedOrder.name} (${matchedOrder.rollNo})\nAmount: ₹${matchedOrder.total}`);
         }
 
         /* ================= ADMIN & COUNTER STUDIO FUNCTIONS ================= */
@@ -5470,7 +5656,7 @@
                     <td><strong>${order.name}</strong><br><span style="font-size:11px; color:var(--text-muted);">📱 ${order.rollNo}${order.email ? '<br>📧 ' + order.email : ''}</span></td>
                     <td>
                         <div class="ledger-canteen-header">
-                            <span class="ledger-canteen-badge">🏪 ${order.orderedCanteen || 'Main'}</span>
+                            <span class="ledger-canteen-badge">🏛️ ${order.collegePass || currentAdminCollege} • 🏪 ${order.orderedCanteen || 'Main'}</span>
                             <span class="ledger-slot-badge">⏱ ${order.slot || 'Immediate'}</span>
                         </div>
                         <div class="ledger-items-stack">${itemsLineByLineHtml}</div>
