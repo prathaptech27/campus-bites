@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -366,7 +365,7 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* APPLE LIQUID GLASS COMPACT STUDENT BAR & MULTI-COLLEGE SWITCHER */
+        /* APPLE LIQUID GLASS COMPACT STUDENT BAR & TOP COLLEGE SWITCHER */
         .compact-student-bar {
             background: var(--liquid-glass-bg);
             backdrop-filter: var(--liquid-blur);
@@ -374,7 +373,7 @@
             border: 1px solid var(--liquid-glass-border);
             border-radius: 18px;
             padding: 9px 12px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -397,7 +396,7 @@
         }
 
         .college-switcher-select {
-            background: rgba(255, 255, 255, 0.82);
+            background: rgba(255, 255, 255, 0.85);
             color: var(--primary);
             border: 1.5px solid rgba(99, 102, 241, 0.55);
             padding: 5px 10px;
@@ -1849,7 +1848,7 @@
                 </div>
             </div>
 
-            <!-- STATE A: QR SCANNER / UPLOAD VIEW (WITH BACK BUTTON & JOINED COLLEGES SWITCHER) -->
+            <!-- STATE A: QR SCANNER / UPLOAD VIEW (WITH BACK BUTTON) -->
             <div id="studentNoCollegeJoinedBox" style="display: none;">
                 <div class="scan-college-card">
                     <!-- Back Button (Visible whenever student already has a joined college) -->
@@ -1885,23 +1884,17 @@
                     </div>
 
                     <div class="qr-scan-status" id="qrScanStatusMsg">🔍 AI Vision: Scanning image across multiple passes...</div>
-
-                    <!-- Quick Switcher for Already Joined / Available Colleges -->
-                    <div id="scannerJoinedCollegesBox" style="display: none; margin-top: 18px; padding-top: 14px; border-top: 1px dashed rgba(99, 102, 241, 0.35); text-align: left;">
-                        <span style="font-size: 10.5px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 8px;">🏛️ Switch Between Your Colleges:</span>
-                        <div id="scannerJoinedCollegesList" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
-                    </div>
                 </div>
             </div>
 
             <!-- STATE B: STUDENT HAS JOINED A COLLEGE -->
             <div id="studentJoinedCollegeContent" style="display: none;">
-                <!-- COMPACT HEADER BAR WITH MULTI-COLLEGE SWITCHER & QR POPUP BUTTON -->
+                <!-- COMPACT HEADER BAR WITH TOP COLLEGE SWITCHER & QR POPUP BUTTON -->
                 <div class="compact-student-bar">
                     <div class="compact-bar-left">
                         <!-- Single College Badge (shown when 1 college) -->
                         <span class="compact-college-badge" id="studentCompactCollegeName">🏛️ College</span>
-                        <!-- Interactive College Switcher Dropdown (shown when >1 college is available/joined) -->
+                        <!-- Interactive College Switcher Dropdown in Top Bar (shown when >1 college is available/joined) -->
                         <select id="studentCollegeSwitcherSelect" class="college-switcher-select" style="display: none;" onchange="switchActiveStudentCollege(this.value)" title="Switch Active College"></select>
                         <span class="compact-vpa-tag">🔒 VPA: <strong style="color: var(--primary);" id="studentActiveUpi">canteen@sbi</strong></span>
                     </div>
@@ -1914,9 +1907,6 @@
                         </button>
                     </div>
                 </div>
-
-                <!-- QUICK MULTI-COLLEGE PILL SWITCHER BAR (Appears automatically when >1 college is joined/added) -->
-                <div class="cat-scroll" id="studentMultiCollegePillsBar" style="display: none; margin-bottom: 10px;"></div>
 
                 <!-- CANTEEN PILLS -->
                 <div class="cat-scroll" id="canteenPillsContainer" style="margin-bottom: 10px;"></div>
@@ -2617,7 +2607,7 @@
             return phone || email || (roll !== "STUDENT" ? roll : "");
         }
 
-        // Returns all colleges available for the student to switch between
+        // Returns all colleges available for the student to switch between in the top bar
         function getStudentSwitchableColleges() {
             const set = new Set();
             if (currentUser && currentUser.college) {
@@ -2630,7 +2620,6 @@
             if (myKey && studentVault[myKey] && Array.isArray(studentVault[myKey].joinedColleges)) {
                 studentVault[myKey].joinedColleges.forEach(c => { if (c) set.add(c); });
             }
-            // Also include any registered colleges when more than 1 college is added on the platform
             if (colleges.length > 1 && set.size > 0) {
                 colleges.forEach(c => { if (c && c.name) set.add(c.name); });
             }
@@ -2657,7 +2646,7 @@
             }
         }
 
-        // Switches the student's active college with 1 tap!
+        // Switches the student's active college from the top bar dropdown
         function switchActiveStudentCollege(newColName) {
             if (!newColName) return;
             const prevCol = currentUser.college;
@@ -2666,7 +2655,6 @@
             addCollegeToStudentJoinedList(newColName);
 
             if (prevCol && prevCol !== newColName) {
-                // Save tray per college so items from different colleges don't mix
                 const myKey = getStudentAccountKey(currentUser);
                 if (myKey) {
                     localStorage.setItem(`cb_tray_${myKey}_${prevCol}`, JSON.stringify(tray || {}));
@@ -4168,7 +4156,7 @@
             );
         }
 
-        /* ================= STUDENT ENVIRONMENT & MULTI-COLLEGE SWITCHER ================= */
+        /* ================= STUDENT ENVIRONMENT & TOP BAR COLLEGE SWITCHER ================= */
         function refreshStudentPassEnvironment() {
             const col = currentUser.college;
             const unjoinedBox = document.getElementById('studentNoCollegeJoinedBox');
@@ -4179,22 +4167,6 @@
             const isStaffOrAdminPreview = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor');
             const activeCol = isStaffOrAdminPreview ? currentAdminCollege : col;
             const switchableColleges = getStudentSwitchableColleges();
-
-            // Render Joined Colleges list inside the Scanner Box as well
-            const scannerJoinedBox = document.getElementById('scannerJoinedCollegesBox');
-            const scannerJoinedList = document.getElementById('scannerJoinedCollegesList');
-            if (scannerJoinedBox && scannerJoinedList) {
-                if (switchableColleges.length > 0) {
-                    scannerJoinedBox.style.display = 'block';
-                    scannerJoinedList.innerHTML = switchableColleges.map(cName => `
-                        <button type="button" class="cat-pill ${cName === activeCol ? 'active' : ''}" onclick="switchActiveStudentCollege('${cName}')">
-                            🏛️ ${cName}
-                        </button>
-                    `).join('');
-                } else {
-                    scannerJoinedBox.style.display = 'none';
-                }
-            }
 
             if (!activeCol || isTemporaryQrScanMode) {
                 if (unjoinedBox) unjoinedBox.style.display = 'block';
@@ -4221,10 +4193,9 @@
                 document.getElementById('studentActiveUpi').innerText = matchedCanteens[0].upi;
             }
 
-            // Multi-College Switcher in Student Top Bar & Pill Bar
+            // Top Bar College Switcher ONLY (No separate pill bar below)
             const compactColEl = document.getElementById('studentCompactCollegeName');
             const colSelectEl = document.getElementById('studentCollegeSwitcherSelect');
-            const multiColPillsBar = document.getElementById('studentMultiCollegePillsBar');
 
             if (switchableColleges.length > 1 && !isStaffOrAdminPreview) {
                 if (compactColEl) compactColEl.style.display = 'none';
@@ -4233,21 +4204,12 @@
                     colSelectEl.innerHTML = switchableColleges.map(cName => `<option value="${cName}">🏛️ ${cName}</option>`).join('');
                     colSelectEl.value = activeCol;
                 }
-                if (multiColPillsBar) {
-                    multiColPillsBar.style.display = 'flex';
-                    multiColPillsBar.innerHTML = switchableColleges.map(cName => `
-                        <button type="button" class="cat-pill ${cName === activeCol ? 'active' : ''}" onclick="switchActiveStudentCollege('${cName}')">
-                            🏛️ ${cName}
-                        </button>
-                    `).join('');
-                }
             } else {
                 if (compactColEl) {
                     compactColEl.style.display = 'inline-block';
                     compactColEl.innerText = `🏛️ ${activeCol}`;
                 }
                 if (colSelectEl) colSelectEl.style.display = 'none';
-                if (multiColPillsBar) multiColPillsBar.style.display = 'none';
             }
 
             const pillsBox = document.getElementById('canteenPillsContainer');
