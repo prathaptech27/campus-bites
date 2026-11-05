@@ -675,7 +675,7 @@
         .food-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
         @media(min-width: 768px) { .food-grid { gap: 20px; } }
 
-        /* FOOD CARD WITH OPTIONAL BACKGROUND IMAGE & ULTRA-CRISP FROSTED READABILITY */
+        /* FOOD CARD WITH OPTIONAL BACKGROUND IMAGE & ULTRA-CRISP FROSTED READABILITY SHIELD */
         .food-card {
             background: linear-gradient(145deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.52) 100%);
             backdrop-filter: blur(16px);
@@ -730,7 +730,7 @@
         }
 
         .food-card.has-bg-img .food-card-readability-shield {
-            background: rgba(255, 255, 255, 0.93);
+            background: rgba(255, 255, 255, 0.94);
             backdrop-filter: blur(14px) saturate(180%);
             -webkit-backdrop-filter: blur(14px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.98);
@@ -763,7 +763,8 @@
         .admin-panel p.sub { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
 
         .item-list-box { max-height: 220px; overflow-y: auto; border: 1px solid rgba(226, 232, 240, 0.9); border-radius: 12px; padding: 8px; background: rgba(248, 250, 252, 0.65); }
-        .item-list-row { background: rgba(255, 255, 255, 0.88); border: 1px solid rgba(226, 232, 240, 0.9); border-radius: 10px; padding: 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; cursor: pointer; gap: 8px; }
+        .item-list-row { background: rgba(255, 255, 255, 0.88); border: 1px solid rgba(226, 232, 240, 0.9); border-radius: 10px; padding: 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; cursor: pointer; gap: 8px; transition: all 0.15s; }
+        .item-list-row.editing-active { background: #eef2ff; border: 2px solid var(--primary); }
 
         .menu-thumb-mini {
             width: 36px;
@@ -1459,7 +1460,10 @@
 
                 <!-- STEP 2: MENU EDITOR (WITH DISH BACKGROUND IMAGE UPLOAD / URL) -->
                 <div class="admin-panel">
-                    <h3>🍽️ Edit Menu & Rates</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>🍽️ Edit Menu & Rates</h3>
+                        <button type="button" id="cancelMenuEditBtn" onclick="adminResetMenuForm()" style="display: none; background: #fee2e2; color: #dc2626; border: none; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; cursor: pointer;">Cancel Edit</button>
+                    </div>
                     <p class="sub">Add dishes with optional background photo (auto-optimized for crystal-clear reading).</p>
 
                     <input type="hidden" id="editingMenuItemId" value="">
@@ -1506,25 +1510,30 @@
                     <!-- Dish Background Image (Upload File or Paste URL) -->
                     <div class="form-group">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <label style="margin-bottom: 0;">Dish Background Image (Upload or Paste URL)</label>
+                            <label style="margin-bottom: 0;">Background Image (Upload File or Paste URL)</label>
                             <button type="button" onclick="clearMenuImageField()" style="background: none; border: none; color: var(--danger); font-size: 10px; font-weight: 800; cursor: pointer;">Clear Image</button>
                         </div>
                         <input type="file" class="form-control" id="newMenuImageFile" accept="image/*" style="padding: 6px; margin-bottom: 6px;" onchange="previewUploadedMenuImage(event)">
                         <input type="text" class="form-control" id="newMenuImg" placeholder="Optional: Paste food image URL or upload above">
                     </div>
 
-                    <button class="add-item-symbol-btn" onclick="adminSaveMenuItem()">
+                    <button class="add-item-symbol-btn" id="saveMenuBtnText" onclick="adminSaveMenuItem()">
                         <span style="font-size: 16px; font-weight: 900; line-height: 1;">+</span> Save / Update Menu Item
                     </button>
 
-                    <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin: 8px 0 4px 0;">Existing Dishes (Click to Edit)</label>
+                    <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin: 8px 0 4px 0;">Existing Dishes (Click to Edit, ✕ to Remove)</label>
                     <div class="item-list-box" id="adminMenuItemsList"></div>
                 </div>
 
-                <!-- STEP 3: MULTI-ITEM OFFER PUBLISHER (ADD OR CANCEL MULTIPLE FOOD ITEMS) -->
+                <!-- STEP 3: MULTI-ITEM OFFER PUBLISHER & IN-PLACE EDITOR -->
                 <div class="admin-panel">
-                    <h3>📢 Post & Edit Item Offers</h3>
-                    <p class="sub">Select one or multiple food items, or click ✕ to cancel any item.</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>📢 Post & Edit Item Offers</h3>
+                        <button type="button" id="cancelOfferEditBtn" onclick="adminResetOfferForm()" style="display: none; background: #fee2e2; color: #dc2626; border: none; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; cursor: pointer;">Cancel Edit</button>
+                    </div>
+                    <p class="sub">Select multiple dishes. Click an existing offer below to edit it, or ✕ to delete.</p>
+
+                    <input type="hidden" id="editingOfferId" value="">
 
                     <div class="form-group search-suggestions-container" id="offerMultiPickerContainer">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
@@ -1566,7 +1575,9 @@
                         <input type="text" class="form-control" id="newOfferImg" value="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80" placeholder="Image URL">
                     </div>
 
-                    <button class="checkout-btn" onclick="adminPostSingleItemOffer()" style="padding: 12px; font-size: 14px; background: #f59e0b; margin-bottom: 12px;">+ Publish Offer Live</button>
+                    <button class="checkout-btn" id="saveOfferBtnText" onclick="adminPostSingleItemOffer()" style="padding: 12px; font-size: 14px; background: #f59e0b; margin-bottom: 12px;">+ Save / Update Offer Live</button>
+
+                    <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin: 4px 0 4px 0;">Existing Offers (Click to Edit, ✕ to Remove)</label>
                     <div class="item-list-box" id="adminOffersList"></div>
                 </div>
             </div>
@@ -1794,12 +1805,12 @@
     <!-- JAVASCRIPT LOGIC -->
     <script>
         const VERCEL_DOMAIN = "https://campus-bites-liart.vercel.app";
-        const MQTT_SYNC_TOPIC = "campusbites/vpiet_exclusive_sync_2026/state_v6";
+        const MQTT_SYNC_TOPIC = "campusbites/vpiet_exclusive_sync_2026/state_v7";
 
         /* =====================================================================
            0. 5,000-USER PERFORMANCE UTILITIES (DEBOUNCE, O(1) MAP, IMAGE COMPRESSION)
            ===================================================================== */
-        function debounce(fn, delayMs = 180) {
+        function debounce(fn, delayMs = 160) {
             let timer = null;
             return function(...args) {
                 if (timer) clearTimeout(timer);
@@ -1807,7 +1818,6 @@
             };
         }
 
-        // Automatically compress uploaded food/offer images to ~20KB so 5,000 users never lag or hit quota limits
         function compressImageFileToDataUrl(file, maxWidth = 520, quality = 0.74, callback) {
             if (!file) return;
             const reader = new FileReader();
@@ -1835,7 +1845,6 @@
             reader.readAsDataURL(file);
         }
 
-        // O(1) In-Memory Lookup Map for Menu Items (eliminates O(N) array scans inside loops)
         let menuItemMap = new Map();
         function rebuildMenuLookupMap() {
             menuItemMap.clear();
@@ -1967,7 +1976,6 @@
 
         rebuildMenuLookupMap();
 
-        // Unique Account Key Generator & Strict Privacy Filter so accounts NEVER share receipts or trays
         function getStudentAccountKey(userObj) {
             if (!userObj) return "";
             const phone = String(userObj.phone || "").trim();
@@ -2084,7 +2092,7 @@
         let generatedStudentOtp = null;
         let generatedCollegeOtp = null;
         let prepFilterMode = "pending";
-        let ledgerRenderLimit = 50; // Windowed pagination for 5,000-user scale
+        let ledgerRenderLimit = 50;
 
         let tray = {};
         let selectedPaymentMethod = "online";
@@ -2484,7 +2492,6 @@
             } catch (e) {}
         }
 
-        // Non-blocking, throttled state persistence & cloud sync (prevents main-thread lag during rapid clicks)
         function saveState() {
             lastStateTimestamp = Date.now();
             rebuildMenuLookupMap();
@@ -2507,7 +2514,7 @@
                         canteens,
                         menuItems,
                         offersEvents,
-                        activeOrders: activeOrders.slice(0, 500), // Cap active sync window for fast network transfer
+                        activeOrders: activeOrders.slice(0, 500),
                         studentVault,
                         dailySecurityWord,
                         updatedAt: lastStateTimestamp
@@ -3602,7 +3609,6 @@
             `;
         }
 
-        // Renders Student Menu Cards with Optional Background Photo + Frosted Readability Shield
         function renderMenu() {
             const grid = document.getElementById('foodGrid');
             const searchVal = document.getElementById('searchInput').value.toLowerCase();
@@ -3638,7 +3644,6 @@
                 }
 
                 if (hasBg) {
-                    // Background Image Card with Top Canteen Pill + High-Contrast Frosted Readability Shield
                     card.innerHTML = `
                         <div class="food-card-top-badge-bar">
                             <span class="food-college-tag">🏪 ${item.canteen}</span>
@@ -4367,8 +4372,10 @@
             refreshStudentPassEnvironment();
         }
 
+        /* ================= MENU EDITOR (NON-DESTRUCTIVE CLICK TO EDIT, ✕ TO DELETE) ================= */
         function renderAdminMenuList() {
             const selectedCanteen = document.getElementById('adminMenuCanteenSelect').value;
+            const currentEditingMenuId = document.getElementById('editingMenuItemId').value;
             const box = document.getElementById('adminMenuItemsList');
             const items = menuItems.filter(m => m.college === currentAdminCollege && m.canteen === selectedCanteen);
 
@@ -4377,18 +4384,22 @@
                 return;
             }
 
-            box.innerHTML = items.map(item => `
-                <div class="item-list-row" onclick="loadMenuItemForEditing('${item.id}')" title="Click to edit">
-                    <div style="display:flex; align-items:center; gap:8px; flex:1;">
-                        ${item.img ? `<img src="${item.img}" class="menu-thumb-mini" alt="${item.name}">` : ''}
-                        <div>
-                            <strong>${item.veg ? '🟢' : '🔴'} ${item.name}</strong> — <span style="color:var(--primary); font-weight:800;">₹${item.price}</span><br>
-                            <span style="font-size:11px; color:var(--text-muted);">${item.category} • ⏱ ${item.time}${item.img ? ' • 🖼️ Has Photo' : ''}</span>
+            box.innerHTML = items.map(item => {
+                const isEditing = (String(item.id) === String(currentEditingMenuId));
+                return `
+                    <div class="item-list-row ${isEditing ? 'editing-active' : ''}" onclick="loadMenuItemForEditing('${item.id}')" title="Click to edit dish">
+                        <div style="display:flex; align-items:center; gap:8px; flex:1;">
+                            ${item.img ? `<img src="${item.img}" class="menu-thumb-mini" alt="${item.name}">` : ''}
+                            <div>
+                                <strong>${item.veg ? '🟢' : '🔴'} ${item.name}</strong> — <span style="color:var(--primary); font-weight:800;">₹${item.price}</span>
+                                ${isEditing ? `<span style="background:var(--primary); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:4px;">EDITING</span>` : ''}<br>
+                                <span style="font-size:11px; color:var(--text-muted);">${item.category} • ⏱ ${item.time}${item.img ? ' • 🖼️ Has Photo' : ''}</span>
+                            </div>
                         </div>
+                        <button class="remove-item-symbol" onclick="event.stopPropagation(); adminDeleteMenuItem('${item.id}')" title="Remove Dish">✕</button>
                     </div>
-                    <button class="remove-item-symbol" onclick="event.stopPropagation(); adminDeleteMenuItem('${item.id}')">✕</button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function previewUploadedMenuImage(event) {
@@ -4417,6 +4428,9 @@
             document.getElementById('newMenuVeg').value = String(item.veg);
             document.getElementById('newMenuTime').value = item.time;
             document.getElementById('newMenuImg').value = item.img || '';
+            document.getElementById('cancelMenuEditBtn').style.display = 'inline-block';
+            document.getElementById('saveMenuBtnText').innerHTML = `✔ Update Menu Item ("${item.name}")`;
+            renderAdminMenuList();
         }
 
         function adminResetMenuForm() {
@@ -4424,7 +4438,10 @@
             document.getElementById('newMenuName').value = '';
             document.getElementById('newMenuPrice').value = '';
             document.getElementById('newMenuTime').value = '5 mins';
+            document.getElementById('cancelMenuEditBtn').style.display = 'none';
+            document.getElementById('saveMenuBtnText').innerHTML = `<span style="font-size: 16px; font-weight: 900; line-height: 1;">+</span> Save / Update Menu Item`;
             clearMenuImageField();
+            renderAdminMenuList();
         }
 
         function adminSaveMenuItem() {
@@ -4458,7 +4475,6 @@
 
             saveState();
             adminResetMenuForm();
-            renderAdminMenuList();
             renderSelectedOfferItemsChips();
             renderMenu();
         }
@@ -4467,6 +4483,9 @@
             menuItems = menuItems.filter(m => String(m.id) !== String(itemId));
             delete tray[itemId];
             selectedOfferTargetItemIds = selectedOfferTargetItemIds.filter(id => String(id) !== String(itemId));
+            if (String(document.getElementById('editingMenuItemId').value) === String(itemId)) {
+                adminResetMenuForm();
+            }
             savePersonalTrayForCurrentStudent();
             saveState();
             renderAdminMenuList();
@@ -4474,6 +4493,7 @@
             renderMenu();
         }
 
+        /* ================= OFFER EDITOR (NON-DESTRUCTIVE CLICK TO EDIT, ✕ TO DELETE) ================= */
         function previewUploadedImage(event) {
             const file = event.target.files && event.target.files[0];
             if (file) {
@@ -4483,7 +4503,22 @@
             }
         }
 
+        function adminResetOfferForm() {
+            document.getElementById('editingOfferId').value = '';
+            document.getElementById('newOfferBadge').value = '🔥 Special Offer';
+            document.getElementById('newOfferAmount').value = '20';
+            document.getElementById('newOfferTitle').value = '';
+            document.getElementById('newOfferImg').value = 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80';
+            const fileInput = document.getElementById('newOfferImageFile');
+            if (fileInput) fileInput.value = '';
+            document.getElementById('cancelOfferEditBtn').style.display = 'none';
+            document.getElementById('saveOfferBtnText').innerText = '+ Save / Update Offer Live';
+            clearSelectedOfferItem();
+            renderAdminOffersList();
+        }
+
         function adminPostSingleItemOffer() {
+            const editOfferId = document.getElementById('editingOfferId').value;
             const badge = document.getElementById('newOfferBadge').value.trim() || "🔥 Special Offer";
             const title = document.getElementById('newOfferTitle').value.trim();
             const img = document.getElementById('newOfferImg').value.trim() || "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80";
@@ -4494,33 +4529,52 @@
                 return;
             }
 
-            offersEvents.unshift({
-                id: 'ev_' + Date.now(),
-                college: currentAdminCollege,
-                targetItemIds: [...selectedOfferTargetItemIds],
-                targetItemId: selectedOfferTargetItemIds[0],
-                badge: badge,
-                title: title,
-                desc: `Save ₹${amount}`,
-                amount: amount,
-                img: img
-            });
+            if (editOfferId) {
+                // Update existing offer in-place without deleting or changing its position
+                const idx = offersEvents.findIndex(e => String(e.id) === String(editOfferId));
+                if (idx !== -1) {
+                    offersEvents[idx] = {
+                        ...offersEvents[idx],
+                        college: currentAdminCollege,
+                        targetItemIds: [...selectedOfferTargetItemIds],
+                        targetItemId: selectedOfferTargetItemIds[0],
+                        badge: badge,
+                        title: title,
+                        desc: `Save ₹${amount}`,
+                        amount: amount,
+                        img: img
+                    };
+                }
+            } else {
+                // Create new offer
+                offersEvents.unshift({
+                    id: 'ev_' + Date.now(),
+                    college: currentAdminCollege,
+                    targetItemIds: [...selectedOfferTargetItemIds],
+                    targetItemId: selectedOfferTargetItemIds[0],
+                    badge: badge,
+                    title: title,
+                    desc: `Save ₹${amount}`,
+                    amount: amount,
+                    img: img
+                });
+            }
 
-            document.getElementById('newOfferTitle').value = '';
-            clearSelectedOfferItem();
             saveState();
-            renderAdminOffersList();
+            adminResetOfferForm();
             renderOffersCarousel();
         }
 
         function renderAdminOffersList() {
             const box = document.getElementById('adminOffersList');
+            const currentEditingOfferId = document.getElementById('editingOfferId').value;
             const colOffers = offersEvents.filter(e => e.college === currentAdminCollege);
             if (colOffers.length === 0) {
                 box.innerHTML = `<p style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No offers posted yet.</p>`;
                 return;
             }
             box.innerHTML = colOffers.map(ev => {
+                const isEditing = (String(ev.id) === String(currentEditingOfferId));
                 const targetIds = getOfferTargetIds(ev);
                 const dishNames = targetIds.map(id => {
                     const d = getMenuItemFast(id);
@@ -4528,34 +4582,43 @@
                 }).filter(Boolean).join(', ') || 'Item';
 
                 return `
-                    <div class="item-list-row" onclick="loadOfferForEditing('${ev.id}')" title="Click to edit items or headline">
-                        <div>
-                            <strong>${ev.title}</strong><br>
-                            <span style="font-size:11px; color:var(--primary);">Dishes (${targetIds.length}): ${dishNames} • ₹${ev.amount} OFF</span>
+                    <div class="item-list-row ${isEditing ? 'editing-active' : ''}" onclick="loadOfferForEditing('${ev.id}')" title="Click to edit offer (does not delete)">
+                        <div style="display:flex; align-items:center; gap:8px; flex:1;">
+                            ${ev.img ? `<img src="${ev.img}" class="menu-thumb-mini" alt="${ev.title}">` : ''}
+                            <div>
+                                <strong>${ev.title}</strong>
+                                ${isEditing ? `<span style="background:var(--primary); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:4px;">EDITING</span>` : ''}<br>
+                                <span style="font-size:11px; color:var(--primary);">Dishes (${targetIds.length}): ${dishNames} • ₹${ev.amount} OFF</span>
+                            </div>
                         </div>
-                        <button class="remove-item-symbol" onclick="event.stopPropagation(); adminDeleteOffer('${ev.id}')">✕</button>
+                        <button class="remove-item-symbol" onclick="event.stopPropagation(); adminDeleteOffer('${ev.id}')" title="Delete Offer">✕</button>
                     </div>
                 `;
             }).join('');
         }
 
+        // Clicking an offer loads it into the form for editing WITHOUT deleting it from offersEvents!
         function loadOfferForEditing(evId) {
-            const ev = offersEvents.find(e => e.id === evId);
+            const ev = offersEvents.find(e => String(e.id) === String(evId));
             if (!ev) return;
+            document.getElementById('editingOfferId').value = ev.id;
             selectedOfferTargetItemIds = getOfferTargetIds(ev).filter(id => Boolean(getMenuItemFast(id)));
             renderSelectedOfferItemsChips();
             document.getElementById('newOfferBadge').value = ev.badge || "🔥 Special Offer";
             document.getElementById('newOfferTitle').value = ev.title;
             document.getElementById('newOfferAmount').value = ev.amount;
-            document.getElementById('newOfferImg').value = ev.img;
-            offersEvents = offersEvents.filter(e => e.id !== evId);
-            saveState();
+            document.getElementById('newOfferImg').value = ev.img || '';
+            document.getElementById('cancelOfferEditBtn').style.display = 'inline-block';
+            document.getElementById('saveOfferBtnText').innerText = `✔ Update Offer ("${ev.title}")`;
             renderAdminOffersList();
-            renderOffersCarousel();
         }
 
+        // Only deletes the offer when clicking the ✕ button
         function adminDeleteOffer(evId) {
-            offersEvents = offersEvents.filter(e => e.id !== evId);
+            offersEvents = offersEvents.filter(e => String(e.id) !== String(evId));
+            if (String(document.getElementById('editingOfferId').value) === String(evId)) {
+                adminResetOfferForm();
+            }
             saveState();
             renderAdminOffersList();
             renderOffersCarousel();
