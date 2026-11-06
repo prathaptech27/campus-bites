@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -409,7 +410,7 @@
         </div>
     </div>
 
-    <!-- ORDER DETAILS POPUP MODAL FOR COUNTER STAFF (WHEN 3+ DIGIT TOKEN TYPED OR ORDER ROW CLICKED) -->
+    <!-- ORDER DETAILS POPUP MODAL FOR COUNTER STAFF -->
     <div class="toast-modal" id="ledgerOrderPopupModal">
         <div class="toast-card" style="text-align: left; max-width: 480px; max-height: 90vh; overflow-y: auto; padding: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--liquid-glass-border); padding-bottom: 10px;">
@@ -572,7 +573,6 @@
                 👑 <b>Creator-Only Configuration:</b> Configure College Sign-Up OTP verification, Firebase backup URL, and EmailJS credentials here.
             </p>
 
-            <!-- ON / OFF TOGGLE FOR COLLEGE SIGN-UP OTP INSIDE SETTINGS MODAL -->
             <div style="background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                 <div>
                     <div style="font-size: 12.5px; font-weight: 900; color: var(--text-main);">College Sign-Up OTP Verification</div>
@@ -741,7 +741,7 @@
                     <button class="checkout-btn" onclick="completeStaffLogin()" style="background: #059669; margin-top: 6px;">Login to Counter Portal &rarr;</button>
                 </div>
 
-                <!-- 2C. College Sign Up (SUPPORTS CREATOR OTP ON/OFF TOGGLE + UNIQUE EMAIL CHECK) -->
+                <!-- 2C. College Sign Up -->
                 <div id="subFormSignup" style="display: none;">
                     <div style="background: rgba(99, 102, 241, 0.15); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--text-main); font-weight: 700; line-height: 1.4;" id="collegeSignupBannerNotice">
                         📝 <b>College Sign Up & PIN Setup:</b> Each college must use a unique Admin Email ID. Verify via Email OTP and create your custom PINs.
@@ -977,7 +977,7 @@
             <div id="receiptsContainer"></div>
         </div>
 
-        <!-- STUDENT TAB 3: MY FOOD SPENDING ANALYTICS (DAILY, WEEKLY, MONTHLY) -->
+        <!-- STUDENT TAB 3: MY FOOD SPENDING ANALYTICS -->
         <div id="tab-spending" class="tab-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
                 <div>
@@ -1060,7 +1060,7 @@
             </div>
 
             <div class="admin-grid">
-                <!-- STEP 1: CANTEENS, UPI VPAs & CANTEEN PIN (CLICK TO EDIT IN-PLACE) -->
+                <!-- STEP 1: CANTEENS, UPI VPAs & CANTEEN PIN -->
                 <div class="admin-panel" id="canteenManagerPanel">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>🏪 Canteens & UPI VPAs</h3>
@@ -1262,7 +1262,6 @@
                 </div>
             </div>
 
-            <!-- SEARCH BOX: 2 OR FEWER DIGITS JUST FILTERS TABLE; 3+ DIGITS OPENS POPUP -->
             <form onsubmit="event.preventDefault(); handleLedgerSearchSubmit(true);" class="search-box" style="margin-bottom: 14px; display: flex; gap: 8px;">
                 <div style="position: relative; flex: 1;">
                     <span class="search-icon">🔍</span>
@@ -1295,7 +1294,7 @@
             </div>
         </div>
 
-        <!-- HIDDEN APP CREATOR (AUDITOR) PORTAL (WITH ON / OFF COLLEGE OTP TOGGLE) -->
+        <!-- HIDDEN APP CREATOR (AUDITOR) PORTAL -->
         <div id="tab-auditor-portal" class="tab-content">
             <div style="background: linear-gradient(135deg, rgba(49, 46, 129, 0.88) 0%, rgba(79, 70, 229, 0.88) 100%); backdrop-filter: blur(18px); color: white; padding: 20px 24px; border-radius: var(--radius); margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
                 <div>
@@ -1304,7 +1303,6 @@
                     <p style="font-size: 12.5px; color: #cbd5e1; margin-top: 4px;">Inspect all registered colleges, canteens, custom Admin/Counter PINs, and toggle College Sign-Up OTP verification.</p>
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                    <!-- ON / OFF TOGGLE BUTTON FOR COLLEGE SIGNUP OTP IN CREATOR PORTAL -->
                     <button type="button" class="otp-toggle-pill is-on" id="creatorPortalOtpToggleBtn" onclick="toggleCollegeSignupOtpRequirement()" title="Click to turn ON or OFF Email OTP verification for College Sign Up">
                         🔒 College Sign-Up OTP: ON
                     </button>
@@ -1478,7 +1476,6 @@
         let liveClockTimerId = null;
         let activeSpendingPeriodFilter = "all";
 
-        // CREATOR TOGGLE STATE FOR COLLEGE SIGN-UP OTP VERIFICATION (DEFAULT: TRUE / ON)
         let collegeSignupOtpRequired = localStorage.getItem('cb_college_otp_required') !== 'false';
 
         function updateCollegeSignupOtpToggleUI() {
@@ -1710,15 +1707,40 @@
             return phone || email || (roll !== "STUDENT" ? roll : "");
         }
 
+        /* FIND MATCHING STUDENT RECORD IN VAULT BY PHONE, EMAIL OR ROLLNO */
+        function findStudentVaultEntry(userObj) {
+            if (!userObj) return null;
+            const phone = String(userObj.phone || "").trim();
+            const email = String(userObj.email || "").trim().toLowerCase();
+            const roll = String(userObj.rollNo || "").trim();
+
+            if (phone && studentVault[phone]) return { key: phone, record: studentVault[phone] };
+            if (roll && studentVault[roll]) return { key: roll, record: studentVault[roll] };
+
+            const foundKey = Object.keys(studentVault).find(k => {
+                const s = studentVault[k];
+                if (!s) return false;
+                if (phone && s.phone === phone) return true;
+                if (email && s.email && s.email.toLowerCase() === email) return true;
+                if (roll && s.rollNo && s.rollNo === roll) return true;
+                return false;
+            });
+            return foundKey ? { key: foundKey, record: studentVault[foundKey] } : null;
+        }
+
+        /* STRICT STUDENT COLLEGE ISOLATION: ONLY COLLEGES SCANNED BY THIS STUDENT ARE RETURNED */
         function getStudentSwitchableColleges() {
             const set = new Set();
             if (currentUser && currentUser.college) set.add(currentUser.college);
             if (currentUser && Array.isArray(currentUser.joinedColleges)) {
                 currentUser.joinedColleges.forEach(c => { if (c) set.add(c); });
             }
-            const myKey = getStudentAccountKey(currentUser);
-            if (myKey && studentVault[myKey] && Array.isArray(studentVault[myKey].joinedColleges)) {
-                studentVault[myKey].joinedColleges.forEach(c => { if (c) set.add(c); });
+            const vaultHit = findStudentVaultEntry(currentUser);
+            if (vaultHit && vaultHit.record) {
+                if (vaultHit.record.college) set.add(vaultHit.record.college);
+                if (Array.isArray(vaultHit.record.joinedColleges)) {
+                    vaultHit.record.joinedColleges.forEach(c => { if (c) set.add(c); });
+                }
             }
             return Array.from(set);
         }
@@ -1727,11 +1749,34 @@
             if (!colName) return;
             if (!Array.isArray(currentUser.joinedColleges)) currentUser.joinedColleges = [];
             if (!currentUser.joinedColleges.includes(colName)) currentUser.joinedColleges.push(colName);
-            const myKey = getStudentAccountKey(currentUser);
-            if (myKey && studentVault[myKey]) {
-                if (!Array.isArray(studentVault[myKey].joinedColleges)) studentVault[myKey].joinedColleges = [];
-                if (!studentVault[myKey].joinedColleges.includes(colName)) studentVault[myKey].joinedColleges.push(colName);
-                studentVault[myKey].college = colName;
+            currentUser.college = colName;
+            currentUser.updatedAt = Date.now();
+
+            const vaultHit = findStudentVaultEntry(currentUser);
+            const myKey = (vaultHit && vaultHit.key) ? vaultHit.key : getStudentAccountKey(currentUser);
+
+            if (myKey) {
+                if (!studentVault[myKey]) {
+                    studentVault[myKey] = {
+                        rollNo: currentUser.phone || currentUser.rollNo || myKey,
+                        name: currentUser.name || "Student",
+                        email: currentUser.email || "",
+                        phone: currentUser.phone || myKey,
+                        college: colName,
+                        joinedColleges: [...currentUser.joinedColleges],
+                        createdAt: currentUser.createdAt || Date.now(),
+                        updatedAt: Date.now()
+                    };
+                } else {
+                    if (!Array.isArray(studentVault[myKey].joinedColleges)) {
+                        studentVault[myKey].joinedColleges = [];
+                    }
+                    if (!studentVault[myKey].joinedColleges.includes(colName)) {
+                        studentVault[myKey].joinedColleges.push(colName);
+                    }
+                    studentVault[myKey].college = colName;
+                    studentVault[myKey].updatedAt = Date.now();
+                }
             }
         }
 
@@ -1836,7 +1881,7 @@
         }
 
         let currentRole = "student";
-        let currentUser = { rollNo: "", name: "Student", email: "", phone: "", college: "", joinedColleges: [], createdAt: 0 };
+        let currentUser = { rollNo: "", name: "Student", email: "", phone: "", college: "", joinedColleges: [], createdAt: 0, updatedAt: 0 };
         let currentAdminCollege = colleges[0] ? colleges[0].name : "VPIET";
         let currentStaffCanteen = "";
         let isCounterCanteenUnlocked = false;
@@ -1865,6 +1910,41 @@
             updateFloatingPrepButtonVisibility();
         }
 
+        /* SYNC CURRENT LOGGED-IN STUDENT WITH LATEST VAULT RECORD (CROSS-DEVICE COLLEGE SYNC) */
+        function syncLoggedInStudentFromVault() {
+            if (currentRole !== 'student') return;
+            const vaultHit = findStudentVaultEntry(currentUser);
+            if (!vaultHit || !vaultHit.record) return;
+
+            const vaultRec = vaultHit.record;
+            const mergedSet = new Set([
+                ...(Array.isArray(currentUser.joinedColleges) ? currentUser.joinedColleges : []),
+                ...(Array.isArray(vaultRec.joinedColleges) ? vaultRec.joinedColleges : [])
+            ]);
+            if (currentUser.college) mergedSet.add(currentUser.college);
+            if (vaultRec.college) mergedSet.add(vaultRec.college);
+
+            const mergedList = Array.from(mergedSet);
+            currentUser.joinedColleges = mergedList;
+            vaultRec.joinedColleges = mergedList;
+
+            // If this device had no active college (or remote vault has a newer active college), adopt it!
+            if (!currentUser.college && (vaultRec.college || mergedList.length > 0)) {
+                currentUser.college = vaultRec.college || mergedList[0];
+            } else if (vaultRec.college && (vaultRec.updatedAt || 0) > (currentUser.updatedAt || 0)) {
+                currentUser.college = vaultRec.college;
+                currentUser.updatedAt = vaultRec.updatedAt;
+            }
+
+            if (currentUser.college && !vaultRec.college) {
+                vaultRec.college = currentUser.college;
+            }
+
+            document.getElementById('headerSubTitle').innerText = currentUser.college
+                ? `Joined College: ${currentUser.college}`
+                : `Scan QR to Join College Canteens`;
+        }
+
         function restoreActiveSessionOnLoad() {
             const rawSession = localStorage.getItem('cb_active_session');
             if (!rawSession) return false;
@@ -1884,6 +1964,7 @@
                 document.getElementById('authGate').classList.add('hidden');
 
                 if (currentRole === "student") {
+                    syncLoggedInStudentFromVault();
                     loadPersonalTrayForCurrentStudent();
                     document.getElementById('activeUserPill').innerText = `🎓 ${currentUser.name} • ${currentUser.phone || currentUser.email}`;
                     document.getElementById('headerSubTitle').innerText = currentUser.college ? `Joined College: ${currentUser.college}` : `Scan QR to Join College Canteens`;
@@ -2071,11 +2152,65 @@
             }).join('');
         }
 
+        /* =====================================================================
+           SMART CROSS-DEVICE MERGE ENGINE (UNION MERGE FOR STUDENT VAULT & COLLEGES)
+           ===================================================================== */
         const DEFAULT_CLOUD_CONFIG = { dbUrl: "", emailPublicKey: "WtDs4W8Ehn8uCxHLb", emailServiceId: "service_vryki04", emailTemplateId: "template_8kokfer" };
         let cloudConfig = JSON.parse(localStorage.getItem('cb_cloud_config')) || DEFAULT_CLOUD_CONFIG;
         let mqttClient = null;
         let isApplyingRemoteSync = false;
         let syncBroadcastTimer = null;
+
+        function mergeStudentVaults(localVault, remoteVault) {
+            const merged = { ...(localVault || {}) };
+            if (!remoteVault || typeof remoteVault !== 'object') return merged;
+
+            Object.keys(remoteVault).forEach(key => {
+                const rStu = remoteVault[key];
+                if (!rStu || typeof rStu !== 'object') return;
+                const lStu = merged[key];
+
+                if (!lStu) {
+                    merged[key] = {
+                        ...rStu,
+                        joinedColleges: Array.isArray(rStu.joinedColleges) ? [...rStu.joinedColleges] : (rStu.college ? [rStu.college] : [])
+                    };
+                } else {
+                    // Union of joinedColleges across all devices for this student!
+                    const unionColleges = new Set([
+                        ...(Array.isArray(lStu.joinedColleges) ? lStu.joinedColleges : []),
+                        ...(Array.isArray(rStu.joinedColleges) ? rStu.joinedColleges : [])
+                    ]);
+                    if (lStu.college) unionColleges.add(lStu.college);
+                    if (rStu.college) unionColleges.add(rStu.college);
+
+                    const joinedArr = Array.from(unionColleges);
+                    const rTime = Number(rStu.updatedAt || rStu.createdAt || 0);
+                    const lTime = Number(lStu.updatedAt || lStu.createdAt || 0);
+
+                    let activeCollege = "";
+                    if (rTime >= lTime && rStu.college) {
+                        activeCollege = rStu.college;
+                    } else if (lStu.college) {
+                        activeCollege = lStu.college;
+                    } else if (rStu.college) {
+                        activeCollege = rStu.college;
+                    } else if (joinedArr.length > 0) {
+                        activeCollege = joinedArr[0];
+                    }
+
+                    merged[key] = {
+                        ...lStu,
+                        ...rStu,
+                        pin: (rTime >= lTime && rStu.pin) ? rStu.pin : (lStu.pin || rStu.pin),
+                        college: activeCollege,
+                        joinedColleges: joinedArr,
+                        updatedAt: Math.max(rTime, lTime)
+                    };
+                }
+            });
+            return merged;
+        }
 
         function initZeroConfigMqttSync() {
             const statusBtn = document.getElementById('cloudStatusBtn');
@@ -2093,11 +2228,8 @@
                     if (topic !== MQTT_SYNC_TOPIC) return;
                     try {
                         const incoming = JSON.parse(message.toString());
-                        if (!incoming || !incoming.updatedAt) return;
-                        const localIsEmpty = (menuItems.length === 0 && offersEvents.length === 0 && activeOrders.length === 0);
-                        if (incoming.updatedAt > lastStateTimestamp || localIsEmpty) {
-                            requestAnimationFrame(() => applyRemoteStatePayload(incoming));
-                        }
+                        if (!incoming) return;
+                        requestAnimationFrame(() => applyRemoteStatePayload(incoming));
                     } catch (e) {}
                 });
             } catch (err) {}
@@ -2110,36 +2242,69 @@
         }
 
         function applyRemoteStatePayload(data) {
+            if (!data) return;
             isApplyingRemoteSync = true;
+            const isIncomingNewer = (Number(data.updatedAt || 0) >= lastStateTimestamp) ||
+                                    (menuItems.length === 0 && offersEvents.length === 0 && activeOrders.length === 0);
+
+            // Always merge colleges so newly registered colleges are available on all devices
             if (Array.isArray(data.colleges) && data.colleges.length > 0) {
                 data.colleges.forEach(rc => {
+                    if (!rc || !rc.name) return;
                     const idx = colleges.findIndex(c => c.name.toLowerCase() === rc.name.toLowerCase());
-                    if (idx !== -1) colleges[idx] = rc;
-                    else colleges.push(rc);
+                    if (idx !== -1) {
+                        if (isIncomingNewer) colleges[idx] = { ...colleges[idx], ...rc };
+                    } else {
+                        colleges.push(rc);
+                    }
                 });
             }
-            if (Array.isArray(data.canteens) && data.canteens.length > 0) canteens = data.canteens;
-            if (Array.isArray(data.menuItems)) { menuItems = data.menuItems; rebuildMenuLookupMap(); }
-            if (Array.isArray(data.offersEvents)) offersEvents = data.offersEvents;
-            if (Array.isArray(data.activeOrders)) activeOrders = data.activeOrders;
-            if (typeof data.collegeSignupOtpRequired === 'boolean') {
-                collegeSignupOtpRequired = data.collegeSignupOtpRequired;
-                localStorage.setItem('cb_college_otp_required', String(collegeSignupOtpRequired));
-                updateCollegeSignupOtpToggleUI();
+
+            // Merge canteens
+            if (Array.isArray(data.canteens) && data.canteens.length > 0) {
+                if (isIncomingNewer) {
+                    const mergedCanteens = [...data.canteens];
+                    canteens.forEach(localCan => {
+                        const exists = mergedCanteens.some(rc =>
+                            (rc.id && rc.id === localCan.id) ||
+                            (rc.college.toLowerCase() === localCan.college.toLowerCase() && rc.name.toLowerCase() === localCan.name.toLowerCase())
+                        );
+                        if (!exists) mergedCanteens.push(localCan);
+                    });
+                    canteens = mergedCanteens;
+                } else {
+                    data.canteens.forEach(rc => {
+                        const exists = canteens.some(lc =>
+                            (lc.id && lc.id === rc.id) ||
+                            (lc.college.toLowerCase() === rc.college.toLowerCase() && lc.name.toLowerCase() === rc.name.toLowerCase())
+                        );
+                        if (!exists) canteens.push(rc);
+                    });
+                }
             }
-            if (data.tokenCounters && typeof data.tokenCounters === 'object') {
-                tokenCounters = { ...tokenCounters, ...data.tokenCounters };
-                localStorage.setItem('cb_token_counters', JSON.stringify(tokenCounters));
+
+            if (isIncomingNewer) {
+                if (Array.isArray(data.menuItems)) { menuItems = data.menuItems; rebuildMenuLookupMap(); }
+                if (Array.isArray(data.offersEvents)) offersEvents = data.offersEvents;
+                if (Array.isArray(data.activeOrders)) activeOrders = data.activeOrders;
+                if (typeof data.collegeSignupOtpRequired === 'boolean') {
+                    collegeSignupOtpRequired = data.collegeSignupOtpRequired;
+                    localStorage.setItem('cb_college_otp_required', String(collegeSignupOtpRequired));
+                    updateCollegeSignupOtpToggleUI();
+                }
+                if (data.tokenCounters && typeof data.tokenCounters === 'object') {
+                    tokenCounters = { ...tokenCounters, ...data.tokenCounters };
+                    localStorage.setItem('cb_token_counters', JSON.stringify(tokenCounters));
+                }
+                if (data.updatedAt) {
+                    lastStateTimestamp = Math.max(lastStateTimestamp, Number(data.updatedAt));
+                    localStorage.setItem('cb_state_ts', String(lastStateTimestamp));
+                }
             }
+
+            // ALWAYS union-merge studentVault so a college scanned on Device 1 immediately appears on Device 2!
             if (data.studentVault && typeof data.studentVault === 'object') {
-                const myKey = getStudentAccountKey(currentUser);
-                const myLocalRecord = myKey ? studentVault[myKey] : null;
-                studentVault = { ...data.studentVault, ...studentVault };
-                if (myKey && myLocalRecord) studentVault[myKey] = myLocalRecord;
-            }
-            if (data.updatedAt) {
-                lastStateTimestamp = data.updatedAt;
-                localStorage.setItem('cb_state_ts', String(lastStateTimestamp));
+                studentVault = mergeStudentVaults(studentVault, data.studentVault);
             }
 
             localStorage.setItem('cb_colleges', JSON.stringify(colleges));
@@ -2148,6 +2313,12 @@
             localStorage.setItem('cb_offers', JSON.stringify(offersEvents));
             localStorage.setItem('cb_orders', JSON.stringify(activeOrders));
             localStorage.setItem('cb_student_vault', JSON.stringify(studentVault));
+
+            // If a student is currently logged in on this device, sync their active college & joinedColleges immediately!
+            if (currentRole === 'student' && document.getElementById('authGate').classList.contains('hidden')) {
+                syncLoggedInStudentFromVault();
+                saveActiveSession();
+            }
 
             renderRegisteredCollegeSelects();
             refreshStudentPassEnvironment();
@@ -2164,6 +2335,20 @@
             isApplyingRemoteSync = false;
         }
 
+        // Listen for localStorage changes across tabs in the same browser window
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'cb_student_vault' && e.newValue) {
+                try {
+                    const updatedVault = JSON.parse(e.newValue);
+                    studentVault = mergeStudentVaults(studentVault, updatedVault);
+                    if (currentRole === 'student' && document.getElementById('authGate').classList.contains('hidden')) {
+                        syncLoggedInStudentFromVault();
+                        refreshStudentPassEnvironment();
+                    }
+                } catch (err) {}
+            }
+        });
+
         async function pushToCloudDatabase(payload) {
             if (!cloudConfig.dbUrl) return;
             try {
@@ -2179,7 +2364,7 @@
                 const res = await fetch(`${cloudConfig.dbUrl}/campusbites_vpiet.json`);
                 if (!res.ok) return;
                 const data = await res.json();
-                if (data && data.updatedAt && data.updatedAt > lastStateTimestamp) applyRemoteStatePayload(data);
+                if (data) applyRemoteStatePayload(data);
             } catch (e) {}
         }
 
@@ -2209,7 +2394,7 @@
                     };
                     broadcastStateOverMqtt(payload);
                     pushToCloudDatabase(payload);
-                }, 220);
+                }, 150);
             }
         }
 
@@ -2367,9 +2552,6 @@
             updateCollegeSignupOtpToggleUI();
         }
 
-        /* =====================================================================
-           COLLEGE SIGN UP (RESPECTS CREATOR OTP ON/OFF TOGGLE + UNIQUE EMAIL)
-           ===================================================================== */
         function finalizeNewCollegeRegistration(cName, initCan, cEmail, initUpi, adminPin, staffPin) {
             const newColObj = {
                 id: 'col_' + Date.now(), name: cName, city: 'Campus Network',
@@ -2411,21 +2593,18 @@
             if (!cEmail.includes('@')) { alert("Please enter a valid Admin Email ID!"); return; }
             if (adminPin.length < 4 || staffPin.length < 4) { alert("Admin PIN and Counter Staff PIN must be at least 4 digits!"); return; }
 
-            // Block duplicate email across different colleges
             const emailConflictCol = colleges.find(c => c.email && c.email.toLowerCase() === cEmail && c.name.toLowerCase() !== cName.toLowerCase());
             if (emailConflictCol) {
                 alert(`❌ This email (${cEmail}) is already registered with another college (${emailConflictCol.name}).\nPlease use a different email to register!`);
                 return;
             }
 
-            // Block duplicate college name
             const existingColByName = colleges.find(c => c.name.toLowerCase() === cName.toLowerCase());
             if (existingColByName) {
                 alert(`❌ College "${cName}" is already registered! Please log in from the Admin Login tab or use a different college name.`);
                 return;
             }
 
-            // If Creator has temporarily turned OFF OTP verification for College Sign Up, register immediately!
             if (!collegeSignupOtpRequired) {
                 finalizeNewCollegeRegistration(cName, initCan, cEmail, initUpi, adminPin, staffPin);
                 return;
@@ -2461,7 +2640,6 @@
             finalizeNewCollegeRegistration(cName, initCan, cEmail, initUpi, adminPin, staffPin);
         }
 
-        /* FORGOT PIN / PASSWORD RESET */
         function openForgotCollegePinModal(preselectCollege, preselectCanteen) {
             renderRegisteredCollegeSelects();
             const colSel = document.getElementById('forgotCollegeSelect');
@@ -2560,9 +2738,10 @@
                 return;
             }
 
+            const nowTs = Date.now();
             studentVault[phone] = {
                 rollNo: phone, pin: pin, name: name, email: email, phone: phone,
-                college: "", joinedColleges: [], createdAt: Date.now()
+                college: "", joinedColleges: [], createdAt: nowTs, updatedAt: nowTs
             };
             localStorage.removeItem(`cb_tray_${phone}`);
             tray = {};
@@ -2584,9 +2763,11 @@
             let matchedStudent = studentVault[identifier];
             if (!matchedStudent) {
                 const foundKey = Object.keys(studentVault).find(
-                    k => studentVault[k].phone === identifier ||
+                    k => studentVault[k] && (
+                         studentVault[k].phone === identifier ||
                          (studentVault[k].email && studentVault[k].email.toLowerCase() === lowerId) ||
                          (studentVault[k].rollNo && studentVault[k].rollNo.toLowerCase() === lowerId)
+                    )
                 );
                 if (foundKey) matchedStudent = studentVault[foundKey];
             }
@@ -2611,9 +2792,12 @@
                 rollNo: stuObj.phone || stuObj.rollNo || "",
                 name: stuObj.name, email: stuObj.email || "", phone: stuObj.phone || "",
                 college: stuObj.college || (joinedArr.length > 0 ? joinedArr[0] : ""),
-                joinedColleges: joinedArr, createdAt: stuObj.createdAt || 0
+                joinedColleges: joinedArr,
+                createdAt: stuObj.createdAt || 0,
+                updatedAt: stuObj.updatedAt || stuObj.createdAt || 0
             };
 
+            syncLoggedInStudentFromVault();
             loadPersonalTrayForCurrentStudent();
             activeSelectedOfferId = null;
 
