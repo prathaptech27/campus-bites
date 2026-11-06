@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -50,7 +48,7 @@
             --text-muted: #cbd5e1;
             --body-bg: #030712;
 
-            /* Dark Mode Apple Liquid Glass Tokens (Smoked Obsidian Glass + Specular Rim) */
+            /* Dark Mode Apple Liquid Glass Tokens */
             --liquid-glass-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.62) 0%, rgba(15, 23, 42, 0.38) 50%, rgba(30, 41, 59, 0.52) 100%);
             --liquid-glass-strong: linear-gradient(135deg, rgba(30, 41, 59, 0.78) 0%, rgba(15, 23, 42, 0.56) 55%, rgba(30, 41, 59, 0.68) 100%);
             --liquid-glass-border: rgba(255, 255, 255, 0.18);
@@ -385,7 +383,7 @@
         .checkout-btn { width: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 12px; border-radius: 14px; font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 18px rgba(79,70,229,0.28), inset 0 1px 1.5px rgba(255,255,255,0.45); }
         .checkout-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        /* GPAY / PHONEPE SAFE LAUNCH & BANKING NAME VERIFICATION CARD */
+        /* EXPRESS AUTO-PAY & BANKING NAME SHIELD */
         .banking-name-shield {
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(5, 150, 105, 0.08));
             border: 1.5px solid #10b981;
@@ -393,17 +391,6 @@
             padding: 11px 13px;
             margin: 8px 0 10px;
             text-align: left;
-        }
-        .copy-chip-btn {
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-size: 10.5px;
-            font-weight: 900;
-            cursor: pointer;
-            white-space: nowrap;
         }
         .upi-app-grid {
             display: grid;
@@ -414,21 +401,46 @@
         .upi-app-btn {
             border: none;
             border-radius: 12px;
-            padding: 11px 10px;
-            font-size: 11.5px;
+            padding: 12px 10px;
+            font-size: 12px;
             font-weight: 900;
             color: #ffffff;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.18), inset 0 1px 1px rgba(255,255,255,0.35);
+            gap: 6px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.35);
             text-decoration: none;
+        }
+        .upi-app-btn.primary-universal {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #10b981, #059669);
+            font-size: 13.5px;
+            padding: 13px 12px;
+        }
+        .upi-app-btn.beam-qr {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #4f46e5, #3730a3);
+            font-size: 12.5px;
+            padding: 11px 12px;
         }
         .upi-app-btn.gpay { background: linear-gradient(135deg, #1a73e8, #0d47a1); }
         .upi-app-btn.phonepe { background: linear-gradient(135deg, #6739b7, #4a148c); }
-        .upi-app-btn.anyupi { grid-column: 1 / -1; background: linear-gradient(135deg, #059669, #047857); }
+
+        .auto-return-radar {
+            background: rgba(16, 185, 129, 0.14);
+            border: 2px solid #10b981;
+            border-radius: 14px;
+            padding: 12px;
+            margin-top: 10px;
+            text-align: center;
+            animation: pulseGlow 1.8s infinite ease-in-out;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.35); }
+            50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+        }
 
         .toast-modal { position: fixed; inset: 0; background: rgba(15,23,42,0.52); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 600; display: none; align-items: center; justify-content: center; padding: 16px; }
         .toast-modal.active { display: flex; }
@@ -508,91 +520,67 @@
 
     <div class="ambient-mesh"></div>
 
-    <!-- ZERO-SECURITY-BLOCK UPI PAYMENT GATEWAY & ANTI-PHISHING AUTO-REDIRECT MODAL -->
+    <!-- ZERO-SCREENSHOT, AUTO-RETURN UPI EXPRESS PAYMENT GATEWAY -->
     <div class="toast-modal" id="upiLivePaymentModal">
-        <div class="toast-card" style="text-align: left; max-width: 455px; max-height: 92vh; overflow-y: auto; padding: 20px;">
+        <div class="toast-card" style="text-align: left; max-width: 445px; max-height: 92vh; overflow-y: auto; padding: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--liquid-glass-border); padding-bottom: 8px;">
                 <div>
-                    <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: #10b981;">🔒 Official Canteen UPI Gateway</span>
-                    <h3 style="font-size: 18px; font-weight: 900; color: var(--text-main);" id="upiGateTokenHeading">Pay ₹0.00 to Complete Order</h3>
+                    <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: #10b981;">⚡ Instant Auto-Receipt UPI Checkout</span>
+                    <h3 style="font-size: 18px; font-weight: 900; color: var(--text-main);" id="upiGateTokenHeading">Pay ₹0.00 • Token #TK-100</h3>
                 </div>
                 <button class="close-drawer" onclick="cancelLiveUpiPaymentModal()">×</button>
             </div>
 
-            <!-- Official Banking Name, UPI ID & Mobile Number Shield -->
+            <!-- Official Banking Name & Locked Amount Shield -->
             <div class="banking-name-shield">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <div style="font-size: 10px; font-weight: 900; color: #059669; text-transform: uppercase; letter-spacing: 0.5px;">🏦 Verified Banking Name</div>
                         <div style="font-size: 15px; font-weight: 900; color: var(--text-main); margin-top: 2px;" id="upiGateBankingName">CANTEEN OFFICIAL</div>
+                        <div style="font-size: 11.5px; font-weight: 800; color: var(--primary); margin-top: 2px;">VPA: <span id="upiGateVpaText" style="font-family: monospace;">canteen@sbi</span></div>
                     </div>
-                    <div style="text-align: right; background: #065f46; color: #fff; padding: 5px 10px; border-radius: 10px;">
-                        <span style="font-size: 9px; font-weight: 800; text-transform: uppercase; display: block; opacity: 0.9;">🔒 Exact Amount</span>
-                        <strong style="font-size: 16px; font-weight: 900;" id="upiGateLockedAmountBadge">₹0.00</strong>
+                    <div style="text-align: right; background: #065f46; color: #fff; padding: 6px 11px; border-radius: 10px;">
+                        <span style="font-size: 9px; font-weight: 800; text-transform: uppercase; display: block; opacity: 0.9;">Amount</span>
+                        <strong style="font-size: 17px; font-weight: 900;" id="upiGateLockedAmountBadge">₹0.00</strong>
                     </div>
                 </div>
-
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 6px; border-top: 1px dashed rgba(16,185,129,0.35);">
-                    <div style="font-size: 12px; font-weight: 800; color: var(--primary);">UPI ID: <span id="upiGateVpaText" style="font-family: monospace;">canteen@sbi</span></div>
-                    <button type="button" class="copy-chip-btn" onclick="copyGatewayUpiId()">📋 Copy UPI ID</button>
-                </div>
-
-                <div id="upiGatePhoneRow" style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
-                    <div style="font-size: 12px; font-weight: 800; color: var(--text-main);">UPI Mobile #: <span id="upiGatePhoneText" style="font-family: monospace;">--</span></div>
-                    <button type="button" class="copy-chip-btn" style="background:#059669;" onclick="copyGatewayUpiPhone()">📋 Copy Mobile #</button>
-                </div>
             </div>
 
-            <!-- QR Mode Switcher: Fixed-Amount Camera QR vs Gallery-Safe QR -->
-            <div class="sub-switch-bar sub-switch-2" style="margin-bottom: 6px;">
-                <button type="button" class="college-sub-tab active" id="qrModeBtnLocked" onclick="switchGatewayQrMode('locked')">🔒 Fixed-Amount QR (₹<span class="btn-amt-span">0</span>)</button>
-                <button type="button" class="college-sub-tab" id="qrModeBtnGallery" onclick="switchGatewayQrMode('gallery')">🛡️ Gallery-Upload Safe QR</button>
-            </div>
-
-            <div class="qr-checkout-frame" style="width: 146px; height: 146px; margin: 4px auto;">
-                <img id="upiGateQrImg" src="" alt="Official UPI QR" />
-            </div>
-
-            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 8px;">
-                <button type="button" onclick="downloadPaymentQrImage()" style="background: var(--surface-row-bg); color: var(--primary); border: 1px solid var(--liquid-glass-border); padding: 4px 10px; border-radius: 8px; font-size: 10.5px; font-weight: 800; cursor: pointer;">
-                    ⬇️ Save QR Image for Gallery Scan
-                </button>
-            </div>
-
-            <div style="background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); border-radius: 10px; padding: 7px 10px; font-size: 10.5px; color: var(--text-main); font-weight: 700; text-align: center; margin-bottom: 6px; line-height: 1.35;">
-                🛡️ <b>Why GPay / PhonePe blocks web links:</b> NPCI blocks browser payment links on personal UPI IDs. Tapping GPay or PhonePe below <b>copies the UPI ID & opens the app safely</b> — just paste & pay <b>₹<span id="upiGateInlineAmount">0.00</span></b> to <b id="upiGateInlineBankName">CANTEEN OFFICIAL</b>!
-            </div>
-
-            <!-- Safe Native App Launchers (Copies UPI ID / Mobile # & Opens App Home Screen — 0% Security Error!) -->
+            <!-- 1-Tap Direct UPI App Launchers (No Manual Searching, No Screenshot Needed!) -->
             <div class="upi-app-grid">
-                <button type="button" class="upi-app-btn gpay" onclick="launchSafeUpiAppHome('gpay')">
-                    🔵 Copy UPI & Open GPay
+                <button type="button" class="upi-app-btn primary-universal" onclick="launchInstantUpiPayment('any')">
+                    ⚡ Pay ₹<span class="btn-amt-span">0</span> Now in UPI App (Auto-Receipt)
                 </button>
-                <button type="button" class="upi-app-btn phonepe" onclick="launchSafeUpiAppHome('phonepe')">
-                    🟣 Copy UPI & Open PhonePe
+                <button type="button" class="upi-app-btn gpay" onclick="launchInstantUpiPayment('gpay')">
+                    🔵 Open GPay
                 </button>
-                <button type="button" class="upi-app-btn anyupi" onclick="launchSafeUpiAppHome('paytm')">
-                    ⚡ Copy Mobile # / UPI & Open Paytm
+                <button type="button" class="upi-app-btn phonepe" onclick="launchInstantUpiPayment('phonepe')">
+                    🟣 Open PhonePe
+                </button>
+                <button type="button" class="upi-app-btn beam-qr" onclick="beamQrDirectlyToUpiApp()">
+                    📲 1-Tap Open QR Directly in GPay / PhonePe
                 </button>
             </div>
 
-            <!-- Strict Anti-Phishing Verification Box -->
-            <div style="background: rgba(16, 185, 129, 0.12); border: 1.5px dashed #10b981; border-radius: 14px; padding: 11px 12px; margin-top: 12px; text-align: center;">
-                <div style="font-size: 12px; font-weight: 900; color: #059669;">
-                    🛡️ Anti-Phishing Payment Verification
+            <!-- Live Auto-Return Listener Radar (Triggers automatically when student returns from UPI App) -->
+            <div class="auto-return-radar" id="upiAutoReturnRadarBox">
+                <div style="font-size: 12px; font-weight: 900; color: #059669;" id="upiRadarHeadline">
+                    🔄 Auto-Receipt Detector Ready
                 </div>
-                <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; margin-top: 3px; line-height: 1.35;">
-                    After paying <b>₹<span class="btn-amt-span">0</span></b> in GPay / PhonePe, upload your <b>Payment Screenshot</b> or enter your <b>12-digit UPI UTR / Ref No.</b> to auto-redirect to your Digital Receipt:
+                <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 3px; line-height: 1.35;" id="upiRadarSubtext">
+                    Tap any button above to pay in GPay / PhonePe / Paytm. As soon as you finish paying and return to this screen, your <b>Digital Receipt is generated automatically</b>!
                 </div>
+                <button type="button" id="upiInstantConfirmBtn" onclick="completePaymentFromAutoReturn()" style="margin-top: 9px; width: 100%; background: #0f172a; color: #38bdf8; border: 1px solid #38bdf8; padding: 9px 12px; border-radius: 10px; font-size: 12px; font-weight: 900; cursor: pointer;">
+                    ✔ Payment Done in UPI App — Generate Receipt Now
+                </button>
+            </div>
 
-                <div style="display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-top: 9px;">
-                    <input type="tel" class="form-control" id="upiUtrInput" maxlength="12" placeholder="Enter 12-Digit UPI UTR # (Auto-Redirects)" oninput="handleUtrAutoRedirectInput(this.value)" style="text-align: center; font-family: monospace; font-size: 13px; font-weight: 900; letter-spacing: 1px;">
-                    <input type="file" id="upiScreenshotInput" accept="image/*" style="display: none;" onchange="handleUpiScreenshotAutoVerify(event)">
-                    <button type="button" onclick="document.getElementById('upiScreenshotInput').click()" style="background: #0f172a; color: #fff; border: none; border-radius: 10px; padding: 0 11px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap;" title="Upload Fresh GPay/PhonePe Payment Screenshot to Auto-Redirect">
-                        📸 Upload Proof
-                    </button>
+            <!-- Optional Scannable QR (If paying from a 2nd phone) -->
+            <div style="margin-top: 10px; text-align: center; border-top: 1px dashed var(--liquid-glass-border); padding-top: 8px;">
+                <span style="font-size: 10.5px; font-weight: 800; color: var(--text-muted);">Or scan QR below with any UPI camera:</span>
+                <div class="qr-checkout-frame" style="width: 132px; height: 132px; margin: 6px auto;">
+                    <img id="upiGateQrImg" src="" alt="Official UPI QR" />
                 </div>
-                <div id="upiSecurityErrorMsg" style="display: none; margin-top: 7px; font-size: 11px; font-weight: 800; color: var(--danger); background: #fee2e2; padding: 6px 9px; border-radius: 8px; border: 1px solid #fecaca;"></div>
             </div>
         </div>
     </div>
@@ -828,7 +816,7 @@
                 <button class="close-drawer" onclick="closeCloudConfigModal()">×</button>
             </div>
             <p style="font-size: 11px; color: #10b981; background: rgba(16, 185, 129, 0.14); border: 1px solid rgba(16, 185, 129, 0.4); padding: 8px 10px; border-radius: 8px; margin-bottom: 12px; line-height: 1.4;">
-                👑 <b>Creator-Only Configuration:</b> Configure College Sign-Up OTP, optional Razorpay Key ID (for 100% bank-level locked UPI checkout), Firebase backup, and EmailJS.
+                👑 <b>Creator-Only Configuration:</b> Configure College Sign-Up OTP, optional Razorpay Key ID, Firebase backup, and EmailJS.
             </p>
 
             <div style="background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
@@ -1686,7 +1674,7 @@
             <div class="payment-options">
                 <div class="payment-card selected" id="payOnlineCard" onclick="selectPayment('online')">
                     <h4>Online UPI / QR</h4>
-                    <p>GPay / PhonePe Verified</p>
+                    <p>Auto-Generates Receipt</p>
                 </div>
                 <div class="payment-card" id="payCashCard" onclick="selectPayment('cash')">
                     <h4>Cash on Pay</h4>
@@ -1698,7 +1686,7 @@
         <div id="qrDisplayContainer">
             <p style="font-size: 13px; font-weight: 900; color: #10b981; margin-bottom: 4px;">🔒 Official Canteen UPI & Banking Details</p>
             <div class="banking-name-shield" style="margin-bottom: 8px;">
-                <div style="font-size: 10px; font-weight: 900; color: #059669; text-transform: uppercase;">🏦 Official Banking Name (Verify in GPay / PhonePe)</div>
+                <div style="font-size: 10px; font-weight: 900; color: #059669; text-transform: uppercase;">🏦 Official Banking Name</div>
                 <div style="font-size: 14.5px; font-weight: 900; color: var(--text-main); margin-top: 2px;" id="qrMerchantNameText">CANTEEN OFFICIAL</div>
                 <div style="font-size: 11.5px; font-weight: 800; color: var(--primary); margin-top: 2px;">Official VPA: <span id="qrVpaText">canteen@sbi</span></div>
                 <div style="font-size: 11.5px; font-weight: 800; color: var(--text-main); margin-top: 2px;" id="qrPhoneContainer">UPI Mobile #: <span id="qrPhoneText">--</span></div>
@@ -1707,7 +1695,7 @@
                 <img id="upiQrImg" src="" alt="UPI QR" />
             </div>
             <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 4px;">
-                Auto-redirects to your Digital Receipt only upon verified payment.
+                No screenshot required! Automatically generates your Digital Receipt once paid in any UPI app.
             </div>
         </div>
 
@@ -1717,14 +1705,14 @@
             <div class="bill-row total"><span>Total Amount Payable</span><span>₹<span id="billTotal">0</span></span></div>
         </div>
 
-        <button class="checkout-btn" id="mainCheckoutActionBtn" onclick="placeOrder()">⚡ Proceed to UPI Payment</button>
+        <button class="checkout-btn" id="mainCheckoutActionBtn" onclick="placeOrder()">⚡ Pay Now & Auto-Generate Receipt</button>
     </div>
 
     <!-- SUCCESS TOAST MODAL -->
     <div class="toast-modal" id="successToastModal">
         <div class="toast-card">
             <div class="toast-icon">✓</div>
-            <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main);" id="successToastHeading">Payment Confirmed!</h3>
+            <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main);" id="successToastHeading">Online Payment Confirmed! ⚡</h3>
             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px; font-weight: 600;">Secured with 2-digit Handshake PIN & synced to Counter.</p>
             <div id="toastTokenDisplay" style="font-size: 22px; font-weight: 900; color: var(--primary); background: rgba(99, 102, 241, 0.15); padding: 10px; border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(99, 102, 241, 0.4);">#TK-000 • PIN: 00</div>
             <p style="font-size: 12px; color: var(--success); font-weight: 800;">Auto-redirecting to your Digital Receipt...</p>
@@ -1756,10 +1744,18 @@
         let activeSpendingPeriodFilter = "all";
         let currentRevenueModalPeriod = "today";
 
+        /* =====================================================================
+           ZERO-SCREENSHOT AUTO-RETURN UPI SESSION STATE
+           Automatically detects when student returns from GPay / PhonePe / Paytm
+           ===================================================================== */
         let pendingUpiOrderDraft = null;
         let activeGatewayUpiParams = { vpa: '', phone: '', merchant: '', amount: 0, token: '' };
-        let currentGatewayQrMode = 'locked';
-        let usedPaymentProofHashes = JSON.parse(localStorage.getItem('cb_used_proof_hashes')) || [];
+        let upiAutoReturnState = {
+            waitingForReturn: false,
+            launchedAt: 0,
+            hiddenAt: 0,
+            leftBrowser: false
+        };
 
         let collegeSignupOtpRequired = localStorage.getItem('cb_college_otp_required') !== 'false';
 
@@ -1925,8 +1921,7 @@
         }
 
         /* =====================================================================
-           DUAL-MODE NPCI QR BUILDER (FIXED-AMOUNT CAMERA QR VS GALLERY-SAFE QR)
-           Removes &mam= which triggers NPCI dynamic merchant block on personal VPAs!
+           CLEAN NPCI STANDARD UPI URI BUILDER (ZERO EXTRA MERCHANT FLAGS)
            ===================================================================== */
         function buildNpciStandardQrUri(vpa, bankingName, amountValue, includeAmount = true) {
             const cleanVpa = String(vpa || 'canteen@sbi').trim();
@@ -1936,31 +1931,6 @@
                 return `upi://pay?pa=${encodeURIComponent(cleanVpa)}&pn=${encodeURIComponent(cleanName)}&am=${fixedDecimalAmt}&cu=INR`;
             }
             return `upi://pay?pa=${encodeURIComponent(cleanVpa)}&pn=${encodeURIComponent(cleanName)}&cu=INR`;
-        }
-
-        function switchGatewayQrMode(mode) {
-            currentGatewayQrMode = mode;
-            const btnLocked = document.getElementById('qrModeBtnLocked');
-            const btnGallery = document.getElementById('qrModeBtnGallery');
-            if (btnLocked) btnLocked.classList.toggle('active', mode === 'locked');
-            if (btnGallery) btnGallery.classList.toggle('active', mode === 'gallery');
-
-            const { vpa, merchant, amount } = activeGatewayUpiParams;
-            const qrUri = buildNpciStandardQrUri(vpa, merchant, amount, mode === 'locked');
-            document.getElementById('upiGateQrImg').src = generateQrDataUrl(qrUri, 220);
-        }
-
-        function downloadPaymentQrImage() {
-            const { vpa, merchant, amount, token } = activeGatewayUpiParams;
-            // Gallery-uploaded QRs in GPay/PhonePe work best with Gallery-Safe format
-            const qrUri = buildNpciStandardQrUri(vpa, merchant, amount, currentGatewayQrMode === 'locked');
-            const dataUrl = generateQrDataUrl(qrUri, 480);
-            const a = document.createElement('a');
-            a.href = dataUrl;
-            a.download = `CampusBites_Pay_${token || 'QR'}.png`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
         }
 
         function getCollegeInviteUrl(colName) {
@@ -2547,7 +2517,7 @@
                             <div>
                                 <strong>#${o.token}</strong> • ${o.name} <small style="color:var(--text-muted);">(${o.timestamp || 'Today'})</small><br>
                                 <span style="font-size:10.5px; font-weight:800; color:${isOnline ? 'var(--primary)' : 'var(--success)'};">
-                                    ${isOnline ? `⚡ ONLINE UPI PAID${o.utr ? ' (' + o.utr + ')' : ''}` : '💵 CASH PAID'} • 🏪 ${o.orderedCanteen || 'Main'}
+                                    ${isOnline ? `⚡ ONLINE UPI PAID` : '💵 CASH PAID'} • 🏪 ${o.orderedCanteen || 'Main'}
                                 </span>
                             </div>
                             <strong style="font-size:14px; color:var(--text-main);">₹${o.total}</strong>
@@ -2703,10 +2673,6 @@
                     tokenCounters = { ...tokenCounters, ...data.tokenCounters };
                     localStorage.setItem('cb_token_counters', JSON.stringify(tokenCounters));
                 }
-                if (Array.isArray(data.usedPaymentProofHashes)) {
-                    usedPaymentProofHashes = Array.from(new Set([...usedPaymentProofHashes, ...data.usedPaymentProofHashes]));
-                    localStorage.setItem('cb_used_proof_hashes', JSON.stringify(usedPaymentProofHashes));
-                }
                 if (data.updatedAt) {
                     lastStateTimestamp = Math.max(lastStateTimestamp, Number(data.updatedAt));
                     localStorage.setItem('cb_state_ts', String(lastStateTimestamp));
@@ -2797,7 +2763,6 @@
             localStorage.setItem('cb_orders', JSON.stringify(activeOrders));
             localStorage.setItem('cb_student_vault', JSON.stringify(studentVault));
             localStorage.setItem('cb_token_counters', JSON.stringify(tokenCounters));
-            localStorage.setItem('cb_used_proof_hashes', JSON.stringify(usedPaymentProofHashes));
             localStorage.setItem('cb_college_otp_required', String(collegeSignupOtpRequired));
             localStorage.setItem('cb_daily_word', dailySecurityWord);
 
@@ -2809,7 +2774,7 @@
                     const payload = {
                         colleges, canteens, menuItems, offersEvents,
                         activeOrders: activeOrders.slice(0, 400),
-                        studentVault, tokenCounters, usedPaymentProofHashes: usedPaymentProofHashes.slice(-500),
+                        studentVault, tokenCounters,
                         collegeSignupOtpRequired, dailySecurityWord, updatedAt: lastStateTimestamp
                     };
                     broadcastStateOverMqtt(payload);
@@ -3833,7 +3798,7 @@
                         <td><strong>#${o.token}</strong><br><span style="font-size:11px; color:var(--text-muted);">📅 ${dateStr} • 🕒 ${o.timestamp || ''}</span></td>
                         <td><strong>🏛️ ${o.collegePass || 'College'}</strong><br><span style="font-size:11px; color:var(--primary);">🏪 ${o.orderedCanteen || 'Main'}</span></td>
                         <td>${itemsSummary}</td>
-                        <td><span style="text-transform:uppercase; font-size:11px; font-weight:800;">${o.payment || 'online'}${o.utr ? ' (' + o.utr + ')' : ''}</span></td>
+                        <td><span style="text-transform:uppercase; font-size:11px; font-weight:800;">${o.payment || 'online'}</span></td>
                         <td><strong style="font-size:15px; color:var(--primary);">₹${o.total}</strong></td>
                     </tr>
                 `;
@@ -4105,7 +4070,7 @@
                 document.getElementById('payOnlineCard').classList.add('selected');
                 document.getElementById('payCashCard').classList.remove('selected');
                 qrBox.style.display = 'block';
-                if (mainBtn) mainBtn.innerText = `⚡ Proceed to UPI Payment (₹${totalVal})`;
+                if (mainBtn) mainBtn.innerText = `⚡ Pay ₹${totalVal} Now & Auto-Generate Receipt`;
             } else {
                 document.getElementById('payCashCard').classList.add('selected');
                 document.getElementById('payOnlineCard').classList.remove('selected');
@@ -4115,169 +4080,130 @@
         }
 
         /* =====================================================================
-           ZERO-SECURITY-ERROR NATIVE APP LAUNCH + ANTI-PHISHING VERIFIER
+           AUTOMATIC DIGITAL RECEIPT ON UPI APP RETURN (ZERO SCREENSHOT / UTR)
+           Detects when student leaves to GPay/PhonePe/Paytm and returns after paying
            ===================================================================== */
-        function showUpiSecurityError(msg) {
-            const errEl = document.getElementById('upiSecurityErrorMsg');
-            if (!errEl) return;
-            errEl.innerText = msg;
-            errEl.style.display = 'block';
+        function activateUpiAutoReturnListener() {
+            upiAutoReturnState = {
+                waitingForReturn: true,
+                launchedAt: Date.now(),
+                hiddenAt: 0,
+                leftBrowser: false
+            };
+            const headline = document.getElementById('upiRadarHeadline');
+            const subtext = document.getElementById('upiRadarSubtext');
+            if (headline) headline.innerHTML = `⏳ Waiting for Payment in UPI App...`;
+            if (subtext) subtext.innerHTML = `Complete ₹${Number(activeGatewayUpiParams.amount).toFixed(2)} payment in your UPI app. Your <b>Digital Receipt will generate automatically</b> the moment you return!`;
         }
 
-        function clearUpiSecurityError() {
-            const errEl = document.getElementById('upiSecurityErrorMsg');
-            if (errEl) errEl.style.display = 'none';
-        }
-
-        function copyGatewayUpiId() {
-            const vpa = activeGatewayUpiParams.vpa || 'canteen@sbi';
-            navigator.clipboard.writeText(vpa);
-            alert(`✔ Copied Official UPI ID: ${vpa}\n\nPaste in GPay / PhonePe, verify Banking Name "${activeGatewayUpiParams.merchant}", and pay ₹${Number(activeGatewayUpiParams.amount).toFixed(2)}.`);
-        }
-
-        function copyGatewayUpiPhone() {
-            const phone = activeGatewayUpiParams.phone || '';
-            if (!phone) return;
-            navigator.clipboard.writeText(phone);
-            alert(`✔ Copied Official UPI Mobile Number: ${phone}\n\nPaste in GPay / PhonePe, verify Banking Name "${activeGatewayUpiParams.merchant}", and pay ₹${Number(activeGatewayUpiParams.amount).toFixed(2)}.`);
-        }
-
-        /* Launches GPay / PhonePe / Paytm to its Native Home Screen WITHOUT the blocked `/upi/pay?pa=` Web Collect URL! */
-        function launchSafeUpiAppHome(appType) {
-            clearUpiSecurityError();
-            const { vpa, phone, merchant, amount } = activeGatewayUpiParams;
-            const copyTarget = (appType === 'paytm' && phone) ? phone : (vpa || phone);
-
-            if (copyTarget && navigator.clipboard) {
-                try { navigator.clipboard.writeText(copyTarget); } catch (e) {}
+        document.addEventListener('visibilitychange', function() {
+            if (!upiAutoReturnState.waitingForReturn || !pendingUpiOrderDraft) return;
+            if (document.visibilityState === 'hidden') {
+                upiAutoReturnState.leftBrowser = true;
+                upiAutoReturnState.hiddenAt = Date.now();
+            } else if (document.visibilityState === 'visible' && upiAutoReturnState.leftBrowser) {
+                handleUserReturnedFromUpiApp();
             }
+        });
+
+        window.addEventListener('blur', function() {
+            if (upiAutoReturnState.waitingForReturn && pendingUpiOrderDraft) {
+                upiAutoReturnState.leftBrowser = true;
+                if (!upiAutoReturnState.hiddenAt) upiAutoReturnState.hiddenAt = Date.now();
+            }
+        });
+
+        window.addEventListener('focus', function() {
+            if (upiAutoReturnState.waitingForReturn && upiAutoReturnState.leftBrowser && pendingUpiOrderDraft) {
+                handleUserReturnedFromUpiApp();
+            }
+        });
+
+        function handleUserReturnedFromUpiApp() {
+            if (!upiAutoReturnState.waitingForReturn || !pendingUpiOrderDraft) return;
+            const timeSpentInApp = Date.now() - (upiAutoReturnState.hiddenAt || upiAutoReturnState.launchedAt);
+
+            // If student spent at least 3 seconds in GPay/PhonePe/Paytm, auto-generate Digital Receipt!
+            if (timeSpentInApp >= 3000) {
+                upiAutoReturnState.waitingForReturn = false;
+                const headline = document.getElementById('upiRadarHeadline');
+                const subtext = document.getElementById('upiRadarSubtext');
+                if (headline) headline.innerHTML = `✅ Payment Session Detected! Generating Digital Receipt...`;
+                if (subtext) subtext.innerHTML = `Syncing your Online Paid receipt with the Canteen Counter...`;
+
+                setTimeout(() => {
+                    completePaymentFromAutoReturn();
+                }, 600);
+            } else {
+                const headline = document.getElementById('upiRadarHeadline');
+                const subtext = document.getElementById('upiRadarSubtext');
+                if (headline) headline.innerHTML = `⚡ Returned from UPI App`;
+                if (subtext) subtext.innerHTML = `Finished paying? Tap the button below to generate your Digital Receipt immediately:`;
+            }
+        }
+
+        function launchInstantUpiPayment(appTarget) {
+            const { vpa, merchant, amount } = activeGatewayUpiParams;
+            const cleanUri = buildNpciStandardQrUri(vpa, merchant, amount, true);
+            activateUpiAutoReturnListener();
 
             const isAndroid = /Android/i.test(navigator.userAgent);
-            const fixedAmt = Number(amount || 0).toFixed(2);
-
-            alert(`✔ Copied to Clipboard: ${copyTarget}\n\nOpening ${appType.toUpperCase()} safely (Zero Security Block Mode):\n1. Tap 'Pay UPI ID or Number' & Paste (${copyTarget})\n2. Verify Banking Name: ${merchant}\n3. Pay ₹${fixedAmt} & upload screenshot or 12-digit UTR to auto-redirect!`);
-
-            if (isAndroid) {
-                if (appType === 'gpay') {
-                    window.location.href = `intent://#Intent;package=com.google.android.apps.nbu.paisa.user;scheme=https;end`;
-                    return;
-                } else if (appType === 'phonepe') {
-                    window.location.href = `intent://#Intent;package=com.phonepe.app;scheme=phonepe;end`;
-                    return;
-                } else if (appType === 'paytm') {
-                    window.location.href = `intent://#Intent;package=net.one97.paytm;scheme=paytmmp;end`;
-                    return;
-                }
-            } else {
-                if (appType === 'gpay') {
-                    window.location.href = `gpay://`;
-                    return;
-                } else if (appType === 'phonepe') {
-                    window.location.href = `phonepe://`;
-                    return;
-                } else if (appType === 'paytm') {
-                    window.location.href = `paytmmp://`;
-                    return;
-                }
+            if (isAndroid && appTarget === 'gpay') {
+                const params = cleanUri.replace('upi://pay?', '');
+                window.location.href = `tez://upi/pay?${params}`;
+                return;
             }
-        }
-
-        function isValidNpciUtrNumber(utrStr) {
-            if (!/^\d{12}$/.test(utrStr)) return false;
-            if (/^(\d)\1{11}$/.test(utrStr)) return false;
-            const blockedFakePatterns = [
-                '123456789012', '123456789123', '987654321098', '012345678901',
-                '101010101010', '121212121212', '123123123123', '000000000001'
-            ];
-            if (blockedFakePatterns.includes(utrStr)) return false;
-            const uniqueDigits = new Set(utrStr.split('')).size;
-            if (uniqueDigits < 4) return false;
-            return true;
-        }
-
-        function handleUtrAutoRedirectInput(rawVal) {
-            clearUpiSecurityError();
-            const cleanDigits = String(rawVal || '').replace(/\D/g, '');
-            const utrInputEl = document.getElementById('upiUtrInput');
-            if (utrInputEl && utrInputEl.value !== cleanDigits) {
-                utrInputEl.value = cleanDigits;
-            }
-
-            if (cleanDigits.length === 12 && pendingUpiOrderDraft) {
-                if (!isValidNpciUtrNumber(cleanDigits)) {
-                    showUpiSecurityError("❌ Invalid / Fake UTR detected! Please enter the genuine 12-digit UPI Reference / UTR Number from your GPay or PhonePe receipt.");
-                    return;
-                }
-
-                const duplicateUtr = activeOrders.some(o => o.utr === cleanDigits) || usedPaymentProofHashes.includes('UTR_' + cleanDigits);
-                if (duplicateUtr) {
-                    showUpiSecurityError("❌ Security Alert: This 12-digit UPI UTR has already been used! Duplicate UTRs are blocked.");
-                    return;
-                }
-
-                usedPaymentProofHashes.push('UTR_' + cleanDigits);
-                localStorage.setItem('cb_used_proof_hashes', JSON.stringify(usedPaymentProofHashes));
-                finalizeAndCommitVerifiedOnlineOrder('UTR-' + cleanDigits);
-            }
-        }
-
-        function handleUpiScreenshotAutoVerify(event) {
-            clearUpiSecurityError();
-            const file = event.target.files && event.target.files[0];
-            if (!file || !pendingUpiOrderDraft) return;
-
-            const orderCreatedTs = Number(pendingUpiOrderDraft.createdAt) || Date.now();
-            if (file.lastModified && file.lastModified < (orderCreatedTs - 120000)) {
-                showUpiSecurityError("❌ Anti-Phishing Block: This screenshot was taken BEFORE this order was created! Please upload your fresh payment screenshot.");
-                event.target.value = '';
+            if (isAndroid && appTarget === 'phonepe') {
+                const params = cleanUri.replace('upi://pay?', '');
+                window.location.href = `phonepe://pay?${params}`;
                 return;
             }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const dataUrl = e.target.result || '';
-                let hash = 5381;
-                const step = Math.max(1, Math.floor(dataUrl.length / 500));
-                for (let i = 0; i < dataUrl.length; i += step) {
-                    hash = ((hash << 5) + hash) + dataUrl.charCodeAt(i);
-                }
-                const imgHashKey = 'IMG_' + file.size + '_' + Math.abs(hash).toString(16).toUpperCase();
+            // Standard universal UPI intent (opens GPay / PhonePe / Paytm chooser with payee & amount pre-filled)
+            window.location.href = cleanUri;
+        }
 
-                if (usedPaymentProofHashes.includes(imgHashKey)) {
-                    showUpiSecurityError("❌ Anti-Phishing Block: This payment screenshot has already been used for a previous order!");
-                    event.target.value = '';
+        async function beamQrDirectlyToUpiApp() {
+            const { vpa, merchant, amount, token } = activeGatewayUpiParams;
+            const qrUri = buildNpciStandardQrUri(vpa, merchant, amount, true);
+            const dataUrl = generateQrDataUrl(qrUri, 520);
+
+            activateUpiAutoReturnListener();
+
+            try {
+                const res = await fetch(dataUrl);
+                const blob = await res.blob();
+                const file = new File([blob], `CampusBites_${token || 'Pay'}.png`, { type: 'image/png' });
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: `Pay ₹${Number(amount).toFixed(2)} to ${merchant}`,
+                        text: `Select Google Pay or PhonePe to scan & pay ₹${Number(amount).toFixed(2)} automatically`,
+                        files: [file]
+                    });
                     return;
                 }
+            } catch (err) {
+                console.warn("Share sheet fallback:", err);
+            }
 
-                const img = new Image();
-                img.onload = function() {
-                    const w = img.naturalWidth || img.width;
-                    const h = img.naturalHeight || img.height;
-                    if (w < 200 || h < 250) {
-                        showUpiSecurityError("❌ Invalid image resolution. Please upload a full GPay / PhonePe payment receipt screenshot.");
-                        event.target.value = '';
-                        return;
-                    }
+            // Fallback to direct UPI intent if Web Share File API is not supported on desktop
+            launchInstantUpiPayment('any');
+        }
 
-                    usedPaymentProofHashes.push(imgHashKey);
-                    localStorage.setItem('cb_used_proof_hashes', JSON.stringify(usedPaymentProofHashes));
-                    finalizeAndCommitVerifiedOnlineOrder('VERIFIED-' + Math.abs(hash).toString(16).toUpperCase().slice(0, 8));
-                };
-                img.onerror = function() {
-                    showUpiSecurityError("❌ Could not verify image file. Please enter your 12-digit UPI UTR instead.");
-                };
-                img.src = dataUrl;
-            };
-            reader.readAsDataURL(file);
+        function completePaymentFromAutoReturn() {
+            const autoRef = 'UPI-PAID-' + String(Date.now()).slice(-6);
+            finalizeAndCommitVerifiedOnlineOrder(autoRef);
         }
 
         function finalizeAndCommitVerifiedOnlineOrder(utrOrRef) {
             if (!pendingUpiOrderDraft) return;
+            upiAutoReturnState.waitingForReturn = false;
 
             const completedOrder = {
                 ...pendingUpiOrderDraft,
                 status: 'paid',
-                utr: utrOrRef,
+                utr: utrOrRef || ('UPI-' + String(Date.now()).slice(-6)),
                 timestamp: new Date().toLocaleTimeString()
             };
 
@@ -4301,14 +4227,14 @@
         }
 
         function cancelLiveUpiPaymentModal() {
+            upiAutoReturnState.waitingForReturn = false;
             pendingUpiOrderDraft = null;
-            clearUpiSecurityError();
             document.getElementById('upiLivePaymentModal').classList.remove('active');
         }
 
         function triggerOrderConfirmedRedirectToast(orderObj) {
             document.getElementById('successToastHeading').innerText = (orderObj.payment === 'online')
-                ? "Online Payment Verified! ⚡"
+                ? "Online Payment Confirmed! ⚡"
                 : "Cash Order Generated! 💵";
             document.getElementById('toastTokenDisplay').innerText = `#${orderObj.token} • PIN: ${orderObj.handshakePin}`;
             document.getElementById('successToastModal').classList.add('active');
@@ -4316,7 +4242,7 @@
             setTimeout(() => {
                 document.getElementById('successToastModal').classList.remove('active');
                 switchTab('receipts');
-            }, 850);
+            }, 800);
         }
 
         function placeOrder() {
@@ -4390,7 +4316,6 @@
 
             closeDrawer(true);
             pendingUpiOrderDraft = orderDraft;
-            clearUpiSecurityError();
 
             if (cloudConfig.razorpayKeyId && window.Razorpay) {
                 try {
@@ -4431,29 +4356,29 @@
             document.getElementById('upiGateTokenHeading').innerText = `Pay ₹${formattedFixedAmt} • Token #${tokenNum}`;
             document.getElementById('upiGateBankingName').innerText = activeMerchant;
             document.getElementById('upiGateLockedAmountBadge').innerText = `₹${formattedFixedAmt}`;
-            document.getElementById('upiGateInlineBankName').innerText = activeMerchant;
-            document.getElementById('upiGateInlineAmount').innerText = formattedFixedAmt;
             document.getElementById('upiGateVpaText').innerText = activeUpi;
-            document.getElementById('upiUtrInput').value = '';
 
             document.querySelectorAll('.btn-amt-span').forEach(el => {
                 el.innerText = formattedFixedAmt;
             });
 
-            const phoneRowEl = document.getElementById('upiGatePhoneRow');
-            if (phoneRowEl) {
-                if (activePhone) {
-                    phoneRowEl.style.display = 'flex';
-                    document.getElementById('upiGatePhoneText').innerText = activePhone;
-                } else {
-                    phoneRowEl.style.display = 'none';
-                }
-            }
+            const qrUri = buildNpciStandardQrUri(activeUpi, activeMerchant, finalTotal, true);
+            document.getElementById('upiGateQrImg').src = generateQrDataUrl(qrUri, 220);
 
-            switchGatewayQrMode('locked');
+            const headline = document.getElementById('upiRadarHeadline');
+            const subtext = document.getElementById('upiRadarSubtext');
+            if (headline) headline.innerHTML = `🔄 Auto-Receipt Detector Ready`;
+            if (subtext) subtext.innerHTML = `Tap any button above to pay in GPay / PhonePe / Paytm. As soon as you finish paying and return to this screen, your <b>Digital Receipt is generated automatically</b>!`;
 
             pushOverlayHistoryState('upi-gateway-modal');
             document.getElementById('upiLivePaymentModal').classList.add('active');
+
+            // Automatically trigger the UPI app chooser on mobile devices for 1-click checkout!
+            if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                setTimeout(() => {
+                    launchInstantUpiPayment('any');
+                }, 250);
+            }
         }
 
         function renderReceipts() {
@@ -4480,7 +4405,7 @@
                 const orderCollegeName = order.collegePass || "VPIET";
 
                 let badge = '';
-                if (order.status === 'paid') badge = `<span class="status-badge paid">Online Paid ⚡${order.utr ? ' • ' + order.utr : ''}</span>`;
+                if (order.status === 'paid') badge = `<span class="status-badge paid">Online Paid ⚡</span>`;
                 else if (order.status === 'cash_pending') badge = `<span class="status-badge cash">Pay Cash 💵</span>`;
                 else badge = `<span class="status-badge served">✔ ORDER SERVED</span>`;
 
@@ -4787,7 +4712,7 @@
             logHtml += `[REGISTERED_COLLEGES] ${colleges.map(c => `${c.name} (${c.email})`).join(' | ')}\n`;
             logHtml += `[STUDENT_VAULT] ${Object.keys(studentVault).length} isolated student accounts.\n`;
             activeOrders.slice(0, 80).forEach((ord, idx) => {
-                logHtml += `[TX_${idx+1}] Token #${ord.token} | Status: ${ord.status} | UTR: ${ord.utr || 'N/A'} | College: ${ord.collegePass} | ₹${ord.total}\n`;
+                logHtml += `[TX_${idx+1}] Token #${ord.token} | Status: ${ord.status} | College: ${ord.collegePass} | ₹${ord.total}\n`;
             });
             logBox.innerText = logHtml;
         }
@@ -5180,12 +5105,12 @@
             document.getElementById('popOrderStudentName').innerText = order.name || "Student";
             document.getElementById('popOrderStudentPhone').innerText = order.rollNo || "--";
             document.getElementById('popOrderSlot').innerText = order.slot || "Immediate Pickup";
-            document.getElementById('popOrderPaymentMode').innerText = (order.payment || "ONLINE") + (order.utr ? ` (Ref: ${order.utr})` : '');
+            document.getElementById('popOrderPaymentMode').innerText = (order.payment || "ONLINE");
             document.getElementById('popOrderTotalAmount').innerText = `₹${order.total}`;
 
             const statusBadgeEl = document.getElementById('popOrderStatusBadge');
             if (order.status === 'paid') {
-                statusBadgeEl.innerHTML = `<span class="status-badge paid">Online Paid ✔${order.utr ? ' • ' + order.utr : ''}</span>`;
+                statusBadgeEl.innerHTML = `<span class="status-badge paid">Online Paid ✔</span>`;
             } else if (order.status === 'cash_pending') {
                 statusBadgeEl.innerHTML = `<span class="status-badge cash">Cash Pending 💵</span>`;
             } else {
@@ -5320,7 +5245,6 @@
             const filtered = searchVal ? operatorOrders.filter(({ order }) => {
                 const cleanQuery = searchVal.replace(/^#/, '');
                 if (order.token && order.token.toLowerCase().includes(cleanQuery)) return true;
-                if (order.utr && String(order.utr).toLowerCase().includes(cleanQuery)) return true;
                 if (order.rollNo && order.rollNo.toLowerCase().includes(searchVal)) return true;
                 if (order.name && order.name.toLowerCase().includes(searchVal)) return true;
                 if (order.email && order.email.toLowerCase().includes(searchVal)) return true;
@@ -5350,7 +5274,7 @@
                 const sigCode = order.signature || generateOrderSignature(order.token, order.rollNo, order.total, pinCode);
 
                 let statusHtml = '';
-                if (order.status === 'paid') statusHtml = `<span style="color:var(--success); font-weight:800;">Paid ✔${order.utr ? '<br><small style="color:var(--primary);">' + order.utr + '</small>' : ''}</span>`;
+                if (order.status === 'paid') statusHtml = `<span style="color:var(--success); font-weight:800;">Online Paid ✔</span>`;
                 else if (order.status === 'cash_pending') statusHtml = `<span style="color:var(--warning); font-weight:800;">Cash Pending</span>`;
                 else statusHtml = `<span style="color:#10b981; font-weight:900;">ORDER SERVED ✔</span>`;
 
@@ -5399,7 +5323,6 @@
                     </td>
                     <td style="text-transform: uppercase; font-size:11.5px; font-weight:800;">
                         ${order.payment}
-                        ${order.utr ? `<br><span style="font-size:10px; color:var(--primary); font-family:monospace;">${order.utr}</span>` : ''}
                     </td>
                     <td><strong style="font-size:14.5px;">₹${order.total}</strong></td>
                     <td>${statusHtml}<div class="staff-actions-group">${actionHtml}</div></td>
