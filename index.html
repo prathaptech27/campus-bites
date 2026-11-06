@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         /* =========================================================================
-           LIGHT MODE & DARK MODE APPLE LIQUID GLASS DESIGN SYSTEM (RESTORED)
+           LIGHT MODE & DARK MODE APPLE LIQUID GLASS DESIGN SYSTEM
            ========================================================================= */
         :root {
             --primary: #4f46e5;
@@ -67,7 +67,6 @@
         button, input, select, .cat-pill, .gateway-card, .payment-card, .ad-btn { touch-action: manipulation; }
         body { background-color: var(--body-bg); color: var(--text-main); padding-bottom: 110px; min-height: 100vh; width: 100%; overflow-x: hidden; position: relative; transition: background-color 0.25s ease, color 0.25s ease; }
 
-        /* Vivid Apple Liquid Wallpaper Orbs (GPU Hardware-Composited Layer) */
         .ambient-mesh {
             position: fixed; inset: 0; z-index: -1; pointer-events: none;
             background: 
@@ -134,7 +133,7 @@
         .otp-verify-box { background: rgba(16,185,129,0.15); backdrop-filter: blur(10px); border: 2px dashed #10b981; border-radius: 14px; padding: 12px; margin-top: 10px; margin-bottom: 10px; display: none; }
         .otp-verify-box.active { display: block; }
 
-        /* APPLE LIQUID GLASS STICKY HEADER (WITH MOBILE OPPOSITE-SIDE ALIGNMENT) */
+        /* APPLE LIQUID GLASS STICKY HEADER */
         header {
             position: sticky; top: 0; z-index: 100; padding: 10px 14px;
             display: flex; justify-content: space-between; align-items: center; gap: 8px;
@@ -152,7 +151,6 @@
         .brand-title p { font-size: 11px; color: var(--text-muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .header-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 
-        /* Mobile View: Move subtitle & action pills to the opposite (right) side so nothing crowds below the logo */
         @media (max-width: 767px) {
             header {
                 display: grid;
@@ -274,9 +272,6 @@
         .cat-pill { background: var(--liquid-glass-bg); backdrop-filter: blur(12px) saturate(180%); -webkit-backdrop-filter: blur(12px) saturate(180%); border: 1px solid var(--liquid-glass-border); padding: 7px 14px; border-radius: 30px; font-size: 12px; font-weight: 800; color: var(--text-main); cursor: pointer; white-space: nowrap; box-shadow: var(--liquid-glass-shadow); }
         .cat-pill.active { background: linear-gradient(135deg, rgba(79,70,229,0.9), rgba(67,56,202,0.96)); color: #fff; border-color: rgba(255,255,255,0.55); box-shadow: 0 6px 16px rgba(79,70,229,0.35), inset 0 1.5px 1.5px rgba(255,255,255,0.55); }
 
-        /* =========================================================================
-           APPLE LIQUID GLASS + FULL-BLEED BACKGROUND IMAGE MENU CARDS
-           ========================================================================= */
         .food-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
         @media(min-width: 640px) { .food-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; } }
         @media(min-width: 1024px) { .food-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; } }
@@ -388,6 +383,49 @@
         .checkout-btn { width: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 12px; border-radius: 14px; font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 18px rgba(79,70,229,0.28), inset 0 1px 1.5px rgba(255,255,255,0.45); }
         .checkout-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
+        /* GPAY / PHONEPE / PAYTM BUTTONS & BANKING NAME VERIFICATION CARD */
+        .banking-name-shield {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(5, 150, 105, 0.08));
+            border: 1.5px solid #10b981;
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin: 8px 0 10px;
+            text-align: left;
+        }
+        .upi-app-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .upi-app-btn {
+            border: none;
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 12px;
+            font-weight: 900;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.18), inset 0 1px 1px rgba(255,255,255,0.35);
+            text-decoration: none;
+        }
+        .upi-app-btn.gpay { background: linear-gradient(135deg, #1a73e8, #0d47a1); }
+        .upi-app-btn.phonepe { background: linear-gradient(135deg, #6739b7, #4a148c); }
+        .upi-app-btn.anyupi { grid-column: 1 / -1; background: linear-gradient(135deg, #059669, #047857); }
+
+        @keyframes pulseRadar {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.08); opacity: 0.72; }
+        }
+        .live-verify-pulse {
+            animation: pulseRadar 1.6s infinite ease-in-out;
+            display: inline-block;
+        }
+
         .toast-modal { position: fixed; inset: 0; background: rgba(15,23,42,0.52); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 600; display: none; align-items: center; justify-content: center; padding: 16px; }
         .toast-modal.active { display: flex; }
         .toast-card { background: var(--modal-glass-bg); backdrop-filter: blur(22px) saturate(200%); -webkit-backdrop-filter: blur(22px) saturate(200%); width: 100%; max-width: 420px; border-radius: 26px; padding: 22px; text-align: center; box-shadow: var(--liquid-glass-shadow); border: 1.5px solid var(--liquid-glass-border); color: var(--text-main); }
@@ -449,6 +487,7 @@
 
         .staff-actions-group { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
         .btn-collect-lg { background: #f59e0b; color: #fff; border: none; padding: 9px 14px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+        .btn-confirm-upi { background: #4f46e5; color: #fff; border: none; padding: 9px 14px; border-radius: 8px; font-size: 12px; font-weight: 900; cursor: pointer; white-space: nowrap; box-shadow: 0 4px 12px rgba(79,70,229,0.3); }
         .staff-action-sm { padding: 7px 11px; border-radius: 8px; font-size: 11px; font-weight: 800; border: none; background: #dcfce7; color: #166534; cursor: pointer; white-space: nowrap; }
 
         .ledger-pagination-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; padding: 12px 16px; background: var(--surface-sub-bg); border-top: 1px solid var(--liquid-glass-border); }
@@ -465,6 +504,61 @@
 <body>
 
     <div class="ambient-mesh"></div>
+
+    <!-- LIVE UPI PAYMENT GATEWAY & AUTO-REDIRECT VERIFICATION MODAL -->
+    <div class="toast-modal" id="upiLivePaymentModal">
+        <div class="toast-card" style="text-align: left; max-width: 440px; max-height: 92vh; overflow-y: auto; padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--liquid-glass-border); padding-bottom: 8px;">
+                <div>
+                    <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: #10b981;">🛡️ Official UPI Payment Gateway</span>
+                    <h3 style="font-size: 18px; font-weight: 900; color: var(--text-main);" id="upiGateTokenHeading">Pay ₹0 to Complete Order</h3>
+                </div>
+                <button class="close-drawer" onclick="cancelLiveUpiPaymentModal()">×</button>
+            </div>
+
+            <!-- Official Banking Name & UPI ID Verification Shield -->
+            <div class="banking-name-shield">
+                <div style="font-size: 10px; font-weight: 900; color: #059669; text-transform: uppercase; letter-spacing: 0.5px;">🏦 Verified Official Banking Name (GPay / PhonePe)</div>
+                <div style="font-size: 15px; font-weight: 900; color: var(--text-main); margin-top: 2px;" id="upiGateBankingName">CANTEEN OFFICIAL</div>
+                <div style="font-size: 11.5px; font-weight: 800; color: var(--primary); margin-top: 2px;">UPI ID (VPA): <span id="upiGateVpaText">canteen@sbi</span></div>
+            </div>
+
+            <div class="qr-checkout-frame" style="width: 146px; height: 146px; margin: 6px auto;">
+                <img id="upiGateQrImg" src="" alt="Official UPI QR" />
+            </div>
+
+            <p style="font-size: 11px; color: var(--text-muted); text-align: center; font-weight: 700; margin-bottom: 6px;">
+                Tap Google Pay or PhonePe below (or scan QR) — Ensure banking name shows <strong id="upiGateInlineBankName" style="color:var(--text-main);">CANTEEN OFFICIAL</strong>:
+            </p>
+
+            <!-- Direct Deep-Link Launchers for GPay, PhonePe & Paytm -->
+            <div class="upi-app-grid">
+                <button type="button" class="upi-app-btn gpay" onclick="launchExternalUpiApp('gpay')">
+                    🔵 Google Pay
+                </button>
+                <button type="button" class="upi-app-btn phonepe" onclick="launchExternalUpiApp('phonepe')">
+                    🟣 PhonePe
+                </button>
+                <button type="button" class="upi-app-btn anyupi" onclick="launchExternalUpiApp('any')">
+                    ⚡ Open Paytm / Any UPI App
+                </button>
+            </div>
+
+            <!-- Live Auto-Redirect Status Box -->
+            <div style="background: rgba(99, 102, 241, 0.12); border: 1.5px dashed var(--primary); border-radius: 14px; padding: 11px 12px; margin-top: 12px; text-align: center;">
+                <div style="font-size: 12px; font-weight: 900; color: var(--primary);">
+                    <span class="live-verify-pulse">📡</span> Waiting for Payment Confirmation...
+                </div>
+                <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; margin-top: 3px; line-height: 1.35;">
+                    This screen will <b>automatically redirect to your Digital Receipt</b> the moment the Counter confirms your UPI payment OR as soon as you enter your 12-digit UPI UTR / Ref No. below:
+                </div>
+
+                <div style="margin-top: 9px;">
+                    <input type="tel" class="form-control" id="upiUtrInput" maxlength="12" placeholder="Enter 12-Digit UPI Ref / UTR No. (Auto-Redirects)" oninput="handleUtrAutoRedirectInput(this.value)" style="text-align: center; font-family: monospace; font-size: 14px; font-weight: 900; letter-spacing: 1.5px;">
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- STUDENT COMPACT QR CODE POPUP MODAL -->
     <div class="toast-modal" id="studentQrPopupModal">
@@ -526,7 +620,7 @@
             </div>
 
             <div style="background: rgba(245, 158, 11, 0.12); border: 1px dashed #f59e0b; border-radius: 12px; padding: 9px 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
-                <span style="font-weight: 800; color: var(--warning);">⏳ Pending Cash (To Collect at Counter):</span>
+                <span style="font-weight: 800; color: var(--warning);">⏳ Pending Collection (Cash / Unverified UPI):</span>
                 <strong style="font-weight: 900; color: var(--warning);" id="revModalCashPendingText">₹0 (0 orders)</strong>
             </div>
 
@@ -888,6 +982,10 @@
                             <input type="text" class="form-control" id="signupInitialUpi" placeholder="canteen@sbi">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label>Official Banking Name (Shown in GPay / PhonePe) *</label>
+                        <input type="text" class="form-control" id="signupInitialMerchant" placeholder="e.g. PSG CANTEEN OFFICIAL">
+                    </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <div class="form-group">
                             <label>Create Admin PIN *</label>
@@ -1051,7 +1149,7 @@
                     <div class="compact-bar-left">
                         <span class="compact-college-badge" id="studentCompactCollegeName">🏛️ College</span>
                         <select id="studentCollegeSwitcherSelect" class="college-switcher-select" style="display: none;" onchange="switchActiveStudentCollege(this.value)" title="Switch Joined College"></select>
-                        <span class="compact-vpa-tag">🔒 VPA: <strong style="color: var(--primary);" id="studentActiveUpi">canteen@sbi</strong></span>
+                        <span class="compact-vpa-tag">🔒 VPA: <strong style="color: var(--primary);" id="studentActiveUpi">canteen@sbi</strong> (<span id="studentActiveBankName">OFFICIAL</span>)</span>
                     </div>
                     <div class="compact-bar-actions">
                         <button class="qr-popup-trigger-btn" onclick="openStudentQrPopup()">
@@ -1182,12 +1280,13 @@
             </div>
 
             <div class="admin-grid">
+                <!-- STEP 1: CANTEENS, UPI VPAs, BANKING NAME & CANTEEN PIN -->
                 <div class="admin-panel" id="canteenManagerPanel">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>🏪 Canteens & UPI VPAs</h3>
                         <button type="button" id="cancelCanteenEditBtn" onclick="adminResetCanteenForm()" style="display: none; background: #fee2e2; color: #dc2626; border: none; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; cursor: pointer;">Cancel Edit</button>
                     </div>
-                    <p class="sub">Admin Only: Add or click any canteen below to edit its Name, UPI ID, or Canteen PIN.</p>
+                    <p class="sub">Admin Only: Add or click any canteen below to edit its Name, UPI ID, Banking Name, or Canteen PIN.</p>
 
                     <input type="hidden" id="editingCanteenId" value="">
 
@@ -1211,12 +1310,17 @@
                             <input type="text" class="form-control" id="newCanteenUpi" placeholder="canteen@sbi">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label>Official Banking Name (Displayed in GPay / PhonePe) *</label>
+                        <input type="text" class="form-control" id="newCanteenMerchant" placeholder="e.g. KPRIET CANTEEN OFFICIAL">
+                    </div>
                     <button class="checkout-btn" id="saveCanteenBtnText" onclick="adminSaveOrUpdateCanteen()" style="padding: 10px; font-size: 13px; margin-bottom: 12px;">+ Add / Save Canteen</button>
 
                     <label style="font-size: 10.5px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin: 4px 0 4px 0;">Existing Canteens (Click to Edit, ✕ to Remove)</label>
                     <div class="item-list-box" id="adminCanteenList"></div>
                 </div>
 
+                <!-- STEP 2: MENU EDITOR -->
                 <div class="admin-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>🍽️ Edit Menu & Rates</h3>
@@ -1282,6 +1386,7 @@
                     <div class="item-list-box" id="adminMenuItemsList"></div>
                 </div>
 
+                <!-- STEP 3: OFFERS EDITOR -->
                 <div class="admin-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>📢 Post & Edit Item Offers</h3>
@@ -1398,7 +1503,7 @@
                             <th>Token, PIN & Ordered Time</th>
                             <th>Student Details</th>
                             <th>Canteen & Ordered Items (Click Row for Popup)</th>
-                            <th>Mode</th>
+                            <th>Mode & UTR</th>
                             <th>Amount (₹)</th>
                             <th>Status / Actions</th>
                         </tr>
@@ -1458,7 +1563,7 @@
                                 <th>Institution & Custom PINs</th>
                                 <th>Admin Email</th>
                                 <th>Active Canteens & PINs</th>
-                                <th>Locked Official VPAs</th>
+                                <th>Locked Official VPAs & Banking Names</th>
                                 <th>Total Menu Items</th>
                             </tr>
                         </thead>
@@ -1531,23 +1636,27 @@
             <div class="payment-options">
                 <div class="payment-card selected" id="payOnlineCard" onclick="selectPayment('online')">
                     <h4>Online UPI / QR</h4>
-                    <p>Instant verified VPA</p>
+                    <p>GPay / PhonePe Verified</p>
                 </div>
                 <div class="payment-card" id="payCashCard" onclick="selectPayment('cash')">
                     <h4>Cash on Pay</h4>
-                    <p>Pay any amount at counter</p>
+                    <p>Pay at counter</p>
                 </div>
             </div>
         </div>
 
         <div id="qrDisplayContainer">
-            <p style="font-size: 13px; font-weight: 900; color: #10b981; margin-bottom: 4px;">🛡️ Official Canteen UPI QR Code</p>
+            <p style="font-size: 13px; font-weight: 900; color: #10b981; margin-bottom: 4px;">🛡️ Official Canteen UPI & Banking Details</p>
+            <div class="banking-name-shield" style="margin-bottom: 8px;">
+                <div style="font-size: 10px; font-weight: 900; color: #059669; text-transform: uppercase;">🏦 Official Banking Name (Verify in GPay / PhonePe)</div>
+                <div style="font-size: 14.5px; font-weight: 900; color: var(--text-main); margin-top: 2px;" id="qrMerchantNameText">CANTEEN OFFICIAL</div>
+                <div style="font-size: 11.5px; font-weight: 800; color: var(--primary); margin-top: 2px;">Official VPA: <span id="qrVpaText">canteen@sbi</span></div>
+            </div>
             <div class="qr-checkout-frame">
                 <img id="upiQrImg" src="" alt="UPI QR" />
             </div>
-            <p style="font-size: 12px; color: var(--text-main); margin-top: 4px; font-weight: 800;">Official VPA: <span id="qrVpaText" style="color: var(--primary);">canteen@sbi</span></p>
-            <div style="background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.5); color: var(--text-main); font-size: 11px; font-weight: 800; padding: 6px 10px; border-radius: 8px; margin-top: 6px;">
-                ⚠️ Verify banking name shows <u id="qrMerchantNameText">CANTEEN OFFICIAL</u> in GPay/PhonePe before entering UPI PIN.
+            <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 4px;">
+                Auto-redirects to your Digital Receipt only after UPI payment is confirmed.
             </div>
         </div>
 
@@ -1557,17 +1666,17 @@
             <div class="bill-row total"><span>Total Amount Payable</span><span>₹<span id="billTotal">0</span></span></div>
         </div>
 
-        <button class="checkout-btn" onclick="placeOrder()">Place Canteen Order Now 🚀</button>
+        <button class="checkout-btn" id="mainCheckoutActionBtn" onclick="placeOrder()">⚡ Proceed to GPay / PhonePe Payment</button>
     </div>
 
     <!-- SUCCESS TOAST MODAL -->
     <div class="toast-modal" id="successToastModal">
         <div class="toast-card">
             <div class="toast-icon">✓</div>
-            <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main);">Order Generated!</h3>
+            <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main);" id="successToastHeading">Payment Confirmed!</h3>
             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px; font-weight: 600;">Secured with 2-digit Handshake PIN & synced to Counter.</p>
             <div id="toastTokenDisplay" style="font-size: 22px; font-weight: 900; color: var(--primary); background: rgba(99, 102, 241, 0.15); padding: 10px; border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(99, 102, 241, 0.4);">#TK-000 • PIN: 00</div>
-            <p style="font-size: 12px; color: var(--success); font-weight: 800;">Opening your personal receipt...</p>
+            <p style="font-size: 12px; color: var(--success); font-weight: 800;">Auto-redirecting to your Digital Receipt...</p>
         </div>
     </div>
 
@@ -1595,6 +1704,10 @@
         let liveClockTimerId = null;
         let activeSpendingPeriodFilter = "all";
         let currentRevenueModalPeriod = "today";
+
+        // Tracks an active UPI payment awaiting confirmation for automatic redirect
+        let pendingLiveUpiToken = null;
+        let activeGatewayUpiParams = { vpa: '', merchant: '', amount: 0, token: '' };
 
         let collegeSignupOtpRequired = localStorage.getItem('cb_college_otp_required') !== 'false';
 
@@ -1653,11 +1766,15 @@
 
         window.addEventListener('popstate', function() {
             isHandlingPopState = true;
-            const openModals = ['studentQrPopupModal', 'foodPrepModal', 'cloudConfigModal', 'creatorSecretModal', 'forgotCollegePinModal', 'ledgerOrderPopupModal', 'revenueBreakdownModal'];
+            const openModals = ['upiLivePaymentModal', 'studentQrPopupModal', 'foodPrepModal', 'cloudConfigModal', 'creatorSecretModal', 'forgotCollegePinModal', 'ledgerOrderPopupModal', 'revenueBreakdownModal'];
             for (let i = 0; i < openModals.length; i++) {
                 const el = document.getElementById(openModals[i]);
                 if (el && el.classList.contains('active')) {
-                    el.classList.remove('active');
+                    if (openModals[i] === 'upiLivePaymentModal') {
+                        cancelLiveUpiPaymentModal();
+                    } else {
+                        el.classList.remove('active');
+                    }
                     isHandlingPopState = false;
                     return;
                 }
@@ -1784,7 +1901,7 @@
         }
 
         const VPIET_DEFAULT_COLLEGE = { id: "col_vpiet", name: "VPIET", city: "Campus Network", domain: "vpiet.ac.in", email: "admin@vpiet.ac.in", adminPin: "2727", staffPin: "1111" };
-        const VPIET_DEFAULT_CANTEEN = { id: "can_vpiet_main", name: "Main", college: "VPIET", location: "Main Block", upi: "vpietcanteen@sbi", merchant: "VPIET OFFICIAL", pin: "1111" };
+        const VPIET_DEFAULT_CANTEEN = { id: "can_vpiet_main", name: "Main", college: "VPIET", location: "Main Block", upi: "vpietcanteen@sbi", merchant: "VPIET CANTEEN OFFICIAL", pin: "1111" };
 
         let colleges = JSON.parse(localStorage.getItem('cb_colleges')) || [VPIET_DEFAULT_COLLEGE];
         if (!Array.isArray(colleges) || colleges.length === 0) colleges = [VPIET_DEFAULT_COLLEGE];
@@ -2270,7 +2387,6 @@
             }).join('');
         }
 
-        /* ONLINE VS CASH PAID BREAKDOWN MODAL FOR COUNTER LEDGER */
         function openRevenueBreakdownModal(period = 'today') {
             currentRevenueModalPeriod = period;
             document.getElementById('revTabToday').classList.toggle('active', period === 'today');
@@ -2312,7 +2428,7 @@
                         cashPaidCount += 1;
                     }
                     paidOrdersList.push(o);
-                } else if (o.status === 'cash_pending') {
+                } else if (o.status === 'cash_pending' || o.status === 'upi_verifying') {
                     cashPendingAmt += amt;
                     cashPendingCount += 1;
                 }
@@ -2340,7 +2456,7 @@
                             <div>
                                 <strong>#${o.token}</strong> • ${o.name} <small style="color:var(--text-muted);">(${o.timestamp || 'Today'})</small><br>
                                 <span style="font-size:10.5px; font-weight:800; color:${isOnline ? 'var(--primary)' : 'var(--success)'};">
-                                    ${isOnline ? '⚡ ONLINE UPI PAID' : '💵 CASH PAID'} • 🏪 ${o.orderedCanteen || 'Main'}
+                                    ${isOnline ? `⚡ ONLINE UPI PAID${o.utr ? ' (UTR: ' + o.utr + ')' : ''}` : '💵 CASH PAID'} • 🏪 ${o.orderedCanteen || 'Main'}
                                 </span>
                             </div>
                             <strong style="font-size:14px; color:var(--text-main);">₹${o.total}</strong>
@@ -2443,6 +2559,18 @@
             }
         }
 
+        /* CHECK IF PENDING LIVE UPI ORDER WAS CONFIRMED BY COUNTER -> AUTO-REDIRECT TO RECEIPT */
+        function checkAndTriggerLiveUpiAutoRedirect() {
+            if (!pendingLiveUpiToken) return;
+            const matchedOrder = activeOrders.find(o => o.token === pendingLiveUpiToken);
+            if (matchedOrder && (matchedOrder.status === 'paid' || matchedOrder.status === 'served')) {
+                const confirmedOrder = matchedOrder;
+                pendingLiveUpiToken = null;
+                document.getElementById('upiLivePaymentModal').classList.remove('active');
+                triggerOrderConfirmedRedirectToast(confirmedOrder);
+            }
+        }
+
         function applyRemoteStatePayload(data) {
             if (!data) return;
             isApplyingRemoteSync = true;
@@ -2518,6 +2646,9 @@
                 saveActiveSession();
             }
 
+            // Check if a pending UPI payment was just confirmed by the Counter Staff -> Auto-redirect!
+            checkAndTriggerLiveUpiAutoRedirect();
+
             if (!document.getElementById('authGate').classList.contains('hidden')) {
                 renderRegisteredCollegeSelects();
             }
@@ -2545,6 +2676,13 @@
                         syncLoggedInStudentFromVault();
                         refreshStudentPassEnvironment();
                     }
+                } catch (err) {}
+            } else if (e.key === 'cb_orders' && e.newValue) {
+                try {
+                    activeOrders = JSON.parse(e.newValue);
+                    checkAndTriggerLiveUpiAutoRedirect();
+                    if (document.getElementById('tab-receipts').classList.contains('active')) renderReceipts();
+                    if (document.getElementById('tab-admin-ledger').classList.contains('active')) renderStaffCounter();
                 } catch (err) {}
             }
         });
@@ -2595,7 +2733,7 @@
                     };
                     broadcastStateOverMqtt(payload);
                     pushToCloudDatabase(payload);
-                }, 180);
+                }, 150);
             }
         }
 
@@ -2754,7 +2892,7 @@
             updateCollegeSignupOtpToggleUI();
         }
 
-        function finalizeNewCollegeRegistration(cName, initCan, cEmail, initUpi, adminPin, staffPin) {
+        function finalizeNewCollegeRegistration(cName, initCan, cEmail, initUpi, initMerchant, adminPin, staffPin) {
             const newColObj = {
                 id: 'col_' + Date.now(), name: cName, city: 'Campus Network',
                 domain: `${cName.toLowerCase().replace(/\s+/g, '')}.ac.in`,
@@ -2765,7 +2903,7 @@
             canteens.push({
                 id: 'can_' + Date.now(), name: initCan, college: cName,
                 location: 'Main Campus', upi: initUpi, pin: staffPin,
-                merchant: `${cName.toUpperCase()} OFFICIAL`
+                merchant: initMerchant || `${cName.toUpperCase()} CANTEEN OFFICIAL`
             });
 
             saveState();
@@ -2785,11 +2923,12 @@
             const initCan = document.getElementById('signupInitialCanteen').value.trim();
             const cEmail = document.getElementById('signupAdminEmail').value.trim().toLowerCase();
             const initUpi = document.getElementById('signupInitialUpi').value.trim();
+            const initMerchant = document.getElementById('signupInitialMerchant').value.trim() || `${cName.toUpperCase()} CANTEEN OFFICIAL`;
             const adminPin = document.getElementById('signupAdminPin').value.trim();
             const staffPin = document.getElementById('signupStaffPin').value.trim();
 
             if (!cName || !initCan || !cEmail || !initUpi || !adminPin || !staffPin) {
-                alert("Please fill in College Name, Primary Canteen Name, Admin Email, UPI ID, Custom Admin PIN, and Custom Counter PIN!");
+                alert("Please fill in College Name, Primary Canteen Name, Admin Email, UPI ID, Banking Name, Custom Admin PIN, and Custom Counter PIN!");
                 return;
             }
             if (!cEmail.includes('@')) { alert("Please enter a valid Admin Email ID!"); return; }
@@ -2808,7 +2947,7 @@
             }
 
             if (!collegeSignupOtpRequired) {
-                finalizeNewCollegeRegistration(cName, initCan, cEmail, initUpi, adminPin, staffPin);
+                finalizeNewCollegeRegistration(cName, initCan, cEmail, initUpi, initMerchant, adminPin, staffPin);
                 return;
             }
 
@@ -2830,6 +2969,7 @@
             const initCan = document.getElementById('signupInitialCanteen').value.trim() || "Main";
             const cEmail = document.getElementById('signupAdminEmail').value.trim().toLowerCase();
             const initUpi = document.getElementById('signupInitialUpi').value.trim() || "canteen@sbi";
+            const initMerchant = document.getElementById('signupInitialMerchant').value.trim() || `${cName.toUpperCase()} CANTEEN OFFICIAL`;
             const adminPin = document.getElementById('signupAdminPin').value.trim();
             const staffPin = document.getElementById('signupStaffPin').value.trim();
 
@@ -2839,7 +2979,7 @@
                 return;
             }
 
-            finalizeNewCollegeRegistration(cName, initCan, cEmail, initUpi, adminPin, staffPin);
+            finalizeNewCollegeRegistration(cName, initCan, cEmail, initUpi, initMerchant, adminPin, staffPin);
         }
 
         function openForgotCollegePinModal(preselectCollege, preselectCanteen) {
@@ -3383,7 +3523,11 @@
             if (joinedContent) joinedContent.style.display = 'block';
 
             const matchedCanteens = canteens.filter(c => c.college === activeCol);
-            if (matchedCanteens.length > 0) document.getElementById('studentActiveUpi').innerText = matchedCanteens[0].upi;
+            if (matchedCanteens.length > 0) {
+                document.getElementById('studentActiveUpi').innerText = matchedCanteens[0].upi;
+                const bNameEl = document.getElementById('studentActiveBankName');
+                if (bNameEl) bNameEl.innerText = matchedCanteens[0].merchant || `${activeCol.toUpperCase()} OFFICIAL`;
+            }
 
             const compactColEl = document.getElementById('studentCompactCollegeName');
             const colSelectEl = document.getElementById('studentCollegeSwitcherSelect');
@@ -3420,6 +3564,13 @@
                 pillsBox.appendChild(btn);
             });
 
+            const activeCanObj = matchedCanteens.find(c => c.name === activeStudentCanteenFilter) || matchedCanteens[0];
+            if (activeCanObj) {
+                document.getElementById('studentActiveUpi').innerText = activeCanObj.upi;
+                const bNameEl = document.getElementById('studentActiveBankName');
+                if (bNameEl) bNameEl.innerText = activeCanObj.merchant || `${activeCol.toUpperCase()} OFFICIAL`;
+            }
+
             renderOffersCarousel();
             renderMenu();
         }
@@ -3431,7 +3582,11 @@
                 p.classList.toggle('active', p.dataset.canteen === canName);
             });
             const selectedCan = canteens.find(c => c.college === activeCol && c.name === canName);
-            if (selectedCan && selectedCan.upi) document.getElementById('studentActiveUpi').innerText = selectedCan.upi;
+            if (selectedCan && selectedCan.upi) {
+                document.getElementById('studentActiveUpi').innerText = selectedCan.upi;
+                const bNameEl = document.getElementById('studentActiveBankName');
+                if (bNameEl) bNameEl.innerText = selectedCan.merchant || `${activeCol.toUpperCase()} OFFICIAL`;
+            }
             renderMenu();
         }
 
@@ -3593,7 +3748,7 @@
                         <td><strong>#${o.token}</strong><br><span style="font-size:11px; color:var(--text-muted);">📅 ${dateStr} • 🕒 ${o.timestamp || ''}</span></td>
                         <td><strong>🏛️ ${o.collegePass || 'College'}</strong><br><span style="font-size:11px; color:var(--primary);">🏪 ${o.orderedCanteen || 'Main'}</span></td>
                         <td>${itemsSummary}</td>
-                        <td><span style="text-transform:uppercase; font-size:11px; font-weight:800;">${o.payment || 'online'}</span></td>
+                        <td><span style="text-transform:uppercase; font-size:11px; font-weight:800;">${o.payment || 'online'}${o.utr ? ' (UTR:' + o.utr + ')' : ''}</span></td>
                         <td><strong style="font-size:15px; color:var(--primary);">₹${o.total}</strong></td>
                     </tr>
                 `;
@@ -3745,7 +3900,7 @@
             const activeCol = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor') ? currentAdminCollege : currentUser.college;
             let totalCount = 0, subtotal = 0, drawerListHtml = '';
             let activeUpi = 'canteen@sbi';
-            let activeMerchant = `${(activeCol || 'CANTEEN').toUpperCase()} OFFICIAL`;
+            let activeMerchant = `${(activeCol || 'CANTEEN').toUpperCase()} CANTEEN OFFICIAL`;
 
             for (let id in tray) {
                 const item = getMenuItemFast(id);
@@ -3755,7 +3910,7 @@
                     const matchedCanteen = canteens.find(c => c.college === item.college && c.name === item.canteen);
                     if (matchedCanteen && matchedCanteen.upi) {
                         activeUpi = matchedCanteen.upi;
-                        activeMerchant = matchedCanteen.merchant || `${(activeCol || 'CANTEEN').toUpperCase()} OFFICIAL`;
+                        activeMerchant = matchedCanteen.merchant || `${(activeCol || 'CANTEEN').toUpperCase()} CANTEEN OFFICIAL`;
                     }
 
                     drawerListHtml += `
@@ -3846,21 +4001,99 @@
         function selectPayment(mode) {
             selectedPaymentMethod = mode;
             const qrBox = document.getElementById('qrDisplayContainer');
+            const mainBtn = document.getElementById('mainCheckoutActionBtn');
+            const totalVal = document.getElementById('billTotal') ? document.getElementById('billTotal').innerText : '0';
+
             if (mode === 'online') {
                 document.getElementById('payOnlineCard').classList.add('selected');
                 document.getElementById('payCashCard').classList.remove('selected');
                 qrBox.style.display = 'block';
+                if (mainBtn) mainBtn.innerText = `⚡ Pay ₹${totalVal} via GPay / PhonePe`;
             } else {
                 document.getElementById('payCashCard').classList.add('selected');
                 document.getElementById('payOnlineCard').classList.remove('selected');
                 qrBox.style.display = 'none';
+                if (mainBtn) mainBtn.innerText = `💵 Place Cash Order (Pay ₹${totalVal} at Counter)`;
             }
+        }
+
+        /* =====================================================================
+           SECURE UPI PAYMENT GATEWAY + GPAY / PHONEPE LAUNCH + AUTO-REDIRECT
+           ===================================================================== */
+        function launchExternalUpiApp(appType) {
+            const { vpa, merchant, amount, token } = activeGatewayUpiParams;
+            if (!vpa) return;
+            const query = `pa=${encodeURIComponent(vpa)}&pn=${encodeURIComponent(merchant)}&am=${encodeURIComponent(amount)}&cu=INR&tn=${encodeURIComponent('CampusBites ' + token)}`;
+
+            let deepLink = `upi://pay?${query}`;
+            if (appType === 'gpay') {
+                deepLink = `tez://upi/pay?${query}`;
+            } else if (appType === 'phonepe') {
+                deepLink = `phonepe://pay?${query}`;
+            }
+
+            window.location.href = deepLink;
+        }
+
+        function handleUtrAutoRedirectInput(rawVal) {
+            const cleanDigits = String(rawVal || '').replace(/\D/g, '');
+            const utrInputEl = document.getElementById('upiUtrInput');
+            if (utrInputEl && utrInputEl.value !== cleanDigits) {
+                utrInputEl.value = cleanDigits;
+            }
+
+            // Standard UPI UTR / Ref ID is strictly 12 numeric digits
+            if (cleanDigits.length === 12 && pendingLiveUpiToken) {
+                // Prevent duplicate UTR reuse across any order
+                const duplicateUtr = activeOrders.find(o => o.utr === cleanDigits && o.token !== pendingLiveUpiToken);
+                if (duplicateUtr) {
+                    alert("❌ This 12-digit UPI UTR / Reference Number has already been used for another order! Please enter your genuine transaction UTR.");
+                    utrInputEl.value = '';
+                    return;
+                }
+
+                const orderIdx = activeOrders.findIndex(o => o.token === pendingLiveUpiToken);
+                if (orderIdx !== -1) {
+                    activeOrders[orderIdx].status = 'paid';
+                    activeOrders[orderIdx].utr = cleanDigits;
+                    const confirmedOrder = activeOrders[orderIdx];
+                    pendingLiveUpiToken = null;
+                    saveState();
+                    document.getElementById('upiLivePaymentModal').classList.remove('active');
+                    triggerOrderConfirmedRedirectToast(confirmedOrder);
+                }
+            }
+        }
+
+        function cancelLiveUpiPaymentModal() {
+            if (pendingLiveUpiToken) {
+                // Remove uncompleted UPI order if student cancels before paying
+                activeOrders = activeOrders.filter(o => !(o.token === pendingLiveUpiToken && o.status === 'upi_verifying'));
+                pendingLiveUpiToken = null;
+                saveState();
+            }
+            document.getElementById('upiLivePaymentModal').classList.remove('active');
+        }
+
+        function triggerOrderConfirmedRedirectToast(orderObj) {
+            document.getElementById('successToastHeading').innerText = (orderObj.payment === 'online')
+                ? "UPI Payment Confirmed! ⚡"
+                : "Cash Order Generated! 💵";
+            document.getElementById('toastTokenDisplay').innerText = `#${orderObj.token} • PIN: ${orderObj.handshakePin}`;
+            document.getElementById('successToastModal').classList.add('active');
+
+            setTimeout(() => {
+                document.getElementById('successToastModal').classList.remove('active');
+                switchTab('receipts');
+            }, 850);
         }
 
         function placeOrder() {
             const activeCol = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor') ? currentAdminCollege : currentUser.college;
             let subtotal = 0, orderItems = [];
             let orderCanteens = new Set();
+            let activeUpi = 'canteen@sbi';
+            let activeMerchant = `${(activeCol || 'CANTEEN').toUpperCase()} CANTEEN OFFICIAL`;
 
             for (let id in tray) {
                 const item = getMenuItemFast(id);
@@ -3868,6 +4101,11 @@
                     orderItems.push({ name: item.name, qty: tray[id], price: item.price, canteen: item.canteen, college: item.college || activeCol });
                     subtotal += (item.price * tray[id]);
                     orderCanteens.add(item.canteen);
+                    const matchedCanteen = canteens.find(c => c.college === item.college && c.name === item.canteen);
+                    if (matchedCanteen && matchedCanteen.upi) {
+                        activeUpi = matchedCanteen.upi;
+                        activeMerchant = matchedCanteen.merchant || `${(activeCol || 'CANTEEN').toUpperCase()} CANTEEN OFFICIAL`;
+                    }
                 }
             }
             if (orderItems.length === 0) { alert("Please add items to your tray first!"); return; }
@@ -3886,6 +4124,7 @@
             const studentId = getStudentAccountKey(currentUser) || document.getElementById('orderRollNo').value;
             const signatureHash = generateOrderSignature(tokenNum, studentId, finalTotal, handshakePin);
 
+            // IMPORTANT: Online UPI orders start in 'upi_verifying' state (NEVER 'paid' until confirmed!)
             const newOrder = {
                 token: tokenNum, handshakePin: handshakePin, signature: signatureHash, syncWord: dailySecurityWord,
                 studentKey: getStudentAccountKey(currentUser), createdAt: Date.now(),
@@ -3893,7 +4132,9 @@
                 email: currentUser.email || "", collegePass: activeCol || "VPIET",
                 orderedCanteen: Array.from(orderCanteens).join(', '),
                 slot: document.getElementById('orderSlot').value, payment: selectedPaymentMethod,
-                items: orderItems, total: finalTotal, status: isOnline ? 'paid' : 'cash_pending',
+                items: orderItems, total: finalTotal,
+                status: isOnline ? 'upi_verifying' : 'cash_pending',
+                utr: "",
                 timestamp: new Date().toLocaleTimeString(), servedAt: null
             };
 
@@ -3911,13 +4152,32 @@
             });
             updateFloatingTray();
 
-            document.getElementById('toastTokenDisplay').innerText = `#${tokenNum} • PIN: ${handshakePin}`;
-            document.getElementById('successToastModal').classList.add('active');
+            if (!isOnline) {
+                // Cash on Pay: Redirects with "Pay Cash at Counter" badge
+                triggerOrderConfirmedRedirectToast(newOrder);
+                return;
+            }
 
-            setTimeout(() => {
-                document.getElementById('successToastModal').classList.remove('active');
-                switchTab('receipts');
-            }, 900);
+            // Online UPI / QR: Open the Live UPI Payment Gateway & Wait for Confirmation before Auto-Redirecting!
+            pendingLiveUpiToken = tokenNum;
+            activeGatewayUpiParams = {
+                vpa: activeUpi,
+                merchant: activeMerchant,
+                amount: finalTotal,
+                token: tokenNum
+            };
+
+            document.getElementById('upiGateTokenHeading').innerText = `Pay ₹${finalTotal} • Token #${tokenNum}`;
+            document.getElementById('upiGateBankingName').innerText = activeMerchant;
+            document.getElementById('upiGateInlineBankName').innerText = activeMerchant;
+            document.getElementById('upiGateVpaText').innerText = activeUpi;
+            document.getElementById('upiUtrInput').value = '';
+
+            const upiUri = `upi://pay?pa=${activeUpi}&pn=${encodeURIComponent(activeMerchant)}&am=${finalTotal}&cu=INR&tn=${encodeURIComponent('CampusBites ' + tokenNum)}`;
+            document.getElementById('upiGateQrImg').src = generateQrDataUrl(upiUri, 220);
+
+            pushOverlayHistoryState('upi-gateway-modal');
+            document.getElementById('upiLivePaymentModal').classList.add('active');
         }
 
         function renderReceipts() {
@@ -3926,10 +4186,11 @@
             if (!container) return;
             container.innerHTML = '';
 
-            const myPersonalOrders = activeOrders.filter(o => orderBelongsToCurrentStudent(o));
+            // Only show completed/valid orders in Digital Receipts (exclude unconfirmed 'upi_verifying' orders!)
+            const myPersonalOrders = activeOrders.filter(o => orderBelongsToCurrentStudent(o) && o.status !== 'upi_verifying');
             if (myPersonalOrders.length === 0) {
                 if (summaryEl) summaryEl.innerText = '';
-                container.innerHTML = `<div class="glass-surface" style="text-align: center; padding: 36px 18px; border-radius: 18px; color: var(--text-muted); font-weight: 700; font-size: 13px;">No digital receipts for your account yet.</div>`;
+                container.innerHTML = `<div class="glass-surface" style="text-align: center; padding: 36px 18px; border-radius: 18px; color: var(--text-muted); font-weight: 700; font-size: 13px;">No digital receipts for your account yet. Complete your payment to generate a verified Digital Receipt.</div>`;
                 return;
             }
 
@@ -3944,7 +4205,7 @@
                 const orderCollegeName = order.collegePass || "VPIET";
 
                 let badge = '';
-                if (order.status === 'paid') badge = `<span class="status-badge paid">Online Paid ⚡</span>`;
+                if (order.status === 'paid') badge = `<span class="status-badge paid">Online Paid ⚡${order.utr ? ' • UTR: ' + order.utr : ''}</span>`;
                 else if (order.status === 'cash_pending') badge = `<span class="status-badge cash">Pay Cash 💵</span>`;
                 else badge = `<span class="status-badge served">✔ ORDER SERVED</span>`;
 
@@ -4108,12 +4369,13 @@
                     canListEl.innerHTML = collegeCanteens.map(c => {
                         const isEditing = (String(c.id) === String(currentEditingCanId));
                         const cPin = c.pin || defaultStaffPin;
+                        const cMerchant = c.merchant || `${currentAdminCollege.toUpperCase()} CANTEEN OFFICIAL`;
                         return `
                             <div class="item-list-row ${isEditing ? 'editing-active' : ''}" onclick="loadCanteenForEditing('${c.id}')" title="Click to edit canteen">
                                 <div>
                                     <strong>🏪 ${c.name}</strong>
                                     ${isEditing ? `<span style="background:var(--primary); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:4px;">EDITING</span>` : ''}<br>
-                                    <span style="font-size:11px; color:var(--text-muted);">🔒 VPA: ${c.upi} • 🔑 PIN: ${cPin}</span>
+                                    <span style="font-size:11px; color:var(--text-muted);">🔒 VPA: ${c.upi} • 🏦 ${cMerchant} • 🔑 PIN: ${cPin}</span>
                                 </div>
                                 <button class="remove-item-symbol" onclick="event.stopPropagation(); adminDeleteCanteen('${c.id}')" title="Remove Canteen">✕</button>
                             </div>
@@ -4149,6 +4411,7 @@
             document.getElementById('newCanteenName').value = can.name;
             document.getElementById('newCanteenLocation').value = can.location || 'Main Block';
             document.getElementById('newCanteenUpi').value = can.upi || '';
+            document.getElementById('newCanteenMerchant').value = can.merchant || `${currentAdminCollege.toUpperCase()} CANTEEN OFFICIAL`;
             document.getElementById('newCanteenPin').value = can.pin || fallbackPin;
             document.getElementById('cancelCanteenEditBtn').style.display = 'inline-block';
             document.getElementById('saveCanteenBtnText').innerText = `✔ Update Canteen ("${can.name}")`;
@@ -4160,6 +4423,7 @@
             document.getElementById('newCanteenName').value = '';
             document.getElementById('newCanteenLocation').value = '';
             document.getElementById('newCanteenUpi').value = '';
+            document.getElementById('newCanteenMerchant').value = '';
             document.getElementById('newCanteenPin').value = '';
             document.getElementById('cancelCanteenEditBtn').style.display = 'none';
             document.getElementById('saveCanteenBtnText').innerText = '+ Add / Save Canteen';
@@ -4172,6 +4436,7 @@
             const name = document.getElementById('newCanteenName').value.trim();
             const loc = document.getElementById('newCanteenLocation').value.trim() || "Main Block";
             const upi = document.getElementById('newCanteenUpi').value.trim();
+            const merchant = document.getElementById('newCanteenMerchant').value.trim() || `${currentAdminCollege.toUpperCase()} CANTEEN OFFICIAL`;
             const pin = document.getElementById('newCanteenPin').value.trim();
 
             if (!name || !upi) { alert("Please enter Canteen Name and official UPI ID (VPA)!"); return; }
@@ -4185,7 +4450,7 @@
                     const oldName = canteens[idx].name;
                     canteens[idx] = {
                         ...canteens[idx],
-                        name: name, location: loc, upi: upi, pin: finalPin, college: currentAdminCollege
+                        name: name, location: loc, upi: upi, merchant: merchant, pin: finalPin, college: currentAdminCollege
                     };
                     if (oldName !== name) {
                         menuItems.forEach(m => {
@@ -4196,7 +4461,7 @@
             } else {
                 canteens.push({
                     id: 'can_' + Date.now(), name: name, college: currentAdminCollege,
-                    location: loc, upi: upi, pin: finalPin, merchant: `${currentAdminCollege.toUpperCase()} OFFICIAL`
+                    location: loc, upi: upi, pin: finalPin, merchant: merchant
                 });
             }
 
@@ -4225,7 +4490,7 @@
             dirBody.innerHTML = colleges.map(col => {
                 const colCanteens = canteens.filter(c => c.college === col.name);
                 const colItems = menuItems.filter(m => m.college === col.name);
-                const vpasStr = colCanteens.map(c => `<b>${c.name}</b>: <code>${c.upi}</code>`).join('<br>') || 'None';
+                const vpasStr = colCanteens.map(c => `<b>${c.name}</b>: <code>${c.upi}</code> (${c.merchant || 'OFFICIAL'})`).join('<br>') || 'None';
                 const canteensStr = colCanteens.map(c => `${c.name} (PIN: ${c.pin || col.staffPin || '1111'})`).join('<br>') || 'None';
                 return `
                     <tr>
@@ -4244,7 +4509,7 @@
             logHtml += `[REGISTERED_COLLEGES] ${colleges.map(c => `${c.name} (${c.email})`).join(' | ')}\n`;
             logHtml += `[STUDENT_VAULT] ${Object.keys(studentVault).length} isolated student accounts.\n`;
             activeOrders.slice(0, 80).forEach((ord, idx) => {
-                logHtml += `[TX_${idx+1}] Token #${ord.token} | Time: ${ord.timestamp} | College: ${ord.collegePass} | Student: ${ord.name} | ₹${ord.total}\n`;
+                logHtml += `[TX_${idx+1}] Token #${ord.token} | Status: ${ord.status} | UTR: ${ord.utr || 'N/A'} | College: ${ord.collegePass} | ₹${ord.total}\n`;
             });
             logBox.innerText = logHtml;
         }
@@ -4637,12 +4902,14 @@
             document.getElementById('popOrderStudentName').innerText = order.name || "Student";
             document.getElementById('popOrderStudentPhone').innerText = order.rollNo || "--";
             document.getElementById('popOrderSlot').innerText = order.slot || "Immediate Pickup";
-            document.getElementById('popOrderPaymentMode').innerText = order.payment || "ONLINE";
+            document.getElementById('popOrderPaymentMode').innerText = (order.payment || "ONLINE") + (order.utr ? ` (UTR: ${order.utr})` : '');
             document.getElementById('popOrderTotalAmount').innerText = `₹${order.total}`;
 
             const statusBadgeEl = document.getElementById('popOrderStatusBadge');
             if (order.status === 'paid') {
-                statusBadgeEl.innerHTML = `<span class="status-badge paid">Online Paid ✔</span>`;
+                statusBadgeEl.innerHTML = `<span class="status-badge paid">Online Paid ✔${order.utr ? ' • UTR: ' + order.utr : ''}</span>`;
+            } else if (order.status === 'upi_verifying') {
+                statusBadgeEl.innerHTML = `<span class="status-badge cash">⏳ Awaiting UPI Payment Confirmation</span>`;
             } else if (order.status === 'cash_pending') {
                 statusBadgeEl.innerHTML = `<span class="status-badge cash">Cash Pending 💵</span>`;
             } else {
@@ -4665,7 +4932,9 @@
 
             const actionBox = document.getElementById('popOrderActionContainer');
             let actHtml = '';
-            if (order.status === 'cash_pending') {
+            if (order.status === 'upi_verifying') {
+                actHtml += `<button class="checkout-btn" style="background:#4f46e5;" onclick="updateStatus(${orderIndex}, 'paid')">⚡ Confirm UPI Received (₹${order.total}) — Auto-Redirects Student</button>`;
+            } else if (order.status === 'cash_pending') {
                 actHtml += `<button class="checkout-btn" style="background:#f59e0b;" onclick="updateStatus(${orderIndex}, 'paid')">💵 Collect Cash (₹${order.total})</button>`;
             }
             if (order.status !== 'served') {
@@ -4777,6 +5046,7 @@
             const filtered = searchVal ? operatorOrders.filter(({ order }) => {
                 const cleanQuery = searchVal.replace(/^#/, '');
                 if (order.token && order.token.toLowerCase().includes(cleanQuery)) return true;
+                if (order.utr && String(order.utr).toLowerCase().includes(cleanQuery)) return true;
                 if (order.rollNo && order.rollNo.toLowerCase().includes(searchVal)) return true;
                 if (order.name && order.name.toLowerCase().includes(searchVal)) return true;
                 if (order.email && order.email.toLowerCase().includes(searchVal)) return true;
@@ -4806,12 +5076,15 @@
                 const sigCode = order.signature || generateOrderSignature(order.token, order.rollNo, order.total, pinCode);
 
                 let statusHtml = '';
-                if (order.status === 'paid') statusHtml = `<span style="color:var(--success); font-weight:800;">Paid ✔</span>`;
+                if (order.status === 'paid') statusHtml = `<span style="color:var(--success); font-weight:800;">Paid ✔${order.utr ? '<br><small style="color:var(--primary);">UTR: ' + order.utr + '</small>' : ''}</span>`;
+                else if (order.status === 'upi_verifying') statusHtml = `<span style="color:#4f46e5; font-weight:900;">⏳ Verifying UPI Payment...</span>`;
                 else if (order.status === 'cash_pending') statusHtml = `<span style="color:var(--warning); font-weight:800;">Cash Pending</span>`;
                 else statusHtml = `<span style="color:#10b981; font-weight:900;">ORDER SERVED ✔</span>`;
 
                 let actionHtml = '';
-                if (order.status === 'cash_pending') {
+                if (order.status === 'upi_verifying') {
+                    actionHtml += `<button class="btn-confirm-upi" onclick="event.stopPropagation(); updateStatus(${origIdx}, 'paid')">✔ Confirm UPI Received (₹${order.total})</button>`;
+                } else if (order.status === 'cash_pending') {
                     actionHtml += `<button class="btn-collect-lg" onclick="event.stopPropagation(); updateStatus(${origIdx}, 'paid')">💵 Collect Cash (₹${order.total})</button>`;
                 }
                 if (order.status !== 'served') {
@@ -4853,7 +5126,10 @@
                         </div>
                         <div class="ledger-items-stack">${itemsLineByLineHtml}</div>
                     </td>
-                    <td style="text-transform: uppercase; font-size:11.5px; font-weight:800;">${order.payment}</td>
+                    <td style="text-transform: uppercase; font-size:11.5px; font-weight:800;">
+                        ${order.payment}
+                        ${order.utr ? `<br><span style="font-size:10px; color:var(--primary); font-family:monospace;">UTR: ${order.utr}</span>` : ''}
+                    </td>
                     <td><strong style="font-size:14.5px;">₹${order.total}</strong></td>
                     <td>${statusHtml}<div class="staff-actions-group">${actionHtml}</div></td>
                 `;
@@ -4870,6 +5146,7 @@
             activeOrders[index].status = status;
             if (status === 'served') activeOrders[index].servedAt = new Date().toLocaleTimeString();
             saveState();
+            checkAndTriggerLiveUpiAutoRedirect();
             if (document.getElementById('tab-receipts').classList.contains('active')) renderReceipts();
             if (document.getElementById('tab-spending').classList.contains('active')) renderStudentSpendingAnalytics();
             if (document.getElementById('tab-admin-ledger').classList.contains('active')) renderStaffCounter();
