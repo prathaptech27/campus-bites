@@ -515,89 +515,358 @@
         .page-btn:disabled { opacity: 0.45; cursor: not-allowed; }
         .text-link-btn { background: none; border: none; color: var(--primary); font-size: 11.5px; font-weight: 800; cursor: pointer; text-decoration: underline; padding: 0; }
         [data-theme="dark"] .text-link-btn { color: #818cf8; }
+
+        /* =====================================================================
+           NEET / JEE COMPETITIVE EXAM STYLE TIMED MULTI-OPTION PAYMENT PORTAL
+           ===================================================================== */
+        .exam-pg-header {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%);
+            color: #ffffff;
+            padding: 14px 16px;
+            border-radius: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(49, 46, 129, 0.28), inset 0 1px 1.5px rgba(255, 255, 255, 0.35);
+        }
+        .exam-timer-pill {
+            background: rgba(16, 185, 129, 0.22);
+            border: 1.5px solid #10b981;
+            color: #6ee7b7;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: 900;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .exam-timer-pill.danger-zone {
+            background: rgba(239, 68, 68, 0.28);
+            border-color: #ef4444;
+            color: #fca5a5;
+            animation: examPulseDanger 1s infinite ease-in-out;
+        }
+        @keyframes examPulseDanger {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .exam-timer-bar-track {
+            width: 100%;
+            height: 6px;
+            background: rgba(148, 163, 184, 0.25);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .exam-timer-bar-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #10b981, #4f46e5);
+            transition: width 1s linear, background 0.3s ease;
+        }
+        .exam-pg-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .exam-pg-tab {
+            background: var(--surface-sub-bg);
+            border: 1.5px solid var(--liquid-glass-border);
+            border-radius: 11px;
+            padding: 8px 4px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-align: center;
+            transition: 0.15s ease;
+        }
+        .exam-pg-tab.active {
+            background: rgba(79, 70, 229, 0.18);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15);
+        }
+        [data-theme="dark"] .exam-pg-tab.active {
+            color: #a5b4fc;
+        }
+        .exam-pg-pane { display: none; }
+        .exam-pg-pane.active { display: block; }
+        .bank-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .bank-option-btn {
+            background: var(--surface-row-bg);
+            border: 1.5px solid var(--liquid-glass-border);
+            border-radius: 10px;
+            padding: 9px 10px;
+            font-size: 11.5px;
+            font-weight: 800;
+            color: var(--text-main);
+            cursor: pointer;
+            text-align: left;
+            transition: 0.15s ease;
+        }
+        .bank-option-btn.selected {
+            border-color: var(--primary);
+            background: rgba(79, 70, 229, 0.16);
+            color: var(--primary);
+        }
+        [data-theme="dark"] .bank-option-btn.selected {
+            color: #a5b4fc;
+        }
+        .pg-status-screen {
+            display: none;
+            text-align: center;
+            padding: 22px 12px;
+        }
+        .pg-status-screen.active { display: block; }
+        .qr-mode-switch-pill {
+            background: rgba(16, 185, 129, 0.14);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 900;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
     </style>
 </head>
 <body>
 
     <div class="ambient-mesh"></div>
 
-    <!-- ZERO-SECURITY-DECLINE UPI GATEWAY & LIVE COUNTER / UTR VERIFICATION MODAL -->
+    <!-- NEET / JEE EXAM-STYLE TIMED MULTI-OPTION PAYMENT PORTAL -->
     <div class="toast-modal" id="upiLivePaymentModal">
-        <div class="toast-card" style="text-align: left; max-width: 455px; max-height: 92vh; overflow-y: auto; padding: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--liquid-glass-border); padding-bottom: 8px;">
+        <div class="toast-card" style="text-align: left; max-width: 475px; max-height: 93vh; overflow-y: auto; padding: 18px;">
+            
+            <!-- Portal Header with Live Countdown Timer -->
+            <div class="exam-pg-header">
                 <div>
-                    <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: #10b981;">🔒 Official Canteen UPI Checkout</span>
-                    <h3 style="font-size: 18px; font-weight: 900; color: var(--text-main);" id="upiGateTokenHeading">Pay ₹0.00 • Token #TK-100</h3>
+                    <span style="font-size: 9.5px; font-weight: 900; text-transform: uppercase; color: #a5b4fc; letter-spacing: 0.7px;">🔒 CampusBites Exam-Grade Payment Portal</span>
+                    <h3 style="font-size: 17px; font-weight: 900; margin-top: 2px; color: #fff;" id="upiGateTokenHeading">Pay ₹0.00 • Token #TK-100</h3>
+                    <div style="font-size: 11px; color: #cbd5e1; font-weight: 700; margin-top: 1px;">🏦 <span id="upiGateBankingName">CANTEEN OFFICIAL</span></div>
                 </div>
-                <button class="close-drawer" onclick="cancelLiveUpiPaymentModal()">×</button>
-            </div>
-
-            <!-- Official Banking Name, UPI ID & Mobile Number Shield -->
-            <div class="banking-name-shield">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="font-size: 10px; font-weight: 900; color: #059669; text-transform: uppercase; letter-spacing: 0.5px;">🏦 Verified Banking Name</div>
-                        <div style="font-size: 15px; font-weight: 900; color: var(--text-main); margin-top: 2px;" id="upiGateBankingName">CANTEEN OFFICIAL</div>
+                <div style="text-align: right;">
+                    <div class="exam-timer-pill" id="examTimerPill" title="Complete payment before timer hits 00:00">
+                        ⏱️ <span id="examCountdownText">05:00</span>
                     </div>
-                    <div style="text-align: right; background: #065f46; color: #fff; padding: 5px 10px; border-radius: 10px;">
-                        <span style="font-size: 9px; font-weight: 800; text-transform: uppercase; display: block; opacity: 0.9;">Amount to Pay</span>
-                        <strong style="font-size: 16px; font-weight: 900;" id="upiGateLockedAmountBadge">₹0.00</strong>
+                    <span style="font-size: 9px; color: #cbd5e1; display: block; margin-top: 3px; font-weight: 700;">Session Time Limit</span>
+                </div>
+            </div>
+
+            <!-- Live Depleting Progress Bar -->
+            <div class="exam-timer-bar-track">
+                <div class="exam-timer-bar-fill" id="examTimerBarFill"></div>
+            </div>
+
+            <!-- STATE 1: ACTIVE MULTI-OPTION PAYMENT WORKSPACE -->
+            <div id="examPgActiveBody">
+                <!-- Merchant Summary Bar -->
+                <div class="banking-name-shield" style="margin: 0 0 10px 0; padding: 9px 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+                        <div style="font-size: 11.5px; font-weight: 800; color: var(--primary);">
+                            VPA: <span id="upiGateVpaText" style="font-family: monospace;">canteen@sbi</span>
+                            <button type="button" class="copy-chip-btn" onclick="copyGatewayUpiId()" style="padding: 3px 7px; font-size: 9.5px; margin-left: 4px;">📋 Copy</button>
+                        </div>
+                        <div style="background: #065f46; color: #fff; padding: 3px 9px; border-radius: 8px; font-size: 12px; font-weight: 900;">
+                            Fixed Amt: <strong id="upiGateLockedAmountBadge">₹0.00</strong>
+                        </div>
+                    </div>
+                    <div id="upiGatePhoneRow" style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; padding-top: 5px; border-top: 1px dashed rgba(16,185,129,0.35);">
+                        <div style="font-size: 11px; font-weight: 800; color: var(--text-main);">UPI Mobile #: <span id="upiGatePhoneText" style="font-family: monospace;">--</span></div>
+                        <button type="button" class="copy-chip-btn" style="background:#059669; padding: 3px 8px; font-size: 9.5px;" onclick="copyGatewayUpiPhone()">📋 Copy #</button>
                     </div>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 6px; border-top: 1px dashed rgba(16,185,129,0.35);">
-                    <div style="font-size: 12px; font-weight: 800; color: var(--primary);">UPI ID: <span id="upiGateVpaText" style="font-family: monospace;">canteen@sbi</span></div>
-                    <button type="button" class="copy-chip-btn" onclick="copyGatewayUpiId()">📋 Copy UPI ID</button>
+                <!-- 4 Payment Option Tabs (NEET/JEE Portal Style) -->
+                <div class="exam-pg-tabs">
+                    <button type="button" class="exam-pg-tab active" onclick="switchExamPgTab('qr')" id="pgTab_qr">📷 Fixed QR</button>
+                    <button type="button" class="exam-pg-tab" onclick="switchExamPgTab('vpa')" id="pgTab_vpa">⚡ UPI ID</button>
+                    <button type="button" class="exam-pg-tab" onclick="switchExamPgTab('card')" id="pgTab_card">💳 Card</button>
+                    <button type="button" class="exam-pg-tab" onclick="switchExamPgTab('netbanking')" id="pgTab_netbanking">🏦 NetBank</button>
                 </div>
 
-                <div id="upiGatePhoneRow" style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
-                    <div style="font-size: 12px; font-weight: 800; color: var(--text-main);">UPI Mobile #: <span id="upiGatePhoneText" style="font-family: monospace;">--</span></div>
-                    <button type="button" class="copy-chip-btn" style="background:#059669;" onclick="copyGatewayUpiPhone()">📋 Copy Mobile #</button>
+                <!-- OPTION 1: FIXED-AMOUNT DYNAMIC QR & UPI APPS -->
+                <div class="exam-pg-pane active" id="pgPane_qr">
+                    <div style="text-align: center; background: var(--surface-sub-bg); padding: 10px; border-radius: 14px; border: 1px solid var(--liquid-glass-border);">
+                        <div style="font-size: 11px; font-weight: 900; color: #059669;" id="qrModeBadgeLabel">
+                            🔒 Fixed-Amount QR (Auto-Fills ₹<span class="btn-amt-span">0.00</span> on Scan)
+                        </div>
+                        <div class="qr-checkout-frame" style="width: 146px; height: 146px; margin: 6px auto;">
+                            <img id="upiGateQrImg" src="" alt="Fixed Amount UPI QR" />
+                        </div>
+                        <button type="button" class="qr-mode-switch-pill" onclick="toggleGatewayQrAmountMode()" id="qrModeToggleBtn">
+                            🔄 Switch to Static Store QR (If bank blocks dynamic QR)
+                        </button>
+
+                        <div class="upi-app-grid" style="margin-top: 8px;">
+                            <button type="button" class="upi-app-btn beam-qr" onclick="beamStaticQrToUpiApp()">
+                                📲 1-Tap Send Fixed ₹<span class="btn-amt-span">0.00</span> QR to GPay / PhonePe
+                            </button>
+                            <button type="button" class="upi-app-btn gpay" onclick="openUpiAppSafelyWithoutSecurityDecline('gpay')">
+                                🔵 Pay ₹<span class="btn-amt-span">0.00</span> in GPay
+                            </button>
+                            <button type="button" class="upi-app-btn phonepe" onclick="openUpiAppSafelyWithoutSecurityDecline('phonepe')">
+                                🟣 Pay ₹<span class="btn-amt-span">0.00</span> in PhonePe
+                            </button>
+                            <button type="button" class="upi-app-btn paytm" onclick="openUpiAppSafelyWithoutSecurityDecline('paytm')">
+                                ⚡ Pay ₹<span class="btn-amt-span">0.00</span> in Paytm / BHIM
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OPTION 2: UPI ID / VPA COLLECT REQUEST -->
+                <div class="exam-pg-pane" id="pgPane_vpa">
+                    <div style="background: var(--surface-sub-bg); padding: 12px; border-radius: 14px; border: 1px solid var(--liquid-glass-border);">
+                        <div class="form-group">
+                            <label>Enter Your UPI ID (GPay / PhonePe / Paytm VPA) *</label>
+                            <input type="text" class="form-control" id="studentVpaInput" placeholder="e.g. student@okaxis or 9876543210@ybl">
+                        </div>
+                        <button type="button" class="checkout-btn" onclick="triggerExamUpiCollectRequest()" style="background:#059669; padding: 10px;">
+                            📲 Send ₹<span class="btn-amt-span">0.00</span> Collect Request
+                        </button>
+                        <div id="vpaCollectWaitingBox" style="display:none; margin-top:10px; padding:10px; background:rgba(16,185,129,0.14); border:1.5px dashed #10b981; border-radius:10px; text-align:center; font-size:11.5px; font-weight:700;">
+                            <div id="vpaCollectStatusText" style="color:var(--text-main);">⏳ Collect request for <b>₹<span class="btn-amt-span">0.00</span></b> sent! Open your UPI app to approve within the time limit.</div>
+                            <button type="button" onclick="completeSimulatedGatewayMethod('UPI-VPA')" style="margin-top:8px; background:#10b981; color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:900; font-size:11.5px; cursor:pointer;">
+                                ✔ I Have Approved ₹<span class="btn-amt-span">0.00</span> on My Phone
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OPTION 3: DEBIT / CREDIT CARD WITH BUILT-IN 3D-SECURE OTP STEP -->
+                <div class="exam-pg-pane" id="pgPane_card">
+                    <div style="background: var(--surface-sub-bg); padding: 12px; border-radius: 14px; border: 1px solid var(--liquid-glass-border);">
+                        <div id="cardFormFieldsBox">
+                            <div class="form-group">
+                                <label>Card Number (RuPay / Visa / Mastercard) *</label>
+                                <input type="tel" class="form-control" id="pgCardNumber" maxlength="16" placeholder="4532 XXXX XXXX XXXX">
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <div class="form-group">
+                                    <label>Expiry (MM/YY) *</label>
+                                    <input type="text" class="form-control" id="pgCardExpiry" maxlength="5" placeholder="08/29">
+                                </div>
+                                <div class="form-group">
+                                    <label>CVV *</label>
+                                    <input type="password" class="form-control" id="pgCardCvv" maxlength="3" placeholder="•••">
+                                </div>
+                            </div>
+                            <button type="button" class="checkout-btn" onclick="initiateExamCardOtpStep()" style="padding: 10px;">
+                                🔒 Proceed to 3D-Secure OTP (₹<span class="btn-amt-span">0.00</span>)
+                            </button>
+                        </div>
+
+                        <!-- In-Modal 3D-Secure Bank OTP Verification Box -->
+                        <div id="cardOtpStepBox" style="display:none; text-align:center; padding:8px;">
+                            <div style="font-size:12px; font-weight:900; color:var(--primary); margin-bottom:4px;">🔐 Bank 3D-Secure OTP Verification</div>
+                            <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Enter the 6-digit Bank OTP to authorize <b>₹<span class="btn-amt-span">0.00</span></b>:</p>
+                            <input type="tel" class="form-control" id="pgCardOtpInput" maxlength="6" placeholder="Enter 6-Digit OTP (e.g. 123456)" style="text-align:center; font-family:monospace; font-size:15px; font-weight:900; letter-spacing:3px; margin-bottom:8px;">
+                            <div style="display:flex; gap:6px;">
+                                <button type="button" class="checkout-btn" onclick="verifyExamCardOtpAndPay()" style="background:#10b981; padding:9px;">✔ Confirm & Pay</button>
+                                <button type="button" class="checkout-btn" onclick="cancelExamCardOtpStep()" style="background:#64748b; padding:9px; width:auto;">Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OPTION 4: NET BANKING -->
+                <div class="exam-pg-pane" id="pgPane_netbanking">
+                    <div style="background: var(--surface-sub-bg); padding: 12px; border-radius: 14px; border: 1px solid var(--liquid-glass-border);">
+                        <div id="netbankingSelectBox">
+                            <label style="font-size:10.5px; font-weight:800; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:6px;">Select Your Bank</label>
+                            <div class="bank-grid">
+                                <button type="button" class="bank-option-btn selected" onclick="selectExamBank(this, 'SBI')">🏦 State Bank of India</button>
+                                <button type="button" class="bank-option-btn" onclick="selectExamBank(this, 'HDFC')">🏦 HDFC Bank</button>
+                                <button type="button" class="bank-option-btn" onclick="selectExamBank(this, 'ICICI')">🏦 ICICI Bank</button>
+                                <button type="button" class="bank-option-btn" onclick="selectExamBank(this, 'INDIAN')">🏦 Indian Bank</button>
+                                <button type="button" class="bank-option-btn" onclick="selectExamBank(this, 'CANARA')">🏦 Canara Bank</button>
+                                <button type="button" class="bank-option-btn" onclick="selectExamBank(this, 'AXIS')">🏦 Axis Bank</button>
+                            </div>
+                            <button type="button" class="checkout-btn" onclick="initiateExamNetBankingStep()" style="padding: 10px;">
+                                🏦 Login & Pay ₹<span class="btn-amt-span">0.00</span> via NetBanking
+                            </button>
+                        </div>
+
+                        <div id="netbankingConfirmBox" style="display:none; text-align:center; padding:10px; background:rgba(79,70,229,0.1); border-radius:10px; border:1px solid var(--primary);">
+                            <div style="font-size:12.5px; font-weight:900; color:var(--primary);" id="netbankingBankTitle">🏦 SBI Corporate Gateway</div>
+                            <p style="font-size:11px; color:var(--text-muted); margin:4px 0 10px;">Authorize payment of <b>₹<span class="btn-amt-span">0.00</span></b> to <b id="netbankingMerchantSpan">CANTEEN</b></p>
+                            <div style="display:flex; gap:6px;">
+                                <button type="button" class="checkout-btn" onclick="completeSimulatedGatewayMethod('NETBANK-' + selectedExamBankCode)" style="background:#10b981; padding:9px;">✔ Approve Payment</button>
+                                <button type="button" class="checkout-btn" onclick="triggerExamPaymentTimeoutFailure(selectedExamBankCode + ' NetBanking transaction was declined or cancelled.')" style="background:#ef4444; padding:9px; width:auto;">✕ Decline</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Counter Soundbox Sync & 12-Digit UTR Auto-Detector -->
+                <div class="live-verify-radar" style="margin-top: 10px;">
+                    <div style="font-size: 11.5px; font-weight: 900; color: var(--primary);" id="upiLiveSyncStatusHeadline">
+                        🔔 Live Payment & Counter Soundbox Listener Active
+                    </div>
+                    <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; margin-top: 2px; line-height: 1.35;" id="upiLiveSyncStatusSub">
+                        If payment is completed in <b>any option above within the time limit</b> (or confirmed at the Counter / via 12-digit UTR below), it automatically shows <b>Payment Done</b>:
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-top: 8px;">
+                        <input type="tel" class="form-control" id="upiUtrInput" maxlength="12" placeholder="Paste 12-Digit UPI UTR # (Auto-Verifies)" oninput="handleStrictUtrVerificationInput(this.value)" style="text-align: center; font-family: monospace; font-size: 12px; font-weight: 900; letter-spacing: 1px;">
+                        <button type="button" onclick="pasteAndVerifyClipboardUtr()" style="background: var(--primary); color: #fff; border: none; border-radius: 10px; padding: 0 11px; font-size: 11px; font-weight: 900; cursor: pointer; white-space: nowrap;">
+                            📋 Paste UTR
+                        </button>
+                    </div>
+                    <div id="upiSecurityErrorMsg" style="display: none; margin-top: 7px; font-size: 11px; font-weight: 800; color: var(--danger); background: #fee2e2; padding: 6px 9px; border-radius: 8px; border: 1px solid #fecaca;"></div>
+                </div>
+
+                <button type="button" onclick="cancelLiveUpiPaymentModal()" style="width:100%; margin-top:9px; background:transparent; border:1px solid var(--danger); color:var(--danger); padding:8px; border-radius:10px; font-size:11.5px; font-weight:800; cursor:pointer;">
+                    ✕ Cancel & Abort Transaction
+                </button>
+            </div>
+
+            <!-- STATE 2: PAYMENT DONE SCREEN (WITHIN TIME LIMIT) -->
+            <div class="pg-status-screen" id="examPgSuccessScreen">
+                <div style="width:58px; height:58px; background:#dcfce7; color:#059669; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:900; margin:0 auto 10px; border:2px solid #10b981;">✓</div>
+                <span style="font-size:10px; font-weight:900; text-transform:uppercase; color:#059669; background:#dcfce7; padding:3px 10px; border-radius:20px;">Transaction Verified Within Time Limit</span>
+                <h3 style="font-size:21px; font-weight:900; color:#059669; margin-top:8px;">Payment Done! ⚡</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin:4px 0 12px; font-weight:700;" id="examPgSuccessSubText">
+                    Amount Paid & Verified Successfully.
+                </p>
+                <div style="background:var(--surface-sub-bg); border:1.5px solid #10b981; border-radius:12px; padding:10px; margin-bottom:12px; font-family:monospace; font-size:12.5px; font-weight:900; color:var(--text-main);" id="examPgSuccessRefBox">
+                    Ref ID: --
+                </div>
+                <p style="font-size:11.5px; color:var(--primary); font-weight:800;">Generating your Digital Canteen Receipt...</p>
+            </div>
+
+            <!-- STATE 3: PAYMENT FAILED / TIMED OUT SCREEN -->
+            <div class="pg-status-screen" id="examPgFailedScreen">
+                <div style="width:58px; height:58px; background:#fee2e2; color:#dc2626; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:900; margin:0 auto 10px; border:2px solid #ef4444;">✕</div>
+                <span style="font-size:10px; font-weight:900; text-transform:uppercase; color:#dc2626; background:#fee2e2; padding:3px 10px; border-radius:20px;">Session Expired / Declined</span>
+                <h3 style="font-size:21px; font-weight:900; color:var(--danger); margin-top:8px;">Payment Failed!</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin:6px 0 16px; font-weight:600; line-height:1.45;" id="examPgFailedReason">
+                    Payment was not completed within the 05:00 portal time limit. Your transaction session has expired.
+                </p>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                    <button type="button" class="checkout-btn" onclick="retryTimedPaymentSession()" style="background:var(--primary); padding:10px;">🔄 Try Payment Again</button>
+                    <button type="button" class="checkout-btn" onclick="closeFailedPaymentModal()" style="background:#475569; padding:10px;">Close Portal</button>
                 </div>
             </div>
 
-            <!-- Pure Static Shop QR (No &am= dynamic tag, so GPay/PhonePe NEVER declines it for security reasons!) -->
-            <div style="text-align: center; margin: 6px 0;">
-                <span style="font-size: 10.5px; font-weight: 800; color: #059669;">🛡️ Official Static Store QR (Zero Security Decline in GPay / PhonePe)</span>
-                <div class="qr-checkout-frame" style="width: 142px; height: 142px; margin: 4px auto;">
-                    <img id="upiGateQrImg" src="" alt="Official Static Shop QR" />
-                </div>
-            </div>
-
-            <!-- Safe App Launchers (Never uses blocked browser upi://pay?am= collect links!) -->
-            <div class="upi-app-grid">
-                <button type="button" class="upi-app-btn beam-qr" onclick="beamStaticQrToUpiApp()">
-                    📲 1-Tap Send Static Shop QR to GPay / PhonePe
-                </button>
-                <button type="button" class="upi-app-btn gpay" onclick="openUpiAppSafelyWithoutSecurityDecline('gpay')">
-                    🔵 Copy # & Open GPay
-                </button>
-                <button type="button" class="upi-app-btn phonepe" onclick="openUpiAppSafelyWithoutSecurityDecline('phonepe')">
-                    🟣 Copy # & Open PhonePe
-                </button>
-                <button type="button" class="upi-app-btn paytm" onclick="openUpiAppSafelyWithoutSecurityDecline('paytm')">
-                    ⚡ Copy Mobile # / UPI & Open Paytm
-                </button>
-            </div>
-
-            <!-- Strict Verification Box (NEVER generates receipt on unpaid return!) -->
-            <div class="live-verify-radar">
-                <div style="font-size: 12px; font-weight: 900; color: var(--primary);" id="upiLiveSyncStatusHeadline">
-                    🔔 Live Counter Soundbox Sync Active
-                </div>
-                <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; margin-top: 3px; line-height: 1.35;" id="upiLiveSyncStatusSub">
-                    <b>Returning without paying will NOT generate a receipt.</b><br>
-                    Your Digital Receipt is generated <b>automatically</b> when the Canteen Counter confirms your ₹<span class="btn-amt-span">0</span> payment on their screen, OR when you paste your 12-digit UPI UTR below:
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-top: 9px;">
-                    <input type="tel" class="form-control" id="upiUtrInput" maxlength="12" placeholder="Paste 12-Digit UPI UTR # (Auto-Verifies)" oninput="handleStrictUtrVerificationInput(this.value)" style="text-align: center; font-family: monospace; font-size: 12.5px; font-weight: 900; letter-spacing: 1px;">
-                    <button type="button" onclick="pasteAndVerifyClipboardUtr()" style="background: var(--primary); color: #fff; border: none; border-radius: 10px; padding: 0 11px; font-size: 11px; font-weight: 900; cursor: pointer; white-space: nowrap;">
-                        📋 Paste UTR
-                    </button>
-                </div>
-                <div id="upiSecurityErrorMsg" style="display: none; margin-top: 7px; font-size: 11px; font-weight: 800; color: var(--danger); background: #fee2e2; padding: 6px 9px; border-radius: 8px; border: 1px solid #fecaca;"></div>
-            </div>
         </div>
     </div>
 
@@ -1941,6 +2210,22 @@
             return `upi://pay?pa=${encodeURIComponent(cleanVpa)}&pn=${encodeURIComponent(cleanName)}&cu=INR`;
         }
 
+        /* =====================================================================
+           DYNAMIC FIXED-AMOUNT UPI QR BUILDER (LOCKS EXACT PAYABLE AMOUNT ₹)
+           Embeds &am=FIXED_AMOUNT&cu=INR&tn=TOKEN so scanning auto-fills exact ₹
+           ===================================================================== */
+        function buildFixedAmountQrUri(vpa, bankingName, amount, tokenNote) {
+            const cleanVpa = String(vpa || 'canteen@sbi').trim();
+            const cleanName = String(bankingName || 'CANTEEN OFFICIAL').replace(/[^a-zA-Z0-9 ]/g, ' ').trim();
+            const numAmt = Number(amount || 0);
+            const cleanNote = String(tokenNote || 'CampusBites Order').replace(/[^a-zA-Z0-9 #\-_]/g, ' ').trim();
+            if (numAmt > 0) {
+                const fixedAmt = numAmt.toFixed(2);
+                return `upi://pay?pa=${encodeURIComponent(cleanVpa)}&pn=${encodeURIComponent(cleanName)}&am=${encodeURIComponent(fixedAmt)}&cu=INR&tn=${encodeURIComponent(cleanNote)}`;
+            }
+            return buildStaticStoreQrUri(cleanVpa, cleanName);
+        }
+
         function getCollegeInviteUrl(colName) {
             const target = colName || currentAdminCollege || currentUser.college || "VPIET";
             return `${VERCEL_DOMAIN}/?college=${encodeURIComponent(target)}`;
@@ -2635,15 +2920,17 @@
             if (!pendingUpiOrderToken) return;
             const matchedOrder = activeOrders.find(o => o.token === pendingUpiOrderToken);
             if (!matchedOrder) {
-                // Counter declined/removed the unverified request
+                // Counter declined/removed the unverified request -> Show Exam Portal Payment Failed screen
                 pendingUpiOrderToken = null;
-                showUpiSecurityError("❌ Payment was not received at the Canteen Counter. No Digital Receipt was generated.");
+                stopExamPaymentTimer();
+                triggerExamPaymentTimeoutFailure("❌ Payment Declined by Canteen Counter: Payment was not received within the verification window.");
                 return;
             }
             if (matchedOrder.status === 'paid' || matchedOrder.status === 'served') {
-                // Counter Staff confirmed the UPI payment on their Soundbox/Phone! Automatically generate receipt!
+                // Counter Staff confirmed the UPI payment on their Soundbox/Phone! Show Payment Done -> Receipt!
                 const approvedOrder = matchedOrder;
                 pendingUpiOrderToken = null;
+                stopExamPaymentTimer();
 
                 const oldTrayIds = Object.keys(tray);
                 tray = {};
@@ -2655,8 +2942,7 @@
                 });
                 updateFloatingTray();
 
-                document.getElementById('upiLivePaymentModal').classList.remove('active');
-                triggerOrderConfirmedRedirectToast(approvedOrder);
+                showExamPortalSuccessAndRedirect(approvedOrder, approvedOrder.utr || 'COUNTER-VERIFIED');
             }
         }
 
@@ -4087,7 +4373,7 @@
                 }
             }
 
-            const qrUri = buildStaticStoreQrUri(activeUpi, activeMerchant);
+            const qrUri = buildFixedAmountQrUri(activeUpi, activeMerchant, finalPayable, `CampusBites ${activeCol || ''}`);
             document.getElementById('upiQrImg').src = generateQrDataUrl(qrUri, 220);
             selectPayment(selectedPaymentMethod);
 
@@ -4129,9 +4415,20 @@
         }
 
         /* =====================================================================
-           ZERO-SECURITY-DECLINE APP LAUNCH & STRICT PAYMENT VERIFICATION
-           Never marks an order paid on return unless Counter approves or valid 12-digit UTR is verified!
+           NEET / JEE STYLE TIMED MULTI-OPTION PAYMENT PORTAL & FIXED-AMOUNT QR
+           Supports:
+           1. Fixed-Amount Dynamic QR (&am=FIXED_AMOUNT) + Static QR Toggle
+           2. UPI ID / VPA Collect Request
+           3. Debit / Credit Card + In-Portal 3D-Secure Bank OTP Verification
+           4. Net Banking (SBI, HDFC, ICICI, Indian Bank, Canara, Axis)
+           5. 5-Minute (05:00) Countdown Timer -> Payment Done OR Payment Failed
            ===================================================================== */
+        let examPaymentTimerInterval = null;
+        const EXAM_TOTAL_SECONDS = 300; // 5 Minutes (300 seconds) competitive exam portal limit
+        let examPaymentSecondsLeft = EXAM_TOTAL_SECONDS;
+        let selectedExamBankCode = "SBI";
+        let useFixedAmountQrMode = true; // Defaults to Fixed-Amount QR (&am= locked)
+
         function showUpiSecurityError(msg) {
             const errEl = document.getElementById('upiSecurityErrorMsg');
             if (!errEl) return;
@@ -4144,20 +4441,232 @@
             if (errEl) errEl.style.display = 'none';
         }
 
+        function refreshGatewayQrImage() {
+            const { vpa, merchant, amount, token } = activeGatewayUpiParams;
+            const qrImgEl = document.getElementById('upiGateQrImg');
+            const badgeLabel = document.getElementById('qrModeBadgeLabel');
+            const toggleBtn = document.getElementById('qrModeToggleBtn');
+            const fmtAmt = Number(amount || 0).toFixed(2);
+
+            if (!qrImgEl) return;
+
+            if (useFixedAmountQrMode) {
+                const fixedQrUri = buildFixedAmountQrUri(vpa, merchant, amount, `Token ${token || 'Order'}`);
+                qrImgEl.src = generateQrDataUrl(fixedQrUri, 240);
+                if (badgeLabel) {
+                    badgeLabel.style.color = '#059669';
+                    badgeLabel.innerHTML = `🔒 Fixed-Amount QR (Auto-Fills ₹<span class="btn-amt-span">${fmtAmt}</span> on Scan)`;
+                }
+                if (toggleBtn) {
+                    toggleBtn.innerText = '🔄 Switch to Static Store QR (If bank blocks dynamic QR)';
+                }
+            } else {
+                const staticQrUri = buildStaticStoreQrUri(vpa, merchant);
+                qrImgEl.src = generateQrDataUrl(staticQrUri, 240);
+                if (badgeLabel) {
+                    badgeLabel.style.color = 'var(--primary)';
+                    badgeLabel.innerHTML = `🛡️ Static Store QR (Enter ₹<span class="btn-amt-span">${fmtAmt}</span> Manually in App)`;
+                }
+                if (toggleBtn) {
+                    toggleBtn.innerText = `🔒 Switch Back to Fixed-Amount QR (₹${fmtAmt} Auto-Fill)`;
+                }
+            }
+        }
+
+        function toggleGatewayQrAmountMode() {
+            useFixedAmountQrMode = !useFixedAmountQrMode;
+            refreshGatewayQrImage();
+        }
+
+        function switchExamPgTab(tabKey) {
+            clearUpiSecurityError();
+            ['qr', 'vpa', 'card', 'netbanking'].forEach(k => {
+                const tabBtn = document.getElementById('pgTab_' + k);
+                const pane = document.getElementById('pgPane_' + k);
+                if (tabBtn) tabBtn.classList.toggle('active', k === tabKey);
+                if (pane) pane.classList.toggle('active', k === tabKey);
+            });
+        }
+
+        function startExamTimedPaymentSession(durationSeconds = EXAM_TOTAL_SECONDS) {
+            stopExamPaymentTimer();
+            examPaymentSecondsLeft = durationSeconds;
+            useFixedAmountQrMode = true;
+
+            const activeBody = document.getElementById('examPgActiveBody');
+            const successScreen = document.getElementById('examPgSuccessScreen');
+            const failedScreen = document.getElementById('examPgFailedScreen');
+            if (activeBody) activeBody.style.display = 'block';
+            if (successScreen) successScreen.classList.remove('active');
+            if (failedScreen) failedScreen.classList.remove('active');
+
+            // Reset sub-panes
+            const vpaWait = document.getElementById('vpaCollectWaitingBox');
+            if (vpaWait) vpaWait.style.display = 'none';
+            const cardFields = document.getElementById('cardFormFieldsBox');
+            const cardOtpBox = document.getElementById('cardOtpStepBox');
+            if (cardFields) cardFields.style.display = 'block';
+            if (cardOtpBox) cardOtpBox.style.display = 'none';
+            const nbSelect = document.getElementById('netbankingSelectBox');
+            const nbConfirm = document.getElementById('netbankingConfirmBox');
+            if (nbSelect) nbSelect.style.display = 'block';
+            if (nbConfirm) nbConfirm.style.display = 'none';
+
+            switchExamPgTab('qr');
+            refreshGatewayQrImage();
+            updateExamTimerUI();
+
+            examPaymentTimerInterval = setInterval(() => {
+                examPaymentSecondsLeft -= 1;
+                updateExamTimerUI();
+
+                if (examPaymentSecondsLeft <= 0) {
+                    stopExamPaymentTimer();
+                    triggerExamPaymentTimeoutFailure("⏱️ Session Time Limit Expired (05:00). Payment was not completed within the allowed portal window.");
+                }
+            }, 1000);
+        }
+
+        function stopExamPaymentTimer() {
+            if (examPaymentTimerInterval) {
+                clearInterval(examPaymentTimerInterval);
+                examPaymentTimerInterval = null;
+            }
+        }
+
+        function updateExamTimerUI() {
+            const safeSecs = Math.max(0, examPaymentSecondsLeft);
+            const mins = String(Math.floor(safeSecs / 60)).padStart(2, '0');
+            const secs = String(safeSecs % 60).padStart(2, '0');
+            const txtEl = document.getElementById('examCountdownText');
+            const pillEl = document.getElementById('examTimerPill');
+            const barEl = document.getElementById('examTimerBarFill');
+
+            if (txtEl) txtEl.innerText = `${mins}:${secs}`;
+            if (pillEl) pillEl.classList.toggle('danger-zone', safeSecs <= 60);
+            if (barEl) {
+                const pct = Math.max(0, (safeSecs / EXAM_TOTAL_SECONDS) * 100);
+                barEl.style.width = `${pct}%`;
+                barEl.style.background = safeSecs <= 60
+                    ? 'linear-gradient(90deg, #ef4444, #f59e0b)'
+                    : 'linear-gradient(90deg, #10b981, #4f46e5)';
+            }
+        }
+
+        function triggerExamPaymentTimeoutFailure(reasonText) {
+            stopExamPaymentTimer();
+            if (pendingUpiOrderToken) {
+                activeOrders = activeOrders.filter(o => !(o.token === pendingUpiOrderToken && o.status === 'upi_verifying'));
+                pendingUpiOrderToken = null;
+                saveState();
+            }
+            const activeBody = document.getElementById('examPgActiveBody');
+            const successScreen = document.getElementById('examPgSuccessScreen');
+            const failedScreen = document.getElementById('examPgFailedScreen');
+            const reasonEl = document.getElementById('examPgFailedReason');
+
+            if (activeBody) activeBody.style.display = 'none';
+            if (successScreen) successScreen.classList.remove('active');
+            if (reasonEl) reasonEl.innerText = reasonText || "Payment Failed or Timed Out.";
+            if (failedScreen) failedScreen.classList.add('active');
+        }
+
+        function closeFailedPaymentModal() {
+            stopExamPaymentTimer();
+            document.getElementById('upiLivePaymentModal').classList.remove('active');
+        }
+
+        function retryTimedPaymentSession() {
+            closeFailedPaymentModal();
+            placeOrder();
+        }
+
+        function triggerExamUpiCollectRequest() {
+            clearUpiSecurityError();
+            const vpaInput = document.getElementById('studentVpaInput');
+            const vpa = vpaInput ? vpaInput.value.trim() : '';
+            if (!vpa || !/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/.test(vpa)) {
+                showUpiSecurityError("❌ Please enter a valid UPI ID (e.g. yourname@okaxis or 9876543210@ybl).");
+                return;
+            }
+            const waitBox = document.getElementById('vpaCollectWaitingBox');
+            const statusTxt = document.getElementById('vpaCollectStatusText');
+            const fmtAmt = Number(activeGatewayUpiParams.amount || 0).toFixed(2);
+            if (statusTxt) {
+                statusTxt.innerHTML = `⏳ Collect request of <b>₹${fmtAmt}</b> sent to <code>${vpa}</code>! Approve in your UPI app before the timer expires.`;
+            }
+            if (waitBox) waitBox.style.display = 'block';
+        }
+
+        function initiateExamCardOtpStep() {
+            clearUpiSecurityError();
+            const num = (document.getElementById('pgCardNumber')?.value || '').replace(/\D/g, '');
+            const exp = (document.getElementById('pgCardExpiry')?.value || '').trim();
+            const cvv = (document.getElementById('pgCardCvv')?.value || '').trim();
+            if (num.length < 12 || !exp || cvv.length < 3) {
+                showUpiSecurityError("❌ Please enter a valid 16-digit Card Number, Expiry (MM/YY), and 3-digit CVV.");
+                return;
+            }
+            document.getElementById('cardFormFieldsBox').style.display = 'none';
+            document.getElementById('cardOtpStepBox').style.display = 'block';
+            const otpInput = document.getElementById('pgCardOtpInput');
+            if (otpInput) { otpInput.value = ''; otpInput.focus(); }
+        }
+
+        function cancelExamCardOtpStep() {
+            document.getElementById('cardOtpStepBox').style.display = 'none';
+            document.getElementById('cardFormFieldsBox').style.display = 'block';
+        }
+
+        function verifyExamCardOtpAndPay() {
+            clearUpiSecurityError();
+            const otp = (document.getElementById('pgCardOtpInput')?.value || '').trim();
+            if (!/^\d{4,6}$/.test(otp)) {
+                showUpiSecurityError("❌ Invalid OTP! Please enter the 6-digit Bank 3D-Secure OTP.");
+                return;
+            }
+            const num = (document.getElementById('pgCardNumber')?.value || '0000').replace(/\D/g, '');
+            completeSimulatedGatewayMethod('CARD-' + num.slice(-4));
+        }
+
+        function selectExamBank(btnEl, bankCode) {
+            selectedExamBankCode = bankCode;
+            document.querySelectorAll('.bank-option-btn').forEach(b => b.classList.remove('selected'));
+            if (btnEl) btnEl.classList.add('selected');
+        }
+
+        function initiateExamNetBankingStep() {
+            clearUpiSecurityError();
+            document.getElementById('netbankingSelectBox').style.display = 'none';
+            document.getElementById('netbankingConfirmBox').style.display = 'block';
+            const titleEl = document.getElementById('netbankingBankTitle');
+            const merchEl = document.getElementById('netbankingMerchantSpan');
+            if (titleEl) titleEl.innerText = `🏦 ${selectedExamBankCode} NetBanking Portal`;
+            if (merchEl) merchEl.innerText = activeGatewayUpiParams.merchant || 'CANTEEN OFFICIAL';
+        }
+
+        function completeSimulatedGatewayMethod(methodPrefix) {
+            if (examPaymentSecondsLeft <= 0 || !pendingUpiOrderToken) {
+                triggerExamPaymentTimeoutFailure("⏱️ Session expired before payment confirmation.");
+                return;
+            }
+            const refId = `${methodPrefix}-${Math.floor(10000000 + Math.random() * 90000000)}`;
+            finalizeAndCommitVerifiedOnlineOrder(refId);
+        }
+
         function copyGatewayUpiId() {
             const vpa = activeGatewayUpiParams.vpa || 'canteen@sbi';
             navigator.clipboard.writeText(vpa);
-            alert(`✔ Copied Official UPI ID: ${vpa}\n\nOpen GPay / PhonePe, paste ${vpa}, verify Banking Name "${activeGatewayUpiParams.merchant}", and pay ₹${Number(activeGatewayUpiParams.amount).toFixed(2)}.`);
+            alert(`✔ Copied Official UPI ID: ${vpa}\n\nPay ₹${Number(activeGatewayUpiParams.amount).toFixed(2)} within the time limit.`);
         }
 
         function copyGatewayUpiPhone() {
             const phone = activeGatewayUpiParams.phone || '';
             if (!phone) return;
             navigator.clipboard.writeText(phone);
-            alert(`✔ Copied Official UPI Mobile Number: ${phone}\n\nOpen GPay / PhonePe, paste ${phone}, verify Banking Name "${activeGatewayUpiParams.merchant}", and pay ₹${Number(activeGatewayUpiParams.amount).toFixed(2)}.`);
+            alert(`✔ Copied Official UPI Mobile Number: ${phone}\n\nPay ₹${Number(activeGatewayUpiParams.amount).toFixed(2)} within the time limit.`);
         }
 
-        /* Opens GPay / PhonePe / Paytm Home Screen WITHOUT any web collect URL parameter (0% Security Decline!) */
         function openUpiAppSafelyWithoutSecurityDecline(appName) {
             clearUpiSecurityError();
             const { vpa, phone, merchant, amount } = activeGatewayUpiParams;
@@ -4169,8 +4678,8 @@
 
             const headline = document.getElementById('upiLiveSyncStatusHeadline');
             const sub = document.getElementById('upiLiveSyncStatusSub');
-            if (headline) headline.innerHTML = `⏳ Waiting for ₹${Number(amount).toFixed(2)} Payment Confirmation...`;
-            if (sub) sub.innerHTML = `Copied <b>${copyTarget}</b>! Pay <b>₹${Number(amount).toFixed(2)}</b> to <b>${merchant}</b> in ${appName.toUpperCase()}.<br><b>Note:</b> Coming back without paying will NOT generate a receipt. Your receipt generates automatically when the Counter confirms or when you paste your 12-digit UTR.`;
+            if (headline) headline.innerHTML = `⏳ Waiting for ₹${Number(amount).toFixed(2)} Payment Within Time Limit...`;
+            if (sub) sub.innerHTML = `Copied <b>${copyTarget}</b>! Complete your <b>₹${Number(amount).toFixed(2)}</b> payment to <b>${merchant}</b> in ${appName.toUpperCase()} before the timer hits 00:00.`;
 
             const isAndroid = /Android/i.test(navigator.userAgent);
             if (isAndroid) {
@@ -4191,22 +4700,24 @@
             }
         }
 
-        /* Beams Pure Static Shop QR (without &am= tag) to GPay / PhonePe so it NEVER declines for security reasons */
+        /* Shares Fixed-Amount QR Code (or Static QR if toggled) directly to GPay / PhonePe */
         async function beamStaticQrToUpiApp() {
             clearUpiSecurityError();
             const { vpa, merchant, amount, token } = activeGatewayUpiParams;
-            const staticQrUri = buildStaticStoreQrUri(vpa, merchant);
-            const dataUrl = generateQrDataUrl(staticQrUri, 520);
+            const targetQrUri = useFixedAmountQrMode
+                ? buildFixedAmountQrUri(vpa, merchant, amount, `Token ${token || 'Order'}`)
+                : buildStaticStoreQrUri(vpa, merchant);
+            const dataUrl = generateQrDataUrl(targetQrUri, 520);
 
             try {
                 const res = await fetch(dataUrl);
                 const blob = await res.blob();
-                const file = new File([blob], `Shop_QR_${token || 'Canteen'}.png`, { type: 'image/png' });
+                const file = new File([blob], `CampusBites_QR_${token || 'Order'}.png`, { type: 'image/png' });
 
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     await navigator.share({
                         title: `Pay ₹${Number(amount).toFixed(2)} to ${merchant}`,
-                        text: `Select Google Pay or PhonePe, enter ₹${Number(amount).toFixed(2)}, and complete payment.`,
+                        text: `Scan in Google Pay or PhonePe to pay ₹${Number(amount).toFixed(2)} for Token #${token}.`,
                         files: [file]
                     });
                     return;
@@ -4240,6 +4751,10 @@
             }
 
             if (cleanDigits.length === 12 && pendingUpiOrderToken) {
+                if (examPaymentSecondsLeft <= 0) {
+                    triggerExamPaymentTimeoutFailure("⏱️ Session expired before UTR verification.");
+                    return;
+                }
                 if (!isValidNpciUtrNumber(cleanDigits)) {
                     showUpiSecurityError("❌ Invalid / Fake UTR! Please paste the genuine 12-digit UPI Reference / UTR Number from your GPay or PhonePe receipt.");
                     return;
@@ -4277,7 +4792,28 @@
             }
         }
 
+        function showExamPortalSuccessAndRedirect(completedOrder, refText) {
+            stopExamPaymentTimer();
+            const activeBody = document.getElementById('examPgActiveBody');
+            const failedScreen = document.getElementById('examPgFailedScreen');
+            const successScreen = document.getElementById('examPgSuccessScreen');
+            const subEl = document.getElementById('examPgSuccessSubText');
+            const refEl = document.getElementById('examPgSuccessRefBox');
+
+            if (activeBody) activeBody.style.display = 'none';
+            if (failedScreen) failedScreen.classList.remove('active');
+            if (subEl) subEl.innerText = `₹${Number(completedOrder.total).toFixed(2)} Paid for Token #${completedOrder.token} • Counter PIN: ${completedOrder.handshakePin}`;
+            if (refEl) refEl.innerText = `Transaction Ref: ${refText || completedOrder.utr || 'VERIFIED'}`;
+            if (successScreen) successScreen.classList.add('active');
+
+            setTimeout(() => {
+                document.getElementById('upiLivePaymentModal').classList.remove('active');
+                triggerOrderConfirmedRedirectToast(completedOrder);
+            }, 1100);
+        }
+
         function finalizeAndCommitVerifiedOnlineOrder(utrOrRef) {
+            stopExamPaymentTimer();
             if (!pendingUpiOrderToken) return;
             const idx = activeOrders.findIndex(o => o.token === pendingUpiOrderToken);
             if (idx === -1) return;
@@ -4301,11 +4837,11 @@
             });
             updateFloatingTray();
 
-            document.getElementById('upiLivePaymentModal').classList.remove('active');
-            triggerOrderConfirmedRedirectToast(completedOrder);
+            showExamPortalSuccessAndRedirect(completedOrder, activeOrders[idx].utr);
         }
 
         function cancelLiveUpiPaymentModal() {
+            stopExamPaymentTimer();
             if (pendingUpiOrderToken) {
                 // Remove unverified draft so unpaid orders NEVER generate a receipt!
                 activeOrders = activeOrders.filter(o => !(o.token === pendingUpiOrderToken && o.status === 'upi_verifying'));
@@ -4318,7 +4854,7 @@
 
         function triggerOrderConfirmedRedirectToast(orderObj) {
             document.getElementById('successToastHeading').innerText = (orderObj.payment === 'online')
-                ? "Online Payment Confirmed! ⚡"
+                ? "Payment Done! ⚡"
                 : "Cash Order Generated! 💵";
             document.getElementById('toastTokenDisplay').innerText = `#${orderObj.token} • PIN: ${orderObj.handshakePin}`;
             document.getElementById('successToastModal').classList.add('active');
@@ -4402,10 +4938,18 @@
             clearUpiSecurityError();
 
             // Push 'upi_verifying' request to Counter Ledger so Counter Staff can 1-tap approve when Soundbox rings!
-            // Note: 'upi_verifying' is hidden from student Digital Receipts until verified!
             activeOrders.unshift(orderDraft);
             pendingUpiOrderToken = tokenNum;
             saveState();
+
+            const formattedFixedAmt = finalTotal.toFixed(2);
+            activeGatewayUpiParams = {
+                vpa: activeUpi,
+                phone: activePhone,
+                merchant: activeMerchant,
+                amount: finalTotal,
+                token: tokenNum
+            };
 
             if (cloudConfig.razorpayKeyId && window.Razorpay) {
                 try {
@@ -4415,6 +4959,7 @@
                         currency: "INR",
                         name: activeMerchant,
                         description: `CampusBites Order #${tokenNum}`,
+                        timeout: EXAM_TOTAL_SECONDS, // 5-minute NEET/JEE style session timeout
                         prefill: {
                             name: currentUser.name || "Student",
                             email: currentUser.email || "student@campusbites.in",
@@ -4428,9 +4973,16 @@
                         },
                         modal: {
                             ondismiss: function() {
-                                cancelLiveUpiPaymentModal();
+                                pushOverlayHistoryState('upi-gateway-modal');
+                                document.getElementById('upiLivePaymentModal').classList.add('active');
+                                triggerExamPaymentTimeoutFailure("Razorpay checkout window was closed or timed out before payment completion.");
                             }
                         }
+                    });
+                    rzp.on('payment.failed', function(resp) {
+                        pushOverlayHistoryState('upi-gateway-modal');
+                        document.getElementById('upiLivePaymentModal').classList.add('active');
+                        triggerExamPaymentTimeoutFailure((resp && resp.error && resp.error.description) ? resp.error.description : "Payment failed at bank gateway.");
                     });
                     rzp.open();
                     return;
@@ -4438,15 +4990,6 @@
                     console.warn("Razorpay fallback:", e);
                 }
             }
-
-            const formattedFixedAmt = finalTotal.toFixed(2);
-            activeGatewayUpiParams = {
-                vpa: activeUpi,
-                phone: activePhone,
-                merchant: activeMerchant,
-                amount: finalTotal,
-                token: tokenNum
-            };
 
             document.getElementById('upiGateTokenHeading').innerText = `Pay ₹${formattedFixedAmt} • Token #${tokenNum}`;
             document.getElementById('upiGateBankingName').innerText = activeMerchant;
@@ -4468,11 +5011,9 @@
                 }
             }
 
-            const staticQrUri = buildStaticStoreQrUri(activeUpi, activeMerchant);
-            document.getElementById('upiGateQrImg').src = generateQrDataUrl(staticQrUri, 220);
-
             pushOverlayHistoryState('upi-gateway-modal');
             document.getElementById('upiLivePaymentModal').classList.add('active');
+            startExamTimedPaymentSession(EXAM_TOTAL_SECONDS);
         }
 
         function renderReceipts() {
