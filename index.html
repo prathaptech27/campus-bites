@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -397,7 +398,7 @@
             background: var(--primary);
             color: #fff;
             border: none;
-            padding: 4px 10px;
+            padding: 5px 10px;
             border-radius: 8px;
             font-size: 10.5px;
             font-weight: 900;
@@ -408,35 +409,26 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         .upi-app-btn {
             border: none;
             border-radius: 12px;
-            padding: 11px 12px;
-            font-size: 12px;
+            padding: 11px 10px;
+            font-size: 11.5px;
             font-weight: 900;
             color: #ffffff;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 5px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.18), inset 0 1px 1px rgba(255,255,255,0.35);
             text-decoration: none;
         }
         .upi-app-btn.gpay { background: linear-gradient(135deg, #1a73e8, #0d47a1); }
         .upi-app-btn.phonepe { background: linear-gradient(135deg, #6739b7, #4a148c); }
         .upi-app-btn.anyupi { grid-column: 1 / -1; background: linear-gradient(135deg, #059669, #047857); }
-
-        @keyframes pulseRadar {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.08); opacity: 0.72; }
-        }
-        .live-verify-pulse {
-            animation: pulseRadar 1.6s infinite ease-in-out;
-            display: inline-block;
-        }
 
         .toast-modal { position: fixed; inset: 0; background: rgba(15,23,42,0.52); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 600; display: none; align-items: center; justify-content: center; padding: 16px; }
         .toast-modal.active { display: flex; }
@@ -516,18 +508,18 @@
 
     <div class="ambient-mesh"></div>
 
-    <!-- LOCKED-AMOUNT NPCI UPI PAYMENT GATEWAY & ANTI-PHISHING AUTO-REDIRECT MODAL -->
+    <!-- ZERO-SECURITY-BLOCK UPI PAYMENT GATEWAY & ANTI-PHISHING AUTO-REDIRECT MODAL -->
     <div class="toast-modal" id="upiLivePaymentModal">
-        <div class="toast-card" style="text-align: left; max-width: 450px; max-height: 92vh; overflow-y: auto; padding: 20px;">
+        <div class="toast-card" style="text-align: left; max-width: 455px; max-height: 92vh; overflow-y: auto; padding: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--liquid-glass-border); padding-bottom: 8px;">
                 <div>
-                    <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: #10b981;">🔒 NPCI Locked-Amount UPI Gateway</span>
+                    <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: #10b981;">🔒 Official Canteen UPI Gateway</span>
                     <h3 style="font-size: 18px; font-weight: 900; color: var(--text-main);" id="upiGateTokenHeading">Pay ₹0.00 to Complete Order</h3>
                 </div>
                 <button class="close-drawer" onclick="cancelLiveUpiPaymentModal()">×</button>
             </div>
 
-            <!-- Locked Amount & Official Banking Name Shield -->
+            <!-- Official Banking Name, UPI ID & Mobile Number Shield -->
             <div class="banking-name-shield">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
@@ -535,7 +527,7 @@
                         <div style="font-size: 15px; font-weight: 900; color: var(--text-main); margin-top: 2px;" id="upiGateBankingName">CANTEEN OFFICIAL</div>
                     </div>
                     <div style="text-align: right; background: #065f46; color: #fff; padding: 5px 10px; border-radius: 10px;">
-                        <span style="font-size: 9px; font-weight: 800; text-transform: uppercase; display: block; opacity: 0.9;">🔒 Locked Amount</span>
+                        <span style="font-size: 9px; font-weight: 800; text-transform: uppercase; display: block; opacity: 0.9;">🔒 Exact Amount</span>
                         <strong style="font-size: 16px; font-weight: 900;" id="upiGateLockedAmountBadge">₹0.00</strong>
                     </div>
                 </div>
@@ -551,35 +543,46 @@
                 </div>
             </div>
 
-            <!-- NPCI Locked-Amount QR Code (am=XX.00 & mam=XX.00 fixed inside QR) -->
-            <div class="qr-checkout-frame" style="width: 148px; height: 148px; margin: 6px auto;">
-                <img id="upiGateQrImg" src="" alt="Official Locked-Amount UPI QR" />
+            <!-- QR Mode Switcher: Fixed-Amount Camera QR vs Gallery-Safe QR -->
+            <div class="sub-switch-bar sub-switch-2" style="margin-bottom: 6px;">
+                <button type="button" class="college-sub-tab active" id="qrModeBtnLocked" onclick="switchGatewayQrMode('locked')">🔒 Fixed-Amount QR (₹<span class="btn-amt-span">0</span>)</button>
+                <button type="button" class="college-sub-tab" id="qrModeBtnGallery" onclick="switchGatewayQrMode('gallery')">🛡️ Gallery-Upload Safe QR</button>
             </div>
 
-            <div style="background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); border-radius: 10px; padding: 7px 10px; font-size: 11px; color: var(--text-main); font-weight: 700; text-align: center; margin-bottom: 8px;">
-                🔒 <b>Amount Fixed at ₹<span id="upiGateInlineAmount">0.00</span>:</b> Scanning the QR above or tapping GPay / PhonePe below automatically locks the payable amount to <b>₹<span id="upiGateInlineAmount2">0.00</span></b> for <b id="upiGateInlineBankName">CANTEEN OFFICIAL</b>.
+            <div class="qr-checkout-frame" style="width: 146px; height: 146px; margin: 4px auto;">
+                <img id="upiGateQrImg" src="" alt="Official UPI QR" />
             </div>
 
-            <!-- Locked-Amount Launchers for GPay, PhonePe & Paytm -->
+            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 8px;">
+                <button type="button" onclick="downloadPaymentQrImage()" style="background: var(--surface-row-bg); color: var(--primary); border: 1px solid var(--liquid-glass-border); padding: 4px 10px; border-radius: 8px; font-size: 10.5px; font-weight: 800; cursor: pointer;">
+                    ⬇️ Save QR Image for Gallery Scan
+                </button>
+            </div>
+
+            <div style="background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); border-radius: 10px; padding: 7px 10px; font-size: 10.5px; color: var(--text-main); font-weight: 700; text-align: center; margin-bottom: 6px; line-height: 1.35;">
+                🛡️ <b>Why GPay / PhonePe blocks web links:</b> NPCI blocks browser payment links on personal UPI IDs. Tapping GPay or PhonePe below <b>copies the UPI ID & opens the app safely</b> — just paste & pay <b>₹<span id="upiGateInlineAmount">0.00</span></b> to <b id="upiGateInlineBankName">CANTEEN OFFICIAL</b>!
+            </div>
+
+            <!-- Safe Native App Launchers (Copies UPI ID / Mobile # & Opens App Home Screen — 0% Security Error!) -->
             <div class="upi-app-grid">
-                <button type="button" class="upi-app-btn gpay" onclick="launchExternalUpiApp('gpay')">
-                    🔵 Pay ₹<span class="btn-amt-span">0</span> in GPay
+                <button type="button" class="upi-app-btn gpay" onclick="launchSafeUpiAppHome('gpay')">
+                    🔵 Copy UPI & Open GPay
                 </button>
-                <button type="button" class="upi-app-btn phonepe" onclick="launchExternalUpiApp('phonepe')">
-                    🟣 Pay ₹<span class="btn-amt-span">0</span> in PhonePe
+                <button type="button" class="upi-app-btn phonepe" onclick="launchSafeUpiAppHome('phonepe')">
+                    🟣 Copy UPI & Open PhonePe
                 </button>
-                <button type="button" class="upi-app-btn anyupi" onclick="launchExternalUpiApp('any')">
-                    ⚡ Pay ₹<span class="btn-amt-span">0</span> in Paytm / BHIM / UPI
+                <button type="button" class="upi-app-btn anyupi" onclick="launchSafeUpiAppHome('paytm')">
+                    ⚡ Copy Mobile # / UPI & Open Paytm
                 </button>
             </div>
 
-            <!-- Strict Anti-Phishing Verification Box (Never auto-approves on unpaid return!) -->
+            <!-- Strict Anti-Phishing Verification Box -->
             <div style="background: rgba(16, 185, 129, 0.12); border: 1.5px dashed #10b981; border-radius: 14px; padding: 11px 12px; margin-top: 12px; text-align: center;">
-                <div style="font-size: 12px; font-weight: 900; color: #059669;" id="upiAutoDetectStatusTitle">
-                    🛡️ Anti-Phishing Payment Verification Active
+                <div style="font-size: 12px; font-weight: 900; color: #059669;">
+                    🛡️ Anti-Phishing Payment Verification
                 </div>
-                <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; margin-top: 3px; line-height: 1.35;" id="upiAutoDetectSubText">
-                    Coming back without paying will <b>NOT</b> generate a receipt. After paying <b>₹<span class="btn-amt-span">0</span></b>, enter your <b>12-digit UPI UTR / Ref No.</b> or upload your <b>Payment Screenshot</b> to auto-redirect:
+                <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; margin-top: 3px; line-height: 1.35;">
+                    After paying <b>₹<span class="btn-amt-span">0</span></b> in GPay / PhonePe, upload your <b>Payment Screenshot</b> or enter your <b>12-digit UPI UTR / Ref No.</b> to auto-redirect to your Digital Receipt:
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-top: 9px;">
@@ -1324,7 +1327,6 @@
             </div>
 
             <div class="admin-grid">
-                <!-- STEP 1: CANTEENS, UPI VPAs, MOBILE #, BANKING NAME & CANTEEN PIN -->
                 <div class="admin-panel" id="canteenManagerPanel">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>🏪 Canteens & UPI VPAs</h3>
@@ -1370,7 +1372,6 @@
                     <div class="item-list-box" id="adminCanteenList"></div>
                 </div>
 
-                <!-- STEP 2: MENU EDITOR -->
                 <div class="admin-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>🍽️ Edit Menu & Rates</h3>
@@ -1436,7 +1437,6 @@
                     <div class="item-list-box" id="adminMenuItemsList"></div>
                 </div>
 
-                <!-- STEP 3: OFFERS EDITOR -->
                 <div class="admin-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>📢 Post & Edit Item Offers</h3>
@@ -1686,7 +1686,7 @@
             <div class="payment-options">
                 <div class="payment-card selected" id="payOnlineCard" onclick="selectPayment('online')">
                     <h4>Online UPI / QR</h4>
-                    <p>GPay / PhonePe Locked</p>
+                    <p>GPay / PhonePe Verified</p>
                 </div>
                 <div class="payment-card" id="payCashCard" onclick="selectPayment('cash')">
                     <h4>Cash on Pay</h4>
@@ -1696,7 +1696,7 @@
         </div>
 
         <div id="qrDisplayContainer">
-            <p style="font-size: 13px; font-weight: 900; color: #10b981; margin-bottom: 4px;">🔒 Official Locked-Amount Canteen UPI</p>
+            <p style="font-size: 13px; font-weight: 900; color: #10b981; margin-bottom: 4px;">🔒 Official Canteen UPI & Banking Details</p>
             <div class="banking-name-shield" style="margin-bottom: 8px;">
                 <div style="font-size: 10px; font-weight: 900; color: #059669; text-transform: uppercase;">🏦 Official Banking Name (Verify in GPay / PhonePe)</div>
                 <div style="font-size: 14.5px; font-weight: 900; color: var(--text-main); margin-top: 2px;" id="qrMerchantNameText">CANTEEN OFFICIAL</div>
@@ -1707,17 +1707,17 @@
                 <img id="upiQrImg" src="" alt="UPI QR" />
             </div>
             <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 4px;">
-                Amount is automatically fixed & locked. Auto-redirects only upon verified payment.
+                Auto-redirects to your Digital Receipt only upon verified payment.
             </div>
         </div>
 
         <div class="bill-summary">
             <div class="bill-row"><span>Item Total</span><span>₹<span id="billSubtotal">0</span></span></div>
             <div class="bill-row"><span>Applied Offer Discount</span><span id="billDiscountText" style="color:var(--success); font-weight:800;">-₹0</span></div>
-            <div class="bill-row total"><span>Total Amount Payable (Locked)</span><span>₹<span id="billTotal">0</span></span></div>
+            <div class="bill-row total"><span>Total Amount Payable</span><span>₹<span id="billTotal">0</span></span></div>
         </div>
 
-        <button class="checkout-btn" id="mainCheckoutActionBtn" onclick="placeOrder()">⚡ Proceed to Locked UPI Payment</button>
+        <button class="checkout-btn" id="mainCheckoutActionBtn" onclick="placeOrder()">⚡ Proceed to UPI Payment</button>
     </div>
 
     <!-- SUCCESS TOAST MODAL -->
@@ -1756,9 +1756,9 @@
         let activeSpendingPeriodFilter = "all";
         let currentRevenueModalPeriod = "today";
 
-        // Tracks an active UPI payment draft awaiting verified payment proof
         let pendingUpiOrderDraft = null;
         let activeGatewayUpiParams = { vpa: '', phone: '', merchant: '', amount: 0, token: '' };
+        let currentGatewayQrMode = 'locked';
         let usedPaymentProofHashes = JSON.parse(localStorage.getItem('cb_used_proof_hashes')) || [];
 
         let collegeSignupOtpRequired = localStorage.getItem('cb_college_otp_required') !== 'false';
@@ -1925,15 +1925,42 @@
         }
 
         /* =====================================================================
-           NPCI LOCKED-AMOUNT UPI URI BUILDER (am=XX.00 & mam=XX.00)
-           Fixes the exact payable amount in GPay, PhonePe, Paytm & BHIM so user cannot edit it!
+           DUAL-MODE NPCI QR BUILDER (FIXED-AMOUNT CAMERA QR VS GALLERY-SAFE QR)
+           Removes &mam= which triggers NPCI dynamic merchant block on personal VPAs!
            ===================================================================== */
-        function buildLockedAmountNpciUpiUri(vpa, bankingName, amountValue, schemePrefix = 'upi://pay') {
+        function buildNpciStandardQrUri(vpa, bankingName, amountValue, includeAmount = true) {
             const cleanVpa = String(vpa || 'canteen@sbi').trim();
             const cleanName = String(bankingName || 'CANTEEN OFFICIAL').replace(/[^a-zA-Z0-9 ]/g, ' ').trim();
-            const fixedDecimalAmt = (Number(amountValue) || 0).toFixed(2);
-            // am = Exact Amount, mam = Minimum Amount (NPCI spec to lock amount so user cannot lower it)
-            return `${schemePrefix}?pa=${encodeURIComponent(cleanVpa)}&pn=${encodeURIComponent(cleanName)}&am=${fixedDecimalAmt}&mam=${fixedDecimalAmt}&cu=INR`;
+            if (includeAmount && Number(amountValue) > 0) {
+                const fixedDecimalAmt = Number(amountValue).toFixed(2);
+                return `upi://pay?pa=${encodeURIComponent(cleanVpa)}&pn=${encodeURIComponent(cleanName)}&am=${fixedDecimalAmt}&cu=INR`;
+            }
+            return `upi://pay?pa=${encodeURIComponent(cleanVpa)}&pn=${encodeURIComponent(cleanName)}&cu=INR`;
+        }
+
+        function switchGatewayQrMode(mode) {
+            currentGatewayQrMode = mode;
+            const btnLocked = document.getElementById('qrModeBtnLocked');
+            const btnGallery = document.getElementById('qrModeBtnGallery');
+            if (btnLocked) btnLocked.classList.toggle('active', mode === 'locked');
+            if (btnGallery) btnGallery.classList.toggle('active', mode === 'gallery');
+
+            const { vpa, merchant, amount } = activeGatewayUpiParams;
+            const qrUri = buildNpciStandardQrUri(vpa, merchant, amount, mode === 'locked');
+            document.getElementById('upiGateQrImg').src = generateQrDataUrl(qrUri, 220);
+        }
+
+        function downloadPaymentQrImage() {
+            const { vpa, merchant, amount, token } = activeGatewayUpiParams;
+            // Gallery-uploaded QRs in GPay/PhonePe work best with Gallery-Safe format
+            const qrUri = buildNpciStandardQrUri(vpa, merchant, amount, currentGatewayQrMode === 'locked');
+            const dataUrl = generateQrDataUrl(qrUri, 480);
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = `CampusBites_Pay_${token || 'QR'}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         function getCollegeInviteUrl(colName) {
@@ -2520,7 +2547,7 @@
                             <div>
                                 <strong>#${o.token}</strong> • ${o.name} <small style="color:var(--text-muted);">(${o.timestamp || 'Today'})</small><br>
                                 <span style="font-size:10.5px; font-weight:800; color:${isOnline ? 'var(--primary)' : 'var(--success)'};">
-                                    ${isOnline ? `⚡ ONLINE UPI PAID${o.utr ? ' (UTR: ' + o.utr + ')' : ''}` : '💵 CASH PAID'} • 🏪 ${o.orderedCanteen || 'Main'}
+                                    ${isOnline ? `⚡ ONLINE UPI PAID${o.utr ? ' (' + o.utr + ')' : ''}` : '💵 CASH PAID'} • 🏪 ${o.orderedCanteen || 'Main'}
                                 </span>
                             </div>
                             <strong style="font-size:14px; color:var(--text-main);">₹${o.total}</strong>
@@ -3806,7 +3833,7 @@
                         <td><strong>#${o.token}</strong><br><span style="font-size:11px; color:var(--text-muted);">📅 ${dateStr} • 🕒 ${o.timestamp || ''}</span></td>
                         <td><strong>🏛️ ${o.collegePass || 'College'}</strong><br><span style="font-size:11px; color:var(--primary);">🏪 ${o.orderedCanteen || 'Main'}</span></td>
                         <td>${itemsSummary}</td>
-                        <td><span style="text-transform:uppercase; font-size:11px; font-weight:800;">${o.payment || 'online'}${o.utr ? ' (UTR:' + o.utr + ')' : ''}</span></td>
+                        <td><span style="text-transform:uppercase; font-size:11px; font-weight:800;">${o.payment || 'online'}${o.utr ? ' (' + o.utr + ')' : ''}</span></td>
                         <td><strong style="font-size:15px; color:var(--primary);">₹${o.total}</strong></td>
                     </tr>
                 `;
@@ -4046,9 +4073,8 @@
                 }
             }
 
-            // Build NPCI Locked-Amount QR URI (am=XX.00 & mam=XX.00) so scanning locks the exact amount!
-            const lockedQrUri = buildLockedAmountNpciUpiUri(activeUpi, activeMerchant, finalPayable);
-            document.getElementById('upiQrImg').src = generateQrDataUrl(lockedQrUri, 220);
+            const qrUri = buildNpciStandardQrUri(activeUpi, activeMerchant, finalPayable, true);
+            document.getElementById('upiQrImg').src = generateQrDataUrl(qrUri, 220);
             selectPayment(selectedPaymentMethod);
 
             if (!wasAlreadyOpen) pushOverlayHistoryState('tray-drawer');
@@ -4079,7 +4105,7 @@
                 document.getElementById('payOnlineCard').classList.add('selected');
                 document.getElementById('payCashCard').classList.remove('selected');
                 qrBox.style.display = 'block';
-                if (mainBtn) mainBtn.innerText = `🔒 Pay Locked Amount ₹${totalVal} via GPay / PhonePe`;
+                if (mainBtn) mainBtn.innerText = `⚡ Proceed to UPI Payment (₹${totalVal})`;
             } else {
                 document.getElementById('payCashCard').classList.add('selected');
                 document.getElementById('payOnlineCard').classList.remove('selected');
@@ -4089,7 +4115,7 @@
         }
 
         /* =====================================================================
-           LOCKED-AMOUNT UPI LAUNCH + ANTI-PHISHING UTR & SCREENSHOT VERIFIER
+           ZERO-SECURITY-ERROR NATIVE APP LAUNCH + ANTI-PHISHING VERIFIER
            ===================================================================== */
         function showUpiSecurityError(msg) {
             const errEl = document.getElementById('upiSecurityErrorMsg');
@@ -4106,45 +4132,64 @@
         function copyGatewayUpiId() {
             const vpa = activeGatewayUpiParams.vpa || 'canteen@sbi';
             navigator.clipboard.writeText(vpa);
-            alert(`✔ Copied Official UPI ID: ${vpa}\n\nVerify Banking Name "${activeGatewayUpiParams.merchant}" and pay the exact locked amount ₹${Number(activeGatewayUpiParams.amount).toFixed(2)}.`);
+            alert(`✔ Copied Official UPI ID: ${vpa}\n\nPaste in GPay / PhonePe, verify Banking Name "${activeGatewayUpiParams.merchant}", and pay ₹${Number(activeGatewayUpiParams.amount).toFixed(2)}.`);
         }
 
         function copyGatewayUpiPhone() {
             const phone = activeGatewayUpiParams.phone || '';
             if (!phone) return;
             navigator.clipboard.writeText(phone);
-            alert(`✔ Copied Official UPI Mobile Number: ${phone}\n\nVerify Banking Name "${activeGatewayUpiParams.merchant}" and pay the exact locked amount ₹${Number(activeGatewayUpiParams.amount).toFixed(2)}.`);
+            alert(`✔ Copied Official UPI Mobile Number: ${phone}\n\nPaste in GPay / PhonePe, verify Banking Name "${activeGatewayUpiParams.merchant}", and pay ₹${Number(activeGatewayUpiParams.amount).toFixed(2)}.`);
         }
 
-        function launchExternalUpiApp(appType) {
+        /* Launches GPay / PhonePe / Paytm to its Native Home Screen WITHOUT the blocked `/upi/pay?pa=` Web Collect URL! */
+        function launchSafeUpiAppHome(appType) {
             clearUpiSecurityError();
             const { vpa, phone, merchant, amount } = activeGatewayUpiParams;
-            const targetToCopy = vpa || phone;
-            if (targetToCopy && navigator.clipboard) {
-                try { navigator.clipboard.writeText(targetToCopy); } catch (e) {}
+            const copyTarget = (appType === 'paytm' && phone) ? phone : (vpa || phone);
+
+            if (copyTarget && navigator.clipboard) {
+                try { navigator.clipboard.writeText(copyTarget); } catch (e) {}
             }
 
-            // Launch UPI app with 2-decimal am=XX.00 and mam=XX.00 so the amount is pre-filled and locked!
-            let scheme = 'upi://pay';
-            if (appType === 'gpay') scheme = 'tez://upi/pay';
-            else if (appType === 'phonepe') scheme = 'phonepe://pay';
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            const fixedAmt = Number(amount || 0).toFixed(2);
 
-            const lockedDeepLink = buildLockedAmountNpciUpiUri(vpa, merchant, amount, scheme);
-            window.location.href = lockedDeepLink;
+            alert(`✔ Copied to Clipboard: ${copyTarget}\n\nOpening ${appType.toUpperCase()} safely (Zero Security Block Mode):\n1. Tap 'Pay UPI ID or Number' & Paste (${copyTarget})\n2. Verify Banking Name: ${merchant}\n3. Pay ₹${fixedAmt} & upload screenshot or 12-digit UTR to auto-redirect!`);
+
+            if (isAndroid) {
+                if (appType === 'gpay') {
+                    window.location.href = `intent://#Intent;package=com.google.android.apps.nbu.paisa.user;scheme=https;end`;
+                    return;
+                } else if (appType === 'phonepe') {
+                    window.location.href = `intent://#Intent;package=com.phonepe.app;scheme=phonepe;end`;
+                    return;
+                } else if (appType === 'paytm') {
+                    window.location.href = `intent://#Intent;package=net.one97.paytm;scheme=paytmmp;end`;
+                    return;
+                }
+            } else {
+                if (appType === 'gpay') {
+                    window.location.href = `gpay://`;
+                    return;
+                } else if (appType === 'phonepe') {
+                    window.location.href = `phonepe://`;
+                    return;
+                } else if (appType === 'paytm') {
+                    window.location.href = `paytmmp://`;
+                    return;
+                }
+            }
         }
 
-        // Strict NPCI 12-Digit UTR Anti-Phishing Validator
         function isValidNpciUtrNumber(utrStr) {
             if (!/^\d{12}$/.test(utrStr)) return false;
-            // Block all repeating digits (000000000000, 111111111111, etc.)
             if (/^(\d)\1{11}$/.test(utrStr)) return false;
-            // Block obvious sequential phishing strings
             const blockedFakePatterns = [
                 '123456789012', '123456789123', '987654321098', '012345678901',
                 '101010101010', '121212121212', '123123123123', '000000000001'
             ];
             if (blockedFakePatterns.includes(utrStr)) return false;
-            // Ensure at least 4 distinct digits exist in the 12-digit UTR
             const uniqueDigits = new Set(utrStr.split('')).size;
             if (uniqueDigits < 4) return false;
             return true;
@@ -4176,13 +4221,11 @@
             }
         }
 
-        // Anti-Phishing Screenshot Inspector (Checks File Timestamp Freshness + Image Dimensions + Unique Byte Fingerprint)
         function handleUpiScreenshotAutoVerify(event) {
             clearUpiSecurityError();
             const file = event.target.files && event.target.files[0];
             if (!file || !pendingUpiOrderDraft) return;
 
-            // 1. Check file timestamp: Screenshot must not be an old gallery image from before the order was initiated (allow 2 min clock skew)
             const orderCreatedTs = Number(pendingUpiOrderDraft.createdAt) || Date.now();
             if (file.lastModified && file.lastModified < (orderCreatedTs - 120000)) {
                 showUpiSecurityError("❌ Anti-Phishing Block: This screenshot was taken BEFORE this order was created! Please upload your fresh payment screenshot.");
@@ -4193,7 +4236,6 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const dataUrl = e.target.result || '';
-                // 2. Compute deterministic fingerprint hash of the image file to block duplicate screenshot replay
                 let hash = 5381;
                 const step = Math.max(1, Math.floor(dataUrl.length / 500));
                 for (let i = 0; i < dataUrl.length; i += step) {
@@ -4207,7 +4249,6 @@
                     return;
                 }
 
-                // 3. Verify image dimensions (must be a valid phone screenshot / receipt image)
                 const img = new Image();
                 img.onload = function() {
                     const w = img.naturalWidth || img.width;
@@ -4351,7 +4392,6 @@
             pendingUpiOrderDraft = orderDraft;
             clearUpiSecurityError();
 
-            // If Creator configured a Razorpay Key ID, launch native Razorpay UPI Checkout (100% Bank-Locked Amount & Instant Callback)
             if (cloudConfig.razorpayKeyId && window.Razorpay) {
                 try {
                     const rzp = new Razorpay({
@@ -4375,7 +4415,7 @@
                     rzp.open();
                     return;
                 } catch (e) {
-                    console.warn("Razorpay fallback to Locked NPCI Gateway:", e);
+                    console.warn("Razorpay fallback:", e);
                 }
             }
 
@@ -4393,7 +4433,6 @@
             document.getElementById('upiGateLockedAmountBadge').innerText = `₹${formattedFixedAmt}`;
             document.getElementById('upiGateInlineBankName').innerText = activeMerchant;
             document.getElementById('upiGateInlineAmount').innerText = formattedFixedAmt;
-            document.getElementById('upiGateInlineAmount2').innerText = formattedFixedAmt;
             document.getElementById('upiGateVpaText').innerText = activeUpi;
             document.getElementById('upiUtrInput').value = '';
 
@@ -4411,9 +4450,7 @@
                 }
             }
 
-            // Locked-Amount NPCI QR Code (am=XX.00 & mam=XX.00)
-            const lockedQrUri = buildLockedAmountNpciUpiUri(activeUpi, activeMerchant, finalTotal);
-            document.getElementById('upiGateQrImg').src = generateQrDataUrl(lockedQrUri, 220);
+            switchGatewayQrMode('locked');
 
             pushOverlayHistoryState('upi-gateway-modal');
             document.getElementById('upiLivePaymentModal').classList.add('active');
