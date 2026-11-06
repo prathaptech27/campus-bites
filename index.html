@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -403,7 +402,7 @@
         </div>
     </div>
 
-    <!-- ORDER DETAILS POPUP MODAL FOR COUNTER STAFF (WHEN SEARCHING TOKEN OR CLICKING ORDER ROW) -->
+    <!-- ORDER DETAILS POPUP MODAL FOR COUNTER STAFF (WHEN 3+ DIGIT TOKEN TYPED OR ORDER ROW CLICKED) -->
     <div class="toast-modal" id="ledgerOrderPopupModal">
         <div class="toast-card" style="text-align: left; max-width: 480px; max-height: 90vh; overflow-y: auto; padding: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--liquid-glass-border); padding-bottom: 10px;">
@@ -444,21 +443,28 @@
         </div>
     </div>
 
-    <!-- COLLEGE FORGOT PIN / RESET PASSWORD MODAL -->
+    <!-- COLLEGE & CANTEEN FORGOT PIN / RESET PASSWORD MODAL -->
     <div class="toast-modal" id="forgotCollegePinModal">
-        <div class="toast-card" style="text-align: left; max-width: 420px;">
+        <div class="toast-card" style="text-align: left; max-width: 440px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h3 style="font-size: 17px; font-weight: 900; color: var(--text-main);">🔑 Forgot / Reset College PIN</h3>
+                <h3 style="font-size: 17px; font-weight: 900; color: var(--text-main);">🔑 Forgot / Reset College & Canteen PIN</h3>
                 <button class="close-drawer" onclick="closeForgotCollegePinModal()">×</button>
             </div>
             <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 12px;">
-                Select your college and enter your registered Admin Email ID to receive an OTP and reset your Admin and Counter Staff PINs.
+                Select your college (and optional canteen) and enter your registered Admin Email ID to receive an OTP and reset your PINs.
             </p>
 
-            <div class="form-group">
-                <label>Select Registered College *</label>
-                <select class="form-control" id="forgotCollegeSelect"></select>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div class="form-group">
+                    <label>Registered College *</label>
+                    <select class="form-control" id="forgotCollegeSelect" onchange="populateForgotCanteenDropdown()"></select>
+                </div>
+                <div class="form-group">
+                    <label>Canteen (Optional)</label>
+                    <select class="form-control" id="forgotCanteenSelect"></select>
+                </div>
             </div>
+
             <div class="form-group">
                 <label>Registered Admin Email ID *</label>
                 <input type="email" class="form-control" id="forgotCollegeEmailInput" placeholder="admin@college.ac.in">
@@ -479,8 +485,8 @@
                         <input type="password" class="form-control" id="forgotNewAdminPin" maxlength="6" placeholder="New Admin PIN">
                     </div>
                     <div class="form-group">
-                        <label>New Counter PIN *</label>
-                        <input type="password" class="form-control" id="forgotNewStaffPin" maxlength="6" placeholder="New Staff PIN">
+                        <label>New Canteen / Staff PIN *</label>
+                        <input type="password" class="form-control" id="forgotNewStaffPin" maxlength="6" placeholder="New Counter PIN">
                     </div>
                 </div>
                 <button type="button" class="checkout-btn" onclick="verifyAndResetCollegePins()" style="background: #10b981; margin-top: 6px;">
@@ -716,15 +722,15 @@
                     <button class="checkout-btn" onclick="completeStaffLogin()" style="background: #059669; margin-top: 6px;">Login to Counter Portal &rarr;</button>
                 </div>
 
-                <!-- 2C. College Sign Up (REQUIRES OTP VERIFICATION) -->
+                <!-- 2C. College Sign Up (REQUIRES UNIQUE EMAIL + OTP VERIFICATION) -->
                 <div id="subFormSignup" style="display: none;">
                     <div style="background: rgba(99, 102, 241, 0.15); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--text-main); font-weight: 700; line-height: 1.4;">
-                        📝 <b>College Sign Up & PIN Setup:</b> Register your college, verify via Email OTP, and create your custom <b>Admin PIN</b> and <b>Counter Staff PIN</b>.
+                        📝 <b>College Sign Up & PIN Setup:</b> Each college must use a unique Admin Email ID. Verify via Email OTP and create your custom PINs.
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <div class="form-group">
                             <label>College Name *</label>
-                            <input type="text" class="form-control" id="signupCollegeName" placeholder="e.g. VPIET">
+                            <input type="text" class="form-control" id="signupCollegeName" placeholder="e.g. PSG">
                         </div>
                         <div class="form-group">
                             <label>Primary Canteen Name *</label>
@@ -733,7 +739,7 @@
                     </div>
                     <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 8px;">
                         <div class="form-group">
-                            <label>Admin Email ID (Receives OTP) *</label>
+                            <label>Unique Admin Email (OTP) *</label>
                             <input type="email" class="form-control" id="signupAdminEmail" placeholder="admin@college.ac.in">
                         </div>
                         <div class="form-group">
@@ -785,10 +791,11 @@
         </div>
     </header>
 
-    <!-- STUDENT NAVIGATION TABS -->
+    <!-- STUDENT NAVIGATION TABS (NOW INCLUDES MY SPENDING TRACKER) -->
     <div class="nav-tabs" id="studentNavTabs">
         <button class="tab-btn active" onclick="switchTab('menu')">🍔 Canteens & Menu</button>
         <button class="tab-btn" onclick="switchTab('receipts')">🧾 My Digital Receipts</button>
+        <button class="tab-btn" onclick="switchTab('spending')">📊 My Spending (Daily / Weekly / Monthly)</button>
     </div>
 
     <!-- ADMINISTRATION & COUNTER STAFF NAVIGATION TABS -->
@@ -802,7 +809,7 @@
     <!-- MAIN CONTAINER -->
     <div class="container">
 
-        <!-- COUNTER STAFF POST-LOGIN STEP 2: SELECT CANTEEN & VERIFY PIN -->
+        <!-- COUNTER STAFF POST-LOGIN STEP 2: SELECT CANTEEN & VERIFY PIN (WITH FORGOT PIN OPTION) -->
         <div id="tab-counter-canteen-gate" class="tab-content">
             <div class="counter-canteen-gate-card">
                 <div style="text-align: center; margin-bottom: 18px;">
@@ -810,7 +817,7 @@
                     <span style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #10b981; letter-spacing: 0.6px;" id="staffGateCollegeBadge">COLLEGE COUNTER PORTAL</span>
                     <h2 style="font-size: 20px; font-weight: 900; color: var(--text-main); margin-top: 2px;">Select Canteen & Verify PIN</h2>
                     <p style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 4px;">
-                        Select your canteen to view its required food preparation and enter your PIN to access all counter & menu tools.
+                        Select your canteen to view its required food preparation and enter your Canteen PIN to unlock all counter tools.
                     </p>
                 </div>
 
@@ -837,8 +844,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Enter Canteen / Counter PIN *</label>
-                    <input type="password" class="form-control" id="staffGatePinInput" placeholder="Enter Counter PIN">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <label style="margin-bottom: 0;">Enter Canteen / Counter PIN *</label>
+                        <button type="button" class="text-link-btn" onclick="openForgotPinFromSelectCanteen()">Forgot Canteen PIN?</button>
+                    </div>
+                    <input type="password" class="form-control" id="staffGatePinInput" placeholder="Enter Canteen / Counter PIN">
                 </div>
 
                 <button class="checkout-btn" onclick="unlockCounterCanteenWorkspace()" style="background: #059669; margin-top: 8px;">
@@ -948,7 +958,58 @@
             <div id="receiptsContainer"></div>
         </div>
 
-        <!-- ADMIN & COUNTER TAB 1: STUDIO -->
+        <!-- STUDENT TAB 3: MY FOOD SPENDING ANALYTICS (DAILY, WEEKLY, MONTHLY) -->
+        <div id="tab-spending" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+                <div>
+                    <h2 style="font-size: 19px; font-weight: 900; color: var(--text-main);">📊 My Food Spending Tracker</h2>
+                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Track your personal canteen expenses across Daily, Weekly, and Monthly periods.</p>
+                </div>
+                <button type="button" class="app-back-pill-btn" onclick="switchTab('menu')">← Back to Menu</button>
+            </div>
+
+            <div class="finance-summary-grid">
+                <div class="finance-card" onclick="filterStudentSpendingPeriod('daily')" style="cursor: pointer; border-left: 4px solid #10b981;">
+                    <h4>📅 Daily Spending (Today)</h4>
+                    <div class="amount" id="stuDailySpendAmount" style="color: #10b981;">₹0</div>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 700;" id="stuDailySpendOrders">0 orders today</p>
+                </div>
+                <div class="finance-card" onclick="filterStudentSpendingPeriod('weekly')" style="cursor: pointer; border-left: 4px solid var(--primary);">
+                    <h4>📆 Weekly Spending (Last 7 Days)</h4>
+                    <div class="amount" id="stuWeeklySpendAmount" style="color: var(--primary);">₹0</div>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 700;" id="stuWeeklySpendOrders">0 orders this week</p>
+                </div>
+                <div class="finance-card" onclick="filterStudentSpendingPeriod('monthly')" style="cursor: pointer; border-left: 4px solid #f59e0b;">
+                    <h4>🗓️ Monthly Spending (This Month)</h4>
+                    <div class="amount" id="stuMonthlySpendAmount" style="color: #f59e0b;">₹0</div>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 700;" id="stuMonthlySpendOrders">0 orders this month</p>
+                </div>
+            </div>
+
+            <div class="cat-scroll" id="spendingPeriodPills" style="margin-bottom: 12px;">
+                <button class="cat-pill active" data-period="all" onclick="filterStudentSpendingPeriod('all')">All Expenses</button>
+                <button class="cat-pill" data-period="daily" onclick="filterStudentSpendingPeriod('daily')">Today (Daily)</button>
+                <button class="cat-pill" data-period="weekly" onclick="filterStudentSpendingPeriod('weekly')">This Week (7 Days)</button>
+                <button class="cat-pill" data-period="monthly" onclick="filterStudentSpendingPeriod('monthly')">This Month</button>
+            </div>
+
+            <div class="statement-table-wrapper">
+                <table class="statement-table">
+                    <thead>
+                        <tr>
+                            <th>Token & Ordered Time</th>
+                            <th>College & Canteen</th>
+                            <th>Food Items Ordered</th>
+                            <th>Payment Mode</th>
+                            <th>Amount Spent (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentSpendingTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ADMIN & COUNTER TAB 1: STUDIO (WITH CLICK-TO-EDIT CANTEEN & CANTEEN PIN) -->
         <div id="tab-admin-studio" class="tab-content">
             <div style="background: rgba(15, 23, 42, 0.84); backdrop-filter: blur(18px); color: white; padding: 16px 20px; border-radius: var(--radius); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid rgba(255,255,255,0.28);">
                 <div>
@@ -980,12 +1041,25 @@
             </div>
 
             <div class="admin-grid">
+                <!-- STEP 1: CANTEENS, UPI VPAs & CANTEEN PIN (CLICK TO EDIT IN-PLACE) -->
                 <div class="admin-panel" id="canteenManagerPanel">
-                    <h3>🏪 Canteens & UPI VPAs</h3>
-                    <p class="sub">Admin Only: Add canteens and official UPI IDs.</p>
-                    <div class="form-group">
-                        <label>Canteen Name *</label>
-                        <input type="text" class="form-control" id="newCanteenName" placeholder="e.g. Main">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>🏪 Canteens & UPI VPAs</h3>
+                        <button type="button" id="cancelCanteenEditBtn" onclick="adminResetCanteenForm()" style="display: none; background: #fee2e2; color: #dc2626; border: none; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; cursor: pointer;">Cancel Edit</button>
+                    </div>
+                    <p class="sub">Admin Only: Add or click any canteen below to edit its Name, UPI ID, or Canteen PIN.</p>
+
+                    <input type="hidden" id="editingCanteenId" value="">
+
+                    <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 8px;">
+                        <div class="form-group">
+                            <label>Canteen Name *</label>
+                            <input type="text" class="form-control" id="newCanteenName" placeholder="e.g. Main">
+                        </div>
+                        <div class="form-group">
+                            <label>Canteen PIN *</label>
+                            <input type="password" class="form-control" id="newCanteenPin" maxlength="6" placeholder="e.g. 1111">
+                        </div>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <div class="form-group">
@@ -997,10 +1071,13 @@
                             <input type="text" class="form-control" id="newCanteenUpi" placeholder="canteen@sbi">
                         </div>
                     </div>
-                    <button class="checkout-btn" onclick="adminAddCanteen()" style="padding: 10px; font-size: 13px; margin-bottom: 12px;">+ Add Canteen</button>
+                    <button class="checkout-btn" id="saveCanteenBtnText" onclick="adminSaveOrUpdateCanteen()" style="padding: 10px; font-size: 13px; margin-bottom: 12px;">+ Add / Save Canteen</button>
+
+                    <label style="font-size: 10.5px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin: 4px 0 4px 0;">Existing Canteens (Click to Edit, ✕ to Remove)</label>
                     <div class="item-list-box" id="adminCanteenList"></div>
                 </div>
 
+                <!-- STEP 2: MENU EDITOR -->
                 <div class="admin-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>🍽️ Edit Menu & Rates</h3>
@@ -1066,6 +1143,7 @@
                     <div class="item-list-box" id="adminMenuItemsList"></div>
                 </div>
 
+                <!-- STEP 3: OFFERS EDITOR -->
                 <div class="admin-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>📢 Post & Edit Item Offers</h3>
@@ -1120,12 +1198,12 @@
             </div>
         </div>
 
-        <!-- ADMIN & COUNTER TAB 2: COUNTER LEDGER (WITH TOKEN SEARCH ENTER POPUP & ROW CLICK POPUP) -->
+        <!-- ADMIN & COUNTER TAB 2: COUNTER LEDGER -->
         <div id="tab-admin-ledger" class="tab-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                 <div>
                     <h2 style="font-size: 19px; font-weight: 900;" id="ledgerHeadingTitle">👨‍🍳 Orders & Bank Statement Counter Ledger</h2>
-                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Search by Token # and press Enter/OK, or click any order row to open the Order Details Popup.</p>
+                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Type 3+ digits of Token # (or press Enter/OK) or click any order row to open the Order Details Popup.</p>
                 </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <button onclick="openFoodPrepModal()" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #ffffff; border: none; padding: 8px 14px; border-radius: 9px; font-weight: 900; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
@@ -1165,11 +1243,11 @@
                 </div>
             </div>
 
-            <!-- SEARCH BOX WITH ENTER / MOBILE OK POPUP TRIGGER -->
-            <form onsubmit="event.preventDefault(); handleLedgerSearchSubmit();" class="search-box" style="margin-bottom: 14px; display: flex; gap: 8px;">
+            <!-- SEARCH BOX: 2 OR FEWER DIGITS JUST FILTERS TABLE; 3+ DIGITS OPENS POPUP -->
+            <form onsubmit="event.preventDefault(); handleLedgerSearchSubmit(true);" class="search-box" style="margin-bottom: 14px; display: flex; gap: 8px;">
                 <div style="position: relative; flex: 1;">
                     <span class="search-icon">🔍</span>
-                    <input type="search" enterkeyhint="search" class="form-control" id="staffSearchInput" placeholder="Type Token # (e.g. 402 or TK-402) & press Enter / OK to open Order Popup..." oninput="debouncedLedgerSearch()" onkeydown="handleStaffSearchKeydown(event)">
+                    <input type="search" enterkeyhint="search" class="form-control" id="staffSearchInput" placeholder="Type 3+ digit Token # (e.g. 402) for Popup (1-2 digits filters list)..." oninput="handleLedgerSearchInputLive()" onkeydown="handleStaffSearchKeydown(event)">
                 </div>
                 <button type="submit" style="background: var(--primary); color: #ffffff; border: none; padding: 0 16px; border-radius: 14px; font-size: 12.5px; font-weight: 800; cursor: pointer; white-space: nowrap;">
                     🔍 View Order
@@ -1236,8 +1314,8 @@
                         <thead>
                             <tr>
                                 <th>Institution & Custom PINs</th>
-                                <th>Universal Join QR Link</th>
-                                <th>Active Canteens</th>
+                                <th>Admin Email</th>
+                                <th>Active Canteens & PINs</th>
                                 <th>Locked Official VPAs</th>
                                 <th>Total Menu Items</th>
                             </tr>
@@ -1373,6 +1451,7 @@
         let isTemporaryQrScanMode = false;
         let isHandlingPopState = false;
         let liveClockTimerId = null;
+        let activeSpendingPeriodFilter = "all";
 
         function pushOverlayHistoryState(overlayType) {
             if (isHandlingPopState) return;
@@ -1402,7 +1481,8 @@
                 return;
             }
             const receiptsTab = document.getElementById('tab-receipts');
-            if (currentRole === 'student' && receiptsTab && receiptsTab.classList.contains('active')) {
+            const spendingTab = document.getElementById('tab-spending');
+            if (currentRole === 'student' && ((receiptsTab && receiptsTab.classList.contains('active')) || (spendingTab && spendingTab.classList.contains('active')))) {
                 switchTab('menu', true);
                 isHandlingPopState = false;
                 return;
@@ -1511,7 +1591,7 @@
         }
 
         const VPIET_DEFAULT_COLLEGE = { id: "col_vpiet", name: "VPIET", city: "Campus Network", domain: "vpiet.ac.in", email: "admin@vpiet.ac.in", adminPin: "2727", staffPin: "1111" };
-        const VPIET_DEFAULT_CANTEEN = { id: "can_vpiet_main", name: "Main", college: "VPIET", location: "Main Block", upi: "vpietcanteen@sbi", merchant: "VPIET OFFICIAL" };
+        const VPIET_DEFAULT_CANTEEN = { id: "can_vpiet_main", name: "Main", college: "VPIET", location: "Main Block", upi: "vpietcanteen@sbi", merchant: "VPIET OFFICIAL", pin: "1111" };
 
         let colleges = JSON.parse(localStorage.getItem('cb_colleges')) || [VPIET_DEFAULT_COLLEGE];
         if (!Array.isArray(colleges) || colleges.length === 0) colleges = [VPIET_DEFAULT_COLLEGE];
@@ -1522,10 +1602,41 @@
         let offersEvents = JSON.parse(localStorage.getItem('cb_offers')) || [];
         let activeOrders = JSON.parse(localStorage.getItem('cb_orders')) || [];
         let studentVault = JSON.parse(localStorage.getItem('cb_student_vault')) || {};
+        let tokenCounters = JSON.parse(localStorage.getItem('cb_token_counters')) || {};
         let dailySecurityWord = localStorage.getItem('cb_daily_word') || "VPIET-27";
         let lastStateTimestamp = Number(localStorage.getItem('cb_state_ts')) || 0;
 
         rebuildMenuLookupMap();
+
+        /* =====================================================================
+           SMART MONTHLY TOKEN GENERATOR (3 DIGITS -> 4 DIGITS -> MONTHLY 3-DIGIT RESET)
+           ===================================================================== */
+        function generateSmartMonthlyToken(collegeName) {
+            const colKey = (collegeName || "DEFAULT").toUpperCase();
+            const now = new Date();
+            const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+            let tracker = tokenCounters[colKey];
+            // Reset back to 3 digits (starting at 100) every new month!
+            if (!tracker || tracker.monthKey !== currentMonthKey) {
+                tracker = {
+                    monthKey: currentMonthKey,
+                    lastSeq: 99
+                };
+            }
+
+            tracker.lastSeq += 1;
+            // If sequence exceeds 4 digits (9999), wrap back to 100
+            if (tracker.lastSeq > 9999) {
+                tracker.lastSeq = 100;
+            }
+
+            tokenCounters[colKey] = tracker;
+            localStorage.setItem('cb_token_counters', JSON.stringify(tokenCounters));
+
+            // 100 to 999 = 3 digits; 1000 to 9999 = 4 digits!
+            return "TK-" + String(tracker.lastSeq);
+        }
 
         function getStudentAccountKey(userObj) {
             if (!userObj) return "";
@@ -1718,7 +1829,9 @@
                     document.getElementById('adminNavTabs').style.display = 'none';
                     updateStudentOrderFields();
                     refreshStudentPassEnvironment();
-                    switchTab(currentActiveTab === 'receipts' ? 'receipts' : 'menu', true);
+                    if (currentActiveTab === 'receipts') switchTab('receipts', true);
+                    else if (currentActiveTab === 'spending') switchTab('spending', true);
+                    else switchTab('menu', true);
                 } else if (currentRole === "admin") {
                     document.getElementById('activeUserPill').innerText = `🏛️ Admin • ${currentAdminCollege}`;
                     document.getElementById('headerSubTitle').innerText = `${currentAdminCollege} Administration Studio`;
@@ -1945,6 +2058,10 @@
             if (Array.isArray(data.menuItems)) { menuItems = data.menuItems; rebuildMenuLookupMap(); }
             if (Array.isArray(data.offersEvents)) offersEvents = data.offersEvents;
             if (Array.isArray(data.activeOrders)) activeOrders = data.activeOrders;
+            if (data.tokenCounters && typeof data.tokenCounters === 'object') {
+                tokenCounters = { ...tokenCounters, ...data.tokenCounters };
+                localStorage.setItem('cb_token_counters', JSON.stringify(tokenCounters));
+            }
             if (data.studentVault && typeof data.studentVault === 'object') {
                 const myKey = getStudentAccountKey(currentUser);
                 const myLocalRecord = myKey ? studentVault[myKey] : null;
@@ -1968,6 +2085,7 @@
             if (document.getElementById('tab-admin-studio').classList.contains('active')) refreshAdminStudio();
             if (document.getElementById('tab-admin-ledger').classList.contains('active')) renderStaffCounter();
             if (document.getElementById('tab-receipts').classList.contains('active')) renderReceipts();
+            if (document.getElementById('tab-spending').classList.contains('active')) renderStudentSpendingAnalytics();
             if (document.getElementById('tab-counter-canteen-gate').classList.contains('active')) updateStaffGateRequirementsPreview();
             if (document.getElementById('foodPrepModal').classList.contains('active')) renderFoodPrepList();
             if (document.getElementById('ledgerOrderPopupModal').classList.contains('active') && currentPopupOrderIndex !== null) {
@@ -2006,6 +2124,7 @@
             localStorage.setItem('cb_offers', JSON.stringify(offersEvents));
             localStorage.setItem('cb_orders', JSON.stringify(activeOrders));
             localStorage.setItem('cb_student_vault', JSON.stringify(studentVault));
+            localStorage.setItem('cb_token_counters', JSON.stringify(tokenCounters));
             localStorage.setItem('cb_daily_word', dailySecurityWord);
 
             updateFloatingPrepButtonVisibility();
@@ -2016,7 +2135,7 @@
                     const payload = {
                         colleges, canteens, menuItems, offersEvents,
                         activeOrders: activeOrders.slice(0, 500),
-                        studentVault, dailySecurityWord, updatedAt: lastStateTimestamp
+                        studentVault, tokenCounters, dailySecurityWord, updatedAt: lastStateTimestamp
                     };
                     broadcastStateOverMqtt(payload);
                     pushToCloudDatabase(payload);
@@ -2053,6 +2172,7 @@
             refreshStudentPassEnvironment();
             refreshAdminStudio();
             renderReceipts();
+            renderStudentSpendingAnalytics();
             renderStaffCounter();
 
             const params = new URLSearchParams(window.location.search);
@@ -2076,6 +2196,16 @@
                     if (prev && colleges.some(c => c.name === prev)) sel.value = prev;
                 }
             });
+            populateForgotCanteenDropdown();
+        }
+
+        function populateForgotCanteenDropdown() {
+            const colSel = document.getElementById('forgotCollegeSelect');
+            const canSel = document.getElementById('forgotCanteenSelect');
+            if (!colSel || !canSel) return;
+            const selectedCol = colSel.value;
+            const colCanteens = canteens.filter(c => c.college === selectedCol);
+            canSel.innerHTML = `<option value="">All Canteens (Default)</option>` + colCanteens.map(c => `<option value="${c.name}">🏪 ${c.name}</option>`).join('');
         }
 
         function openCloudConfigModal() {
@@ -2164,7 +2294,9 @@
             renderRegisteredCollegeSelects();
         }
 
-        /* COLLEGE SIGN UP (REQUIRES OTP) */
+        /* =====================================================================
+           1. COLLEGE SIGN UP (BLOCKS DUPLICATE EMAILS ACROSS DIFFERENT COLLEGES)
+           ===================================================================== */
         async function sendCollegeSignupOtp() {
             const cName = document.getElementById('signupCollegeName').value.trim();
             const initCan = document.getElementById('signupInitialCanteen').value.trim();
@@ -2179,6 +2311,20 @@
             }
             if (!cEmail.includes('@')) { alert("Please enter a valid Admin Email ID!"); return; }
             if (adminPin.length < 4 || staffPin.length < 4) { alert("Admin PIN and Counter Staff PIN must be at least 4 digits!"); return; }
+
+            // Check if another college is already registered with this email!
+            const emailConflictCol = colleges.find(c => c.email && c.email.toLowerCase() === cEmail && c.name.toLowerCase() !== cName.toLowerCase());
+            if (emailConflictCol) {
+                alert(`❌ This email (${cEmail}) is already registered with another college (${emailConflictCol.name}).\nPlease use a different email to register!`);
+                return;
+            }
+
+            // Also check if this college name is already registered with a different email
+            const existingColByName = colleges.find(c => c.name.toLowerCase() === cName.toLowerCase());
+            if (existingColByName) {
+                alert(`❌ College "${cName}" is already registered! Please log in from the Admin Login tab or use a different college name.`);
+                return;
+            }
 
             generatedCollegeOtp = await dispatchEmailOtp(cEmail, `${cName} Admin`, 'sendCollegeOtpBtn');
             document.getElementById('collegeOtpSentLabel').innerText = `🔒 Enter 6-Digit OTP Sent to ${cEmail}`;
@@ -2201,24 +2347,24 @@
             const adminPin = document.getElementById('signupAdminPin').value.trim();
             const staffPin = document.getElementById('signupStaffPin').value.trim();
 
+            const emailConflictCol = colleges.find(c => c.email && c.email.toLowerCase() === cEmail && c.name.toLowerCase() !== cName.toLowerCase());
+            if (emailConflictCol) {
+                alert(`❌ This email (${cEmail}) is already registered with another college. Please use a different email to register!`);
+                return;
+            }
+
             const newColObj = {
                 id: 'col_' + Date.now(), name: cName, city: 'Campus Network',
                 domain: `${cName.toLowerCase().replace(/\s+/g, '')}.ac.in`,
                 email: cEmail, adminPin: adminPin, staffPin: staffPin
             };
 
-            const existingColIdx = colleges.findIndex(c => c.name.toLowerCase() === cName.toLowerCase());
-            if (existingColIdx !== -1) colleges[existingColIdx] = newColObj;
-            else colleges.push(newColObj);
-
-            const existingCanIdx = canteens.findIndex(c => c.college.toLowerCase() === cName.toLowerCase() && c.name.toLowerCase() === initCan.toLowerCase());
-            if (existingCanIdx !== -1) canteens[existingCanIdx].upi = initUpi;
-            else {
-                canteens.push({
-                    id: 'can_' + Date.now(), name: initCan, college: cName,
-                    location: 'Main Campus', upi: initUpi, merchant: `${cName.toUpperCase()} OFFICIAL`
-                });
-            }
+            colleges.push(newColObj);
+            canteens.push({
+                id: 'can_' + Date.now(), name: initCan, college: cName,
+                location: 'Main Campus', upi: initUpi, pin: staffPin,
+                merchant: `${cName.toUpperCase()} OFFICIAL`
+            });
 
             saveState();
             renderRegisteredCollegeSelects();
@@ -2232,9 +2378,20 @@
             openManagementWorkspace(`🏛️ Admin • ${currentAdminCollege}`, `${currentAdminCollege} Administration Studio`, 'admin-studio');
         }
 
-        /* COLLEGE FORGOT PIN / PASSWORD RESET LOGIC */
-        function openForgotCollegePinModal() {
+        /* =====================================================================
+           4. FORGOT PIN / PASSWORD RESET (FOR ADMIN, STAFF & SELECT CANTEEN)
+           ===================================================================== */
+        function openForgotCollegePinModal(preselectCollege, preselectCanteen) {
             renderRegisteredCollegeSelects();
+            const colSel = document.getElementById('forgotCollegeSelect');
+            if (preselectCollege && colSel) {
+                colSel.value = preselectCollege;
+            }
+            populateForgotCanteenDropdown();
+            const canSel = document.getElementById('forgotCanteenSelect');
+            if (preselectCanteen && canSel) {
+                canSel.value = preselectCanteen;
+            }
             document.getElementById('forgotCollegeEmailInput').value = '';
             document.getElementById('forgotCollegeOtpVerifyBox').classList.remove('active');
             document.getElementById('forgotCollegeOtpInput').value = '';
@@ -2243,7 +2400,15 @@
             pushOverlayHistoryState('forgot-pin-modal');
             document.getElementById('forgotCollegePinModal').classList.add('active');
         }
-        function closeForgotCollegePinModal() { document.getElementById('forgotCollegePinModal').classList.remove('active'); }
+
+        function openForgotPinFromSelectCanteen() {
+            const selectedCan = document.getElementById('staffGateCanteenSelect').value;
+            openForgotCollegePinModal(currentAdminCollege, selectedCan);
+        }
+
+        function closeForgotCollegePinModal() {
+            document.getElementById('forgotCollegePinModal').classList.remove('active');
+        }
 
         async function sendCollegeResetOtp() {
             const colName = document.getElementById('forgotCollegeSelect').value;
@@ -2267,13 +2432,14 @@
             const newAdminPin = document.getElementById('forgotNewAdminPin').value.trim();
             const newStaffPin = document.getElementById('forgotNewStaffPin').value.trim();
             const colName = document.getElementById('forgotCollegeSelect').value;
+            const canName = document.getElementById('forgotCanteenSelect').value;
 
             if (!generatedForgotCollegeOtp || enteredOtp !== generatedForgotCollegeOtp) {
                 alert("❌ Incorrect OTP! Please enter the exact 6-digit OTP sent to your Admin Email.");
                 return;
             }
             if (!newAdminPin || !newStaffPin || newAdminPin.length < 4 || newStaffPin.length < 4) {
-                alert("Both Admin PIN and Counter Staff PIN must be at least 4 digits!");
+                alert("Both Admin PIN and Canteen/Staff PIN must be at least 4 digits!");
                 return;
             }
 
@@ -2281,11 +2447,19 @@
             if (colObj) {
                 colObj.adminPin = newAdminPin;
                 colObj.staffPin = newStaffPin;
-                saveState();
-                generatedForgotCollegeOtp = null;
-                closeForgotCollegePinModal();
-                alert(`✅ PINs successfully updated for ${colName}!\nYou can now log in using your new PIN.`);
             }
+
+            // Also update the selected canteen's PIN (or all canteens of that college if "All Canteens" chosen)
+            canteens.forEach(c => {
+                if (c.college === colName && (!canName || c.name === canName)) {
+                    c.pin = newStaffPin;
+                }
+            });
+
+            saveState();
+            generatedForgotCollegeOtp = null;
+            closeForgotCollegePinModal();
+            alert(`✅ PINs successfully updated for ${colName}${canName ? ' (' + canName + ')' : ''}!\nYou can now unlock using your new PIN.`);
         }
 
         /* STUDENT DIRECT SIGN UP (NO OTP) & LOGIN */
@@ -2376,6 +2550,7 @@
             document.getElementById('authGate').classList.add('hidden');
             refreshStudentPassEnvironment();
             renderReceipts();
+            renderStudentSpendingAnalytics();
             switchTab('menu', true);
             saveActiveSession('menu');
         }
@@ -2625,7 +2800,13 @@
             if (!colName) { alert("Please select your Registered College!"); return; }
             const colObj = colleges.find(c => c.name === colName);
             const savedStaffPin = (colObj && colObj.staffPin) ? colObj.staffPin : "1111";
-            if (!pin || pin !== savedStaffPin) { alert(`❌ Incorrect Counter Staff PIN for ${colName}!`); return; }
+
+            // Accept either the college's general staffPin or any specific canteen PIN in that college
+            const matchesAnyCanteenPin = canteens.some(c => c.college === colName && c.pin && c.pin === pin);
+            if (!pin || (pin !== savedStaffPin && !matchesAnyCanteenPin)) {
+                alert(`❌ Incorrect Counter Staff PIN for ${colName}!`);
+                return;
+            }
 
             currentRole = "staff";
             currentAdminCollege = colName;
@@ -2696,9 +2877,12 @@
             if (!selectedCan) { alert("Please select a Canteen!"); return; }
 
             const colObj = colleges.find(c => c.name === currentAdminCollege);
-            const expectedPin = (colObj && colObj.staffPin) ? colObj.staffPin : "1111";
-            if (!enteredPin || enteredPin !== expectedPin) {
-                alert("❌ Incorrect PIN! Please enter your valid Counter Staff PIN to unlock this canteen.");
+            const canObj = canteens.find(c => c.college === currentAdminCollege && c.name === selectedCan);
+            const expectedCanPin = (canObj && canObj.pin) ? canObj.pin : ((colObj && colObj.staffPin) ? colObj.staffPin : "1111");
+            const fallbackStaffPin = (colObj && colObj.staffPin) ? colObj.staffPin : "1111";
+
+            if (!enteredPin || (enteredPin !== expectedCanPin && enteredPin !== fallbackStaffPin)) {
+                alert(`❌ Incorrect Canteen PIN for "${selectedCan}"! Click 'Forgot Canteen PIN?' if you need to reset it.`);
                 return;
             }
 
@@ -2863,7 +3047,8 @@
 
         function switchTab(tabId, skipHistory = false) {
             stopLiveCameraScanner();
-            document.querySelectorAll('#studentNavTabs .tab-btn').forEach(b => b.classList.remove('active'));
+            const navBtns = document.querySelectorAll('#studentNavTabs .tab-btn');
+            navBtns.forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
             const isStaffOrAdmin = (currentRole === 'admin' || currentRole === 'staff' || currentRole === 'auditor');
@@ -2871,19 +3056,94 @@
 
             if (tabId === 'menu') {
                 stopLiveClockTimer();
-                document.querySelectorAll('#studentNavTabs .tab-btn')[0].classList.add('active');
+                if (navBtns[0]) navBtns[0].classList.add('active');
                 document.getElementById('tab-menu').classList.add('active');
                 if (isStaffOrAdmin && !skipHistory) pushOverlayHistoryState('preview-menu');
                 refreshStudentPassEnvironment();
                 if (document.getElementById('authGate').classList.contains('hidden')) saveActiveSession('menu');
             } else if (tabId === 'receipts') {
-                document.querySelectorAll('#studentNavTabs .tab-btn')[1].classList.add('active');
+                if (navBtns[1]) navBtns[1].classList.add('active');
                 document.getElementById('tab-receipts').classList.add('active');
                 if (!skipHistory) pushOverlayHistoryState('receipts');
                 renderReceipts();
                 startLiveClockTimer();
                 if (document.getElementById('authGate').classList.contains('hidden')) saveActiveSession('receipts');
+            } else if (tabId === 'spending') {
+                stopLiveClockTimer();
+                if (navBtns[2]) navBtns[2].classList.add('active');
+                document.getElementById('tab-spending').classList.add('active');
+                if (!skipHistory) pushOverlayHistoryState('spending');
+                renderStudentSpendingAnalytics();
+                if (document.getElementById('authGate').classList.contains('hidden')) saveActiveSession('spending');
             }
+        }
+
+        /* =====================================================================
+           3. STUDENT SPENDING TRACKER (DAILY, WEEKLY, MONTHLY)
+           ===================================================================== */
+        function filterStudentSpendingPeriod(period) {
+            activeSpendingPeriodFilter = period;
+            document.querySelectorAll('#spendingPeriodPills .cat-pill').forEach(p => {
+                p.classList.toggle('active', p.dataset.period === period);
+            });
+            renderStudentSpendingAnalytics();
+        }
+
+        function renderStudentSpendingAnalytics() {
+            const tbody = document.getElementById('studentSpendingTableBody');
+            if (!tbody) return;
+
+            const myOrders = activeOrders.filter(o => orderBelongsToCurrentStudent(o));
+            const now = new Date();
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            const sevenDaysAgo = now.getTime() - (7 * 24 * 60 * 60 * 1000);
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+            let dailySum = 0, dailyCount = 0;
+            let weeklySum = 0, weeklyCount = 0;
+            let monthlySum = 0, monthlyCount = 0;
+
+            myOrders.forEach(o => {
+                const amt = Number(o.total) || 0;
+                const ts = Number(o.createdAt) || now.getTime();
+                if (ts >= startOfToday) { dailySum += amt; dailyCount += 1; }
+                if (ts >= sevenDaysAgo) { weeklySum += amt; weeklyCount += 1; }
+                if (ts >= startOfMonth) { monthlySum += amt; monthlyCount += 1; }
+            });
+
+            document.getElementById('stuDailySpendAmount').innerText = `₹${dailySum}`;
+            document.getElementById('stuDailySpendOrders').innerText = `${dailyCount} order${dailyCount !== 1 ? 's' : ''} today`;
+            document.getElementById('stuWeeklySpendAmount').innerText = `₹${weeklySum}`;
+            document.getElementById('stuWeeklySpendOrders').innerText = `${weeklyCount} order${weeklyCount !== 1 ? 's' : ''} in last 7 days`;
+            document.getElementById('stuMonthlySpendAmount').innerText = `₹${monthlySum}`;
+            document.getElementById('stuMonthlySpendOrders').innerText = `${monthlyCount} order${monthlyCount !== 1 ? 's' : ''} this month`;
+
+            const filteredOrders = myOrders.filter(o => {
+                const ts = Number(o.createdAt) || now.getTime();
+                if (activeSpendingPeriodFilter === 'daily') return ts >= startOfToday;
+                if (activeSpendingPeriodFilter === 'weekly') return ts >= sevenDaysAgo;
+                if (activeSpendingPeriodFilter === 'monthly') return ts >= startOfMonth;
+                return true;
+            });
+
+            if (filteredOrders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:28px; color:var(--text-muted); font-weight:700;">No food spending recorded for this period yet.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filteredOrders.map(o => {
+                const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleDateString() : 'Today';
+                const itemsSummary = (o.items || []).map(it => `${it.qty}× ${it.name}`).join(', ');
+                return `
+                    <tr>
+                        <td><strong>#${o.token}</strong><br><span style="font-size:11px; color:var(--text-muted);">📅 ${dateStr} • 🕒 ${o.timestamp || ''}</span></td>
+                        <td><strong>🏛️ ${o.collegePass || 'College'}</strong><br><span style="font-size:11px; color:var(--primary);">🏪 ${o.orderedCanteen || 'Main'}</span></td>
+                        <td>${itemsSummary}</td>
+                        <td><span style="text-transform:uppercase; font-size:11px; font-weight:800;">${o.payment || 'online'}</span></td>
+                        <td><strong style="font-size:15px; color:var(--primary);">₹${o.total}</strong></td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function getActionHtmlForItem(itemId) {
@@ -3166,7 +3426,9 @@
 
             const finalTotal = Math.max(0, subtotal - computedDiscount);
             const isOnline = (selectedPaymentMethod === 'online');
-            const tokenNum = "TK-" + Math.floor(100 + Math.random() * 900);
+
+            // Generate smart 3-digit token (expands to 4 digits if > 999 in a month, resets to 3 digits every month)
+            const tokenNum = generateSmartMonthlyToken(activeCol || "VPIET");
             const handshakePin = String(Math.floor(10 + Math.random() * 90));
             const studentId = getStudentAccountKey(currentUser) || document.getElementById('orderRollNo').value;
             const signatureHash = generateOrderSignature(tokenNum, studentId, finalTotal, handshakePin);
@@ -3195,6 +3457,7 @@
                 if (el) el.innerHTML = getActionHtmlForItem(id);
             });
             updateFloatingTray();
+            renderStudentSpendingAnalytics();
 
             document.getElementById('toastTokenDisplay').innerText = `#${tokenNum} • PIN: ${handshakePin}`;
             document.getElementById('successToastModal').classList.add('active');
@@ -3315,7 +3578,11 @@
             const rawPin = document.getElementById('verifyPinInput').value.trim();
             if (!rawToken || !rawPin) { alert("Please enter Token # and 2-Digit Handshake PIN!"); return; }
 
-            const matchedIdx = activeOrders.findIndex(o => o.token.toUpperCase() === rawToken);
+            const cleanNum = rawToken.replace(/^TK-/, '');
+            const matchedIdx = activeOrders.findIndex(o => {
+                const tokUpper = String(o.token || '').toUpperCase();
+                return tokUpper === rawToken || tokUpper.replace(/^TK-/, '') === cleanNum;
+            });
             if (matchedIdx === -1) { alert(`❌ FRAUD ALERT: Token #${rawToken} does NOT exist in ledger!`); return; }
 
             const matchedOrder = activeOrders[matchedIdx];
@@ -3350,6 +3617,9 @@
             }
         }
 
+        /* =====================================================================
+           5. CANTEEN & UPI VPAs + CANTEEN PIN IN-PLACE EDITOR (LIKE MENU ITEMS)
+           ===================================================================== */
         function refreshAdminStudio() {
             const studioTitle = document.getElementById('adminStudioTitle');
             const roleBadge = document.getElementById('adminRoleBadge');
@@ -3376,17 +3646,29 @@
             if (qrImgEl) qrImgEl.src = generateQrDataUrl(inviteUrl, 220);
 
             const collegeCanteens = canteens.filter(c => c.college === currentAdminCollege);
+            const currentEditingCanId = document.getElementById('editingCanteenId') ? document.getElementById('editingCanteenId').value : '';
             const canListEl = document.getElementById('adminCanteenList');
+            const colObj = colleges.find(c => c.name === currentAdminCollege);
+            const defaultStaffPin = (colObj && colObj.staffPin) ? colObj.staffPin : '1111';
+
             if (canListEl) {
                 if (collegeCanteens.length === 0) {
                     canListEl.innerHTML = `<p style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No canteens in ${currentAdminCollege} yet.</p>`;
                 } else {
-                    canListEl.innerHTML = collegeCanteens.map(c => `
-                        <div class="item-list-row">
-                            <div><strong>🏪 ${c.name}</strong><br><span style="font-size:11px; color:var(--text-muted);">🔒 VPA: ${c.upi}</span></div>
-                            <button class="remove-item-symbol" onclick="adminDeleteCanteen('${c.id}')">✕</button>
-                        </div>
-                    `).join('');
+                    canListEl.innerHTML = collegeCanteens.map(c => {
+                        const isEditing = (String(c.id) === String(currentEditingCanId));
+                        const cPin = c.pin || defaultStaffPin;
+                        return `
+                            <div class="item-list-row ${isEditing ? 'editing-active' : ''}" onclick="loadCanteenForEditing('${c.id}')" title="Click to edit canteen">
+                                <div>
+                                    <strong>🏪 ${c.name}</strong>
+                                    ${isEditing ? `<span style="background:var(--primary); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:4px;">EDITING</span>` : ''}<br>
+                                    <span style="font-size:11px; color:var(--text-muted);">🔒 VPA: ${c.upi} • 🔑 PIN: ${cPin}</span>
+                                </div>
+                                <button class="remove-item-symbol" onclick="event.stopPropagation(); adminDeleteCanteen('${c.id}')" title="Remove Canteen">✕</button>
+                            </div>
+                        `;
+                    }).join('');
                 }
             }
 
@@ -3407,6 +3689,95 @@
             renderAdminOffersList();
         }
 
+        function loadCanteenForEditing(canId) {
+            const can = canteens.find(c => String(c.id) === String(canId));
+            if (!can) return;
+            const colObj = colleges.find(c => c.name === currentAdminCollege);
+            const fallbackPin = (colObj && colObj.staffPin) ? colObj.staffPin : '1111';
+
+            document.getElementById('editingCanteenId').value = can.id;
+            document.getElementById('newCanteenName').value = can.name;
+            document.getElementById('newCanteenLocation').value = can.location || 'Main Block';
+            document.getElementById('newCanteenUpi').value = can.upi || '';
+            document.getElementById('newCanteenPin').value = can.pin || fallbackPin;
+            document.getElementById('cancelCanteenEditBtn').style.display = 'inline-block';
+            document.getElementById('saveCanteenBtnText').innerText = `✔ Update Canteen ("${can.name}")`;
+            refreshAdminStudio();
+        }
+
+        function adminResetCanteenForm() {
+            document.getElementById('editingCanteenId').value = '';
+            document.getElementById('newCanteenName').value = '';
+            document.getElementById('newCanteenLocation').value = '';
+            document.getElementById('newCanteenUpi').value = '';
+            document.getElementById('newCanteenPin').value = '';
+            document.getElementById('cancelCanteenEditBtn').style.display = 'none';
+            document.getElementById('saveCanteenBtnText').innerText = '+ Add / Save Canteen';
+            refreshAdminStudio();
+        }
+
+        function adminSaveOrUpdateCanteen() {
+            if (currentRole === 'staff') { alert("Only College Admin can add or edit canteens!"); return; }
+            const editCanId = document.getElementById('editingCanteenId').value;
+            const name = document.getElementById('newCanteenName').value.trim();
+            const loc = document.getElementById('newCanteenLocation').value.trim() || "Main Block";
+            const upi = document.getElementById('newCanteenUpi').value.trim();
+            const pin = document.getElementById('newCanteenPin').value.trim();
+
+            if (!name || !upi) { alert("Please enter Canteen Name and official UPI ID (VPA)!"); return; }
+            const colObj = colleges.find(c => c.name === currentAdminCollege);
+            const finalPin = pin || ((colObj && colObj.staffPin) ? colObj.staffPin : "1111");
+            if (finalPin.length < 4) { alert("Canteen PIN must be at least 4 digits!"); return; }
+
+            if (editCanId) {
+                const idx = canteens.findIndex(c => String(c.id) === String(editCanId));
+                if (idx !== -1) {
+                    const oldName = canteens[idx].name;
+                    canteens[idx] = {
+                        ...canteens[idx],
+                        name: name,
+                        location: loc,
+                        upi: upi,
+                        pin: finalPin,
+                        college: currentAdminCollege
+                    };
+                    // Update dishes & orders if canteen name changed
+                    if (oldName !== name) {
+                        menuItems.forEach(m => {
+                            if (m.college === currentAdminCollege && m.canteen === oldName) m.canteen = name;
+                        });
+                    }
+                }
+            } else {
+                canteens.push({
+                    id: 'can_' + Date.now(),
+                    name: name,
+                    college: currentAdminCollege,
+                    location: loc,
+                    upi: upi,
+                    pin: finalPin,
+                    merchant: `${currentAdminCollege.toUpperCase()} OFFICIAL`
+                });
+            }
+
+            saveState();
+            adminResetCanteenForm();
+            refreshStudentPassEnvironment();
+        }
+
+        function adminDeleteCanteen(canId) {
+            if (currentRole === 'staff') { alert("Only College Admin can delete canteens!"); return; }
+            const colCanteens = canteens.filter(c => c.college === currentAdminCollege);
+            if (colCanteens.length <= 1) { alert(`${currentAdminCollege} must have at least one active canteen!`); return; }
+            canteens = canteens.filter(c => String(c.id) !== String(canId));
+            if (String(document.getElementById('editingCanteenId').value) === String(canId)) {
+                adminResetCanteenForm();
+            }
+            saveState();
+            refreshAdminStudio();
+            refreshStudentPassEnvironment();
+        }
+
         function renderAuditorPortal() {
             document.getElementById('auditorTotalColleges').innerText = colleges.length;
             document.getElementById('auditorTotalCanteens').innerText = canteens.length;
@@ -3419,12 +3790,11 @@
                 const colCanteens = canteens.filter(c => c.college === col.name);
                 const colItems = menuItems.filter(m => m.college === col.name);
                 const vpasStr = colCanteens.map(c => `<b>${c.name}</b>: <code>${c.upi}</code>`).join('<br>') || 'None';
-                const canteensStr = colCanteens.map(c => c.name).join(', ') || 'None';
-                const joinUrl = getCollegeInviteUrl(col.name);
+                const canteensStr = colCanteens.map(c => `${c.name} (PIN: ${c.pin || col.staffPin || '1111'})`).join('<br>') || 'None';
                 return `
                     <tr>
-                        <td><strong>🏛️ ${col.name}</strong><br><span style="font-size:11px; color:var(--primary); font-weight:800;">Admin PIN: ${col.adminPin || '2727'} | Counter PIN: ${col.staffPin || '1111'}</span></td>
-                        <td><code>${joinUrl}</code></td>
+                        <td><strong>🏛️ ${col.name}</strong><br><span style="font-size:11px; color:var(--primary); font-weight:800;">Admin PIN: ${col.adminPin || '2727'} | Default Staff PIN: ${col.staffPin || '1111'}</span></td>
+                        <td><code>${col.email || 'N/A'}</code></td>
                         <td>${canteensStr}</td>
                         <td>${vpasStr}</td>
                         <td><strong>${colItems.length} Items</strong></td>
@@ -3434,7 +3804,7 @@
 
             const logBox = document.getElementById('auditorAuditLogBox');
             let logHtml = `[CREATOR_AUDIT_INIT] Hidden Creator Portal active at ${new Date().toLocaleTimeString()}\n`;
-            logHtml += `[REGISTERED_COLLEGES] ${colleges.map(c => `${c.name} (Admin:${c.adminPin}, Staff:${c.staffPin})`).join(' | ')}\n`;
+            logHtml += `[REGISTERED_COLLEGES] ${colleges.map(c => `${c.name} (${c.email})`).join(' | ')}\n`;
             logHtml += `[STUDENT_VAULT] ${Object.keys(studentVault).length} isolated student accounts.\n`;
             activeOrders.slice(0, 100).forEach((ord, idx) => {
                 logHtml += `[TX_${idx+1}] Token #${ord.token} | Time: ${ord.timestamp} | College: ${ord.collegePass} | Student: ${ord.name} | ₹${ord.total}\n`;
@@ -3532,32 +3902,6 @@
             alert(`Copied Universal ${col} Canteen Join Link:\n${url}`);
         }
 
-        function adminAddCanteen() {
-            if (currentRole === 'staff') { alert("Only College Admin can add canteens!"); return; }
-            const name = document.getElementById('newCanteenName').value.trim();
-            const loc = document.getElementById('newCanteenLocation').value.trim() || "Main Block";
-            const upi = document.getElementById('newCanteenUpi').value.trim();
-            if (!name || !upi) { alert("Please enter Canteen Name and official UPI ID (VPA)!"); return; }
-
-            canteens.push({ id: 'can_' + Date.now(), name: name, college: currentAdminCollege, location: loc, upi: upi, merchant: `${currentAdminCollege.toUpperCase()} OFFICIAL` });
-            document.getElementById('newCanteenName').value = '';
-            document.getElementById('newCanteenLocation').value = '';
-            document.getElementById('newCanteenUpi').value = '';
-            saveState();
-            refreshAdminStudio();
-            refreshStudentPassEnvironment();
-        }
-
-        function adminDeleteCanteen(canId) {
-            if (currentRole === 'staff') { alert("Only College Admin can delete canteens!"); return; }
-            const colCanteens = canteens.filter(c => c.college === currentAdminCollege);
-            if (colCanteens.length <= 1) { alert(`${currentAdminCollege} must have at least one active canteen!`); return; }
-            canteens = canteens.filter(c => c.id !== canId);
-            saveState();
-            refreshAdminStudio();
-            refreshStudentPassEnvironment();
-        }
-
         function renderAdminMenuList() {
             const selectedCanteen = document.getElementById('adminMenuCanteenSelect').value;
             const currentEditingMenuId = document.getElementById('editingMenuItemId').value;
@@ -3576,7 +3920,8 @@
                         <div style="display:flex; align-items:center; gap:8px; flex:1;">
                             ${item.img ? `<img src="${item.img}" class="menu-thumb-mini" alt="${item.name}">` : ''}
                             <div>
-                                <strong>${item.veg ? '🟢' : '🔴'} ${item.name}</strong> — <span style="color:var(--primary); font-weight:800;">₹${item.price}</span><br>
+                                <strong>${item.veg ? '🟢' : '🔴'} ${item.name}</strong> — <span style="color:var(--primary); font-weight:800;">₹${item.price}</span>
+                                ${isEditing ? `<span style="background:var(--primary); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:4px;">EDITING</span>` : ''}<br>
                                 <span style="font-size:11px; color:var(--text-muted);">${item.category} • ⏱ ${item.time}</span>
                             </div>
                         </div>
@@ -3742,7 +4087,8 @@
                         <div style="display:flex; align-items:center; gap:8px; flex:1;">
                             ${ev.img ? `<img src="${ev.img}" class="menu-thumb-mini" alt="${ev.title}">` : ''}
                             <div>
-                                <strong>${ev.title}</strong><br>
+                                <strong>${ev.title}</strong>
+                                ${isEditing ? `<span style="background:var(--primary); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:4px;">EDITING</span>` : ''}<br>
                                 <span style="font-size:11px; color:var(--primary);">Dishes (${targetIds.length}): ${dishNames} • ₹${ev.amount} OFF</span>
                             </div>
                         </div>
@@ -3776,27 +4122,58 @@
         }
 
         /* =====================================================================
-           COUNTER LEDGER ORDER POPUP (SEARCH ENTER/OK + CLICK ANY ORDER ROW)
+           2. COUNTER LEDGER ORDER POPUP (ONLY WHEN 3+ DIGITS TYPED OR ROW CLICKED)
            ===================================================================== */
-        function handleStaffSearchKeydown(event) {
-            if (event.key === 'Enter' || event.keyCode === 13) {
-                event.preventDefault();
-                handleLedgerSearchSubmit();
-            }
-        }
-
-        function handleLedgerSearchSubmit() {
+        function handleLedgerSearchInputLive() {
+            debouncedLedgerSearch();
             const searchInput = document.getElementById('staffSearchInput');
             const rawVal = searchInput ? searchInput.value.trim() : '';
-            if (!rawVal) {
-                alert("Please enter a Token # (e.g. 402 or TK-402) or Student Mobile/Name to view order details!");
+            const cleanNum = rawVal.toLowerCase().replace(/^#/, '').replace(/^tk-/, '').trim();
+
+            // Do NOT show popup if 2 or fewer characters/digits are typed!
+            if (cleanNum.length <= 2) {
                 return;
             }
 
-            const cleanQuery = rawVal.toLowerCase().replace(/^#/, '');
-            const cleanNumOnly = cleanQuery.replace(/^tk-/, '');
+            // If 3 or more digits are typed and match an exact token number, show popup automatically
+            if (/^\d{3,4}$/.test(cleanNum)) {
+                const exactIdx = activeOrders.findIndex(o => {
+                    const matchesCol = (!currentAdminCollege || !o.collegePass || o.collegePass === currentAdminCollege);
+                    if (!matchesCol) return false;
+                    if (currentRole === 'staff' && currentStaffCanteen) {
+                        const hasCanteenItem = Array.isArray(o.items) && o.items.some(it => it.canteen === currentStaffCanteen);
+                        const matchesOrderCan = (o.orderedCanteen && o.orderedCanteen.includes(currentStaffCanteen));
+                        if (!hasCanteenItem && !matchesOrderCan) return false;
+                    }
+                    const tokNum = String(o.token || '').toLowerCase().replace(/^tk-/, '');
+                    return tokNum === cleanNum;
+                });
+                if (exactIdx !== -1) {
+                    openLedgerOrderPopup(exactIdx);
+                }
+            }
+        }
 
-            // Find matching order for current college/canteen
+        function handleStaffSearchKeydown(event) {
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                event.preventDefault();
+                handleLedgerSearchSubmit(true);
+            }
+        }
+
+        function handleLedgerSearchSubmit(fromSubmitBtn = false) {
+            const searchInput = document.getElementById('staffSearchInput');
+            const rawVal = searchInput ? searchInput.value.trim() : '';
+            const cleanQuery = rawVal.toLowerCase().replace(/^#/, '');
+            const cleanNumOnly = cleanQuery.replace(/^tk-/, '').trim();
+
+            // Strictly do NOT open popup if 2 or fewer digits/characters are typed! Just filter the table normally.
+            if (cleanNumOnly.length <= 2) {
+                currentLedgerPage = 1;
+                renderStaffCounter();
+                return;
+            }
+
             const matchedIdx = activeOrders.findIndex(o => {
                 const matchesCol = (!currentAdminCollege || !o.collegePass || o.collegePass === currentAdminCollege);
                 if (!matchesCol) return false;
@@ -3808,14 +4185,15 @@
 
                 const tokLower = String(o.token || '').toLowerCase();
                 const tokNum = tokLower.replace(/^tk-/, '');
-                if (tokLower === cleanQuery || tokNum === cleanNumOnly || tokLower.includes(cleanQuery)) return true;
-                if (o.rollNo && o.rollNo.toLowerCase().includes(cleanQuery)) return true;
-                if (o.name && o.name.toLowerCase().includes(cleanQuery)) return true;
+                if (tokLower === cleanQuery || tokNum === cleanNumOnly) return true;
+                if (cleanNumOnly.length >= 3 && o.rollNo && o.rollNo.toLowerCase() === cleanQuery) return true;
                 return false;
             });
 
             if (matchedIdx === -1) {
-                alert(`❌ No order found matching "${rawVal}" in this canteen ledger.`);
+                if (fromSubmitBtn) {
+                    alert(`❌ No exact order found for Token "${rawVal}".`);
+                }
                 return;
             }
 
@@ -3908,8 +4286,8 @@
             const endIdx = Math.min(currentLedgerPage * LEDGER_PAGE_SIZE, totalItems);
 
             infoEl.innerHTML = `
-                <span>Showing <b>${startIdx}–${endIdx}</b> of <b>${totalItems}</b> requests (Page ${currentLedgerPage} of ${totalPages})</span>
-                ${searchVal ? `<span class="ledger-search-active-pill">🔍 Searched across all pages</span>` : ''}
+                <span>Showing <b>${startIdx}–${endIdx}</b> of <b>${totalItems}</b> matching orders (Page ${currentLedgerPage} of ${totalPages})</span>
+                ${searchVal ? `<span class="ledger-search-active-pill">🔍 Filtered: ${totalItems} order${totalItems !== 1 ? 's' : ''}</span>` : ''}
             `;
 
             let btnHtml = `<button class="page-btn" ${currentLedgerPage <= 1 ? 'disabled' : ''} onclick="goToLedgerPage(${currentLedgerPage - 1})">« Prev</button>`;
@@ -4065,6 +4443,7 @@
             if (status === 'served') activeOrders[index].servedAt = new Date().toLocaleTimeString();
             saveState();
             renderReceipts();
+            renderStudentSpendingAnalytics();
             renderStaffCounter();
             if (document.getElementById('foodPrepModal').classList.contains('active')) renderFoodPrepList();
             if (document.getElementById('ledgerOrderPopupModal').classList.contains('active') && currentPopupOrderIndex === index) {
