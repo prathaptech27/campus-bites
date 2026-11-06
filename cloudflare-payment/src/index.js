@@ -41,12 +41,14 @@ async function startEmailOtp(req,env) {
   const college=await env.DB.prepare("SELECT id,name,email_domain FROM colleges WHERE name=? AND active=1").bind(collegeName).first();
   if(!college||email.split("@")[1]!==String(college.email_domain||"").toLowerCase()) return json({error:"Use your registered college email address."},403);
   const now=Date.now();
+  const ip=req.headers.get("CF-Connecting-IP")||"unknown";
   const recent=await env.DB.prepare("SELECT COUNT(*) AS n FROM email_otps WHERE email=? AND created_at>?").bind(email,now-15*60*1000).first();
-  if((recent?.n||0)>=3) return json({error:"Too many OTP requests. Try again after 15 minutes."},429);
+  const ipRecent=await env.DB.prepare("SELECT COUNT(*) AS n FROM email_otps WHERE request_ip=? AND created_at>?").bind(ip,now-15*60*1000).first();
+  if((recent?.n||0)>=3||(ipRecent?.n||0)>=10) return json({error:"Too many OTP requests. Try again after 15 minutes."},429);
   const code=String(crypto.getRandomValues(new Uint32Array(1))[0]%1000000).padStart(6,"0");
   const otpHash=await hmac(env.OTP_SECRET,email+"|"+college.id+"|"+code);
   await env.DB.prepare("DELETE FROM email_otps WHERE email=?").bind(email).run();
-  await env.DB.prepare("INSERT INTO email_otps(email,college_id,otp_hash,expires_at,attempts,created_at) VALUES(?,?,?,?,0,?)").bind(email,college.id,otpHash,now+5*60*1000,now).run();
+  await env.DB.prepare("INSERT INTO email_otps(email,college_id,otp_hash,expires_at,attempts,created_at,request_ip) VALUES(?,?,?,?,0,?,?)").bind(email,college.id,otpHash,now+5*60*1000,now,ip).run();
   const mail=await fetch("https://api.resend.com/emails",{method:"POST",headers:{authorization:"Bearer "+env.RESEND_API_KEY,"content-type":"application/json"},body:JSON.stringify({from:env.MAIL_FROM,to:[email],subject:"Your Campus Bites verification code",html:"<p>Your Campus Bites verification code is <strong>"+code+"</strong>.</p><p>It expires in 5 minutes. Do not share this code.</p>"})});
   if(!mail.ok) { console.error("OTP email provider failed",await mail.text()); return json({error:"Could not send verification email. Please try later."},502); }
   return json({sent:true,expiresInSeconds:300});
