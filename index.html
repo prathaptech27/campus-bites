@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -20,21 +19,20 @@
             --danger: #ef4444;
             --text-main: #0f172a;
             --text-muted: #475569;
-            --body-bg: #dbeafe;
-            --liquid-glass-bg: linear-gradient(135deg, rgba(255,255,255,0.58) 0%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0.46) 100%);
-            --liquid-glass-strong: linear-gradient(135deg, rgba(255,255,255,0.76) 0%, rgba(255,255,255,0.46) 55%, rgba(255,255,255,0.66) 100%);
-            --liquid-glass-border: rgba(255, 255, 255, 0.84);
-            --liquid-glass-shadow: 0 10px 28px -6px rgba(15,23,42,0.12), inset 0 1.5px 2px rgba(255,255,255,0.96), inset 0 -1px 1.5px rgba(255,255,255,0.45);
-            --liquid-blur: blur(14px) saturate(190%);
-            --surface-sub-bg: rgba(255, 255, 255, 0.66);
-            --surface-row-bg: rgba(255, 255, 255, 0.78);
-            --input-glass-bg: rgba(255, 255, 255, 0.72);
-            --input-glass-focus: rgba(255, 255, 255, 0.95);
-            --header-glass-bg: linear-gradient(135deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.38) 100%);
-            --nav-glass-bg: rgba(255, 255, 255, 0.46);
-            --drawer-glass-bg: linear-gradient(135deg, rgba(255,255,255,0.86) 0%, rgba(255,255,255,0.72) 100%);
-            --modal-glass-bg: linear-gradient(135deg, rgba(255,255,255,0.86) 0%, rgba(255,255,255,0.68) 100%);
-            --radius: 20px;
+            --body-bg: #e0e7ff;
+            --liquid-glass-bg: rgba(255, 255, 255, 0.86);
+            --liquid-glass-strong: rgba(255, 255, 255, 0.94);
+            --liquid-glass-border: rgba(255, 255, 255, 0.92);
+            --liquid-glass-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+            --surface-sub-bg: rgba(241, 245, 249, 0.9);
+            --surface-row-bg: #ffffff;
+            --input-glass-bg: #ffffff;
+            --input-glass-focus: #ffffff;
+            --header-glass-bg: rgba(255, 255, 255, 0.92);
+            --nav-glass-bg: rgba(255, 255, 255, 0.85);
+            --drawer-glass-bg: #ffffff;
+            --modal-glass-bg: #ffffff;
+            --radius: 18px;
         }
 
         [data-theme="dark"] {
@@ -42,101 +40,147 @@
             --primary-dark: #4f46e5;
             --text-main: #f8fafc;
             --text-muted: #cbd5e1;
-            --body-bg: #030712;
-            --liquid-glass-bg: linear-gradient(135deg, rgba(30,41,59,0.62) 0%, rgba(15,23,42,0.38) 50%, rgba(30,41,59,0.52) 100%);
-            --liquid-glass-strong: linear-gradient(135deg, rgba(30,41,59,0.78) 0%, rgba(15,23,42,0.56) 55%, rgba(30,41,59,0.68) 100%);
-            --liquid-glass-border: rgba(255, 255, 255, 0.18);
-            --liquid-glass-shadow: 0 12px 32px -6px rgba(0,0,0,0.55), inset 0 1.5px 2px rgba(255,255,255,0.24), inset 0 -1px 1.5px rgba(255,255,255,0.08);
-            --surface-sub-bg: rgba(15, 23, 42, 0.58);
-            --surface-row-bg: rgba(30, 41, 59, 0.72);
-            --input-glass-bg: rgba(15, 23, 42, 0.65);
-            --input-glass-focus: rgba(30, 41, 59, 0.92);
-            --header-glass-bg: linear-gradient(135deg, rgba(15,23,42,0.72) 0%, rgba(15,23,42,0.48) 100%);
-            --nav-glass-bg: rgba(15, 23, 42, 0.52);
-            --drawer-glass-bg: linear-gradient(135deg, rgba(15,23,42,0.88) 0%, rgba(30,41,59,0.78) 100%);
-            --modal-glass-bg: linear-gradient(135deg, rgba(15,23,42,0.88) 0%, rgba(30,41,59,0.76) 100%);
+            --body-bg: #090d16;
+            --liquid-glass-bg: rgba(30, 41, 59, 0.90);
+            --liquid-glass-strong: rgba(15, 23, 42, 0.95);
+            --liquid-glass-border: rgba(255, 255, 255, 0.14);
+            --liquid-glass-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+            --surface-sub-bg: rgba(15, 23, 42, 0.85);
+            --surface-row-bg: rgba(30, 41, 59, 0.95);
+            --input-glass-bg: rgba(15, 23, 42, 0.9);
+            --input-glass-focus: #1e293b;
+            --header-glass-bg: rgba(15, 23, 42, 0.94);
+            --nav-glass-bg: rgba(15, 23, 42, 0.88);
+            --drawer-glass-bg: #0f172a;
+            --modal-glass-bg: #1e293b;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
         button, input, select, .cat-pill, .gateway-card, .payment-card, .ad-btn { touch-action: manipulation; }
-        body { background-color: var(--body-bg); color: var(--text-main); padding-bottom: 110px; min-height: 100vh; width: 100%; overflow-x: hidden; position: relative; transition: background-color 0.25s ease, color 0.25s ease; }
+        body { background-color: var(--body-bg); color: var(--text-main); padding-bottom: 105px; min-height: 100vh; width: 100%; overflow-x: hidden; position: relative; }
 
+        /* Ultra-Lightweight Static Background (Zero GPU Overdraw Lag on Older Phones) */
         .ambient-mesh {
             position: fixed; inset: 0; z-index: -1; pointer-events: none;
-            background: radial-gradient(circle at 14% 18%, rgba(99,102,241,0.55) 0%, transparent 42%),
-                        radial-gradient(circle at 86% 15%, rgba(16,185,129,0.46) 0%, transparent 42%),
-                        radial-gradient(circle at 84% 80%, rgba(245,158,11,0.44) 0%, transparent 46%),
-                        radial-gradient(circle at 16% 82%, rgba(6,182,212,0.48) 0%, transparent 46%),
-                        linear-gradient(135deg, #c7d2fe 0%, #e0e7ff 45%, #fde68a 100%);
+            background: linear-gradient(135deg, #c7d2fe 0%, #e0f2fe 50%, #fef3c7 100%);
         }
         [data-theme="dark"] .ambient-mesh {
-            background: radial-gradient(circle at 14% 18%, rgba(79,70,229,0.42) 0%, transparent 45%),
-                        radial-gradient(circle at 86% 15%, rgba(16,185,129,0.3) 0%, transparent 45%),
-                        radial-gradient(circle at 84% 80%, rgba(217,119,6,0.26) 0%, transparent 48%),
-                        radial-gradient(circle at 16% 82%, rgba(6,182,212,0.34) 0%, transparent 48%),
-                        linear-gradient(135deg, #030712 0%, #0f172a 48%, #1e1b4b 100%);
+            background: linear-gradient(135deg, #090d16 0%, #111827 55%, #1e1b4b 100%);
         }
 
-        .glass-surface { background: var(--liquid-glass-bg); backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur); border: 1px solid var(--liquid-glass-border); box-shadow: var(--liquid-glass-shadow); }
-        .glass-surface-strong { background: var(--liquid-glass-strong); backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur); border: 1px solid var(--liquid-glass-border); box-shadow: var(--liquid-glass-shadow); }
+        .glass-surface { background: var(--liquid-glass-bg); border: 1px solid var(--liquid-glass-border); box-shadow: var(--liquid-glass-shadow); }
+        .glass-surface-strong { background: var(--liquid-glass-strong); border: 1px solid var(--liquid-glass-border); box-shadow: var(--liquid-glass-shadow); }
 
         .theme-toggle-pill {
-            background: var(--liquid-glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--liquid-glass-border); color: var(--text-main);
-            padding: 5px 11px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: var(--liquid-glass-shadow); white-space: nowrap;
+            background: var(--surface-row-bg); border: 1px solid var(--liquid-glass-border); color: var(--text-main);
+            padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
 
         .auth-gate {
-            position: fixed; inset: 0; background: linear-gradient(135deg, rgba(15,23,42,0.52) 0%, rgba(49,46,129,0.52) 50%, rgba(79,70,229,0.42) 100%);
-            backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 14px; overflow-y: auto;
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.72);
+            z-index: 500; display: flex; align-items: center; justify-content: center; padding: 12px; overflow-y: auto;
         }
         .auth-gate.hidden { display: none; }
-        .auth-card { background: var(--modal-glass-bg); backdrop-filter: blur(24px) saturate(200%); border: 1.5px solid var(--liquid-glass-border); width: 100%; max-width: 490px; border-radius: 28px; padding: 22px; box-shadow: var(--liquid-glass-shadow); margin: auto; }
-        .auth-brand { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+        .auth-card { background: var(--modal-glass-bg); border: 1.5px solid var(--liquid-glass-border); width: 100%; max-width: 480px; border-radius: 24px; padding: 20px; box-shadow: var(--liquid-glass-shadow); margin: auto; }
+        .auth-brand { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
 
         .sync-status-pill {
             font-size: 11px; font-weight: 800; padding: 7px 14px; border-radius: 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.85);
-            background: rgba(220,252,231,0.9); color: #065f46; display: inline-flex; align-items: center; gap: 6px;
+            background: #dcfce7; color: #065f46; display: inline-flex; align-items: center; gap: 6px;
         }
 
         .otp-toggle-pill {
             font-size: 11px; font-weight: 900; padding: 7px 14px; border-radius: 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.85);
-            display: inline-flex; align-items: center; gap: 6px; transition: 0.2s ease;
+            display: inline-flex; align-items: center; gap: 6px;
         }
         .otp-toggle-pill.is-on { background: #dcfce7; color: #166534; }
         .otp-toggle-pill.is-off { background: #fef3c7; color: #92400e; border-color: #f59e0b; }
 
         .main-gateway-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-        .gateway-card { background: var(--liquid-glass-bg); backdrop-filter: blur(12px); border: 1.5px solid var(--liquid-glass-border); border-radius: 18px; padding: 14px 10px; text-align: center; cursor: pointer; box-shadow: var(--liquid-glass-shadow); transition: 0.14s ease; }
-        .gateway-card.active { border-color: var(--primary); background: linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(79,70,229,0.15) 100%); }
-        .gateway-icon { font-size: 26px; margin-bottom: 4px; }
-        .gateway-title { font-size: 14px; font-weight: 900; color: var(--text-main); margin-bottom: 2px; }
+        .gateway-card { background: var(--surface-sub-bg); border: 1.5px solid var(--liquid-glass-border); border-radius: 16px; padding: 12px 10px; text-align: center; cursor: pointer; }
+        .gateway-card.active { border-color: var(--primary); background: rgba(99, 102, 241, 0.16); }
+        .gateway-icon { font-size: 24px; margin-bottom: 4px; }
+        .gateway-title { font-size: 13.5px; font-weight: 900; color: var(--text-main); margin-bottom: 2px; }
         .gateway-sub { font-size: 11px; color: var(--text-muted); font-weight: 600; }
 
-        .sub-switch-bar { display: grid; gap: 4px; background: var(--surface-sub-bg); padding: 4px; border-radius: 14px; margin-bottom: 14px; border: 1px solid var(--liquid-glass-border); }
+        .sub-switch-bar { display: grid; gap: 4px; background: var(--surface-sub-bg); padding: 4px; border-radius: 12px; margin-bottom: 14px; border: 1px solid var(--liquid-glass-border); }
         .sub-switch-2 { grid-template-columns: 1fr 1fr; }
         .sub-switch-3 { grid-template-columns: repeat(3, 1fr); }
-        .college-sub-tab { border: none; background: transparent; padding: 8px 4px; border-radius: 10px; font-size: 11px; font-weight: 800; color: var(--text-muted); cursor: pointer; text-align: center; }
-        .college-sub-tab.active { background: var(--surface-row-bg); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+        .college-sub-tab { border: none; background: transparent; padding: 8px 4px; border-radius: 9px; font-size: 11px; font-weight: 800; color: var(--text-muted); cursor: pointer; text-align: center; }
+        .college-sub-tab.active { background: var(--surface-row-bg); color: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 
-        .otp-verify-box { background: rgba(16,185,129,0.15); border: 2px dashed #10b981; border-radius: 14px; padding: 12px; margin-top: 10px; margin-bottom: 10px; display: none; }
+        .otp-verify-box { background: rgba(16,185,129,0.12); border: 2px dashed #10b981; border-radius: 14px; padding: 12px; margin-top: 10px; margin-bottom: 10px; display: none; }
         .otp-verify-box.active { display: block; }
 
+        /* HEADER: DESKTOP NORMAL, MOBILE OPPOSITE-SIDE (RIGHT ALIGNED) TO PREVENT CONGESTION BELOW LOGO */
         header {
-            position: sticky; top: 0; z-index: 100; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
-            background: var(--header-glass-bg); backdrop-filter: blur(16px) saturate(190%); border-bottom: 1px solid var(--liquid-glass-border); box-shadow: var(--liquid-glass-shadow);
+            position: sticky; top: 0; z-index: 100; padding: 10px 14px;
+            display: flex; justify-content: space-between; align-items: center; gap: 10px;
+            background: var(--header-glass-bg); border-bottom: 1px solid var(--liquid-glass-border); box-shadow: var(--liquid-glass-shadow);
         }
-        @media(min-width: 768px) { header { padding: 12px 24px; } }
-        .brand { display: flex; align-items: center; gap: 10px; }
-        .brand-logo { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; width: 36px; height: 36px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; user-select: none; }
-        .brand-title h1 { font-size: 16px; font-weight: 900; color: var(--text-main); line-height: 1.15; }
-        .brand-title p { font-size: 11px; color: var(--text-muted); font-weight: 600; }
-        .header-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+        .brand-logo { background: var(--primary); color: white; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; user-select: none; flex-shrink: 0; }
+        .brand-title { display: flex; flex-direction: column; min-width: 0; }
+        .brand-title h1 { font-size: 16px; font-weight: 900; color: var(--text-main); line-height: 1.15; white-space: nowrap; }
+        .brand-title p { font-size: 11px; color: var(--text-muted); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .header-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 
-        .user-pill { background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); color: var(--primary); padding: 5px 11px; border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap; }
+        /* Mobile View: Move subtitle & action pills to the opposite (right) side so nothing crowds below the logo */
+        @media (max-width: 767px) {
+            header {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                align-items: center;
+                gap: 6px 10px;
+                padding: 8px 12px;
+            }
+            .brand {
+                grid-column: 1 / -1;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+            .brand-left-wrap {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .brand-title {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                gap: 8px;
+            }
+            .brand-title p {
+                margin-left: auto;
+                text-align: right;
+                background: var(--surface-sub-bg);
+                padding: 3px 8px;
+                border-radius: 12px;
+                border: 1px solid var(--liquid-glass-border);
+                font-size: 10px;
+                color: var(--primary);
+                max-width: 56vw;
+            }
+            .header-actions {
+                grid-column: 1 / -1;
+                justify-content: flex-end;
+                width: 100%;
+                gap: 5px;
+            }
+        }
+
+        @media(min-width: 768px) {
+            header { padding: 12px 24px; }
+        }
+
+        .user-pill { background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); color: var(--primary); padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; white-space: nowrap; max-width: 190px; overflow: hidden; text-overflow: ellipsis; }
         [data-theme="dark"] .user-pill { color: #a5b4fc; }
-        .switch-auth-btn { background: rgba(15,23,42,0.82); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 6px 11px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+        .switch-auth-btn { background: #0f172a; color: white; border: 1px solid rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 
-        .nav-tabs { display: flex; justify-content: flex-start; gap: 14px; background: var(--nav-glass-bg); backdrop-filter: blur(14px); border-bottom: 1px solid var(--liquid-glass-border); padding: 0 14px; overflow-x: auto; scrollbar-width: none; }
+        .nav-tabs { display: flex; justify-content: flex-start; gap: 14px; background: var(--nav-glass-bg); border-bottom: 1px solid var(--liquid-glass-border); padding: 0 14px; overflow-x: auto; scrollbar-width: none; }
         @media(min-width: 768px) { .nav-tabs { justify-content: center; gap: 24px; padding: 0 24px; } }
         .nav-tabs::-webkit-scrollbar { display: none; }
         .tab-btn { background: none; border: none; padding: 11px 6px; font-size: 13px; font-weight: 800; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
@@ -148,25 +192,25 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        .compact-student-bar { background: var(--liquid-glass-bg); backdrop-filter: var(--liquid-blur); border: 1px solid var(--liquid-glass-border); border-radius: 18px; padding: 9px 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; box-shadow: var(--liquid-glass-shadow); }
+        .compact-student-bar { background: var(--liquid-glass-bg); border: 1px solid var(--liquid-glass-border); border-radius: 16px; padding: 9px 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; box-shadow: var(--liquid-glass-shadow); }
         .compact-bar-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .compact-college-badge { background: var(--surface-row-bg); color: var(--primary); border: 1px solid var(--liquid-glass-border); padding: 5px 11px; border-radius: 10px; font-size: 12px; font-weight: 900; }
         [data-theme="dark"] .compact-college-badge { color: #a5b4fc; }
         .college-switcher-select { background: var(--surface-row-bg); color: var(--primary); border: 1.5px solid rgba(99,102,241,0.55); padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 900; outline: none; cursor: pointer; }
         [data-theme="dark"] .college-switcher-select { color: #a5b4fc; background: #1e293b; }
         .compact-vpa-tag { font-size: 11px; color: var(--text-muted); font-weight: 700; }
-        .compact-bar-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-        .qr-popup-trigger-btn { background: linear-gradient(135deg, rgba(79,70,229,0.92), rgba(67,56,202,0.95)); color: #fff; border: 1px solid rgba(255,255,255,0.45); padding: 6px 11px; border-radius: 10px; font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+        .compact-bar-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+        .qr-popup-trigger-btn { background: var(--primary); color: #fff; border: none; padding: 6px 11px; border-radius: 10px; font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
 
-        .app-back-pill-btn { background: rgba(15,23,42,0.82); color: #fff; border: 1px solid rgba(255,255,255,0.35); padding: 8px 14px; border-radius: 12px; font-size: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
-        .admin-section-divider { background: var(--liquid-glass-strong); backdrop-filter: var(--liquid-blur); border: 1px solid var(--liquid-glass-border); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; box-shadow: var(--liquid-glass-shadow); }
+        .app-back-pill-btn { background: #0f172a; color: #fff; border: 1px solid rgba(255,255,255,0.25); padding: 8px 14px; border-radius: 12px; font-size: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+        .admin-section-divider { background: var(--liquid-glass-strong); border: 1px solid var(--liquid-glass-border); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; box-shadow: var(--liquid-glass-shadow); }
         .qr-banner-left { display: flex; align-items: center; gap: 14px; flex: 1 1 260px; }
         .qr-frame-box { width: 86px; height: 86px; min-width: 86px; min-height: 86px; border-radius: 14px; background: #fff; padding: 4px; border: 2px solid #c7d2fe; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .qr-frame-box img, .qr-popup-frame img, .qr-checkout-frame img { width: 100%; height: 100%; object-fit: contain; display: block; margin: auto; }
         .qr-popup-frame { width: 160px; height: 160px; margin: 10px auto; background: #fff; border: 2px solid #c7d2fe; border-radius: 16px; padding: 8px; display: flex; align-items: center; justify-content: center; }
         .qr-checkout-frame { width: 152px; height: 152px; margin: 8px auto; background: #fff; border: 2px solid #10b981; border-radius: 16px; padding: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 
-        .scan-college-card { max-width: 480px; margin: 16px auto; padding: 22px 18px; border-radius: 24px; text-align: center; background: var(--liquid-glass-strong); backdrop-filter: var(--liquid-blur); border: 2px dashed rgba(99,102,241,0.75); box-shadow: var(--liquid-glass-shadow); }
+        .scan-college-card { max-width: 480px; margin: 16px auto; padding: 22px 18px; border-radius: 22px; text-align: center; background: var(--liquid-glass-strong); border: 2px dashed rgba(99,102,241,0.75); box-shadow: var(--liquid-glass-shadow); }
         .camera-scanner-box { display: none; margin: 12px auto; max-width: 300px; border-radius: 16px; overflow: hidden; border: 3px solid var(--primary); background: #0f172a; position: relative; }
         .camera-scanner-box.active { display: block; }
         .camera-scanner-box video { width: 100%; height: 230px; object-fit: cover; display: block; }
@@ -175,18 +219,18 @@
         .qr-scan-status { display: none; margin-top: 10px; padding: 9px 12px; border-radius: 10px; font-size: 12px; font-weight: 800; background: var(--surface-row-bg); color: var(--primary); border: 1px solid var(--liquid-glass-border); }
         .qr-scan-status.active { display: block; }
 
-        .counter-canteen-gate-card { max-width: 520px; margin: 24px auto; padding: 24px 20px; border-radius: 24px; background: var(--liquid-glass-strong); backdrop-filter: var(--liquid-blur); border: 1.5px solid rgba(16,185,129,0.55); box-shadow: var(--liquid-glass-shadow); }
-        .prep-floating-fab { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, rgba(245,158,11,0.92), rgba(217,119,6,0.95)); color: #fff; border: 1.5px solid rgba(255,255,255,0.85); border-radius: 50px; padding: 11px 18px; font-size: 13px; font-weight: 900; box-shadow: 0 10px 24px rgba(217,119,6,0.35); cursor: pointer; z-index: 160; display: none; align-items: center; gap: 8px; }
+        .counter-canteen-gate-card { max-width: 520px; margin: 24px auto; padding: 24px 20px; border-radius: 22px; background: var(--liquid-glass-strong); border: 1.5px solid rgba(16,185,129,0.55); box-shadow: var(--liquid-glass-shadow); }
+        .prep-floating-fab { position: fixed; bottom: 20px; right: 20px; background: #d97706; color: #fff; border: 1.5px solid rgba(255,255,255,0.85); border-radius: 50px; padding: 11px 18px; font-size: 13px; font-weight: 900; box-shadow: 0 6px 16px rgba(0,0,0,0.25); cursor: pointer; z-index: 160; display: none; align-items: center; gap: 8px; }
         .prep-floating-fab.visible { display: inline-flex; }
         .prep-rank-row { display: flex; align-items: center; justify-content: space-between; background: var(--surface-row-bg); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; gap: 10px; }
         .prep-rank-badge { width: 30px; height: 30px; border-radius: 8px; background: rgba(99,102,241,0.18); color: var(--primary); font-weight: 900; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .prep-rank-row.top-1 .prep-rank-badge { background: rgba(245,158,11,0.25); color: #f59e0b; border: 1px solid #f59e0b; }
         .prep-qty-pill { background: #0f172a; color: #38bdf8; font-size: 13px; font-weight: 900; padding: 5px 10px; border-radius: 8px; white-space: nowrap; text-align: center; min-width: 82px; }
         .prep-progress-track { width: 100%; height: 5px; background: rgba(148,163,184,0.25); border-radius: 4px; margin-top: 5px; overflow: hidden; }
-        .prep-progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #10b981); border-radius: 4px; }
+        .prep-progress-fill { height: 100%; background: var(--primary); border-radius: 4px; }
 
         .search-box { position: relative; margin-bottom: 14px; }
-        .search-box input { width: 100%; padding: 11px 14px 11px 40px; border: 1px solid var(--liquid-glass-border); border-radius: 16px; font-size: 13px; font-weight: 600; background: var(--liquid-glass-bg); backdrop-filter: var(--liquid-blur); outline: none; box-shadow: var(--liquid-glass-shadow); color: var(--text-main); }
+        .search-box input { width: 100%; padding: 11px 14px 11px 40px; border: 1px solid var(--liquid-glass-border); border-radius: 14px; font-size: 13px; font-weight: 600; background: var(--liquid-glass-bg); outline: none; box-shadow: var(--liquid-glass-shadow); color: var(--text-main); }
         .search-box input:focus { border-color: var(--primary); background: var(--input-glass-focus); }
         .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; z-index: 2; }
 
@@ -195,104 +239,106 @@
         .ads-header h3 { font-size: 13px; font-weight: 900; color: var(--text-main); }
         .ads-slider { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 4px; scrollbar-width: none; }
         .ads-slider::-webkit-scrollbar { display: none; }
-        .ad-card { flex: 0 0 265px; height: 162px; border-radius: 20px; overflow: hidden; scroll-snap-align: start; box-shadow: 0 10px 24px rgba(15,23,42,0.18); position: relative; display: flex; flex-direction: column; justify-content: flex-end; background-size: cover; background-position: center; border: 1px solid var(--liquid-glass-border); }
-        @media(min-width: 768px) { .ad-card { flex: 0 0 330px; height: 176px; } }
-        .ad-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,23,42,0.12) 0%, rgba(15,23,42,0.72) 60%, rgba(15,23,42,0.94) 100%); z-index: 1; }
+        .ad-card { flex: 0 0 265px; height: 158px; border-radius: 18px; overflow: hidden; scroll-snap-align: start; box-shadow: var(--liquid-glass-shadow); position: relative; display: flex; flex-direction: column; justify-content: flex-end; background-size: cover; background-position: center; border: 1px solid var(--liquid-glass-border); }
+        @media(min-width: 768px) { .ad-card { flex: 0 0 320px; height: 170px; } }
+        .ad-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,23,42,0.1) 0%, rgba(15,23,42,0.88) 100%); z-index: 1; }
         .ad-card > * { position: relative; z-index: 2; }
-        .ad-card-body { padding: 13px 14px; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
-        .ad-badge { background: rgba(255,255,255,0.24); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.6); color: #fff; padding: 3px 9px; border-radius: 8px; font-size: 10px; font-weight: 900; align-self: flex-start; text-transform: uppercase; }
+        .ad-card-body { padding: 12px 14px; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+        .ad-badge { background: rgba(15,23,42,0.75); border: 1px solid rgba(255,255,255,0.5); color: #fff; padding: 3px 9px; border-radius: 8px; font-size: 10px; font-weight: 900; align-self: flex-start; text-transform: uppercase; }
         .ad-title { font-size: 15px; font-weight: 900; color: #fff; margin-bottom: 2px; line-height: 1.2; }
         .ad-desc { font-size: 11px; color: #e2e8f0; margin-bottom: 8px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .ad-btn { background: rgba(255,255,255,0.88); color: #0f172a; border: 1px solid #fff; padding: 6px 12px; border-radius: 9px; font-size: 11px; font-weight: 900; cursor: pointer; align-self: flex-start; }
+        .ad-btn { background: #ffffff; color: #0f172a; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 900; cursor: pointer; align-self: flex-start; }
 
         .cat-scroll { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 14px; padding-bottom: 4px; scrollbar-width: none; }
         .cat-scroll::-webkit-scrollbar { display: none; }
-        .cat-pill { background: var(--liquid-glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--liquid-glass-border); padding: 7px 14px; border-radius: 30px; font-size: 12px; font-weight: 800; color: var(--text-main); cursor: pointer; white-space: nowrap; box-shadow: var(--liquid-glass-shadow); }
-        .cat-pill.active { background: linear-gradient(135deg, rgba(79,70,229,0.9), rgba(67,56,202,0.96)); color: #fff; border-color: rgba(255,255,255,0.55); }
+        .cat-pill { background: var(--liquid-glass-bg); border: 1px solid var(--liquid-glass-border); padding: 7px 14px; border-radius: 30px; font-size: 12px; font-weight: 800; color: var(--text-main); cursor: pointer; white-space: nowrap; }
+        .cat-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-        .food-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
-        @media(min-width: 640px) { .food-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; } }
-        @media(min-width: 1024px) { .food-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; } }
+        .food-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        @media(min-width: 640px) { .food-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; } }
+        @media(min-width: 1024px) { .food-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; } }
 
-        .food-card { min-height: 186px; border-radius: 22px; overflow: hidden; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 9px; background-size: cover; background-position: center; border: 1.2px solid var(--liquid-glass-border); box-shadow: var(--liquid-glass-shadow); }
-        @media(min-width: 768px) { .food-card { min-height: 208px; padding: 12px; border-radius: 24px; } }
-        .food-card.has-bg-img::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,23,42,0.14) 0%, rgba(15,23,42,0.25) 45%, rgba(15,23,42,0.78) 100%); z-index: 1; pointer-events: none; }
-        .food-card.no-bg-img { background: var(--liquid-glass-bg); backdrop-filter: var(--liquid-blur); }
-        .food-card.no-bg-img.cat-theme-tiffin::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 85% 18%, rgba(99,102,241,0.28) 0%, transparent 62%); z-index: 1; pointer-events: none; }
-        .food-card.no-bg-img.cat-theme-lunch::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 85% 18%, rgba(245,158,11,0.3) 0%, transparent 62%); z-index: 1; pointer-events: none; }
-        .food-card.no-bg-img.cat-theme-snacks::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 85% 18%, rgba(16,185,129,0.28) 0%, transparent 62%); z-index: 1; pointer-events: none; }
-        .food-card.no-bg-img.cat-theme-beverages::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 85% 18%, rgba(236,72,153,0.28) 0%, transparent 62%); z-index: 1; pointer-events: none; }
-        .food-watermark-emoji { position: absolute; right: 8px; top: 32px; font-size: 44px; opacity: 0.26; z-index: 1; pointer-events: none; }
+        /* Hardware-Accelerated Food Cards (Zero Scroll Lag on Older Phones) */
+        .food-card {
+            min-height: 182px; border-radius: 18px; overflow: hidden; position: relative;
+            display: flex; flex-direction: column; justify-content: space-between; padding: 9px;
+            background-size: cover; background-position: center; border: 1px solid var(--liquid-glass-border);
+            box-shadow: var(--liquid-glass-shadow); content-visibility: auto; contain-intrinsic-size: 185px;
+        }
+        @media(min-width: 768px) { .food-card { min-height: 204px; padding: 12px; border-radius: 20px; } }
+        .food-card.has-bg-img::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,23,42,0.12) 0%, rgba(15,23,42,0.82) 100%); z-index: 1; pointer-events: none; }
+        .food-card.no-bg-img { background: var(--liquid-glass-bg); }
+        .food-Watermark-emoji, .food-watermark-emoji { position: absolute; right: 8px; top: 32px; font-size: 40px; opacity: 0.22; z-index: 1; pointer-events: none; }
 
         .food-card-top { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 4px; }
-        .food-college-tag { background: rgba(255,255,255,0.28); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.65); color: #fff; font-size: 9.5px; font-weight: 800; padding: 3.5px 8px; border-radius: 20px; max-width: 78%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .food-card.no-bg-img .food-college-tag { background: var(--surface-row-bg); border: 1px solid var(--liquid-glass-border); color: var(--primary); }
+        .food-college-tag { background: rgba(15,23,42,0.65); border: 1px solid rgba(255,255,255,0.45); color: #fff; font-size: 9.5px; font-weight: 800; padding: 3px 8px; border-radius: 20px; max-width: 78%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .food-card.no-bg-img .food-college-tag { background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); color: var(--primary); }
         [data-theme="dark"] .food-card.no-bg-img .food-college-tag { color: #a5b4fc; }
 
-        .veg-badge { width: 17px; height: 17px; border: 2px solid var(--success); border-radius: 5px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.92); }
+        .veg-badge { width: 17px; height: 17px; border: 2px solid var(--success); border-radius: 5px; display: flex; align-items: center; justify-content: center; background: #fff; }
         .veg-dot { width: 7px; height: 7px; background: var(--success); border-radius: 50%; }
         .veg-badge.non-veg { border-color: var(--danger); }
         .veg-badge.non-veg .veg-dot { background: var(--danger); }
 
-        .food-glass-dock { position: relative; z-index: 2; margin-top: auto; border-radius: 16px; padding: 8px 9px; display: flex; flex-direction: column; gap: 4px; }
-        .food-card.has-bg-img .food-glass-dock { background: linear-gradient(135deg, rgba(15,23,42,0.54), rgba(15,23,42,0.34)); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.44); }
+        .food-glass-dock { position: relative; z-index: 2; margin-top: auto; border-radius: 14px; padding: 8px 9px; display: flex; flex-direction: column; gap: 4px; }
+        .food-card.has-bg-img .food-glass-dock { background: rgba(15, 23, 42, 0.78); border: 1px solid rgba(255,255,255,0.3); }
         .food-card.no-bg-img .food-glass-dock { background: var(--surface-row-bg); border: 1px solid var(--liquid-glass-border); }
 
         .food-name { font-size: 13px; font-weight: 900; line-height: 1.22; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .food-card.has-bg-img .food-name { color: #fff; }
         .food-card.no-bg-img .food-name { color: var(--text-main); }
         .food-meta-pill { font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 5px; }
-        .food-card.has-bg-img .food-meta-pill { color: #e2e8f0; }
+        .food-card.has-bg-img .food-meta-pill { color: #cbd5e1; }
         .food-card.no-bg-img .food-meta-pill { color: var(--text-muted); }
-        .food-footer { display: flex; justify-content: space-between; align-items: center; gap: 4px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.25); }
+        .food-footer { display: flex; justify-content: space-between; align-items: center; gap: 4px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.2); }
         .food-card.no-bg-img .food-footer { border-top: 1px solid var(--liquid-glass-border); }
         .food-price { font-size: 15px; font-weight: 900; }
         .food-card.has-bg-img .food-price { color: #fff; }
         .food-card.no-bg-img .food-price { color: var(--text-main); }
 
-        .add-btn { background: rgba(255,255,255,0.92); color: #0f172a; border: 1px solid #fff; padding: 5.5px 11px; border-radius: 9px; font-size: 11px; font-weight: 900; cursor: pointer; white-space: nowrap; }
-        .food-card.no-bg-img .add-btn { background: linear-gradient(135deg, rgba(79,70,229,0.92), rgba(67,56,202,0.96)); color: #fff; border: 1px solid rgba(255,255,255,0.55); }
-        .stepper { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.92); border: 1px solid #fff; padding: 2px 5px; border-radius: 9px; }
+        .add-btn { background: #ffffff; color: #0f172a; border: 1px solid #e2e8f0; padding: 5.5px 11px; border-radius: 8px; font-size: 11px; font-weight: 900; cursor: pointer; white-space: nowrap; }
+        .food-card.no-bg-img .add-btn { background: var(--primary); color: #fff; border: none; }
+        .stepper { display: inline-flex; align-items: center; gap: 4px; background: #ffffff; border: 1px solid #cbd5e1; padding: 2px 5px; border-radius: 8px; }
         .stepper button { background: var(--primary); color: white; border: none; width: 20px; height: 20px; border-radius: 5px; font-weight: 900; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; }
         .stepper span { font-size: 11.5px; font-weight: 900; color: #0f172a; min-width: 13px; text-align: center; }
-        .inline-tray-btn { background: rgba(15,23,42,0.86); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 4.5px 6.5px; border-radius: 7px; font-size: 10px; font-weight: 800; cursor: pointer; }
+        .inline-tray-btn { background: #0f172a; color: white; border: 1px solid rgba(255,255,255,0.4); padding: 4.5px 6.5px; border-radius: 7px; font-size: 10px; font-weight: 800; cursor: pointer; }
 
         .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; margin-bottom: 20px; }
-        .admin-panel { background: var(--liquid-glass-strong); backdrop-filter: var(--liquid-blur); border: 1px solid var(--liquid-glass-border); border-radius: var(--radius); padding: 18px; box-shadow: var(--liquid-glass-shadow); }
+        .admin-panel { background: var(--liquid-glass-strong); border: 1px solid var(--liquid-glass-border); border-radius: var(--radius); padding: 18px; box-shadow: var(--liquid-glass-shadow); }
         .admin-panel h3 { font-size: 15px; font-weight: 900; margin-bottom: 4px; color: var(--text-main); }
         .admin-panel p.sub { font-size: 11.5px; color: var(--text-muted); margin-bottom: 12px; }
         .item-list-box { max-height: 220px; overflow-y: auto; border: 1px solid var(--liquid-glass-border); border-radius: 14px; padding: 8px; background: var(--surface-sub-bg); }
         .item-list-row { background: var(--surface-row-bg); border: 1px solid var(--liquid-glass-border); border-radius: 10px; padding: 9px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; cursor: pointer; gap: 8px; color: var(--text-main); }
-        .item-list-row.editing-active { background: rgba(99,102,241,0.22); border: 2px solid var(--primary); }
+        .item-list-row.editing-active { background: rgba(99,102,241,0.18); border: 2px solid var(--primary); }
         .menu-thumb-mini { width: 34px; height: 34px; border-radius: 7px; object-fit: cover; border: 1px solid #cbd5e1; flex-shrink: 0; }
         .remove-item-symbol { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; width: 26px; height: 26px; border-radius: 50%; font-size: 12px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .add-item-symbol-btn { background: #10b981; color: white; border: 1px solid rgba(255,255,255,0.4); padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; width: 100%; justify-content: center; margin-bottom: 12px; }
+        .add-item-symbol-btn { background: #10b981; color: white; border: none; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; width: 100%; justify-content: center; margin-bottom: 12px; }
 
         .search-suggestions-container { position: relative; }
-        .suggestions-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--modal-glass-bg); backdrop-filter: blur(18px); border: 1px solid var(--liquid-glass-border); border-radius: 12px; max-height: 210px; overflow-y: auto; z-index: 60; display: none; margin-top: 4px; box-shadow: 0 12px 28px rgba(0,0,0,0.25); }
+        .suggestions-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--modal-glass-bg); border: 1px solid var(--liquid-glass-border); border-radius: 12px; max-height: 210px; overflow-y: auto; z-index: 60; display: none; margin-top: 4px; box-shadow: 0 10px 24px rgba(0,0,0,0.2); }
         .suggestion-item { padding: 9px 12px; font-size: 12px; font-weight: 700; cursor: pointer; border-bottom: 1px solid var(--liquid-glass-border); display: flex; justify-content: space-between; align-items: center; gap: 8px; color: var(--text-main); }
         .suggestion-item.is-selected { background: rgba(16,185,129,0.18); border-left: 4px solid #10b981; }
         .multi-selected-tags-box { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-        .selected-food-chip { background: rgba(99,102,241,0.18); border: 1px solid rgba(99,102,241,0.45); color: var(--primary); padding: 4px 9px; border-radius: 20px; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; }
+        .selected-food-chip { background: rgba(99,102,241,0.16); border: 1px solid rgba(99,102,241,0.4); color: var(--primary); padding: 4px 9px; border-radius: 20px; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; }
         [data-theme="dark"] .selected-food-chip { color: #a5b4fc; }
         .selected-food-chip button { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; width: 17px; height: 17px; border-radius: 50%; font-size: 10px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
 
-        .floating-tray { position: fixed; bottom: 14px; left: 12px; right: 12px; max-width: 620px; margin: 0 auto; background: linear-gradient(135deg, rgba(15,23,42,0.84), rgba(30,27,75,0.74)); backdrop-filter: blur(18px); color: white; border-radius: 22px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 16px 36px rgba(0,0,0,0.4); z-index: 150; cursor: pointer; border: 1px solid rgba(255,255,255,0.28); }
+        .floating-tray { position: fixed; bottom: 14px; left: 12px; right: 12px; max-width: 620px; margin: 0 auto; background: #0f172a; color: white; border-radius: 20px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.35); z-index: 150; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); }
         .floating-tray.hidden { display: none; }
         .tray-info { display: flex; align-items: center; gap: 10px; }
         .tray-count-badge { background: var(--primary); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; }
         .tray-text h4 { font-size: 13.5px; font-weight: 800; }
         .tray-text p { font-size: 11px; color: #cbd5e1; }
-        .tray-action-pill { background: rgba(255,255,255,0.95); color: #0f172a; padding: 8px 14px; border-radius: 12px; font-size: 12.5px; font-weight: 900; }
+        .tray-action-pill { background: #ffffff; color: #0f172a; padding: 8px 14px; border-radius: 12px; font-size: 12.5px; font-weight: 900; }
 
-        .drawer-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.45); backdrop-filter: blur(6px); z-index: 200; display: none; }
+        .drawer-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 200; display: none; }
         .drawer-overlay.active { display: block; }
-        .drawer { position: fixed; bottom: 0; left: 0; right: 0; max-width: 600px; margin: 0 auto; background: var(--drawer-glass-bg); backdrop-filter: blur(24px); border-top: 1.5px solid var(--liquid-glass-border); border-top-left-radius: 28px; border-top-right-radius: 28px; max-height: 90vh; overflow-y: auto; z-index: 210; padding: 16px 18px 20px; transform: translate3d(0, 100%, 0); transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .drawer { position: fixed; bottom: 0; left: 0; right: 0; max-width: 600px; margin: 0 auto; background: var(--drawer-glass-bg); border-top: 1.5px solid var(--liquid-glass-border); border-top-left-radius: 24px; border-top-right-radius: 24px; max-height: 90vh; overflow-y: auto; z-index: 210; padding: 16px 18px 20px; transform: translate3d(0, 100%, 0); transition: transform 0.18s ease-out; }
         .drawer.active { transform: translate3d(0, 0, 0); }
         .drawer-pill-handle { width: 42px; height: 5px; background: rgba(148,163,184,0.45); border-radius: 10px; margin: 0 auto 10px; cursor: pointer; }
         .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--liquid-glass-border); padding-bottom: 10px; }
         .drawer-header h2 { font-size: 16.5px; font-weight: 900; color: var(--text-main); }
-        .close-drawer { background: var(--surface-row-bg); border: 1px solid var(--liquid-glass-border); width: 30px; height: 30px; border-radius: 50%; font-weight: 800; cursor: pointer; font-size: 16px; color: var(--text-muted); }
+        .close-drawer { background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); width: 30px; height: 30px; border-radius: 50%; font-weight: 800; cursor: pointer; font-size: 16px; color: var(--text-muted); }
 
         .form-group { margin-bottom: 10px; }
         .form-group label { display: block; font-size: 10.5px; font-weight: 800; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
@@ -302,30 +348,30 @@
 
         .payment-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
         .payment-card { border: 1.5px solid var(--liquid-glass-border); border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; background: var(--surface-sub-bg); }
-        .payment-card.selected { border-color: var(--primary); background: rgba(99,102,241,0.2); }
+        .payment-card.selected { border-color: var(--primary); background: rgba(99,102,241,0.16); }
         .payment-card h4 { font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
         .payment-card p { font-size: 11px; color: var(--text-muted); }
         #qrDisplayContainer { background: var(--surface-row-bg); border: 2px solid rgba(16,185,129,0.6); border-radius: 16px; padding: 14px; text-align: center; margin-bottom: 14px; }
         .bill-summary { background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); border-radius: 14px; padding: 14px; margin-bottom: 14px; }
         .bill-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; color: var(--text-muted); font-weight: 600; }
         .bill-row.total { font-size: 16px; font-weight: 900; color: var(--text-main); border-top: 1px dashed rgba(148,163,184,0.4); padding-top: 8px; margin-top: 8px; }
-        .checkout-btn { width: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 12px; border-radius: 14px; font-size: 13px; font-weight: 800; cursor: pointer; }
+        .checkout-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; }
         .checkout-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .toast-modal { position: fixed; inset: 0; background: rgba(15,23,42,0.52); backdrop-filter: blur(8px); z-index: 600; display: none; align-items: center; justify-content: center; padding: 16px; }
+        .toast-modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 600; display: none; align-items: center; justify-content: center; padding: 14px; }
         .toast-modal.active { display: flex; }
-        .toast-card { background: var(--modal-glass-bg); backdrop-filter: blur(22px); width: 100%; max-width: 420px; border-radius: 26px; padding: 22px; text-align: center; box-shadow: var(--liquid-glass-shadow); border: 1.5px solid var(--liquid-glass-border); color: var(--text-main); }
+        .toast-card { background: var(--modal-glass-bg); width: 100%; max-width: 420px; border-radius: 22px; padding: 20px; text-align: center; box-shadow: 0 12px 32px rgba(0,0,0,0.3); border: 1.5px solid var(--liquid-glass-border); color: var(--text-main); }
         .toast-icon { width: 52px; height: 52px; background: #dcfce7; color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 12px; }
 
-        .receipt-card { background: var(--liquid-glass-strong); backdrop-filter: var(--liquid-blur); border: 1px solid var(--liquid-glass-border); border-radius: 22px; padding: 18px; box-shadow: var(--liquid-glass-shadow); margin: 0 auto 16px; max-width: 600px; position: relative; overflow: hidden; }
+        .receipt-card { background: var(--liquid-glass-strong); border: 1px solid var(--liquid-glass-border); border-radius: 20px; padding: 18px; box-shadow: var(--liquid-glass-shadow); margin: 0 auto 16px; max-width: 600px; position: relative; overflow: hidden; content-visibility: auto; contain-intrinsic-size: 320px; }
         .receipt-card.is-served { border: 2px solid #10b981; }
-        .receipt-college-banner { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(79,70,229,0.92), rgba(49,46,129,0.95)); color: #fff; padding: 8px 14px; border-radius: 12px; margin-bottom: 12px; font-size: 12px; font-weight: 900; }
-        .served-hero-banner { background: linear-gradient(135deg, #059669, #10b981); color: #fff; margin: -18px -18px 14px; padding: 16px 18px; text-align: center; }
+        .receipt-college-banner { display: flex; justify-content: space-between; align-items: center; background: var(--primary); color: #fff; padding: 8px 14px; border-radius: 12px; margin-bottom: 12px; font-size: 12px; font-weight: 900; }
+        .served-hero-banner { background: #059669; color: #fff; margin: -18px -18px 14px; padding: 16px 18px; text-align: center; }
         .served-hero-icon { width: 44px; height: 44px; background: rgba(255,255,255,0.22); border: 2px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; margin: 0 auto 6px; }
         .served-hero-title { font-size: 18px; font-weight: 900; text-transform: uppercase; }
         .served-hero-sub { font-size: 11.5px; font-weight: 700; margin-top: 3px; }
-        .served-diagonal-stamp { position: absolute; top: 56%; left: 50%; transform: translate(-50%, -50%) rotate(-14deg); border: 4px solid rgba(16,185,129,0.24); color: rgba(16,185,129,0.24); font-size: 32px; font-weight: 900; padding: 6px 18px; border-radius: 12px; text-transform: uppercase; pointer-events: none; z-index: 2; white-space: nowrap; }
-        .served-redemption-box { background: rgba(16,185,129,0.16); border: 2px dashed #10b981; color: var(--text-main); padding: 10px; border-radius: 12px; text-align: center; margin-bottom: 12px; }
+        .served-diagonal-stamp { position: absolute; top: 56%; left: 50%; transform: translate(-50%, -50%) rotate(-14deg); border: 4px solid rgba(16,185,129,0.22); color: rgba(16,185,129,0.22); font-size: 32px; font-weight: 900; padding: 6px 18px; border-radius: 12px; text-transform: uppercase; pointer-events: none; z-index: 2; white-space: nowrap; }
+        .served-redemption-box { background: rgba(16,185,129,0.14); border: 2px dashed #10b981; color: var(--text-main); padding: 10px; border-radius: 12px; text-align: center; margin-bottom: 12px; }
 
         .receipt-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed rgba(148,163,184,0.4); padding-bottom: 12px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
         .token-number { font-size: 28px; font-weight: 900; color: var(--primary); }
@@ -347,19 +393,21 @@
         .live-test-btn { width: 100%; background: rgba(99,102,241,0.15); color: var(--primary); border: 1px dashed var(--primary); padding: 9px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; margin-bottom: 6px; }
 
         .finance-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px; }
-        .finance-card { background: var(--liquid-glass-strong); backdrop-filter: var(--liquid-blur); border: 1px solid var(--liquid-glass-border); border-radius: var(--radius); padding: 16px; box-shadow: var(--liquid-glass-shadow); }
+        .finance-card { background: var(--liquid-glass-strong); border: 1px solid var(--liquid-glass-border); border-radius: var(--radius); padding: 16px; box-shadow: var(--liquid-glass-shadow); transition: transform 0.12s ease; }
+        .finance-card.clickable-card { cursor: pointer; }
+        .finance-card.clickable-card:active { transform: scale(0.98); }
         .finance-card h4 { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; font-weight: 800; }
         .finance-card .amount { font-size: 22px; font-weight: 900; color: var(--text-main); }
 
-        .statement-table-wrapper { background: var(--liquid-glass-strong); backdrop-filter: var(--liquid-blur); border: 1px solid var(--liquid-glass-border); border-radius: var(--radius); overflow-x: auto; box-shadow: var(--liquid-glass-shadow); }
+        .statement-table-wrapper { background: var(--liquid-glass-strong); border: 1px solid var(--liquid-glass-border); border-radius: var(--radius); overflow-x: auto; box-shadow: var(--liquid-glass-shadow); }
         .statement-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12.5px; }
         .statement-table th { background: var(--surface-sub-bg); padding: 11px 14px; font-weight: 800; color: var(--text-muted); font-size: 10.5px; text-transform: uppercase; border-bottom: 1px solid var(--liquid-glass-border); white-space: nowrap; }
         .statement-table td { padding: 12px 14px; border-bottom: 1px solid var(--liquid-glass-border); color: var(--text-main); vertical-align: middle; font-weight: 600; }
-        .ledger-table-row { cursor: pointer; transition: background 0.15s ease; }
-        .ledger-table-row:hover { background: rgba(99, 102, 241, 0.12); }
+        .ledger-table-row { cursor: pointer; }
+        .ledger-table-row:hover { background: rgba(99, 102, 241, 0.08); }
 
         .ledger-canteen-header { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
-        .ledger-canteen-badge { background: rgba(99,102,241,0.18); color: var(--primary); border: 1px solid rgba(99,102,241,0.4); font-size: 10.5px; font-weight: 800; padding: 3px 8px; border-radius: 6px; }
+        .ledger-canteen-badge { background: rgba(99,102,241,0.16); color: var(--primary); border: 1px solid rgba(99,102,241,0.35); font-size: 10.5px; font-weight: 800; padding: 3px 8px; border-radius: 6px; }
         .ledger-slot-badge { background: var(--surface-sub-bg); color: var(--text-muted); border: 1px solid var(--liquid-glass-border); font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 6px; }
         .ledger-items-stack { display: flex; flex-direction: column; gap: 5px; min-width: 220px; }
         .ledger-item-line { display: flex; align-items: center; justify-content: space-between; background: var(--surface-row-bg); border: 1px solid var(--liquid-glass-border); border-left: 3px solid var(--primary); border-radius: 7px; padding: 6px 9px; gap: 8px; }
@@ -375,7 +423,7 @@
 
         .ledger-pagination-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; padding: 12px 16px; background: var(--surface-sub-bg); border-top: 1px solid var(--liquid-glass-border); }
         .ledger-page-info { font-size: 12px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .ledger-search-active-pill { background: rgba(99,102,241,0.18); color: var(--primary); border: 1px solid rgba(99,102,241,0.4); padding: 3px 8px; border-radius: 6px; font-size: 10.5px; font-weight: 800; }
+        .ledger-search-active-pill { background: rgba(99,102,241,0.16); color: var(--primary); border: 1px solid rgba(99,102,241,0.35); padding: 3px 8px; border-radius: 6px; font-size: 10.5px; font-weight: 800; }
         .ledger-page-controls { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
         .page-btn { background: var(--surface-row-bg); border: 1px solid var(--liquid-glass-border); color: var(--text-main); min-width: 32px; height: 32px; padding: 0 9px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
         .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
@@ -407,6 +455,58 @@
                 <button class="checkout-btn" onclick="copyCollegeInviteLink()" style="padding: 10px; font-size: 12px;">📋 Copy Link</button>
                 <button class="checkout-btn" onclick="downloadCollegeQrCode()" style="background: #0f172a; padding: 10px; font-size: 12px;">⬇️ Download QR</button>
             </div>
+        </div>
+    </div>
+
+    <!-- REVENUE BREAKDOWN POPUP MODAL (ONLINE UPI PAID VS CASH PAID) -->
+    <div class="toast-modal" id="revenueBreakdownModal">
+        <div class="toast-card" style="text-align: left; max-width: 480px; max-height: 90vh; overflow-y: auto; padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--liquid-glass-border); padding-bottom: 10px;">
+                <div>
+                    <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--success);">💰 Counter Financial Breakdown</span>
+                    <h3 style="font-size: 18px; font-weight: 900; color: var(--text-main);" id="revModalTitle">Received Amount Breakdown</h3>
+                </div>
+                <button class="close-drawer" onclick="closeRevenueBreakdownModal()">×</button>
+            </div>
+
+            <div class="sub-switch-bar sub-switch-2" style="margin-bottom: 12px;">
+                <button class="college-sub-tab active" id="revTabToday" onclick="openRevenueBreakdownModal('today')">📅 Today's Received</button>
+                <button class="college-sub-tab" id="revTabMonthly" onclick="openRevenueBreakdownModal('monthly')">🗓️ Monthly Statement</button>
+            </div>
+
+            <!-- Total Received Banner -->
+            <div style="background: var(--surface-sub-bg); border: 1.5px solid var(--liquid-glass-border); border-radius: 14px; padding: 12px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block;">Total Received (Online + Cash Paid)</span>
+                    <strong style="font-size: 22px; font-weight: 900; color: var(--text-main);" id="revModalTotalReceived">₹0</strong>
+                </div>
+                <span style="font-size: 11px; font-weight: 800; color: var(--success); background: #dcfce7; padding: 4px 10px; border-radius: 20px;" id="revModalTotalOrdersBadge">0 Paid Orders</span>
+            </div>
+
+            <!-- Online Paid vs Cash Paid Cards -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div style="background: rgba(79, 70, 229, 0.1); border: 1.5px solid rgba(79, 70, 229, 0.4); border-radius: 14px; padding: 12px;">
+                    <span style="font-size: 10.5px; font-weight: 900; color: var(--primary); text-transform: uppercase; display: block;">⚡ Online UPI / QR Paid</span>
+                    <strong style="font-size: 20px; font-weight: 900; color: var(--primary); display: block; margin-top: 4px;" id="revModalOnlineAmount">₹0</strong>
+                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;" id="revModalOnlineCount">0 orders</span>
+                </div>
+                <div style="background: rgba(16, 185, 129, 0.1); border: 1.5px solid rgba(16, 185, 129, 0.45); border-radius: 14px; padding: 12px;">
+                    <span style="font-size: 10.5px; font-weight: 900; color: var(--success); text-transform: uppercase; display: block;">💵 Cash Paid (Collected)</span>
+                    <strong style="font-size: 20px; font-weight: 900; color: var(--success); display: block; margin-top: 4px;" id="revModalCashPaidAmount">₹0</strong>
+                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;" id="revModalCashPaidCount">0 orders</span>
+                </div>
+            </div>
+
+            <!-- Cash Pending Info Bar -->
+            <div style="background: rgba(245, 158, 11, 0.12); border: 1px dashed #f59e0b; border-radius: 12px; padding: 9px 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
+                <span style="font-weight: 800; color: var(--warning);">⏳ Pending Cash (To Collect at Counter):</span>
+                <strong style="font-weight: 900; color: var(--warning);" id="revModalCashPendingText">₹0 (0 orders)</strong>
+            </div>
+
+            <label style="font-size: 10.5px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Paid Transactions Breakdown (Online & Cash)</label>
+            <div id="revModalTxList" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px;"></div>
+
+            <button class="checkout-btn" onclick="closeRevenueBreakdownModal()" style="padding: 10px;">Close Breakdown</button>
         </div>
     </div>
 
@@ -645,9 +745,8 @@
                     <button class="college-sub-tab" id="stuTabSignup" onclick="switchStudentSubMode('signup')">📝 Student Sign Up</button>
                 </div>
 
-                <!-- 1A. STUDENT LOGIN FORM -->
                 <div id="studentLoginForm">
-                    <div style="background: rgba(99, 102, 241, 0.14); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--text-main); font-weight: 700;">
+                    <div style="background: rgba(99, 102, 241, 0.12); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--text-main); font-weight: 700;">
                         🔑 Log in using your <b>Personal Mobile Number or Email ID</b> & 4-Digit PIN.
                     </div>
                     <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 10px;">
@@ -663,9 +762,8 @@
                     <button class="checkout-btn" onclick="completeStudentLogin()" style="margin-top: 6px;">Login & Open Canteens 🚀</button>
                 </div>
 
-                <!-- 1B. STUDENT SIGN UP FORM (DIRECT SIGNUP - NO OTP REQUIRED) -->
                 <div id="studentSignupForm" style="display: none;">
-                    <div style="background: rgba(16, 185, 129, 0.14); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 9px 12px; margin-bottom: 10px; font-size: 11px; color: var(--text-main); font-weight: 700;">
+                    <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 9px 12px; margin-bottom: 10px; font-size: 11px; color: var(--text-main); font-weight: 700;">
                         📝 Register directly with your details. After signing up, scan your college's QR code to join its canteens.
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -703,9 +801,8 @@
                     <button class="college-sub-tab" id="subTabSignup" onclick="switchCollegeSubMode('signup')">📝 College Sign Up</button>
                 </div>
 
-                <!-- 2A. College Admin Login -->
                 <div id="subFormAdmin">
-                    <div style="background: rgba(245, 158, 11, 0.16); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: var(--text-main); font-weight: 700; line-height: 1.4;">
+                    <div style="background: rgba(245, 158, 11, 0.14); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: var(--text-main); font-weight: 700; line-height: 1.4;">
                         🏛️ <b>College Admin Portal:</b> Select your registered college and enter your Admin PIN to manage canteens, menus, and ledgers.
                     </div>
                     <div class="form-group">
@@ -722,9 +819,8 @@
                     <button class="checkout-btn" onclick="completeAdminLogin()" style="background: #1e293b; margin-top: 6px;">Open College Admin Studio 🛠️</button>
                 </div>
 
-                <!-- 2B. Counter Staff Login -->
                 <div id="subFormStaff" style="display: none;">
-                    <div style="background: rgba(16, 185, 129, 0.16); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: var(--text-main); font-weight: 700; line-height: 1.4;">
+                    <div style="background: rgba(16, 185, 129, 0.14); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: var(--text-main); font-weight: 700; line-height: 1.4;">
                         👨‍🍳 <b>Counter Staff Login:</b> Select your registered college and enter the Counter PIN.
                     </div>
                     <div class="form-group">
@@ -741,9 +837,8 @@
                     <button class="checkout-btn" onclick="completeStaffLogin()" style="background: #059669; margin-top: 6px;">Login to Counter Portal &rarr;</button>
                 </div>
 
-                <!-- 2C. College Sign Up -->
                 <div id="subFormSignup" style="display: none;">
-                    <div style="background: rgba(99, 102, 241, 0.15); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--text-main); font-weight: 700; line-height: 1.4;" id="collegeSignupBannerNotice">
+                    <div style="background: rgba(99, 102, 241, 0.14); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--text-main); font-weight: 700; line-height: 1.4;" id="collegeSignupBannerNotice">
                         📝 <b>College Sign Up & PIN Setup:</b> Each college must use a unique Admin Email ID. Verify via Email OTP and create your custom PINs.
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
@@ -792,7 +887,7 @@
         </div>
     </div>
 
-    <!-- TOP NAVIGATION HEADER -->
+    <!-- TOP NAVIGATION HEADER (MOBILE: SUBTITLE & ACTION PILLS MOVED TO OPPOSITE RIGHT SIDE) -->
     <header>
         <div class="brand">
             <div class="brand-logo" onclick="handleCreatorLogoTap()" title="CampusBites">🍴</div>
@@ -878,7 +973,7 @@
 
         <!-- STUDENT TAB 1: CANTEENS & MENU -->
         <div id="tab-menu" class="tab-content active">
-            <div id="previewReturnBanner" style="display: none; background: rgba(15, 23, 42, 0.84); backdrop-filter: blur(14px); color: white; padding: 10px 14px; border-radius: 14px; margin-bottom: 12px; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border: 1px solid rgba(255,255,255,0.25);">
+            <div id="previewReturnBanner" style="display: none; background: #0f172a; color: white; padding: 10px 14px; border-radius: 14px; margin-bottom: 12px; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                 <span style="font-size: 12px; font-weight: 800; color: #38bdf8;">👀 Previewing Student View</span>
                 <div style="display: flex; gap: 8px;">
                     <button onclick="switchAdminTab('admin-studio')" style="background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 800; cursor: pointer;">🏗️ Back to Studio</button>
@@ -988,17 +1083,17 @@
             </div>
 
             <div class="finance-summary-grid">
-                <div class="finance-card" onclick="filterStudentSpendingPeriod('daily')" style="cursor: pointer; border-left: 4px solid #10b981;">
+                <div class="finance-card clickable-card" onclick="filterStudentSpendingPeriod('daily')" style="border-left: 4px solid #10b981;">
                     <h4>📅 Daily Spending (Today)</h4>
                     <div class="amount" id="stuDailySpendAmount" style="color: #10b981;">₹0</div>
                     <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 700;" id="stuDailySpendOrders">0 orders today</p>
                 </div>
-                <div class="finance-card" onclick="filterStudentSpendingPeriod('weekly')" style="cursor: pointer; border-left: 4px solid var(--primary);">
+                <div class="finance-card clickable-card" onclick="filterStudentSpendingPeriod('weekly')" style="border-left: 4px solid var(--primary);">
                     <h4>📆 Weekly Spending (Last 7 Days)</h4>
                     <div class="amount" id="stuWeeklySpendAmount" style="color: var(--primary);">₹0</div>
                     <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 700;" id="stuWeeklySpendOrders">0 orders this week</p>
                 </div>
-                <div class="finance-card" onclick="filterStudentSpendingPeriod('monthly')" style="cursor: pointer; border-left: 4px solid #f59e0b;">
+                <div class="finance-card clickable-card" onclick="filterStudentSpendingPeriod('monthly')" style="border-left: 4px solid #f59e0b;">
                     <h4>🗓️ Monthly Spending (This Month)</h4>
                     <div class="amount" id="stuMonthlySpendAmount" style="color: #f59e0b;">₹0</div>
                     <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 700;" id="stuMonthlySpendOrders">0 orders this month</p>
@@ -1030,7 +1125,7 @@
 
         <!-- ADMIN & COUNTER TAB 1: STUDIO -->
         <div id="tab-admin-studio" class="tab-content">
-            <div style="background: rgba(15, 23, 42, 0.84); backdrop-filter: blur(18px); color: white; padding: 16px 20px; border-radius: var(--radius); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid rgba(255,255,255,0.28);">
+            <div style="background: #0f172a; color: white; padding: 16px 20px; border-radius: var(--radius); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                 <div>
                     <span id="adminRoleBadge" style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 800;">Admin & Counter Studio (Live Synced)</span>
                     <h2 id="adminStudioTitle" style="font-size: 19px; font-weight: 900; margin-top: 2px;">Managing: College</h2>
@@ -1060,7 +1155,6 @@
             </div>
 
             <div class="admin-grid">
-                <!-- STEP 1: CANTEENS, UPI VPAs & CANTEEN PIN -->
                 <div class="admin-panel" id="canteenManagerPanel">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>🏪 Canteens & UPI VPAs</h3>
@@ -1096,7 +1190,6 @@
                     <div class="item-list-box" id="adminCanteenList"></div>
                 </div>
 
-                <!-- STEP 2: MENU EDITOR -->
                 <div class="admin-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>🍽️ Edit Menu & Rates</h3>
@@ -1162,7 +1255,6 @@
                     <div class="item-list-box" id="adminMenuItemsList"></div>
                 </div>
 
-                <!-- STEP 3: OFFERS EDITOR -->
                 <div class="admin-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>📢 Post & Edit Item Offers</h3>
@@ -1222,10 +1314,10 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                 <div>
                     <h2 style="font-size: 19px; font-weight: 900;" id="ledgerHeadingTitle">👨‍🍳 Orders & Bank Statement Counter Ledger</h2>
-                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Type 3+ digits of Token # (or press Enter/OK) or click any order row to open the Order Details Popup.</p>
+                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Tap Today's Received or Monthly Total to view Online & Cash Paid breakdown.</p>
                 </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button onclick="openFoodPrepModal()" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #ffffff; border: none; padding: 8px 14px; border-radius: 9px; font-weight: 900; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                    <button onclick="openFoodPrepModal()" style="background: #d97706; color: #ffffff; border: none; padding: 8px 14px; border-radius: 9px; font-weight: 900; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
                         🍲 Food Prep Count (High &rarr; Low)
                     </button>
                     <button id="changeStaffCanteenBtn" onclick="showCounterCanteenGate()" style="display: none; background: #0f172a; color: #38bdf8; border: none; padding: 8px 13px; border-radius: 9px; font-size: 12px; font-weight: 800; cursor: pointer;">🏪 Switch Canteen</button>
@@ -1244,18 +1336,19 @@
                 </div>
             </div>
 
+            <!-- CLICKABLE REVENUE CARDS: CLICK TO VIEW ONLINE VS CASH PAID BREAKDOWN POPUP -->
             <div class="finance-summary-grid">
-                <div class="finance-card">
+                <div class="finance-card clickable-card" onclick="openRevenueBreakdownModal('today')" style="border: 1.5px solid rgba(16, 185, 129, 0.55);" title="Click to view Today's Online & Cash Paid breakdown">
                     <h4>Today's Received Amount</h4>
                     <div class="amount" id="todayRevenueDisplay">₹0</div>
-                    <p style="font-size: 11px; color: var(--success); margin-top: 4px; font-weight: 800;">● Verified Collections</p>
+                    <p style="font-size: 11px; color: var(--success); margin-top: 4px; font-weight: 800;">🔍 Tap for Online & Cash Breakdown</p>
                 </div>
-                <div class="finance-card">
+                <div class="finance-card clickable-card" onclick="openRevenueBreakdownModal('monthly')" style="border: 1.5px solid rgba(99, 102, 241, 0.55);" title="Click to view Monthly Online & Cash Paid breakdown">
                     <h4>Monthly Statement Total</h4>
                     <div class="amount" id="monthlyRevenueDisplay">₹0</div>
-                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 600;">Current Cycle</p>
+                    <p style="font-size: 11px; color: var(--primary); margin-top: 4px; font-weight: 800;">🔍 Tap for Online & Cash Breakdown</p>
                 </div>
-                <div class="finance-card" onclick="openFoodPrepModal()" style="cursor: pointer; border: 1.5px solid rgba(245, 158, 11, 0.6);">
+                <div class="finance-card clickable-card" onclick="openFoodPrepModal()" style="border: 1.5px solid rgba(245, 158, 11, 0.6);">
                     <h4>🍲 Pending Kitchen Prep</h4>
                     <div class="amount" id="totalOrdersCount" style="color: #f59e0b;">0</div>
                     <p style="font-size: 11px; color: var(--primary); margin-top: 4px; font-weight: 800;">Tap to view High &rarr; Low dish count</p>
@@ -1296,7 +1389,7 @@
 
         <!-- HIDDEN APP CREATOR (AUDITOR) PORTAL -->
         <div id="tab-auditor-portal" class="tab-content">
-            <div style="background: linear-gradient(135deg, rgba(49, 46, 129, 0.88) 0%, rgba(79, 70, 229, 0.88) 100%); backdrop-filter: blur(18px); color: white; padding: 20px 24px; border-radius: var(--radius); margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+            <div style="background: #312e81; color: white; padding: 20px 24px; border-radius: var(--radius); margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
                 <div>
                     <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 800;">👑 Hidden App Creator Portal</span>
                     <h2 style="font-size: 22px; font-weight: 900; margin-top: 4px;">Master System Creator & Security Audit Dashboard</h2>
@@ -1427,7 +1520,7 @@
                 <img id="upiQrImg" src="" alt="UPI QR" />
             </div>
             <p style="font-size: 12px; color: var(--text-main); margin-top: 4px; font-weight: 800;">Official VPA: <span id="qrVpaText" style="color: var(--primary);">canteen@sbi</span></p>
-            <div style="background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.5); color: var(--text-main); font-size: 11px; font-weight: 800; padding: 6px 10px; border-radius: 8px; margin-top: 6px;">
+            <div style="background: rgba(245, 158, 11, 0.16); border: 1px solid rgba(245, 158, 11, 0.5); color: var(--text-main); font-size: 11px; font-weight: 800; padding: 6px 10px; border-radius: 8px; margin-top: 6px;">
                 ⚠️ Verify banking name shows <u id="qrMerchantNameText">CANTEEN OFFICIAL</u> in GPay/PhonePe before entering UPI PIN.
             </div>
         </div>
@@ -1447,7 +1540,7 @@
             <div class="toast-icon">✓</div>
             <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main);">Order Generated!</h3>
             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px; font-weight: 600;">Secured with 2-digit Handshake PIN & synced to Counter.</p>
-            <div id="toastTokenDisplay" style="font-size: 22px; font-weight: 900; color: var(--primary); background: rgba(99, 102, 241, 0.15); padding: 10px; border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(99, 102, 241, 0.4);">#TK-000 • PIN: 00</div>
+            <div id="toastTokenDisplay" style="font-size: 22px; font-weight: 900; color: var(--primary); background: rgba(99, 102, 241, 0.14); padding: 10px; border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(99, 102, 241, 0.4);">#TK-000 • PIN: 00</div>
             <p style="font-size: 12px; color: var(--success); font-weight: 800;">Opening your personal receipt...</p>
         </div>
     </div>
@@ -1475,6 +1568,7 @@
         let isHandlingPopState = false;
         let liveClockTimerId = null;
         let activeSpendingPeriodFilter = "all";
+        let currentRevenueModalPeriod = "today";
 
         let collegeSignupOtpRequired = localStorage.getItem('cb_college_otp_required') !== 'false';
 
@@ -1533,7 +1627,7 @@
 
         window.addEventListener('popstate', function() {
             isHandlingPopState = true;
-            const openModals = ['studentQrPopupModal', 'foodPrepModal', 'cloudConfigModal', 'creatorSecretModal', 'forgotCollegePinModal', 'ledgerOrderPopupModal'];
+            const openModals = ['studentQrPopupModal', 'foodPrepModal', 'cloudConfigModal', 'creatorSecretModal', 'forgotCollegePinModal', 'ledgerOrderPopupModal', 'revenueBreakdownModal'];
             for (let i = 0; i < openModals.length; i++) {
                 const el = document.getElementById(openModals[i]);
                 if (el && el.classList.contains('active')) {
@@ -1569,7 +1663,7 @@
             isHandlingPopState = false;
         });
 
-        function debounce(fn, delayMs = 130) {
+        function debounce(fn, delayMs = 150) {
             let timer = null;
             return function(...args) {
                 if (timer) clearTimeout(timer);
@@ -1577,7 +1671,7 @@
             };
         }
 
-        function compressImageFileToDataUrl(file, maxWidth = 380, quality = 0.68, callback) {
+        function compressImageFileToDataUrl(file, maxWidth = 360, quality = 0.65, callback) {
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -1607,8 +1701,8 @@
         }
         function getMenuItemFast(id) { return menuItemMap.get(String(id)) || null; }
 
-        const debouncedRenderMenu = debounce(() => renderMenu(), 120);
-        const debouncedLedgerSearch = debounce(() => { currentLedgerPage = 1; renderStaffCounter(); }, 120);
+        const debouncedRenderMenu = debounce(() => renderMenu(), 140);
+        const debouncedLedgerSearch = debounce(() => { currentLedgerPage = 1; renderStaffCounter(); }, 140);
 
         const qrDataUrlCache = new Map();
         function generateQrDataUrl(textData, sizePx = 220) {
@@ -1627,7 +1721,7 @@
                     ctx.fillRect(0, 0, sizePx, sizePx);
                     ctx.drawImage(rawQr.canvas, margin, margin, innerSize, innerSize);
                     const url = finalCanvas.toDataURL('image/png');
-                    if (qrDataUrlCache.size > 100) qrDataUrlCache.clear();
+                    if (qrDataUrlCache.size > 80) qrDataUrlCache.clear();
                     qrDataUrlCache.set(cacheKey, url);
                     return url;
                 } catch (e) {}
@@ -1707,7 +1801,6 @@
             return phone || email || (roll !== "STUDENT" ? roll : "");
         }
 
-        /* FIND MATCHING STUDENT RECORD IN VAULT BY PHONE, EMAIL OR ROLLNO */
         function findStudentVaultEntry(userObj) {
             if (!userObj) return null;
             const phone = String(userObj.phone || "").trim();
@@ -1728,7 +1821,6 @@
             return foundKey ? { key: foundKey, record: studentVault[foundKey] } : null;
         }
 
-        /* STRICT STUDENT COLLEGE ISOLATION: ONLY COLLEGES SCANNED BY THIS STUDENT ARE RETURNED */
         function getStudentSwitchableColleges() {
             const set = new Set();
             if (currentUser && currentUser.college) set.add(currentUser.college);
@@ -1910,7 +2002,6 @@
             updateFloatingPrepButtonVisibility();
         }
 
-        /* SYNC CURRENT LOGGED-IN STUDENT WITH LATEST VAULT RECORD (CROSS-DEVICE COLLEGE SYNC) */
         function syncLoggedInStudentFromVault() {
             if (currentRole !== 'student') return;
             const vaultHit = findStudentVaultEntry(currentUser);
@@ -1928,7 +2019,6 @@
             currentUser.joinedColleges = mergedList;
             vaultRec.joinedColleges = mergedList;
 
-            // If this device had no active college (or remote vault has a newer active college), adopt it!
             if (!currentUser.college && (vaultRec.college || mergedList.length > 0)) {
                 currentUser.college = vaultRec.college || mergedList[0];
             } else if (vaultRec.college && (vaultRec.updatedAt || 0) > (currentUser.updatedAt || 0)) {
@@ -1972,7 +2062,6 @@
                     document.getElementById('studentNavTabs').style.display = 'flex';
                     document.getElementById('adminNavTabs').style.display = 'none';
                     updateStudentOrderFields();
-                    refreshStudentPassEnvironment();
                     if (currentActiveTab === 'receipts') switchTab('receipts', true);
                     else if (currentActiveTab === 'spending') switchTab('spending', true);
                     else switchTab('menu', true);
@@ -1987,7 +2076,6 @@
                     document.getElementById('navBtnAuditorPortal').style.display = 'none';
                     document.getElementById('changeStaffCanteenBtn').style.display = 'none';
                     document.getElementById('backToStudioBtn').style.display = 'inline-block';
-                    refreshAdminStudio();
                     if (currentActiveTab === 'admin-ledger') switchAdminTab('admin-ledger', true);
                     else if (currentActiveTab === 'menu') switchTab('menu', true);
                     else switchAdminTab('admin-studio', true);
@@ -2005,7 +2093,6 @@
                         document.getElementById('navBtnAuditorPortal').style.display = 'none';
                         document.getElementById('changeStaffCanteenBtn').style.display = 'inline-block';
                         document.getElementById('backToStudioBtn').style.display = 'inline-block';
-                        refreshAdminStudio();
                         if (currentActiveTab === 'admin-studio') switchAdminTab('admin-studio', true);
                         else if (currentActiveTab === 'menu') switchTab('menu', true);
                         else switchAdminTab('admin-ledger', true);
@@ -2057,6 +2144,15 @@
             const fab = document.getElementById('prepFloatingFab');
             const badge = document.getElementById('prepFabBadgeCount');
             if (!fab) return;
+            const isStaffUnlocked = (currentRole === 'staff' && isCounterCanteenUnlocked);
+            const isAdminOrCreator = (currentRole === 'admin' || currentRole === 'auditor');
+            const authHidden = document.getElementById('authGate').classList.contains('hidden');
+
+            if (!((isStaffUnlocked || isAdminOrCreator) && authHidden)) {
+                fab.classList.remove('visible');
+                return;
+            }
+
             let unservedPortions = 0;
             const operatorOrders = getRelevantOrdersForCurrentOperator();
             for (let i = 0; i < operatorOrders.length; i++) {
@@ -2070,11 +2166,7 @@
                 }
             }
             if (badge) badge.innerText = unservedPortions;
-            const isStaffUnlocked = (currentRole === 'staff' && isCounterCanteenUnlocked);
-            const isAdminOrCreator = (currentRole === 'admin' || currentRole === 'auditor');
-            const authHidden = document.getElementById('authGate').classList.contains('hidden');
-            if ((isStaffUnlocked || isAdminOrCreator) && authHidden) fab.classList.add('visible');
-            else fab.classList.remove('visible');
+            fab.classList.add('visible');
         }
 
         function openFoodPrepModal() {
@@ -2153,13 +2245,106 @@
         }
 
         /* =====================================================================
-           SMART CROSS-DEVICE MERGE ENGINE (UNION MERGE FOR STUDENT VAULT & COLLEGES)
+           1. ONLINE VS CASH PAID BREAKDOWN MODAL FOR COUNTER LEDGER
+           ===================================================================== */
+        function openRevenueBreakdownModal(period = 'today') {
+            currentRevenueModalPeriod = period;
+            document.getElementById('revTabToday').classList.toggle('active', period === 'today');
+            document.getElementById('revTabMonthly').classList.toggle('active', period === 'monthly');
+
+            const canteenLabel = (currentRole === 'staff' && currentStaffCanteen)
+                ? `${currentStaffCanteen} (${currentAdminCollege})`
+                : currentAdminCollege;
+            document.getElementById('revModalTitle').innerText = (period === 'today')
+                ? `Today's Received — ${canteenLabel}`
+                : `Monthly Statement — ${canteenLabel}`;
+
+            const now = new Date();
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+            const relevantOrders = getRelevantOrdersForCurrentOperator().filter(o => {
+                const ts = Number(o.createdAt) || now.getTime();
+                if (period === 'today') return ts >= startOfToday;
+                return ts >= startOfMonth;
+            });
+
+            let onlinePaidAmt = 0, onlinePaidCount = 0;
+            let cashPaidAmt = 0, cashPaidCount = 0;
+            let cashPendingAmt = 0, cashPendingCount = 0;
+            const paidOrdersList = [];
+
+            relevantOrders.forEach(o => {
+                const amt = Number(o.total) || 0;
+                const isPaidOrServed = (o.status === 'paid' || o.status === 'served');
+                const isOnlineMode = (String(o.payment || '').toLowerCase() === 'online');
+
+                if (isPaidOrServed) {
+                    if (isOnlineMode) {
+                        onlinePaidAmt += amt;
+                        onlinePaidCount += 1;
+                    } else {
+                        cashPaidAmt += amt;
+                        cashPaidCount += 1;
+                    }
+                    paidOrdersList.push(o);
+                } else if (o.status === 'cash_pending') {
+                    cashPendingAmt += amt;
+                    cashPendingCount += 1;
+                }
+            });
+
+            const totalReceived = onlinePaidAmt + cashPaidAmt;
+            const totalPaidOrders = onlinePaidCount + cashPaidCount;
+
+            document.getElementById('revModalTotalReceived').innerText = `₹${totalReceived}`;
+            document.getElementById('revModalTotalOrdersBadge').innerText = `${totalPaidOrders} Paid Order${totalPaidOrders !== 1 ? 's' : ''}`;
+            document.getElementById('revModalOnlineAmount').innerText = `₹${onlinePaidAmt}`;
+            document.getElementById('revModalOnlineCount').innerText = `${onlinePaidCount} order${onlinePaidCount !== 1 ? 's' : ''} paid via UPI/QR`;
+            document.getElementById('revModalCashPaidAmount').innerText = `₹${cashPaidAmt}`;
+            document.getElementById('revModalCashPaidCount').innerText = `${cashPaidCount} order${cashPaidCount !== 1 ? 's' : ''} collected in cash`;
+            document.getElementById('revModalCashPendingText').innerText = `₹${cashPendingAmt} (${cashPendingCount} order${cashPendingCount !== 1 ? 's' : ''})`;
+
+            const txListEl = document.getElementById('revModalTxList');
+            if (paidOrdersList.length === 0) {
+                txListEl.innerHTML = `<div style="text-align:center; padding:18px; color:var(--text-muted); font-size:12px; font-weight:700;">No received transactions in this period yet.</div>`;
+            } else {
+                txListEl.innerHTML = paidOrdersList.slice(0, 60).map(o => {
+                    const isOnline = (String(o.payment || '').toLowerCase() === 'online');
+                    return `
+                        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface-row-bg); border:1px solid var(--liquid-glass-border); border-left:4px solid ${isOnline ? 'var(--primary)' : 'var(--success)'}; border-radius:9px; padding:8px 10px; font-size:12px;">
+                            <div>
+                                <strong>#${o.token}</strong> • ${o.name} <small style="color:var(--text-muted);">(${o.timestamp || 'Today'})</small><br>
+                                <span style="font-size:10.5px; font-weight:800; color:${isOnline ? 'var(--primary)' : 'var(--success)'};">
+                                    ${isOnline ? '⚡ ONLINE UPI PAID' : '💵 CASH PAID'} • 🏪 ${o.orderedCanteen || 'Main'}
+                                </span>
+                            </div>
+                            <strong style="font-size:14px; color:var(--text-main);">₹${o.total}</strong>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            const modal = document.getElementById('revenueBreakdownModal');
+            if (!modal.classList.contains('active')) {
+                pushOverlayHistoryState('revenue-breakdown-modal');
+                modal.classList.add('active');
+            }
+        }
+
+        function closeRevenueBreakdownModal() {
+            document.getElementById('revenueBreakdownModal').classList.remove('active');
+        }
+
+        /* =====================================================================
+           2. HIGH-SPEED DEDUPLICATED CLOUD SYNC ENGINE
            ===================================================================== */
         const DEFAULT_CLOUD_CONFIG = { dbUrl: "", emailPublicKey: "WtDs4W8Ehn8uCxHLb", emailServiceId: "service_vryki04", emailTemplateId: "template_8kokfer" };
         let cloudConfig = JSON.parse(localStorage.getItem('cb_cloud_config')) || DEFAULT_CLOUD_CONFIG;
         let mqttClient = null;
         let isApplyingRemoteSync = false;
         let syncBroadcastTimer = null;
+        let lastAppliedPayloadTs = 0;
 
         function mergeStudentVaults(localVault, remoteVault) {
             const merged = { ...(localVault || {}) };
@@ -2176,7 +2361,6 @@
                         joinedColleges: Array.isArray(rStu.joinedColleges) ? [...rStu.joinedColleges] : (rStu.college ? [rStu.college] : [])
                     };
                 } else {
-                    // Union of joinedColleges across all devices for this student!
                     const unionColleges = new Set([
                         ...(Array.isArray(lStu.joinedColleges) ? lStu.joinedColleges : []),
                         ...(Array.isArray(rStu.joinedColleges) ? rStu.joinedColleges : [])
@@ -2189,15 +2373,10 @@
                     const lTime = Number(lStu.updatedAt || lStu.createdAt || 0);
 
                     let activeCollege = "";
-                    if (rTime >= lTime && rStu.college) {
-                        activeCollege = rStu.college;
-                    } else if (lStu.college) {
-                        activeCollege = lStu.college;
-                    } else if (rStu.college) {
-                        activeCollege = rStu.college;
-                    } else if (joinedArr.length > 0) {
-                        activeCollege = joinedArr[0];
-                    }
+                    if (rTime >= lTime && rStu.college) activeCollege = rStu.college;
+                    else if (lStu.college) activeCollege = lStu.college;
+                    else if (rStu.college) activeCollege = rStu.college;
+                    else if (joinedArr.length > 0) activeCollege = joinedArr[0];
 
                     merged[key] = {
                         ...lStu,
@@ -2218,7 +2397,7 @@
             try {
                 mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt', {
                     clientId: 'cb_sync_' + Math.random().toString(16).substring(2, 10),
-                    clean: true, connectTimeout: 5000, reconnectPeriod: 3500
+                    clean: true, connectTimeout: 5000, reconnectPeriod: 4000
                 });
                 mqttClient.on('connect', () => {
                     if (statusBtn) statusBtn.innerText = "🟢 High-Speed Sync & OTP Settings";
@@ -2228,7 +2407,8 @@
                     if (topic !== MQTT_SYNC_TOPIC) return;
                     try {
                         const incoming = JSON.parse(message.toString());
-                        if (!incoming) return;
+                        if (!incoming || incoming.updatedAt === lastAppliedPayloadTs) return;
+                        lastAppliedPayloadTs = incoming.updatedAt;
                         requestAnimationFrame(() => applyRemoteStatePayload(incoming));
                     } catch (e) {}
                 });
@@ -2247,7 +2427,6 @@
             const isIncomingNewer = (Number(data.updatedAt || 0) >= lastStateTimestamp) ||
                                     (menuItems.length === 0 && offersEvents.length === 0 && activeOrders.length === 0);
 
-            // Always merge colleges so newly registered colleges are available on all devices
             if (Array.isArray(data.colleges) && data.colleges.length > 0) {
                 data.colleges.forEach(rc => {
                     if (!rc || !rc.name) return;
@@ -2260,7 +2439,6 @@
                 });
             }
 
-            // Merge canteens
             if (Array.isArray(data.canteens) && data.canteens.length > 0) {
                 if (isIncomingNewer) {
                     const mergedCanteens = [...data.canteens];
@@ -2302,7 +2480,6 @@
                 }
             }
 
-            // ALWAYS union-merge studentVault so a college scanned on Device 1 immediately appears on Device 2!
             if (data.studentVault && typeof data.studentVault === 'object') {
                 studentVault = mergeStudentVaults(studentVault, data.studentVault);
             }
@@ -2314,20 +2491,23 @@
             localStorage.setItem('cb_orders', JSON.stringify(activeOrders));
             localStorage.setItem('cb_student_vault', JSON.stringify(studentVault));
 
-            // If a student is currently logged in on this device, sync their active college & joinedColleges immediately!
             if (currentRole === 'student' && document.getElementById('authGate').classList.contains('hidden')) {
                 syncLoggedInStudentFromVault();
                 saveActiveSession();
             }
 
-            renderRegisteredCollegeSelects();
-            refreshStudentPassEnvironment();
+            // LAZY RENDERING: Only re-render whichever view is currently visible!
+            if (!document.getElementById('authGate').classList.contains('hidden')) {
+                renderRegisteredCollegeSelects();
+            }
+            if (document.getElementById('tab-menu').classList.contains('active')) refreshStudentPassEnvironment();
             if (document.getElementById('tab-admin-studio').classList.contains('active')) refreshAdminStudio();
             if (document.getElementById('tab-admin-ledger').classList.contains('active')) renderStaffCounter();
             if (document.getElementById('tab-receipts').classList.contains('active')) renderReceipts();
             if (document.getElementById('tab-spending').classList.contains('active')) renderStudentSpendingAnalytics();
             if (document.getElementById('tab-counter-canteen-gate').classList.contains('active')) updateStaffGateRequirementsPreview();
             if (document.getElementById('foodPrepModal').classList.contains('active')) renderFoodPrepList();
+            if (document.getElementById('revenueBreakdownModal').classList.contains('active')) openRevenueBreakdownModal(currentRevenueModalPeriod);
             if (document.getElementById('ledgerOrderPopupModal').classList.contains('active') && currentPopupOrderIndex !== null) {
                 openLedgerOrderPopup(currentPopupOrderIndex);
             }
@@ -2335,7 +2515,6 @@
             isApplyingRemoteSync = false;
         }
 
-        // Listen for localStorage changes across tabs in the same browser window
         window.addEventListener('storage', function(e) {
             if (e.key === 'cb_student_vault' && e.newValue) {
                 try {
@@ -2370,6 +2549,7 @@
 
         function saveState() {
             lastStateTimestamp = Date.now();
+            lastAppliedPayloadTs = lastStateTimestamp;
             rebuildMenuLookupMap();
             localStorage.setItem('cb_state_ts', String(lastStateTimestamp));
             localStorage.setItem('cb_colleges', JSON.stringify(colleges));
@@ -2389,12 +2569,12 @@
                 syncBroadcastTimer = setTimeout(() => {
                     const payload = {
                         colleges, canteens, menuItems, offersEvents,
-                        activeOrders: activeOrders.slice(0, 500),
+                        activeOrders: activeOrders.slice(0, 400),
                         studentVault, tokenCounters, collegeSignupOtpRequired, dailySecurityWord, updatedAt: lastStateTimestamp
                     };
                     broadcastStateOverMqtt(payload);
                     pushToCloudDatabase(payload);
-                }, 150);
+                }, 180);
             }
         }
 
@@ -2425,18 +2605,19 @@
             initZeroConfigMqttSync();
             renderRegisteredCollegeSelects();
             updateStudentOrderFields();
-            refreshStudentPassEnvironment();
-            refreshAdminStudio();
-            renderReceipts();
-            renderStudentSpendingAnalytics();
-            renderStaffCounter();
+
+            const restored = restoreActiveSessionOnLoad();
+            if (!restored) {
+                refreshStudentPassEnvironment();
+            }
 
             const params = new URLSearchParams(window.location.search);
             if (params.get('creator') === '1' || params.get('creator') === 'true') openCreatorModal();
 
-            restoreActiveSessionOnLoad();
-            await pullFromCloudDatabase();
-            setInterval(pullFromCloudDatabase, 5000);
+            if (cloudConfig.dbUrl) {
+                await pullFromCloudDatabase();
+                setInterval(pullFromCloudDatabase, 6000);
+            }
         };
 
         function renderRegisteredCollegeSelects() {
@@ -2809,9 +2990,6 @@
 
             updateStudentOrderFields();
             document.getElementById('authGate').classList.add('hidden');
-            refreshStudentPassEnvironment();
-            renderReceipts();
-            renderStudentSpendingAnalytics();
             switchTab('menu', true);
             saveActiveSession('menu');
         }
@@ -2883,7 +3061,7 @@
                     const vw = video.videoWidth, vh = video.videoHeight;
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                    const targetW = Math.min(800, vw);
+                    const targetW = Math.min(640, vw);
                     const targetH = Math.round((vh / vw) * targetW);
                     canvas.width = targetW; canvas.height = targetH;
                     ctx.drawImage(video, 0, 0, targetW, targetH);
@@ -2934,7 +3112,7 @@
                     if (barcodes && barcodes.length > 0 && barcodes[0].rawValue) return barcodes[0].rawValue;
                 } catch (e) {}
             }
-            for (const sz of [800, 1200, 500, 1600]) {
+            for (const sz of [800, 1200, 500]) {
                 const hit = tryDecodeImageRegion(img, 0, 0, w, h, sz, 'none');
                 if (hit) return hit;
             }
@@ -3022,7 +3200,6 @@
             document.getElementById('activeUserPill').innerText = pillText;
             document.getElementById('headerSubTitle').innerText = subTitleText;
             isTemporaryQrScanMode = false;
-            refreshStudentPassEnvironment();
 
             document.getElementById('studentNavTabs').style.display = 'none';
             document.getElementById('adminNavTabs').style.display = 'flex';
@@ -3034,7 +3211,6 @@
             document.getElementById('backToStudioBtn').style.display = 'inline-block';
             document.getElementById('floatingTray').classList.add('hidden');
 
-            refreshAdminStudio();
             document.getElementById('authGate').classList.add('hidden');
             switchAdminTab(initialTab, true);
             saveActiveSession(initialTab);
@@ -3299,7 +3475,7 @@
         function startLiveClockTimer() {
             stopLiveClockTimer();
             updateLiveClocks();
-            liveClockTimerId = setInterval(updateLiveClocks, 900);
+            liveClockTimerId = setInterval(updateLiveClocks, 1000);
         }
         function stopLiveClockTimer() {
             if (liveClockTimerId) { clearInterval(liveClockTimerId); liveClockTimerId = null; }
@@ -3713,7 +3889,6 @@
                 if (el) el.innerHTML = getActionHtmlForItem(id);
             });
             updateFloatingTray();
-            renderStudentSpendingAnalytics();
 
             document.getElementById('toastTokenDisplay').innerText = `#${tokenNum} • PIN: ${handshakePin}`;
             document.getElementById('successToastModal').classList.add('active');
@@ -3721,7 +3896,7 @@
             setTimeout(() => {
                 document.getElementById('successToastModal').classList.remove('active');
                 switchTab('receipts');
-            }, 950);
+            }, 900);
         }
 
         function renderReceipts() {
@@ -4006,7 +4181,6 @@
 
             saveState();
             adminResetCanteenForm();
-            refreshStudentPassEnvironment();
         }
 
         function adminDeleteCanteen(canId) {
@@ -4017,7 +4191,6 @@
             if (String(document.getElementById('editingCanteenId').value) === String(canId)) adminResetCanteenForm();
             saveState();
             refreshAdminStudio();
-            refreshStudentPassEnvironment();
         }
 
         function renderAuditorPortal() {
@@ -4049,7 +4222,7 @@
             logHtml += `[COLLEGE_SIGNUP_OTP_VERIFICATION] ${collegeSignupOtpRequired ? 'ON (Required)' : 'OFF (Temporarily Disabled by Creator)'}\n`;
             logHtml += `[REGISTERED_COLLEGES] ${colleges.map(c => `${c.name} (${c.email})`).join(' | ')}\n`;
             logHtml += `[STUDENT_VAULT] ${Object.keys(studentVault).length} isolated student accounts.\n`;
-            activeOrders.slice(0, 100).forEach((ord, idx) => {
+            activeOrders.slice(0, 80).forEach((ord, idx) => {
                 logHtml += `[TX_${idx+1}] Token #${ord.token} | Time: ${ord.timestamp} | College: ${ord.collegePass} | Student: ${ord.name} | ₹${ord.total}\n`;
             });
             logBox.innerText = logHtml;
@@ -4177,7 +4350,7 @@
         function previewUploadedMenuImage(event) {
             const file = event.target.files && event.target.files[0];
             if (file) {
-                compressImageFileToDataUrl(file, 380, 0.68, function(compressedUrl) {
+                compressImageFileToDataUrl(file, 360, 0.65, function(compressedUrl) {
                     document.getElementById('newMenuImg').value = compressedUrl;
                 });
             }
@@ -4241,7 +4414,6 @@
             saveState();
             adminResetMenuForm();
             renderSelectedOfferItemsChips();
-            renderMenu();
         }
 
         function adminDeleteMenuItem(itemId) {
@@ -4253,13 +4425,12 @@
             saveState();
             renderAdminMenuList();
             renderSelectedOfferItemsChips();
-            renderMenu();
         }
 
         function previewUploadedImage(event) {
             const file = event.target.files && event.target.files[0];
             if (file) {
-                compressImageFileToDataUrl(file, 420, 0.68, function(compressedUrl) {
+                compressImageFileToDataUrl(file, 380, 0.65, function(compressedUrl) {
                     document.getElementById('newOfferImg').value = compressedUrl;
                 });
             }
@@ -4310,7 +4481,6 @@
 
             saveState();
             adminResetOfferForm();
-            renderOffersCarousel();
         }
 
         function renderAdminOffersList() {
@@ -4361,7 +4531,6 @@
             if (String(document.getElementById('editingOfferId').value) === String(evId)) adminResetOfferForm();
             saveState();
             renderAdminOffersList();
-            renderOffersCarousel();
         }
 
         function handleLedgerSearchInputLive() {
@@ -4546,6 +4715,10 @@
                     : `👨‍🍳 ${currentAdminCollege} — Orders & Counter Ledger`;
             }
 
+            const now = new Date();
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
             let todayTotal = 0, monthlyTotal = 0, unservedPortions = 0;
             const operatorOrders = [];
 
@@ -4561,7 +4734,11 @@
                 }
 
                 operatorOrders.push({ order: o, origIdx: i });
-                if (o.status === 'paid' || o.status === 'served') { todayTotal += o.total; monthlyTotal += o.total; }
+                const ts = Number(o.createdAt) || now.getTime();
+                if (o.status === 'paid' || o.status === 'served') {
+                    if (ts >= startOfToday) todayTotal += o.total;
+                    if (ts >= startOfMonth) monthlyTotal += o.total;
+                }
                 if (o.status !== 'served' && Array.isArray(o.items)) {
                     for (let j = 0; j < o.items.length; j++) {
                         const it = o.items[j];
@@ -4672,10 +4849,11 @@
             activeOrders[index].status = status;
             if (status === 'served') activeOrders[index].servedAt = new Date().toLocaleTimeString();
             saveState();
-            renderReceipts();
-            renderStudentSpendingAnalytics();
-            renderStaffCounter();
+            if (document.getElementById('tab-receipts').classList.contains('active')) renderReceipts();
+            if (document.getElementById('tab-spending').classList.contains('active')) renderStudentSpendingAnalytics();
+            if (document.getElementById('tab-admin-ledger').classList.contains('active')) renderStaffCounter();
             if (document.getElementById('foodPrepModal').classList.contains('active')) renderFoodPrepList();
+            if (document.getElementById('revenueBreakdownModal').classList.contains('active')) openRevenueBreakdownModal(currentRevenueModalPeriod);
             if (document.getElementById('ledgerOrderPopupModal').classList.contains('active') && currentPopupOrderIndex === index) {
                 openLedgerOrderPopup(index);
             }
