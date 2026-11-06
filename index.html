@@ -2568,7 +2568,8 @@
         }
 
         /* HIGH-SPEED DEDUPLICATED CLOUD SYNC ENGINE */
-        const PAYMENT_API_BASE = "https://REPLACE-WITH-YOUR-WORKER.workers.dev"; // Set after deploying cloudflare-payment\n        const DEFAULT_CLOUD_CONFIG = { dbUrl: "", razorpayKeyId: "", emailPublicKey: "WtDs4W8Ehn8uCxHLb", emailServiceId: "service_vryki04", emailTemplateId: "template_8kokfer" };
+        const PAYMENT_API_BASE = "https://REPLACE-WITH-YOUR-WORKER.workers.dev"; // Set after deploying cloudflare-payment
+        const DEFAULT_CLOUD_CONFIG = { dbUrl: "", razorpayKeyId: "", emailPublicKey: "WtDs4W8Ehn8uCxHLb", emailServiceId: "service_vryki04", emailTemplateId: "template_8kokfer" };
         let cloudConfig = JSON.parse(localStorage.getItem('cb_cloud_config')) || DEFAULT_CLOUD_CONFIG;
         let mqttClient = null;
         let isApplyingRemoteSync = false;
@@ -4330,7 +4331,7 @@
             for (let id in tray) {
                 const item = getMenuItemFast(id);
                 if (item) {
-                    orderItems.push({ name: item.name, qty: tray[id], price: item.price, canteen: item.canteen, college: item.college || activeCol });
+                    orderItems.push({ id: String(item.id), name: item.name, qty: tray[id], price: item.price, canteen: item.canteen, college: item.college || activeCol });
                     subtotal += (item.price * tray[id]);
                     orderCanteens.add(item.canteen);
                     const matchedCanteen = canteens.find(c => c.college === item.college && c.name === item.canteen);
@@ -4351,6 +4352,7 @@
 
             const finalTotal = Math.max(0, subtotal - computedDiscount);
             const isOnline = (selectedPaymentMethod === 'online');
+            if (isOnline && computedDiscount > 0) { alert('This offer cannot yet be verified by secure online checkout. Please remove the offer or choose cash.'); return; }
 
             const tokenNum = generateSmartMonthlyToken(activeCol || "VPIET");
             const handshakePin = String(Math.floor(10 + Math.random() * 90));
@@ -4400,22 +4402,43 @@
             }
 
             try {
+                const verifiedEmail = String(currentUser.email || "").trim().toLowerCase();
+                if (!verifiedEmail) throw new Error("Add an email address to your Campus Bites account before paying online.");
+                const sessionKey = "cb_payment_session_" + encodeURIComponent(verifiedEmail) + "_" + encodeURIComponent(activeCol);
+                let paymentSession = sessionStorage.getItem(sessionKey);
+                if (!paymentSession) {
+                    const otpStart = await fetch(`${PAYMENT_API_BASE}/api/auth/email/start`, {
+                        method: "POST", headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: verifiedEmail, collegeName: activeCol })
+                    });
+                    const otpStartBody = await otpStart.json().catch(() => ({}));
+                    if (!otpStart.ok) throw new Error(otpStartBody.error || "Could not send college email verification code.");
+                    const enteredOtp = prompt("Enter the 6-digit verification code sent to " + verifiedEmail);
+                    if (!enteredOtp) throw new Error("Email verification was cancelled.");
+                    const otpVerify = await fetch(`${PAYMENT_API_BASE}/api/auth/email/verify`, {
+                        method: "POST", headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: verifiedEmail, collegeName: activeCol, code: enteredOtp.trim() })
+                    });
+                    const otpVerifyBody = await otpVerify.json().catch(() => ({}));
+                    if (!otpVerify.ok || !otpVerifyBody.sessionToken) throw new Error(otpVerifyBody.error || "Email verification failed.");
+                    paymentSession = otpVerifyBody.sessionToken;
+                    sessionStorage.setItem(sessionKey, paymentSession);
+                }
+
                 const orderResponse = await fetch(`${PAYMENT_API_BASE}/api/orders`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + paymentSession },
                     body: JSON.stringify({
-                        amountPaise: Math.round(finalTotal * 100),
                         orderToken: String(tokenNum),
-                        items: orderItems.map(item => ({
-                            name: item.name, qty: item.qty, price: item.price,
-                            canteen: item.canteen, college: item.college
-                        })),
-                        studentRef: studentId
+                        items: orderItems.map(item => ({ id: item.id, qty: item.qty }))
                     })
                 });
                 const serverOrder = await orderResponse.json().catch(() => ({}));
                 if (!orderResponse.ok) throw new Error(serverOrder.error || "Could not create a secure payment order.");
 
+                pendingUpiOrderDraft.items = serverOrder.items;
+                pendingUpiOrderDraft.total = serverOrder.total;
+                pendingUpiOrderDraft.email = serverOrder.customerEmail;
                 const options = {
                     key: serverOrder.keyId,
                     amount: serverOrder.amount,
@@ -4439,7 +4462,7 @@
                         try {
                             const verifyResponse = await fetch(`${PAYMENT_API_BASE}/api/payments/verify`, {
                                 method: "POST",
-                                headers: { "Content-Type": "application/json" },
+                                headers: { "Content-Type": "application/json", "Authorization": "Bearer " + paymentSession },
                                 body: JSON.stringify(response)
                             });
                             const verified = await verifyResponse.json().catch(() => ({}));
