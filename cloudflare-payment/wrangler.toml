@@ -10,5 +10,5 @@ MAIL_FROM = "Campus Bites <payments@REPLACE-WITH-YOUR-VERIFIED-DOMAIN>"
 [[d1_databases]]
 binding = "DB"
 database_name = "campus-bites-payments"
-database_id = "REPLACE-WITH-D1-DATABASE-ID"
+database_id = "54d98d3e-e175-42c6-a659-c66ff6f2a097"
 migrations_dir = "migrations"
