@@ -3,7 +3,7 @@ main = "src/index.js"
 compatibility_date = "2026-11-01"
 
 [vars]
-ALLOWED_ORIGIN = "https://REPLACE-WITH-YOUR-CAMPUS-BITES-DOMAIN"
+ALLOWED_ORIGIN = "https://campus-bites-liart.vercel.app"
 CHECKOUT_ENABLED = "false"
 MAIL_FROM = "Campus Bites <payments@REPLACE-WITH-YOUR-VERIFIED-DOMAIN>"
 
