@@ -42,7 +42,24 @@ Use random 32+ byte values for SESSION_SECRET, OTP_SECRET and CATALOG_ADMIN_TOKE
 
 ## 2. Import authoritative menu and college domains
 
-Export a trusted menu JSON file from the app/admin records and convert it to this format:
+For the current legacy app, menu data is in browser local storage. Open Campus Bites while signed in as an administrator, open browser DevTools Console, and run this export expression. It copies a JSON payload to your clipboard:
+
+```js
+copy(JSON.stringify({
+  colleges: (JSON.parse(localStorage.getItem("cb_colleges") || "[]")).map(c => ({
+    id: c.id, name: c.name, email_domain: String(c.domain || "").toLowerCase()
+  })),
+  items: (JSON.parse(localStorage.getItem("cb_menu") || "[]")).map(m => ({
+    id: String(m.id), name: m.name, price: Number(m.price),
+    category: m.category || "Other", college_name: m.college,
+    canteen_name: m.canteen, active: m.active !== false
+  }))
+}, null, 2));
+```
+
+Paste the clipboard contents into a local file named `catalog.json`. Review every college email domain carefully; remove colleges with no verified institutional email domain and do not use a personal email provider domain. Export a fresh file and re-import it whenever menu prices or availability change.
+
+The import format is:
 
 ```json
 {
