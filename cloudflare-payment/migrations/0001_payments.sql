@@ -21,3 +21,7 @@ CREATE TABLE IF NOT EXISTS menu_items(id TEXT PRIMARY KEY,name TEXT NOT NULL,pri
 CREATE INDEX IF NOT EXISTS idx_menu_college_active ON menu_items(college_name,active);
 CREATE TABLE IF NOT EXISTS email_otps(email TEXT NOT NULL,college_id TEXT NOT NULL,otp_hash TEXT NOT NULL,expires_at INTEGER NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,created_at INTEGER NOT NULL,request_ip TEXT NOT NULL,PRIMARY KEY(email,college_id));
 CREATE INDEX IF NOT EXISTS idx_email_otps_created ON email_otps(email,created_at);
+
+CREATE TABLE IF NOT EXISTS otp_requests(request_id TEXT PRIMARY KEY,email TEXT NOT NULL,request_ip TEXT NOT NULL,created_at INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS idx_otp_requests_email_time ON otp_requests(email,created_at);
+CREATE INDEX IF NOT EXISTS idx_otp_requests_ip_time ON otp_requests(request_ip,created_at);
