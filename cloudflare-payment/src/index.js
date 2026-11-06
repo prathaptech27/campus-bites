@@ -42,9 +42,10 @@ async function startEmailOtp(req,env) {
   if(!college||email.split("@")[1]!==String(college.email_domain||"").toLowerCase()) return json({error:"Use your registered college email address."},403);
   const now=Date.now();
   const ip=req.headers.get("CF-Connecting-IP")||"unknown";
-  const recent=await env.DB.prepare("SELECT COUNT(*) AS n FROM email_otps WHERE email=? AND created_at>?").bind(email,now-15*60*1000).first();
-  const ipRecent=await env.DB.prepare("SELECT COUNT(*) AS n FROM email_otps WHERE request_ip=? AND created_at>?").bind(ip,now-15*60*1000).first();
+  const recent=await env.DB.prepare("SELECT COUNT(*) AS n FROM otp_requests WHERE email=? AND created_at>?").bind(email,now-15*60*1000).first();
+  const ipRecent=await env.DB.prepare("SELECT COUNT(*) AS n FROM otp_requests WHERE request_ip=? AND created_at>?").bind(ip,now-15*60*1000).first();
   if((recent?.n||0)>=3||(ipRecent?.n||0)>=10) return json({error:"Too many OTP requests. Try again after 15 minutes."},429);
+  await env.DB.prepare("INSERT INTO otp_requests(request_id,email,request_ip,created_at) VALUES(?,?,?,?)").bind(crypto.randomUUID(),email,ip,now).run();
   const code=String(crypto.getRandomValues(new Uint32Array(1))[0]%1000000).padStart(6,"0");
   const otpHash=await hmac(env.OTP_SECRET,email+"|"+college.id+"|"+code);
   await env.DB.prepare("DELETE FROM email_otps WHERE email=?").bind(email).run();
@@ -104,6 +105,8 @@ async function createOrder(req,env) {
   if(!session) return json({error:"Your email session has expired. Verify your college email again."},401);
   const b=await req.json().catch(()=>null);
   if(!b||!Array.isArray(b.items)||b.items.length<1||b.items.length>30||typeof b.orderToken!=="string"||!/^TK-\d{1,8}$/.test(b.orderToken)) return json({error:"Invalid order."},400);
+  const recentOrders=await env.DB.prepare("SELECT COUNT(*) AS n FROM payment_orders WHERE student_ref=? AND created_at>?").bind(session.email,Date.now()-60*1000).first();
+  if((recentOrders?.n||0)>=5) return json({error:"Too many order attempts. Please wait one minute."},429);
   const ids=[...new Set(b.items.map(x=>String(x.id||"")))];
   if(ids.length!==b.items.length) return json({error:"Duplicate menu items are not allowed."},400);
   const quantities=b.items.map(x=>({id:String(x.id||""),qty:Number(x.qty)}));
