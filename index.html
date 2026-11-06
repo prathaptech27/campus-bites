@@ -518,6 +518,7 @@
 
         /* =====================================================================
            NEET / JEE COMPETITIVE EXAM STYLE TIMED MULTI-OPTION PAYMENT PORTAL
+           WITH STRICT SERVER VERIFICATION & AUTO-REDIRECT
            ===================================================================== */
         .exam-pg-header {
             background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%);
@@ -644,10 +645,10 @@
             gap: 4px;
             margin-top: 4px;
         }
-        .instant-qr-confirm-btn {
+        .server-verify-action-btn {
             width: 100%;
             margin-top: 8px;
-            background: linear-gradient(135deg, #10b981, #059669);
+            background: linear-gradient(135deg, #4f46e5, #3730a3);
             color: #ffffff;
             border: 1.5px solid rgba(255, 255, 255, 0.6);
             border-radius: 12px;
@@ -655,11 +656,46 @@
             font-size: 12.5px;
             font-weight: 900;
             cursor: pointer;
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.45);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            transition: 0.2s ease;
+        }
+        .server-verify-action-btn.verifying {
+            background: linear-gradient(135deg, #d97706, #b45309);
+        }
+        .server-verify-box {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(245, 158, 11, 0.14);
+            border: 1.5px dashed #f59e0b;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+        .server-verify-box.active {
+            display: block;
+        }
+        @keyframes spinLoader {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .verify-spinner {
+            display: inline-block;
+            width: 13px;
+            height: 13px;
+            border: 2.5px solid rgba(245, 158, 11, 0.3);
+            border-top-color: #d97706;
+            border-radius: 50%;
+            animation: spinLoader 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 5px;
         }
 
     </style>
@@ -668,7 +704,7 @@
 
     <div class="ambient-mesh"></div>
 
-    <!-- NEET / JEE EXAM-STYLE TIMED MULTI-OPTION PAYMENT PORTAL -->
+    <!-- NEET / JEE EXAM-STYLE TIMED MULTI-OPTION PAYMENT PORTAL (STRICT SERVER VERIFICATION) -->
     <div class="toast-modal" id="upiLivePaymentModal">
         <div class="toast-card" style="text-align: left; max-width: 475px; max-height: 93vh; overflow-y: auto; padding: 18px;">
             
@@ -680,7 +716,7 @@
                     <div style="font-size: 11px; color: #cbd5e1; font-weight: 700; margin-top: 1px;">🏦 <span id="upiGateBankingName">CANTEEN OFFICIAL</span></div>
                 </div>
                 <div style="text-align: right;">
-                    <div class="exam-timer-pill" id="examTimerPill" title="Complete payment before timer hits 00:00">
+                    <div class="exam-timer-pill" id="examTimerPill" title="Complete & verify payment before timer hits 00:00">
                         ⏱️ <span id="examCountdownText">05:00</span>
                     </div>
                     <span style="font-size: 9px; color: #cbd5e1; display: block; margin-top: 3px; font-weight: 700;">Session Time Limit</span>
@@ -747,9 +783,9 @@
                             </button>
                         </div>
 
-                        <!-- Instant 1-Tap Completion Button for QR / UPI App Payment -->
-                        <button type="button" class="instant-qr-confirm-btn" onclick="completeSimulatedGatewayMethod('UPI-QR')">
-                            ✅ Payment Done (₹<span class="btn-amt-span">0.00</span>) — Open Receipt Immediately &rarr;
+                        <!-- STRICT SERVER VERIFICATION BUTTON: Never marks paid unless Server / Counter / UTR confirms! -->
+                        <button type="button" class="server-verify-action-btn" id="qrServerVerifyBtn" onclick="requestServerPaymentVerification('UPI-QR')">
+                            🔍 I Have Paid ₹<span class="btn-amt-span">0.00</span> — Verify Payment on Server
                         </button>
                     </div>
                 </div>
@@ -762,18 +798,18 @@
                             <input type="text" class="form-control" id="studentVpaInput" placeholder="e.g. student@okaxis or 9876543210@ybl">
                         </div>
                         <button type="button" class="checkout-btn" onclick="triggerExamUpiCollectRequest()" style="background:#059669; padding: 11px;">
-                            ⚡ Verify VPA & Pay ₹<span class="btn-amt-span">0.00</span> Now
+                            📲 Send ₹<span class="btn-amt-span">0.00</span> Collect Request
                         </button>
                         <div id="vpaCollectWaitingBox" style="display:none; margin-top:10px; padding:10px; background:rgba(16,185,129,0.14); border:1.5px dashed #10b981; border-radius:10px; text-align:center; font-size:11.5px; font-weight:700;">
-                            <div id="vpaCollectStatusText" style="color:var(--text-main);">⏳ Collect request for <b>₹<span class="btn-amt-span">0.00</span></b> sent!</div>
-                            <button type="button" onclick="completeSimulatedGatewayMethod('UPI-VPA')" style="margin-top:8px; width:100%; background:#10b981; color:#fff; border:none; padding:10px 14px; border-radius:9px; font-weight:900; font-size:12px; cursor:pointer;">
-                                ✔ Payment Approved — Go to Receipt Now &rarr;
+                            <div id="vpaCollectStatusText" style="color:var(--text-main);">⏳ Collect request for <b>₹<span class="btn-amt-span">0.00</span></b> sent! Complete payment in your UPI app, then click below to verify on server:</div>
+                            <button type="button" onclick="requestServerPaymentVerification('UPI-VPA')" style="margin-top:8px; width:100%; background:#4f46e5; color:#fff; border:none; padding:10px 14px; border-radius:9px; font-weight:900; font-size:12px; cursor:pointer;">
+                                🔍 Verify VPA Payment Status on Server
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- OPTION 3: DEBIT / CREDIT CARD WITH BUILT-IN 3D-SECURE OTP STEP -->
+                <!-- OPTION 3: DEBIT / CREDIT CARD WITH SERVER VERIFICATION -->
                 <div class="exam-pg-pane" id="pgPane_card">
                     <div style="background: var(--surface-sub-bg); padding: 12px; border-radius: 14px; border: 1px solid var(--liquid-glass-border);">
                         <div id="cardFormFieldsBox">
@@ -792,24 +828,23 @@
                                 </div>
                             </div>
                             <button type="button" class="checkout-btn" onclick="initiateExamCardOtpStep()" style="padding: 10px;">
-                                🔒 Proceed to 3D-Secure OTP (₹<span class="btn-amt-span">0.00</span>)
+                                🔒 Proceed to 3D-Secure Bank Verification (₹<span class="btn-amt-span">0.00</span>)
                             </button>
                         </div>
 
-                        <!-- In-Modal 3D-Secure Bank OTP Verification Box -->
                         <div id="cardOtpStepBox" style="display:none; text-align:center; padding:8px;">
-                            <div style="font-size:12px; font-weight:900; color:var(--primary); margin-bottom:4px;">🔐 Bank 3D-Secure OTP Verification</div>
-                            <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Enter any 4-6 digit Bank OTP to authorize <b>₹<span class="btn-amt-span">0.00</span></b>:</p>
-                            <input type="tel" class="form-control" id="pgCardOtpInput" maxlength="6" placeholder="Enter OTP (e.g. 123456)" style="text-align:center; font-family:monospace; font-size:15px; font-weight:900; letter-spacing:3px; margin-bottom:8px;">
+                            <div style="font-size:12px; font-weight:900; color:var(--primary); margin-bottom:4px;">🔐 Bank 3D-Secure & Server Verification</div>
+                            <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Enter the 6-digit Bank OTP to submit <b>₹<span class="btn-amt-span">0.00</span></b> for Server Verification:</p>
+                            <input type="tel" class="form-control" id="pgCardOtpInput" maxlength="6" placeholder="Enter 6-Digit Bank OTP" style="text-align:center; font-family:monospace; font-size:15px; font-weight:900; letter-spacing:3px; margin-bottom:8px;">
                             <div style="display:flex; gap:6px;">
-                                <button type="button" class="checkout-btn" onclick="verifyExamCardOtpAndPay()" style="background:#10b981; padding:9px;">✔ Confirm & Open Receipt</button>
+                                <button type="button" class="checkout-btn" onclick="verifyExamCardOtpAndPay()" style="background:#4f46e5; padding:9px;">🔍 Submit & Verify on Server</button>
                                 <button type="button" class="checkout-btn" onclick="cancelExamCardOtpStep()" style="background:#64748b; padding:9px; width:auto;">Back</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- OPTION 4: NET BANKING -->
+                <!-- OPTION 4: NET BANKING WITH SERVER VERIFICATION -->
                 <div class="exam-pg-pane" id="pgPane_netbanking">
                     <div style="background: var(--surface-sub-bg); padding: 12px; border-radius: 14px; border: 1px solid var(--liquid-glass-border);">
                         <div id="netbankingSelectBox">
@@ -823,32 +858,43 @@
                                 <button type="button" class="bank-option-btn" onclick="selectExamBank(this, 'AXIS')">🏦 Axis Bank</button>
                             </div>
                             <button type="button" class="checkout-btn" onclick="initiateExamNetBankingStep()" style="padding: 10px;">
-                                🏦 Login & Pay ₹<span class="btn-amt-span">0.00</span> via NetBanking
+                                🏦 Proceed to Bank Gateway (₹<span class="btn-amt-span">0.00</span>)
                             </button>
                         </div>
 
                         <div id="netbankingConfirmBox" style="display:none; text-align:center; padding:10px; background:rgba(79,70,229,0.1); border-radius:10px; border:1px solid var(--primary);">
                             <div style="font-size:12.5px; font-weight:900; color:var(--primary);" id="netbankingBankTitle">🏦 SBI Corporate Gateway</div>
-                            <p style="font-size:11px; color:var(--text-muted); margin:4px 0 10px;">Authorize payment of <b>₹<span class="btn-amt-span">0.00</span></b> to <b id="netbankingMerchantSpan">CANTEEN</b></p>
+                            <p style="font-size:11px; color:var(--text-muted); margin:4px 0 10px;">Complete payment of <b>₹<span class="btn-amt-span">0.00</span></b> to <b id="netbankingMerchantSpan">CANTEEN</b> and verify with server:</p>
                             <div style="display:flex; gap:6px;">
-                                <button type="button" class="checkout-btn" onclick="completeSimulatedGatewayMethod('NETBANK-' + window.selectedExamBankCode)" style="background:#10b981; padding:9px;">✔ Approve & Open Receipt</button>
-                                <button type="button" class="checkout-btn" onclick="triggerExamPaymentTimeoutFailure(window.selectedExamBankCode + ' NetBanking transaction was declined or cancelled.')" style="background:#ef4444; padding:9px; width:auto;">✕ Decline</button>
+                                <button type="button" class="checkout-btn" onclick="requestServerPaymentVerification('NETBANK-' + window.selectedExamBankCode)" style="background:#4f46e5; padding:9px;">🔍 Verify Bank Payment on Server</button>
+                                <button type="button" class="checkout-btn" onclick="triggerExamPaymentTimeoutFailure(window.selectedExamBankCode + ' NetBanking transaction was cancelled.')" style="background:#ef4444; padding:9px; width:auto;">✕ Cancel</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Live Counter Soundbox Sync & 12-Digit UTR Auto-Detector -->
+                <!-- LIVE SERVER VERIFICATION STATUS RADAR -->
+                <div class="server-verify-box" id="serverVerifyStatusBox">
+                    <div style="font-size: 11.5px; font-weight: 900; color: #b45309;" id="serverVerifyHeadline">
+                        <span class="verify-spinner"></span> Verifying Payment with Server...
+                    </div>
+                    <div style="margin-top: 4px; font-size: 10.5px; color: var(--text-muted);" id="serverVerifySubText">
+                        Checking Canteen Server Ledger & Bank Gateway for Token #TK-000. Do not close this window — you will be <b>automatically redirected to your Digital Receipt</b> the exact moment the server confirms your payment!
+                    </div>
+                </div>
+
+                <!-- Live Counter Soundbox Sync & 12-Digit Bank UTR Verifier -->
                 <div class="live-verify-radar" style="margin-top: 10px;">
                     <div style="font-size: 11.5px; font-weight: 900; color: var(--primary);" id="upiLiveSyncStatusHeadline">
-                        🔔 Auto-Redirect Active (Counter Sync / UTR / Any Method Above)
+                        🛡️ Strict Server Verification Active (No Fake Receipts)
                     </div>
                     <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; margin-top: 2px; line-height: 1.35;" id="upiLiveSyncStatusSub">
-                        As soon as payment succeeds via any option above, Counter approval, or 12-digit UTR below, the timer stops and <b>immediately redirects to your Digital Receipt</b>:
+                        <b>Unpaid clicks will NEVER generate a receipt.</b><br>
+                        Auto-redirects to your Digital Receipt <b>immediately</b> once the Canteen Server confirms your ₹<span class="btn-amt-span">0.00</span> payment, OR when you verify your 12-digit Bank UPI UTR below:
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-top: 8px;">
-                        <input type="tel" class="form-control" id="upiUtrInput" maxlength="12" placeholder="Optional: 12-Digit UPI UTR # (Auto-Verifies)" oninput="handleStrictUtrVerificationInput(this.value)" style="text-align: center; font-family: monospace; font-size: 12px; font-weight: 900; letter-spacing: 1px;">
+                        <input type="tel" class="form-control" id="upiUtrInput" maxlength="12" placeholder="Enter 12-Digit Bank UPI UTR # to Verify" oninput="handleStrictUtrVerificationInput(this.value)" style="text-align: center; font-family: monospace; font-size: 12px; font-weight: 900; letter-spacing: 1px;">
                         <button type="button" onclick="pasteAndVerifyClipboardUtr()" style="background: var(--primary); color: #fff; border: none; border-radius: 10px; padding: 0 11px; font-size: 11px; font-weight: 900; cursor: pointer; white-space: nowrap;">
                             📋 Paste UTR
                         </button>
@@ -861,10 +907,10 @@
                 </button>
             </div>
 
-            <!-- STATE 2: PAYMENT DONE SCREEN (WITHIN TIME LIMIT) -->
+            <!-- STATE 2: PAYMENT DONE SCREEN (SERVER VERIFIED WITHIN TIME LIMIT) -->
             <div class="pg-status-screen" id="examPgSuccessScreen">
                 <div style="width:58px; height:58px; background:#dcfce7; color:#059669; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:900; margin:0 auto 10px; border:2px solid #10b981;">✓</div>
-                <span style="font-size:10px; font-weight:900; text-transform:uppercase; color:#059669; background:#dcfce7; padding:3px 10px; border-radius:20px;">Transaction Verified Within Time Limit</span>
+                <span style="font-size:10px; font-weight:900; text-transform:uppercase; color:#059669; background:#dcfce7; padding:3px 10px; border-radius:20px;">Server Verified Payment</span>
                 <h3 style="font-size:21px; font-weight:900; color:#059669; margin-top:8px;">Payment Done! ⚡</h3>
                 <p style="font-size:12px; color:var(--text-muted); margin:4px 0 12px; font-weight:700;" id="examPgSuccessSubText">
                     Redirecting to your Digital Receipt...
@@ -877,10 +923,10 @@
             <!-- STATE 3: PAYMENT FAILED / TIMED OUT SCREEN (STAYS ON SAME PAGE) -->
             <div class="pg-status-screen" id="examPgFailedScreen">
                 <div style="width:58px; height:58px; background:#fee2e2; color:#dc2626; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:900; margin:0 auto 10px; border:2px solid #ef4444;">✕</div>
-                <span style="font-size:10px; font-weight:900; text-transform:uppercase; color:#dc2626; background:#fee2e2; padding:3px 10px; border-radius:20px;">Session Expired / Not Completed</span>
+                <span style="font-size:10px; font-weight:900; text-transform:uppercase; color:#dc2626; background:#fee2e2; padding:3px 10px; border-radius:20px;">Server Verification Failed / Expired</span>
                 <h3 style="font-size:21px; font-weight:900; color:var(--danger); margin-top:8px;">Payment Failed!</h3>
                 <p style="font-size:12px; color:var(--text-muted); margin:6px 0 16px; font-weight:600; line-height:1.45;" id="examPgFailedReason">
-                    Payment was not completed within the 05:00 portal time limit. You are still on the checkout page and your tray items are saved.
+                    Payment was not verified by the server within the 05:00 portal time limit. You are still on the checkout page and your tray items are saved.
                 </p>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
                     <button type="button" class="checkout-btn" onclick="retryTimedPaymentSession()" style="background:var(--primary); padding:10px;">🔄 Retry Payment</button>
@@ -2954,9 +3000,23 @@
                     const rExist = rank[existing.status] ?? 0;
                     const rNew = rank[ord.status] ?? 0;
                     if (rNew > rExist) {
-                        map.set(ord.token, { ...existing, ...ord, status: ord.status, utr: ord.utr || existing.utr, servedAt: ord.servedAt || existing.servedAt });
+                        map.set(ord.token, {
+                            ...existing, ...ord,
+                            status: ord.status,
+                            utr: ord.utr || existing.utr,
+                            servedAt: ord.servedAt || existing.servedAt,
+                            verifyRequested: Boolean(ord.verifyRequested || existing.verifyRequested),
+                            verifyMethod: ord.verifyMethod || existing.verifyMethod || ''
+                        });
                     } else {
-                        map.set(ord.token, { ...ord, ...existing, status: existing.status, utr: existing.utr || ord.utr, servedAt: existing.servedAt || ord.servedAt });
+                        map.set(ord.token, {
+                            ...ord, ...existing,
+                            status: existing.status,
+                            utr: existing.utr || ord.utr,
+                            servedAt: existing.servedAt || ord.servedAt,
+                            verifyRequested: Boolean(existing.verifyRequested || ord.verifyRequested),
+                            verifyMethod: existing.verifyMethod || ord.verifyMethod || ''
+                        });
                     }
                 }
             });
@@ -2965,23 +3025,28 @@
 
         function checkIfPendingOrderApprovedByCounter() {
             const activeToken = pendingUpiOrderToken || (window.currentPendingOrderDraft && window.currentPendingOrderDraft.token);
-            if (!activeToken) return;
+            if (!activeToken) return false;
 
-            // Check if localStorage has a newer status from another tab
+            // Check if localStorage has a newer server/counter state from another tab
             try {
+                const storedRejected = JSON.parse(localStorage.getItem('cb_rejected_tokens') || '[]');
+                if (Array.isArray(storedRejected) && storedRejected.length > 0) {
+                    window.rejectedOrderTokens = Array.from(new Set([...(window.rejectedOrderTokens || []), ...storedRejected]));
+                }
                 const storedOrders = JSON.parse(localStorage.getItem('cb_orders') || '[]');
                 if (Array.isArray(storedOrders) && storedOrders.length > 0) {
                     activeOrders = mergeOrdersSmartly(activeOrders, storedOrders);
                 }
             } catch (e) {}
 
+            // 1. Did the Server / Counter explicitly reject this payment?
             if (window.rejectedOrderTokens && window.rejectedOrderTokens.includes(activeToken)) {
                 pendingUpiOrderToken = null;
                 window.currentPendingOrderDraft = null;
                 localStorage.removeItem('cb_pending_upi_draft');
                 stopExamPaymentTimer();
-                triggerExamPaymentTimeoutFailure("❌ Payment Declined by Canteen Counter: Payment was not received.");
-                return;
+                triggerExamPaymentTimeoutFailure("❌ Server Verification Failed: The Canteen Counter Server confirmed that payment was NOT received.");
+                return false;
             }
 
             const matchedOrder = activeOrders.find(o => o.token === activeToken);
@@ -2990,13 +3055,16 @@
                 if (window.currentPendingOrderDraft && !window.isExamPaymentCompleted) {
                     activeOrders.unshift(window.currentPendingOrderDraft);
                 }
-                return;
+                return false;
             }
 
+            // 2. Did the Server / Counter confirm that the payment is REALLY paid?
             if (matchedOrder.status === 'paid' || matchedOrder.status === 'served') {
-                // Counter Staff or another tab confirmed the payment! Immediately stop timer & redirect to receipt!
-                finalizeAndCommitVerifiedOnlineOrder(matchedOrder.utr || 'COUNTER-VERIFIED');
+                finalizeAndCommitVerifiedOnlineOrder(matchedOrder.utr || 'SERVER-COUNTER-VERIFIED');
+                return true;
             }
+
+            return false;
         }
 
         function applyRemoteStatePayload(data) {
@@ -4476,9 +4544,13 @@
         }
 
         /* =====================================================================
-           NEET / JEE STYLE TIMED MULTI-OPTION PAYMENT PORTAL & FIXED-AMOUNT QR
-           - Instant Timer Kill-Switch & Immediate Auto-Redirect to #tab-receipts
-           - If payment is NOT done, stays on the same page
+           NEET / JEE STYLE TIMED MULTI-OPTION PAYMENT PORTAL (STRICT SERVER VERIFY)
+           - NEVER marks an order as 'Online Paid' when clicking a button without real payment!
+           - Clicking "Verify Payment on Server" (or returning from a UPI app) queries
+             the Server (Firebase DB + MQTT + Counter Ledger).
+           - ONLY when the Server confirms the payment is really paid (or Razorpay
+             signature / genuine 12-digit Bank UTR is verified) does it stop the timer
+             and auto-redirect to #tab-receipts!
            ===================================================================== */
         window.examPaymentTimerInterval = window.examPaymentTimerInterval || null;
         window.EXAM_TOTAL_SECONDS = 300; // 5 Minutes (300 seconds)
@@ -4486,6 +4558,7 @@
         window.selectedExamBankCode = "SBI";
         window.useFixedAmountQrMode = true;
         window.isExamPaymentCompleted = false;
+        window.isServerVerificationActive = false;
         window.upiAppLaunchTimestamp = 0;
 
         function showUpiSecurityError(msg) {
@@ -4554,12 +4627,25 @@
             }
         }
 
+        function resetServerVerificationBoxUI() {
+            window.isServerVerificationActive = false;
+            const verifyBox = document.getElementById('serverVerifyStatusBox');
+            if (verifyBox) verifyBox.classList.remove('active');
+            const qrBtn = document.getElementById('qrServerVerifyBtn');
+            const fmtAmt = Number(activeGatewayUpiParams.amount || 0).toFixed(2);
+            if (qrBtn) {
+                qrBtn.classList.remove('verifying');
+                qrBtn.innerHTML = `🔍 I Have Paid ₹<span class="btn-amt-span">${fmtAmt}</span> — Verify Payment on Server`;
+            }
+        }
+
         function startExamTimedPaymentSession(durationSeconds = window.EXAM_TOTAL_SECONDS) {
             stopExamPaymentTimer();
             window.isExamPaymentCompleted = false;
             window.upiAppLaunchTimestamp = 0;
             window.examPaymentSecondsLeft = durationSeconds;
             window.useFixedAmountQrMode = true;
+            resetServerVerificationBoxUI();
 
             const activeBody = document.getElementById('examPgActiveBody');
             const successScreen = document.getElementById('examPgSuccessScreen');
@@ -4583,16 +4669,20 @@
             refreshGatewayQrImage();
             updateExamTimerUI();
 
-            window.examPaymentTimerInterval = setInterval(() => {
-                // If payment was already completed via any method, immediately kill timer!
+            window.examPaymentTimerInterval = setInterval(async () => {
                 if (window.isExamPaymentCompleted) {
                     stopExamPaymentTimer();
                     return;
                 }
 
-                // Poll Counter / Cross-tab approval every second
-                checkIfPendingOrderApprovedByCounter();
-                if (window.isExamPaymentCompleted) {
+                // Every 3 seconds while server verification is active, pull fresh state from Cloud DB if configured
+                if (window.isServerVerificationActive && cloudConfig.dbUrl && (window.examPaymentSecondsLeft % 3 === 0)) {
+                    try { await pullFromCloudDatabase(); } catch (e) {}
+                }
+
+                // Check if Server / Counter confirmed the payment!
+                const confirmedNow = checkIfPendingOrderApprovedByCounter();
+                if (confirmedNow || window.isExamPaymentCompleted) {
                     stopExamPaymentTimer();
                     return;
                 }
@@ -4603,7 +4693,7 @@
                 if (window.examPaymentSecondsLeft <= 0) {
                     stopExamPaymentTimer();
                     if (!window.isExamPaymentCompleted) {
-                        triggerExamPaymentTimeoutFailure("⏱️ Session Time Limit Expired (05:00). Payment was not completed within the allowed time window.");
+                        triggerExamPaymentTimeoutFailure("⏱️ Session Time Limit Expired (05:00). Server could not verify any completed payment within the allowed time window.");
                     }
                 }
             }, 1000);
@@ -4628,10 +4718,95 @@
             }
         }
 
+        /* =====================================================================
+           STRICT SERVER PAYMENT VERIFICATION ENGINE
+           - Clicking "Verify Payment on Server" NEVER marks the order as paid!
+           - It pings the Server (Cloud DB + MQTT + Counter Ledger) and checks
+             if the payment is genuinely marked 'paid'.
+           - If NOT paid yet, it stays on the portal and shows a live server check
+             status until the Server / Counter confirms it (or a valid UTR is entered).
+           ===================================================================== */
+        async function requestServerPaymentVerification(methodTag = 'UPI-QR', isAutoReturn = false) {
+            if (window.isExamPaymentCompleted) return;
+            if (window.examPaymentSecondsLeft <= 0) {
+                triggerExamPaymentTimeoutFailure("⏱️ Session expired before server verification.");
+                return;
+            }
+
+            clearUpiSecurityError();
+            window.isServerVerificationActive = true;
+
+            const activeToken = pendingUpiOrderToken || (window.currentPendingOrderDraft && window.currentPendingOrderDraft.token);
+            const fmtAmt = Number(activeGatewayUpiParams.amount || 0).toFixed(2);
+
+            // Flag the order on the Server / Counter Ledger so Counter Staff see the student requested verification
+            if (activeToken) {
+                const ordIdx = activeOrders.findIndex(o => o.token === activeToken);
+                if (ordIdx !== -1) {
+                    activeOrders[ordIdx].verifyRequested = true;
+                    activeOrders[ordIdx].verifyMethod = methodTag;
+                }
+                if (window.currentPendingOrderDraft && window.currentPendingOrderDraft.token === activeToken) {
+                    window.currentPendingOrderDraft.verifyRequested = true;
+                    window.currentPendingOrderDraft.verifyMethod = methodTag;
+                    localStorage.setItem('cb_pending_upi_draft', JSON.stringify(window.currentPendingOrderDraft));
+                }
+                saveState();
+            }
+
+            const verifyBox = document.getElementById('serverVerifyStatusBox');
+            const verifyHeadline = document.getElementById('serverVerifyHeadline');
+            const verifySub = document.getElementById('serverVerifySubText');
+            const qrBtn = document.getElementById('qrServerVerifyBtn');
+
+            if (verifyBox) verifyBox.classList.add('active');
+            if (qrBtn) {
+                qrBtn.classList.add('verifying');
+                qrBtn.innerHTML = `<span class="verify-spinner" style="border-top-color:#fff;"></span> Checking Server for ₹${fmtAmt} Payment...`;
+            }
+            if (verifyHeadline) {
+                verifyHeadline.innerHTML = `<span class="verify-spinner"></span> Contacting Server to Verify Token #${activeToken || 'Order'}...`;
+            }
+            if (verifySub) {
+                verifySub.innerHTML = `Querying Canteen Server Ledger & Bank Gateway for <b>₹${fmtAmt}</b> (${methodTag})...`;
+            }
+
+            // Pull latest state from Firebase Cloud DB if configured
+            if (cloudConfig.dbUrl) {
+                try { await pullFromCloudDatabase(); } catch (e) {}
+            }
+
+            // Check if the Server / Counter has already confirmed the payment
+            const isConfirmed = checkIfPendingOrderApprovedByCounter();
+            if (isConfirmed || window.isExamPaymentCompleted) {
+                return; // Automatically redirected to receipt!
+            }
+
+            // Not confirmed on server yet -> Stay on page & keep live listener active!
+            setTimeout(() => {
+                if (window.isExamPaymentCompleted) return;
+                const recheck = checkIfPendingOrderApprovedByCounter();
+                if (recheck) return;
+
+                if (verifyHeadline) {
+                    verifyHeadline.innerHTML = `<span class="verify-spinner"></span> ⏳ Server Check: Payment Not Yet Confirmed on Server`;
+                }
+                if (verifySub) {
+                    verifySub.innerHTML = isAutoReturn
+                        ? `You returned from the payment app, but <b>₹${fmtAmt}</b> is <b>not yet confirmed on the server</b>.<br>• If you paid, wait a moment for the <b>Canteen Counter Server</b> to confirm (or paste your 12-digit Bank UTR below) — it will <b>auto-redirect to your Receipt immediately</b> once verified!<br>• If you have not paid yet, please complete the payment before the timer ends.`
+                        : `Server checked Token <b>#${activeToken}</b>: <b>₹${fmtAmt} has NOT been confirmed yet.</b><br>• Clicking this button without paying will <b>never</b> generate a receipt.<br>• Listening live to the Server: the <b>exact second</b> the Canteen Server confirms your payment (or you enter a valid 12-digit Bank UTR below), you will be <b>automatically redirected to your Receipt!</b>`;
+                }
+                if (qrBtn) {
+                    qrBtn.innerHTML = `🔄 Re-Check Server Payment Status (Listening Live...)`;
+                }
+            }, 700);
+        }
+
         /* When payment fails or times out, NEVER redirect to receipt; stay on the same page! */
         function triggerExamPaymentTimeoutFailure(reasonText) {
             if (window.isExamPaymentCompleted) return;
             stopExamPaymentTimer();
+            resetServerVerificationBoxUI();
             const tokToRemove = pendingUpiOrderToken || (window.currentPendingOrderDraft && window.currentPendingOrderDraft.token);
             if (tokToRemove) {
                 activeOrders = activeOrders.filter(o => !(o.token === tokToRemove && o.status === 'upi_verifying'));
@@ -4678,16 +4853,12 @@
             const statusTxt = document.getElementById('vpaCollectStatusText');
             const fmtAmt = Number(activeGatewayUpiParams.amount || 0).toFixed(2);
             if (statusTxt) {
-                statusTxt.innerHTML = `✅ Collect request of <b>₹${fmtAmt}</b> verified for <code>${vpa}</code>! Completing payment & redirecting to receipt...`;
+                statusTxt.innerHTML = `📲 Collect request of <b>₹${fmtAmt}</b> initiated for <code>${vpa}</code>! Complete the payment on your UPI app, then click below to verify with the server:`;
             }
             if (waitBox) waitBox.style.display = 'block';
 
-            // Auto-complete and immediately redirect to receipt section after 1.2s verification pulse
-            setTimeout(() => {
-                if (!window.isExamPaymentCompleted && window.examPaymentSecondsLeft > 0) {
-                    completeSimulatedGatewayMethod('UPI-VPA');
-                }
-            }, 1200);
+            // Notify server that student initiated VPA collect
+            requestServerPaymentVerification('UPI-VPA:' + vpa, true);
         }
 
         function initiateExamCardOtpStep() {
@@ -4714,11 +4885,12 @@
             clearUpiSecurityError();
             const otp = (document.getElementById('pgCardOtpInput')?.value || '').trim();
             if (!/^\d{4,6}$/.test(otp)) {
-                showUpiSecurityError("❌ Invalid OTP! Please enter the 4 to 6 digit Bank OTP.");
+                showUpiSecurityError("❌ Invalid OTP! Please enter the 6-digit Bank OTP.");
                 return;
             }
             const num = (document.getElementById('pgCardNumber')?.value || '0000').replace(/\D/g, '');
-            completeSimulatedGatewayMethod('CARD-' + num.slice(-4));
+            // Submit to server verification instead of blindly marking paid without server confirmation!
+            requestServerPaymentVerification('CARD-' + num.slice(-4), false);
         }
 
         function selectExamBank(btnEl, bankCode) {
@@ -4737,15 +4909,6 @@
             if (merchEl) merchEl.innerText = activeGatewayUpiParams.merchant || 'CANTEEN OFFICIAL';
         }
 
-        function completeSimulatedGatewayMethod(methodPrefix) {
-            if (window.examPaymentSecondsLeft <= 0 && !window.isExamPaymentCompleted) {
-                triggerExamPaymentTimeoutFailure("⏱️ Session expired before payment confirmation.");
-                return;
-            }
-            const refId = `${methodPrefix}-${Math.floor(10000000 + Math.random() * 90000000)}`;
-            finalizeAndCommitVerifiedOnlineOrder(refId);
-        }
-
         function copyGatewayUpiId() {
             const vpa = activeGatewayUpiParams.vpa || 'canteen@sbi';
             navigator.clipboard.writeText(vpa);
@@ -4759,7 +4922,8 @@
             alert(`✔ Copied Official UPI Mobile Number: ${phone}\n\nPay ₹${Number(activeGatewayUpiParams.amount).toFixed(2)} within the time limit.`);
         }
 
-        /* Auto-detects when student returns from GPay / PhonePe / Paytm app after paying */
+        /* When returning from GPay / PhonePe / Paytm, NEVER mark paid without paying!
+           Instead, automatically trigger a Server Verification check! */
         function handleReturnFromExternalUpiApp() {
             const modalEl = document.getElementById('upiLivePaymentModal');
             if (!modalEl || !modalEl.classList.contains('active')) return;
@@ -4767,9 +4931,9 @@
 
             if (window.upiAppLaunchTimestamp > 0) {
                 const elapsedMs = Date.now() - window.upiAppLaunchTimestamp;
-                if (elapsedMs >= 2500) {
+                if (elapsedMs >= 1500) {
                     window.upiAppLaunchTimestamp = 0;
-                    completeSimulatedGatewayMethod('UPI-APP');
+                    requestServerPaymentVerification('UPI-APP', true);
                 }
             }
         }
@@ -4796,8 +4960,8 @@
 
             const headline = document.getElementById('upiLiveSyncStatusHeadline');
             const sub = document.getElementById('upiLiveSyncStatusSub');
-            if (headline) headline.innerHTML = `⏳ UPI App Launched — Auto-Redirecting on Return...`;
-            if (sub) sub.innerHTML = `Copied <b>${copyTarget}</b>! Complete your <b>₹${Number(amount).toFixed(2)}</b> payment to <b>${merchant}</b> in ${appName.toUpperCase()} — when you return to this page, it will <b>automatically redirect to your Digital Receipt</b>!`;
+            if (headline) headline.innerHTML = `⏳ UPI App Opened — Will Verify with Server on Return`;
+            if (sub) sub.innerHTML = `Copied <b>${copyTarget}</b>! Complete your <b>₹${Number(amount).toFixed(2)}</b> payment to <b>${merchant}</b> in ${appName.toUpperCase()}. When you return, the portal will <b>verify your payment with the Server</b> before opening your receipt.`;
 
             const isAndroid = /Android/i.test(navigator.userAgent);
             if (isAndroid) {
@@ -4912,18 +5076,17 @@
         }
 
         /* =====================================================================
-           IMMEDIATE AUTO-REDIRECT TO RECEIPT SECTION ON ANY SUCCESSFUL PAYMENT
+           IMMEDIATE AUTO-REDIRECT TO RECEIPT SECTION ONCE SERVER CONFIRMS PAID
            Stops timer immediately, commits order as 'paid', closes modal,
            and switches straight to My Digital Receipts (#tab-receipts)!
            ===================================================================== */
         function finalizeAndCommitVerifiedOnlineOrder(utrOrRef) {
-            // 1. Kill the countdown timer immediately so it NEVER keeps running or shows Payment Failed!
             stopExamPaymentTimer();
             if (window.isExamPaymentCompleted) return;
             window.isExamPaymentCompleted = true;
+            window.isServerVerificationActive = false;
             window.upiAppLaunchTimestamp = 0;
 
-            // 2. Recover the pending order token or draft (even if an MQTT sync happened in the background)
             let savedDraft = window.currentPendingOrderDraft;
             if (!savedDraft) {
                 try { savedDraft = JSON.parse(localStorage.getItem('cb_pending_upi_draft') || 'null'); } catch (e) {}
@@ -4944,7 +5107,8 @@
             if (idx === -1) return;
 
             activeOrders[idx].status = 'paid';
-            activeOrders[idx].utr = utrOrRef || 'ONLINE-VERIFIED';
+            activeOrders[idx].utr = utrOrRef || 'SERVER-VERIFIED';
+            activeOrders[idx].verifyRequested = false;
             activeOrders[idx].timestamp = new Date().toLocaleTimeString();
 
             const completedOrder = activeOrders[idx];
@@ -4952,7 +5116,6 @@
             window.currentPendingOrderDraft = null;
             localStorage.removeItem('cb_pending_upi_draft');
 
-            // 3. Clear tray & persist verified order
             const oldTrayIds = Object.keys(tray);
             tray = {};
             activeSelectedOfferId = null;
@@ -4965,7 +5128,6 @@
             });
             updateFloatingTray();
 
-            // 4. Close payment portal & drawer and IMMEDIATELY redirect straight to Digital Receipts section!
             const upiModal = document.getElementById('upiLivePaymentModal');
             if (upiModal) upiModal.classList.remove('active');
             closeDrawer(true);
@@ -4973,10 +5135,9 @@
             switchTab('receipts');
             try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
 
-            // Show a brief non-blocking confirmation toast while already on the Digital Receipts tab
             const toastModal = document.getElementById('successToastModal');
             if (toastModal) {
-                document.getElementById('successToastHeading').innerText = "Payment Done! ⚡";
+                document.getElementById('successToastHeading').innerText = "Server Verified — Payment Done! ⚡";
                 document.getElementById('toastTokenDisplay').innerText = `#${completedOrder.token} • PIN: ${completedOrder.handshakePin}`;
                 toastModal.classList.add('active');
                 setTimeout(() => {
@@ -4987,10 +5148,10 @@
 
         function cancelLiveUpiPaymentModal() {
             stopExamPaymentTimer();
+            resetServerVerificationBoxUI();
             window.upiAppLaunchTimestamp = 0;
             const tokToCancel = pendingUpiOrderToken || (window.currentPendingOrderDraft && window.currentPendingOrderDraft.token);
             if (tokToCancel && !window.isExamPaymentCompleted) {
-                // Remove unverified draft so unpaid orders NEVER generate a receipt; stay on same page!
                 activeOrders = activeOrders.filter(o => !(o.token === tokToCancel && o.status === 'upi_verifying'));
                 pendingUpiOrderToken = null;
                 window.currentPendingOrderDraft = null;
@@ -5007,12 +5168,11 @@
             if (upiModal) upiModal.classList.remove('active');
             closeDrawer(true);
 
-            // Immediately switch to receipts tab first!
             switchTab('receipts');
             try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
 
             document.getElementById('successToastHeading').innerText = (orderObj.payment === 'online')
-                ? "Payment Done! ⚡"
+                ? "Server Verified — Payment Done! ⚡"
                 : "Cash Order Generated! 💵";
             document.getElementById('toastTokenDisplay').innerText = `#${orderObj.token} • PIN: ${orderObj.handshakePin}`;
             document.getElementById('successToastModal').classList.add('active');
@@ -5069,6 +5229,8 @@
                 slot: document.getElementById('orderSlot').value, payment: selectedPaymentMethod,
                 items: orderItems, total: finalTotal,
                 status: isOnline ? 'upi_verifying' : 'cash_pending',
+                verifyRequested: false,
+                verifyMethod: "",
                 utr: "",
                 timestamp: new Date().toLocaleTimeString(), servedAt: null
             };
@@ -5094,7 +5256,7 @@
             closeDrawer(true);
             clearUpiSecurityError();
 
-            // Persist draft in both memory and localStorage so background syncs NEVER lose it!
+            // Persist unverified draft ('upi_verifying') to Server / Counter Ledger
             window.isExamPaymentCompleted = false;
             pendingUpiOrderToken = tokenNum;
             window.currentPendingOrderDraft = { ...orderDraft };
@@ -5136,7 +5298,7 @@
                                 if (!window.isExamPaymentCompleted) {
                                     pushOverlayHistoryState('upi-gateway-modal');
                                     document.getElementById('upiLivePaymentModal').classList.add('active');
-                                    triggerExamPaymentTimeoutFailure("Razorpay checkout was closed or timed out before payment completion.");
+                                    triggerExamPaymentTimeoutFailure("Razorpay checkout was closed or timed out before server payment verification.");
                                 }
                             }
                         }
@@ -6094,7 +6256,9 @@
 
                 let statusHtml = '';
                 if (order.status === 'paid') statusHtml = `<span style="color:var(--success); font-weight:800;">Online Paid ✔${order.utr ? '<br><small style="color:var(--primary);">' + order.utr + '</small>' : ''}</span>`;
-                else if (order.status === 'upi_verifying') statusHtml = `<span style="color:#2563eb; font-weight:900;">🔔 Incoming UPI (Verify ₹${order.total})</span>`;
+                else if (order.status === 'upi_verifying') statusHtml = order.verifyRequested
+                    ? `<span style="color:#d97706; font-weight:900;">⚡ STUDENT CLICKED VERIFY (${order.verifyMethod || 'UPI'})<br><small style="color:#2563eb;">Check ₹${order.total} in Bank/Soundbox & Confirm</small></span>`
+                    : `<span style="color:#2563eb; font-weight:900;">🔔 Incoming UPI (Verify ₹${order.total})</span>`;
                 else if (order.status === 'cash_pending') statusHtml = `<span style="color:var(--warning); font-weight:800;">Cash Pending</span>`;
                 else statusHtml = `<span style="color:#10b981; font-weight:900;">ORDER SERVED ✔</span>`;
 
