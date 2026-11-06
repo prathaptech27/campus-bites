@@ -97,6 +97,13 @@
             background: rgba(220,252,231,0.9); color: #065f46; display: inline-flex; align-items: center; gap: 6px;
         }
 
+        .otp-toggle-pill {
+            font-size: 11px; font-weight: 900; padding: 7px 14px; border-radius: 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.85);
+            display: inline-flex; align-items: center; gap: 6px; transition: 0.2s ease;
+        }
+        .otp-toggle-pill.is-on { background: #dcfce7; color: #166534; }
+        .otp-toggle-pill.is-off { background: #fef3c7; color: #92400e; border-color: #f59e0b; }
+
         .main-gateway-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
         .gateway-card { background: var(--liquid-glass-bg); backdrop-filter: blur(12px); border: 1.5px solid var(--liquid-glass-border); border-radius: 18px; padding: 14px 10px; text-align: center; cursor: pointer; box-shadow: var(--liquid-glass-shadow); transition: 0.14s ease; }
         .gateway-card.active { border-color: var(--primary); background: linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(79,70,229,0.15) 100%); }
@@ -554,7 +561,7 @@
         <span>Prep Count (<span id="prepFabBadgeCount">0</span>)</span>
     </button>
 
-    <!-- CLOUD DATABASE SYNC & EMAILJS OTP CONFIGURATION MODAL -->
+    <!-- CLOUD DATABASE SYNC & EMAILJS OTP CONFIGURATION MODAL (CREATOR ONLY) -->
     <div class="toast-modal" id="cloudConfigModal">
         <div class="toast-card" style="text-align: left; max-width: 460px; max-height: 90vh; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -562,8 +569,20 @@
                 <button class="close-drawer" onclick="closeCloudConfigModal()">×</button>
             </div>
             <p style="font-size: 11px; color: #10b981; background: rgba(16, 185, 129, 0.14); border: 1px solid rgba(16, 185, 129, 0.4); padding: 8px 10px; border-radius: 8px; margin-bottom: 12px; line-height: 1.4;">
-                👑 <b>Creator-Only Configuration:</b> Configure optional Firebase backup URL and EmailJS credentials here.
+                👑 <b>Creator-Only Configuration:</b> Configure College Sign-Up OTP verification, Firebase backup URL, and EmailJS credentials here.
             </p>
+
+            <!-- ON / OFF TOGGLE FOR COLLEGE SIGN-UP OTP INSIDE SETTINGS MODAL -->
+            <div style="background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                <div>
+                    <div style="font-size: 12.5px; font-weight: 900; color: var(--text-main);">College Sign-Up OTP Verification</div>
+                    <div style="font-size: 11px; color: var(--text-muted);" id="modalOtpToggleSubText">Require 6-digit Email OTP when registering a new college</div>
+                </div>
+                <button type="button" class="otp-toggle-pill is-on" id="modalCollegeOtpToggleBtn" onclick="toggleCollegeSignupOtpRequirement()">
+                    🔒 ON
+                </button>
+            </div>
+
             <div class="form-group">
                 <label>Optional Firebase Realtime DB URL (Extra Backup)</label>
                 <input type="text" class="form-control" id="cfgDbUrlInput" placeholder="https://your-project-default-rtdb.firebaseio.com">
@@ -722,9 +741,9 @@
                     <button class="checkout-btn" onclick="completeStaffLogin()" style="background: #059669; margin-top: 6px;">Login to Counter Portal &rarr;</button>
                 </div>
 
-                <!-- 2C. College Sign Up (REQUIRES UNIQUE EMAIL + OTP VERIFICATION) -->
+                <!-- 2C. College Sign Up (SUPPORTS CREATOR OTP ON/OFF TOGGLE + UNIQUE EMAIL CHECK) -->
                 <div id="subFormSignup" style="display: none;">
-                    <div style="background: rgba(99, 102, 241, 0.15); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--text-main); font-weight: 700; line-height: 1.4;">
+                    <div style="background: rgba(99, 102, 241, 0.15); border: 1px solid var(--liquid-glass-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--text-main); font-weight: 700; line-height: 1.4;" id="collegeSignupBannerNotice">
                         📝 <b>College Sign Up & PIN Setup:</b> Each college must use a unique Admin Email ID. Verify via Email OTP and create your custom PINs.
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
@@ -739,7 +758,7 @@
                     </div>
                     <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 8px;">
                         <div class="form-group">
-                            <label>Unique Admin Email (OTP) *</label>
+                            <label>Unique Admin Email *</label>
                             <input type="email" class="form-control" id="signupAdminEmail" placeholder="admin@college.ac.in">
                         </div>
                         <div class="form-group">
@@ -791,7 +810,7 @@
         </div>
     </header>
 
-    <!-- STUDENT NAVIGATION TABS (NOW INCLUDES MY SPENDING TRACKER) -->
+    <!-- STUDENT NAVIGATION TABS -->
     <div class="nav-tabs" id="studentNavTabs">
         <button class="tab-btn active" onclick="switchTab('menu')">🍔 Canteens & Menu</button>
         <button class="tab-btn" onclick="switchTab('receipts')">🧾 My Digital Receipts</button>
@@ -809,7 +828,7 @@
     <!-- MAIN CONTAINER -->
     <div class="container">
 
-        <!-- COUNTER STAFF POST-LOGIN STEP 2: SELECT CANTEEN & VERIFY PIN (WITH FORGOT PIN OPTION) -->
+        <!-- COUNTER STAFF POST-LOGIN STEP 2: SELECT CANTEEN & VERIFY PIN -->
         <div id="tab-counter-canteen-gate" class="tab-content">
             <div class="counter-canteen-gate-card">
                 <div style="text-align: center; margin-bottom: 18px;">
@@ -867,7 +886,7 @@
                 </div>
             </div>
 
-            <!-- STATE A: QR SCANNER VIEW (MANDATORY TO ADD ANY COLLEGE) -->
+            <!-- STATE A: QR SCANNER VIEW -->
             <div id="studentNoCollegeJoinedBox" style="display: none;">
                 <div class="scan-college-card">
                     <div id="scannerBackBtnRow" style="display: none; text-align: left; margin-bottom: 12px;">
@@ -1009,7 +1028,7 @@
             </div>
         </div>
 
-        <!-- ADMIN & COUNTER TAB 1: STUDIO (WITH CLICK-TO-EDIT CANTEEN & CANTEEN PIN) -->
+        <!-- ADMIN & COUNTER TAB 1: STUDIO -->
         <div id="tab-admin-studio" class="tab-content">
             <div style="background: rgba(15, 23, 42, 0.84); backdrop-filter: blur(18px); color: white; padding: 16px 20px; border-radius: var(--radius); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid rgba(255,255,255,0.28);">
                 <div>
@@ -1276,17 +1295,23 @@
             </div>
         </div>
 
-        <!-- HIDDEN APP CREATOR (AUDITOR) PORTAL -->
+        <!-- HIDDEN APP CREATOR (AUDITOR) PORTAL (WITH ON / OFF COLLEGE OTP TOGGLE) -->
         <div id="tab-auditor-portal" class="tab-content">
             <div style="background: linear-gradient(135deg, rgba(49, 46, 129, 0.88) 0%, rgba(79, 70, 229, 0.88) 100%); backdrop-filter: blur(18px); color: white; padding: 20px 24px; border-radius: var(--radius); margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
                 <div>
                     <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 800;">👑 Hidden App Creator Portal</span>
                     <h2 style="font-size: 22px; font-weight: 900; margin-top: 4px;">Master System Creator & Security Audit Dashboard</h2>
-                    <p style="font-size: 12.5px; color: #cbd5e1; margin-top: 4px;">Inspect all registered colleges, canteens, custom Admin/Counter PINs, and live cross-device synchronization.</p>
+                    <p style="font-size: 12.5px; color: #cbd5e1; margin-top: 4px;">Inspect all registered colleges, canteens, custom Admin/Counter PINs, and toggle College Sign-Up OTP verification.</p>
                 </div>
-                <button type="button" class="sync-status-pill" id="cloudStatusBtn" onclick="openCloudConfigModal()">
-                    🟢 High-Speed Sync & OTP Settings
-                </button>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <!-- ON / OFF TOGGLE BUTTON FOR COLLEGE SIGNUP OTP IN CREATOR PORTAL -->
+                    <button type="button" class="otp-toggle-pill is-on" id="creatorPortalOtpToggleBtn" onclick="toggleCollegeSignupOtpRequirement()" title="Click to turn ON or OFF Email OTP verification for College Sign Up">
+                        🔒 College Sign-Up OTP: ON
+                    </button>
+                    <button type="button" class="sync-status-pill" id="cloudStatusBtn" onclick="openCloudConfigModal()">
+                        🟢 High-Speed Sync & OTP Settings
+                    </button>
+                </div>
             </div>
 
             <div class="finance-summary-grid">
@@ -1453,6 +1478,57 @@
         let liveClockTimerId = null;
         let activeSpendingPeriodFilter = "all";
 
+        // CREATOR TOGGLE STATE FOR COLLEGE SIGN-UP OTP VERIFICATION (DEFAULT: TRUE / ON)
+        let collegeSignupOtpRequired = localStorage.getItem('cb_college_otp_required') !== 'false';
+
+        function updateCollegeSignupOtpToggleUI() {
+            const btnPortal = document.getElementById('creatorPortalOtpToggleBtn');
+            const btnModal = document.getElementById('modalCollegeOtpToggleBtn');
+            const modalSub = document.getElementById('modalOtpToggleSubText');
+            const signupBtn = document.getElementById('sendCollegeOtpBtn');
+            const signupNotice = document.getElementById('collegeSignupBannerNotice');
+            const otpVerifyBox = document.getElementById('collegeOtpVerifyBox');
+
+            if (btnPortal) {
+                btnPortal.className = collegeSignupOtpRequired ? 'otp-toggle-pill is-on' : 'otp-toggle-pill is-off';
+                btnPortal.innerText = collegeSignupOtpRequired ? '🔒 College Sign-Up OTP: ON' : '🔓 College Sign-Up OTP: OFF (Bypassed)';
+            }
+            if (btnModal) {
+                btnModal.className = collegeSignupOtpRequired ? 'otp-toggle-pill is-on' : 'otp-toggle-pill is-off';
+                btnModal.innerText = collegeSignupOtpRequired ? '🔒 ON' : '🔓 OFF';
+            }
+            if (modalSub) {
+                modalSub.innerText = collegeSignupOtpRequired
+                    ? 'Currently ON: 6-digit Email OTP is required for new college registration'
+                    : 'Currently OFF: New colleges can register directly without Email OTP';
+            }
+            if (signupBtn) {
+                if (collegeSignupOtpRequired) {
+                    signupBtn.innerText = '📧 Send 6-Digit OTP to Admin Email';
+                    signupBtn.style.background = '#0f172a';
+                } else {
+                    signupBtn.innerText = '✔ Register College Directly (OTP Disabled)';
+                    signupBtn.style.background = '#10b981';
+                    if (otpVerifyBox) otpVerifyBox.classList.remove('active');
+                }
+            }
+            if (signupNotice) {
+                signupNotice.innerHTML = collegeSignupOtpRequired
+                    ? `📝 <b>College Sign Up & PIN Setup:</b> Each college must use a unique Admin Email ID. Verify via Email OTP and create your custom PINs.`
+                    : `⚡ <b>Instant College Sign Up (OTP Temporarily Disabled by Creator):</b> Enter a unique College Name, unique Admin Email, UPI ID, and custom PINs to register immediately.`;
+            }
+        }
+
+        function toggleCollegeSignupOtpRequirement() {
+            collegeSignupOtpRequired = !collegeSignupOtpRequired;
+            localStorage.setItem('cb_college_otp_required', String(collegeSignupOtpRequired));
+            updateCollegeSignupOtpToggleUI();
+            saveState();
+            if (document.getElementById('tab-auditor-portal').classList.contains('active')) {
+                renderAuditorPortal();
+            }
+        }
+
         function pushOverlayHistoryState(overlayType) {
             if (isHandlingPopState) return;
             try { history.pushState({ cbOverlay: overlayType, ts: Date.now() }, ""); } catch (e) {}
@@ -1608,33 +1684,21 @@
 
         rebuildMenuLookupMap();
 
-        /* =====================================================================
-           SMART MONTHLY TOKEN GENERATOR (3 DIGITS -> 4 DIGITS -> MONTHLY 3-DIGIT RESET)
-           ===================================================================== */
         function generateSmartMonthlyToken(collegeName) {
             const colKey = (collegeName || "DEFAULT").toUpperCase();
             const now = new Date();
             const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
             let tracker = tokenCounters[colKey];
-            // Reset back to 3 digits (starting at 100) every new month!
             if (!tracker || tracker.monthKey !== currentMonthKey) {
-                tracker = {
-                    monthKey: currentMonthKey,
-                    lastSeq: 99
-                };
+                tracker = { monthKey: currentMonthKey, lastSeq: 99 };
             }
 
             tracker.lastSeq += 1;
-            // If sequence exceeds 4 digits (9999), wrap back to 100
-            if (tracker.lastSeq > 9999) {
-                tracker.lastSeq = 100;
-            }
+            if (tracker.lastSeq > 9999) tracker.lastSeq = 100;
 
             tokenCounters[colKey] = tracker;
             localStorage.setItem('cb_token_counters', JSON.stringify(tokenCounters));
-
-            // 100 to 999 = 3 digits; 1000 to 9999 = 4 digits!
             return "TK-" + String(tracker.lastSeq);
         }
 
@@ -1646,7 +1710,6 @@
             return phone || email || (roll !== "STUDENT" ? roll : "");
         }
 
-        /* STRICT STUDENT COLLEGE ISOLATION: ONLY COLLEGES SCANNED BY THIS STUDENT ARE RETURNED */
         function getStudentSwitchableColleges() {
             const set = new Set();
             if (currentUser && currentUser.college) set.add(currentUser.college);
@@ -1892,6 +1955,7 @@
             document.getElementById('floatingTray').classList.add('hidden');
             document.getElementById('prepFloatingFab').classList.remove('visible');
             renderRegisteredCollegeSelects();
+            updateCollegeSignupOtpToggleUI();
             document.getElementById('authGate').classList.remove('hidden');
         }
 
@@ -2058,6 +2122,11 @@
             if (Array.isArray(data.menuItems)) { menuItems = data.menuItems; rebuildMenuLookupMap(); }
             if (Array.isArray(data.offersEvents)) offersEvents = data.offersEvents;
             if (Array.isArray(data.activeOrders)) activeOrders = data.activeOrders;
+            if (typeof data.collegeSignupOtpRequired === 'boolean') {
+                collegeSignupOtpRequired = data.collegeSignupOtpRequired;
+                localStorage.setItem('cb_college_otp_required', String(collegeSignupOtpRequired));
+                updateCollegeSignupOtpToggleUI();
+            }
             if (data.tokenCounters && typeof data.tokenCounters === 'object') {
                 tokenCounters = { ...tokenCounters, ...data.tokenCounters };
                 localStorage.setItem('cb_token_counters', JSON.stringify(tokenCounters));
@@ -2125,6 +2194,7 @@
             localStorage.setItem('cb_orders', JSON.stringify(activeOrders));
             localStorage.setItem('cb_student_vault', JSON.stringify(studentVault));
             localStorage.setItem('cb_token_counters', JSON.stringify(tokenCounters));
+            localStorage.setItem('cb_college_otp_required', String(collegeSignupOtpRequired));
             localStorage.setItem('cb_daily_word', dailySecurityWord);
 
             updateFloatingPrepButtonVisibility();
@@ -2135,7 +2205,7 @@
                     const payload = {
                         colleges, canteens, menuItems, offersEvents,
                         activeOrders: activeOrders.slice(0, 500),
-                        studentVault, tokenCounters, dailySecurityWord, updatedAt: lastStateTimestamp
+                        studentVault, tokenCounters, collegeSignupOtpRequired, dailySecurityWord, updatedAt: lastStateTimestamp
                     };
                     broadcastStateOverMqtt(payload);
                     pushToCloudDatabase(payload);
@@ -2163,6 +2233,7 @@
 
         window.onload = async function() {
             applyThemeMode(currentThemeMode);
+            updateCollegeSignupOtpToggleUI();
             if (cloudConfig.emailPublicKey && window.emailjs) {
                 try { emailjs.init(cloudConfig.emailPublicKey); } catch (e) {}
             }
@@ -2213,6 +2284,7 @@
             document.getElementById('cfgEmailPublicKey').value = cloudConfig.emailPublicKey || "";
             document.getElementById('cfgEmailServiceId').value = cloudConfig.emailServiceId || "";
             document.getElementById('cfgEmailTemplateId').value = cloudConfig.emailTemplateId || "";
+            updateCollegeSignupOtpToggleUI();
             pushOverlayHistoryState('cloud-config');
             document.getElementById('cloudConfigModal').classList.add('active');
         }
@@ -2234,7 +2306,6 @@
             alert("Settings saved & synced!");
         }
 
-        /* SECURE EMAIL OTP DISPATCH FOR COLLEGES ONLY (NO ON-SCREEN POPUP WITH CODE) */
         async function dispatchEmailOtp(targetEmail, recipientName, buttonId) {
             const btn = document.getElementById(buttonId);
             const origText = btn ? btn.innerText : "";
@@ -2274,6 +2345,7 @@
             document.getElementById('studentSectionContainer').style.display = isStudent ? 'block' : 'none';
             document.getElementById('collegeSectionContainer').style.display = isStudent ? 'none' : 'block';
             renderRegisteredCollegeSelects();
+            updateCollegeSignupOtpToggleUI();
         }
 
         function switchStudentSubMode(subMode) {
@@ -2292,11 +2364,38 @@
             document.getElementById('subFormStaff').style.display = subMode === 'staff' ? 'block' : 'none';
             document.getElementById('subFormSignup').style.display = subMode === 'signup' ? 'block' : 'none';
             renderRegisteredCollegeSelects();
+            updateCollegeSignupOtpToggleUI();
         }
 
         /* =====================================================================
-           1. COLLEGE SIGN UP (BLOCKS DUPLICATE EMAILS ACROSS DIFFERENT COLLEGES)
+           COLLEGE SIGN UP (RESPECTS CREATOR OTP ON/OFF TOGGLE + UNIQUE EMAIL)
            ===================================================================== */
+        function finalizeNewCollegeRegistration(cName, initCan, cEmail, initUpi, adminPin, staffPin) {
+            const newColObj = {
+                id: 'col_' + Date.now(), name: cName, city: 'Campus Network',
+                domain: `${cName.toLowerCase().replace(/\s+/g, '')}.ac.in`,
+                email: cEmail, adminPin: adminPin, staffPin: staffPin
+            };
+
+            colleges.push(newColObj);
+            canteens.push({
+                id: 'can_' + Date.now(), name: initCan, college: cName,
+                location: 'Main Campus', upi: initUpi, pin: staffPin,
+                merchant: `${cName.toUpperCase()} OFFICIAL`
+            });
+
+            saveState();
+            renderRegisteredCollegeSelects();
+            generatedCollegeOtp = null;
+            document.getElementById('collegeOtpVerifyBox').classList.remove('active');
+            alert(`✅ College "${cName}" Registered Successfully!\n\nStudents can join this college ONLY by scanning its QR code.`);
+
+            currentRole = "admin";
+            currentAdminCollege = cName;
+            currentStaffCanteen = "";
+            openManagementWorkspace(`🏛️ Admin • ${currentAdminCollege}`, `${currentAdminCollege} Administration Studio`, 'admin-studio');
+        }
+
         async function sendCollegeSignupOtp() {
             const cName = document.getElementById('signupCollegeName').value.trim();
             const initCan = document.getElementById('signupInitialCanteen').value.trim();
@@ -2312,17 +2411,23 @@
             if (!cEmail.includes('@')) { alert("Please enter a valid Admin Email ID!"); return; }
             if (adminPin.length < 4 || staffPin.length < 4) { alert("Admin PIN and Counter Staff PIN must be at least 4 digits!"); return; }
 
-            // Check if another college is already registered with this email!
+            // Block duplicate email across different colleges
             const emailConflictCol = colleges.find(c => c.email && c.email.toLowerCase() === cEmail && c.name.toLowerCase() !== cName.toLowerCase());
             if (emailConflictCol) {
                 alert(`❌ This email (${cEmail}) is already registered with another college (${emailConflictCol.name}).\nPlease use a different email to register!`);
                 return;
             }
 
-            // Also check if this college name is already registered with a different email
+            // Block duplicate college name
             const existingColByName = colleges.find(c => c.name.toLowerCase() === cName.toLowerCase());
             if (existingColByName) {
                 alert(`❌ College "${cName}" is already registered! Please log in from the Admin Login tab or use a different college name.`);
+                return;
+            }
+
+            // If Creator has temporarily turned OFF OTP verification for College Sign Up, register immediately!
+            if (!collegeSignupOtpRequired) {
+                finalizeNewCollegeRegistration(cName, initCan, cEmail, initUpi, adminPin, staffPin);
                 return;
             }
 
@@ -2353,45 +2458,18 @@
                 return;
             }
 
-            const newColObj = {
-                id: 'col_' + Date.now(), name: cName, city: 'Campus Network',
-                domain: `${cName.toLowerCase().replace(/\s+/g, '')}.ac.in`,
-                email: cEmail, adminPin: adminPin, staffPin: staffPin
-            };
-
-            colleges.push(newColObj);
-            canteens.push({
-                id: 'can_' + Date.now(), name: initCan, college: cName,
-                location: 'Main Campus', upi: initUpi, pin: staffPin,
-                merchant: `${cName.toUpperCase()} OFFICIAL`
-            });
-
-            saveState();
-            renderRegisteredCollegeSelects();
-            generatedCollegeOtp = null;
-            document.getElementById('collegeOtpVerifyBox').classList.remove('active');
-            alert(`✅ College "${cName}" Registered Successfully!\n\nStudents can join this college ONLY by scanning its QR code.`);
-
-            currentRole = "admin";
-            currentAdminCollege = cName;
-            currentStaffCanteen = "";
-            openManagementWorkspace(`🏛️ Admin • ${currentAdminCollege}`, `${currentAdminCollege} Administration Studio`, 'admin-studio');
+            finalizeNewCollegeRegistration(cName, initCan, cEmail, initUpi, adminPin, staffPin);
         }
 
-        /* =====================================================================
-           4. FORGOT PIN / PASSWORD RESET (FOR ADMIN, STAFF & SELECT CANTEEN)
-           ===================================================================== */
+        /* FORGOT PIN / PASSWORD RESET */
         function openForgotCollegePinModal(preselectCollege, preselectCanteen) {
             renderRegisteredCollegeSelects();
             const colSel = document.getElementById('forgotCollegeSelect');
-            if (preselectCollege && colSel) {
-                colSel.value = preselectCollege;
-            }
+            if (preselectCollege && colSel) colSel.value = preselectCollege;
             populateForgotCanteenDropdown();
             const canSel = document.getElementById('forgotCanteenSelect');
-            if (preselectCanteen && canSel) {
-                canSel.value = preselectCanteen;
-            }
+            if (preselectCanteen && canSel) canSel.value = preselectCanteen;
+
             document.getElementById('forgotCollegeEmailInput').value = '';
             document.getElementById('forgotCollegeOtpVerifyBox').classList.remove('active');
             document.getElementById('forgotCollegeOtpInput').value = '';
@@ -2449,7 +2527,6 @@
                 colObj.staffPin = newStaffPin;
             }
 
-            // Also update the selected canteen's PIN (or all canteens of that college if "All Canteens" chosen)
             canteens.forEach(c => {
                 if (c.college === colName && (!canName || c.name === canName)) {
                     c.pin = newStaffPin;
@@ -2801,7 +2878,6 @@
             const colObj = colleges.find(c => c.name === colName);
             const savedStaffPin = (colObj && colObj.staffPin) ? colObj.staffPin : "1111";
 
-            // Accept either the college's general staffPin or any specific canteen PIN in that college
             const matchesAnyCanteenPin = canteens.some(c => c.college === colName && c.pin && c.pin === pin);
             if (!pin || (pin !== savedStaffPin && !matchesAnyCanteenPin)) {
                 alert(`❌ Incorrect Counter Staff PIN for ${colName}!`);
@@ -3078,9 +3154,6 @@
             }
         }
 
-        /* =====================================================================
-           3. STUDENT SPENDING TRACKER (DAILY, WEEKLY, MONTHLY)
-           ===================================================================== */
         function filterStudentSpendingPeriod(period) {
             activeSpendingPeriodFilter = period;
             document.querySelectorAll('#spendingPeriodPills .cat-pill').forEach(p => {
@@ -3427,7 +3500,6 @@
             const finalTotal = Math.max(0, subtotal - computedDiscount);
             const isOnline = (selectedPaymentMethod === 'online');
 
-            // Generate smart 3-digit token (expands to 4 digits if > 999 in a month, resets to 3 digits every month)
             const tokenNum = generateSmartMonthlyToken(activeCol || "VPIET");
             const handshakePin = String(Math.floor(10 + Math.random() * 90));
             const studentId = getStudentAccountKey(currentUser) || document.getElementById('orderRollNo').value;
@@ -3612,14 +3684,12 @@
             } else if (tabId === 'auditor-portal') {
                 document.getElementById('navBtnAuditorPortal').classList.add('active');
                 document.getElementById('tab-auditor-portal').classList.add('active');
+                updateCollegeSignupOtpToggleUI();
                 renderAuditorPortal();
                 if (document.getElementById('authGate').classList.contains('hidden')) saveActiveSession('auditor-portal');
             }
         }
 
-        /* =====================================================================
-           5. CANTEEN & UPI VPAs + CANTEEN PIN IN-PLACE EDITOR (LIKE MENU ITEMS)
-           ===================================================================== */
         function refreshAdminStudio() {
             const studioTitle = document.getElementById('adminStudioTitle');
             const roleBadge = document.getElementById('adminRoleBadge');
@@ -3735,13 +3805,8 @@
                     const oldName = canteens[idx].name;
                     canteens[idx] = {
                         ...canteens[idx],
-                        name: name,
-                        location: loc,
-                        upi: upi,
-                        pin: finalPin,
-                        college: currentAdminCollege
+                        name: name, location: loc, upi: upi, pin: finalPin, college: currentAdminCollege
                     };
-                    // Update dishes & orders if canteen name changed
                     if (oldName !== name) {
                         menuItems.forEach(m => {
                             if (m.college === currentAdminCollege && m.canteen === oldName) m.canteen = name;
@@ -3750,13 +3815,8 @@
                 }
             } else {
                 canteens.push({
-                    id: 'can_' + Date.now(),
-                    name: name,
-                    college: currentAdminCollege,
-                    location: loc,
-                    upi: upi,
-                    pin: finalPin,
-                    merchant: `${currentAdminCollege.toUpperCase()} OFFICIAL`
+                    id: 'can_' + Date.now(), name: name, college: currentAdminCollege,
+                    location: loc, upi: upi, pin: finalPin, merchant: `${currentAdminCollege.toUpperCase()} OFFICIAL`
                 });
             }
 
@@ -3770,9 +3830,7 @@
             const colCanteens = canteens.filter(c => c.college === currentAdminCollege);
             if (colCanteens.length <= 1) { alert(`${currentAdminCollege} must have at least one active canteen!`); return; }
             canteens = canteens.filter(c => String(c.id) !== String(canId));
-            if (String(document.getElementById('editingCanteenId').value) === String(canId)) {
-                adminResetCanteenForm();
-            }
+            if (String(document.getElementById('editingCanteenId').value) === String(canId)) adminResetCanteenForm();
             saveState();
             refreshAdminStudio();
             refreshStudentPassEnvironment();
@@ -3804,6 +3862,7 @@
 
             const logBox = document.getElementById('auditorAuditLogBox');
             let logHtml = `[CREATOR_AUDIT_INIT] Hidden Creator Portal active at ${new Date().toLocaleTimeString()}\n`;
+            logHtml += `[COLLEGE_SIGNUP_OTP_VERIFICATION] ${collegeSignupOtpRequired ? 'ON (Required)' : 'OFF (Temporarily Disabled by Creator)'}\n`;
             logHtml += `[REGISTERED_COLLEGES] ${colleges.map(c => `${c.name} (${c.email})`).join(' | ')}\n`;
             logHtml += `[STUDENT_VAULT] ${Object.keys(studentVault).length} isolated student accounts.\n`;
             activeOrders.slice(0, 100).forEach((ord, idx) => {
@@ -4121,21 +4180,14 @@
             renderOffersCarousel();
         }
 
-        /* =====================================================================
-           2. COUNTER LEDGER ORDER POPUP (ONLY WHEN 3+ DIGITS TYPED OR ROW CLICKED)
-           ===================================================================== */
         function handleLedgerSearchInputLive() {
             debouncedLedgerSearch();
             const searchInput = document.getElementById('staffSearchInput');
             const rawVal = searchInput ? searchInput.value.trim() : '';
             const cleanNum = rawVal.toLowerCase().replace(/^#/, '').replace(/^tk-/, '').trim();
 
-            // Do NOT show popup if 2 or fewer characters/digits are typed!
-            if (cleanNum.length <= 2) {
-                return;
-            }
+            if (cleanNum.length <= 2) return;
 
-            // If 3 or more digits are typed and match an exact token number, show popup automatically
             if (/^\d{3,4}$/.test(cleanNum)) {
                 const exactIdx = activeOrders.findIndex(o => {
                     const matchesCol = (!currentAdminCollege || !o.collegePass || o.collegePass === currentAdminCollege);
@@ -4148,9 +4200,7 @@
                     const tokNum = String(o.token || '').toLowerCase().replace(/^tk-/, '');
                     return tokNum === cleanNum;
                 });
-                if (exactIdx !== -1) {
-                    openLedgerOrderPopup(exactIdx);
-                }
+                if (exactIdx !== -1) openLedgerOrderPopup(exactIdx);
             }
         }
 
@@ -4167,7 +4217,6 @@
             const cleanQuery = rawVal.toLowerCase().replace(/^#/, '');
             const cleanNumOnly = cleanQuery.replace(/^tk-/, '').trim();
 
-            // Strictly do NOT open popup if 2 or fewer digits/characters are typed! Just filter the table normally.
             if (cleanNumOnly.length <= 2) {
                 currentLedgerPage = 1;
                 renderStaffCounter();
@@ -4191,9 +4240,7 @@
             });
 
             if (matchedIdx === -1) {
-                if (fromSubmitBtn) {
-                    alert(`❌ No exact order found for Token "${rawVal}".`);
-                }
+                if (fromSubmitBtn) alert(`❌ No exact order found for Token "${rawVal}".`);
                 return;
             }
 
@@ -4267,7 +4314,6 @@
             document.getElementById('ledgerOrderPopupModal').classList.remove('active');
         }
 
-        /* COUNTER LEDGER PAGINATION & TABLE RENDER */
         function goToLedgerPage(pageNum) {
             currentLedgerPage = Math.max(1, Number(pageNum) || 1);
             renderStaffCounter();
