@@ -1,0 +1,14 @@
+name = "campus-bites-payments"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://REPLACE-WITH-YOUR-CAMPUS-BITES-DOMAIN"
+CHECKOUT_ENABLED = "false"
+MAIL_FROM = "Campus Bites <payments@REPLACE-WITH-YOUR-VERIFIED-DOMAIN>"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "campus-bites-payments"
+database_id = "REPLACE-WITH-D1-DATABASE-ID"
+migrations_dir = "migrations"
