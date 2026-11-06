@@ -1,232 +1,172 @@
-/**
- * Campus Bites Razorpay payment API.
- * Cloudflare Worker + D1. No secret is ever sent to the browser.
- *
- * Required Worker secrets:
- *   RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, RAZORPAY_WEBHOOK_SECRET
- * Required vars:
- *   ALLOWED_ORIGIN (exact HTTPS app origin)
- *   CHECKOUT_ENABLED ("true" only after server-side catalogue validation is enabled)
- * Binding:
- *   DB (D1 database)
- */
-const json = (data, status = 200, headers = {}) =>
-  new Response(JSON.stringify(data), {
-    status,
-    headers: { "content-type": "application/json; charset=utf-8", ...headers },
-  });
-
-function corsHeaders(request, env) {
-  const origin = request.headers.get("Origin") || "";
-  const allowed = env.ALLOWED_ORIGIN || "";
-  if (origin && allowed && origin === allowed) {
-    return {
-      "access-control-allow-origin": allowed,
-      "access-control-allow-methods": "GET, POST, OPTIONS",
-      "access-control-allow-headers": "Content-Type, X-Razorpay-Signature",
-      "access-control-max-age": "86400",
-      "vary": "Origin",
-    };
-  }
+const json = (data, status = 200, headers = {}) => new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json; charset=utf-8", ...headers } });
+const enc = new TextEncoder();
+const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,"0")).join("");
+const b64url = s => btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const unb64url = s => atob(s.replace(/-/g,"+").replace(/_/g,"/"));
+async function hmac(secret, value) {
+  const k = await crypto.subtle.importKey("raw", enc.encode(secret), {name:"HMAC",hash:"SHA-256"}, false, ["sign"]);
+  return hex(await crypto.subtle.sign("HMAC", k, enc.encode(value)));
+}
+function equal(a,b) {
+  if(typeof a!=="string" || typeof b!=="string" || a.length!==b.length) return false;
+  let n=0; for(let i=0;i<a.length;i++) n |= a.charCodeAt(i)^b.charCodeAt(i); return n===0;
+}
+function cors(request,env) {
+  const o=request.headers.get("Origin")||"";
+  if(o && o===env.ALLOWED_ORIGIN) return {"access-control-allow-origin":o,"access-control-allow-methods":"GET, POST, OPTIONS","access-control-allow-headers":"Content-Type, Authorization, X-Razorpay-Signature","access-control-max-age":"86400","vary":"Origin"};
   return {};
 }
-
-function hex(bytes) {
-  return [...new Uint8Array(bytes)].map((b) => b.toString(16).padStart(2, "0")).join("");
+function originOk(req,env) { return req.headers.get("Origin")===env.ALLOWED_ORIGIN && !!env.ALLOWED_ORIGIN; }
+async function rp(env,path,options={}) {
+  const auth=btoa(env.RAZORPAY_KEY_ID+":"+env.RAZORPAY_KEY_SECRET);
+  const r=await fetch("https://api.razorpay.com/v1"+path,{...options,headers:{authorization:"Basic "+auth,"content-type":"application/json",...(options.headers||{})}});
+  const b=await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(b.error?.description||"Razorpay request failed");
+  return b;
 }
-
-async function hmacHex(secret, message) {
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-  return hex(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(message)));
+async function sessionFrom(req,env) {
+  const token=(req.headers.get("Authorization")||"").replace(/^Bearer\s+/i,"");
+  const p=token.split(".");
+  if(p.length!==2) return null;
+  const sig=await hmac(env.SESSION_SECRET,p[0]);
+  if(!equal(sig,p[1])) return null;
+  try { const data=JSON.parse(unb64url(p[0])); if(!data.email||!data.collegeId||data.exp<Date.now()) return null; return data; } catch { return null; }
 }
-
-function safeEqual(a, b) {
-  if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
+async function startEmailOtp(req,env) {
+  if(!originOk(req,env)) return json({error:"Origin not allowed."},403);
+  const b=await req.json().catch(()=>null);
+  const email=String(b?.email||"").trim().toLowerCase();
+  const collegeName=String(b?.collegeName||"").trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!collegeName) return json({error:"Valid email and college are required."},400);
+  const college=await env.DB.prepare("SELECT id,name,email_domain FROM colleges WHERE name=? AND active=1").bind(collegeName).first();
+  if(!college||email.split("@")[1]!==String(college.email_domain||"").toLowerCase()) return json({error:"Use your registered college email address."},403);
+  const now=Date.now();
+  const recent=await env.DB.prepare("SELECT COUNT(*) AS n FROM email_otps WHERE email=? AND created_at>?").bind(email,now-15*60*1000).first();
+  if((recent?.n||0)>=3) return json({error:"Too many OTP requests. Try again after 15 minutes."},429);
+  const code=String(crypto.getRandomValues(new Uint32Array(1))[0]%1000000).padStart(6,"0");
+  const otpHash=await hmac(env.OTP_SECRET,email+"|"+college.id+"|"+code);
+  await env.DB.prepare("DELETE FROM email_otps WHERE email=?").bind(email).run();
+  await env.DB.prepare("INSERT INTO email_otps(email,college_id,otp_hash,expires_at,attempts,created_at) VALUES(?,?,?,?,0,?)").bind(email,college.id,otpHash,now+5*60*1000,now).run();
+  const mail=await fetch("https://api.resend.com/emails",{method:"POST",headers:{authorization:"Bearer "+env.RESEND_API_KEY,"content-type":"application/json"},body:JSON.stringify({from:env.MAIL_FROM,to:[email],subject:"Your Campus Bites verification code",html:"<p>Your Campus Bites verification code is <strong>"+code+"</strong>.</p><p>It expires in 5 minutes. Do not share this code.</p>"})});
+  if(!mail.ok) { console.error("OTP email provider failed",await mail.text()); return json({error:"Could not send verification email. Please try later."},502); }
+  return json({sent:true,expiresInSeconds:300});
 }
-
-async function razorpayRequest(env, path, options = {}) {
-  const auth = btoa(`${env.RAZORPAY_KEY_ID}:${env.RAZORPAY_KEY_SECRET}`);
-  const response = await fetch(`https://api.razorpay.com/v1${path}`, {
-    ...options,
-    headers: {
-      authorization: `Basic ${auth}`,
-      "content-type": "application/json",
-      ...(options.headers || {}),
-    },
-  });
-  const body = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(body.error?.description || `Razorpay API error (${response.status})`);
+async function verifyEmailOtp(req,env) {
+  if(!originOk(req,env)) return json({error:"Origin not allowed."},403);
+  const b=await req.json().catch(()=>null);
+  const email=String(b?.email||"").trim().toLowerCase(), collegeName=String(b?.collegeName||"").trim(), code=String(b?.code||"").trim();
+  if(!email||!/^\d{6}$/.test(code)||!collegeName) return json({error:"Invalid verification details."},400);
+  const college=await env.DB.prepare("SELECT id,name,email_domain FROM colleges WHERE name=? AND active=1").bind(collegeName).first();
+  if(!college||email.split("@")[1]!==String(college.email_domain||"").toLowerCase()) return json({error:"College email is not permitted."},403);
+  const row=await env.DB.prepare("SELECT * FROM email_otps WHERE email=? AND college_id=?").bind(email,college.id).first();
+  if(!row||row.expires_at<Date.now()||row.attempts>=5) return json({error:"Code expired or unavailable. Request a new code."},400);
+  const candidate=await hmac(env.OTP_SECRET,email+"|"+college.id+"|"+code);
+  if(!equal(candidate,row.otp_hash)) {
+    await env.DB.prepare("UPDATE email_otps SET attempts=attempts+1 WHERE email=? AND college_id=?").bind(email,college.id).run();
+    return json({error:"Incorrect verification code."},400);
   }
-  return body;
+  await env.DB.prepare("DELETE FROM email_otps WHERE email=?").bind(email).run();
+  const payload=b64url(JSON.stringify({email:email,collegeId:college.id,collegeName:college.name,exp:Date.now()+8*60*60*1000}));
+  return json({verified:true,sessionToken:payload+"."+await hmac(env.SESSION_SECRET,payload),email:email,collegeName:college.name});
 }
-
-async function createOrder(request, env) {
-  if (env.CHECKOUT_ENABLED !== "true") {
-    return json({ error: "Checkout is disabled until server-side menu price validation is configured." }, 503);
-  }
-  const body = await request.json().catch(() => null);
-  if (!body || !Number.isSafeInteger(body.amountPaise) || body.amountPaise < 100 || body.amountPaise > 10000000) {
-    return json({ error: "Invalid order amount." }, 400);
-  }
-  if (!Array.isArray(body.items) || body.items.length < 1 || body.items.length > 50) {
-    return json({ error: "Invalid order items." }, 400);
-  }
-  if (typeof body.orderToken !== "string" || !/^\d{1,8}$/.test(body.orderToken)) {
-    return json({ error: "Invalid Campus Bites order token." }, 400);
-  }
-
-  // NOTE: amount and item prices are currently supplied by the legacy browser app.
-  // Do not enable checkout until these values are checked against a server-owned catalogue.
-  const appOrderId = crypto.randomUUID();
-  const amountPaise = body.amountPaise;
-  const created = await razorpayRequest(env, "/orders", {
-    method: "POST",
-    body: JSON.stringify({
-      amount: amountPaise,
-      currency: "INR",
-      receipt: `cb_${appOrderId.replace(/-/g, "").slice(0, 20)}`,
-      notes: { campus_bites_order_id: appOrderId, campus_bites_token: body.orderToken },
-    }),
-  });
-
-  await env.DB.prepare(
-    `INSERT INTO payment_orders
-      (app_order_id, order_token, razorpay_order_id, amount_paise, currency, status, items_json, student_ref, created_at)
-     VALUES (?, ?, ?, ?, 'INR', 'created', ?, ?, ?)`,
-  ).bind(
-    appOrderId,
-    body.orderToken,
-    created.id,
-    amountPaise,
-    JSON.stringify(body.items),
-    String(body.studentRef || "").slice(0, 120),
-    Date.now(),
-  ).run();
-
-  return json({
-    appOrderId,
-    razorpayOrderId: created.id,
-    amount: created.amount,
-    currency: created.currency,
-    keyId: env.RAZORPAY_KEY_ID,
-  }, 201);
+async function getCatalog(url,env) {
+  const college=String(url.searchParams.get("college")||"").trim();
+  if(!college) return json({error:"College is required."},400);
+  const rows=await env.DB.prepare("SELECT id,name,price_paise,category,college_name,canteen_name,active FROM menu_items WHERE college_name=? AND active=1 ORDER BY name").bind(college).all();
+  return json({items:(rows.results||[]).map(x=>({id:x.id,name:x.name,price:x.price_paise/100,category:x.category,college:x.college_name,canteen:x.canteen_name}))});
 }
-
-async function verifyCheckout(request, env) {
-  const body = await request.json().catch(() => null);
-  if (!body || !body.razorpay_order_id || !body.razorpay_payment_id || !body.razorpay_signature) {
-    return json({ error: "Missing payment verification fields." }, 400);
+async function importCatalog(req,env) {
+  const auth=(req.headers.get("Authorization")||"").replace(/^Bearer\s+/i,"");
+  if(!env.CATALOG_ADMIN_TOKEN||!equal(auth,env.CATALOG_ADMIN_TOKEN)) return json({error:"Forbidden."},403);
+  const b=await req.json().catch(()=>null);
+  if(!b||!Array.isArray(b.colleges)||!Array.isArray(b.items)) return json({error:"Expected colleges and items arrays."},400);
+  const batch=[];
+  for(const c of b.colleges) {
+    const id=String(c.id||"").trim(), name=String(c.name||"").trim(), domain=String(c.email_domain||"").trim().toLowerCase();
+    if(!id||!name||!/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain)) return json({error:"Each college requires id, name and a valid email_domain."},400);
+    batch.push(env.DB.prepare("INSERT INTO colleges(id,name,email_domain,active) VALUES(?,?,?,1) ON CONFLICT(id) DO UPDATE SET name=excluded.name,email_domain=excluded.email_domain,active=1").bind(id,name,domain));
   }
-
-  const record = await env.DB.prepare(
-    "SELECT * FROM payment_orders WHERE razorpay_order_id = ?",
-  ).bind(body.razorpay_order_id).first();
-  if (!record) return json({ error: "Order not found." }, 404);
-
-  const expected = await hmacHex(
-    env.RAZORPAY_KEY_SECRET,
-    `${record.razorpay_order_id}|${body.razorpay_payment_id}`,
-  );
-  if (!safeEqual(expected, body.razorpay_signature)) {
-    return json({ error: "Payment signature verification failed." }, 400);
+  for(const item of b.items) {
+    const id=String(item.id||"").trim(), name=String(item.name||"").trim(), college=String(item.college_name||"").trim(), canteen=String(item.canteen_name||"").trim();
+    const price=Number(item.price);
+    if(!id||!name||!college||!canteen||!Number.isFinite(price)||price<0.01||price>100000||!Number.isInteger(Math.round(price*100))) return json({error:"Invalid menu item. Required: id, name, college_name, canteen_name and positive price."},400);
+    batch.push(env.DB.prepare("INSERT INTO menu_items(id,name,price_paise,category,college_name,canteen_name,active) VALUES(?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,price_paise=excluded.price_paise,category=excluded.category,college_name=excluded.college_name,canteen_name=excluded.canteen_name,active=excluded.active").bind(id,name,Math.round(price*100),String(item.category||"Other"),college,canteen,item.active===false?0:1));
   }
-
-  const payment = await razorpayRequest(env, `/payments/${encodeURIComponent(body.razorpay_payment_id)}`);
-  if (
-    payment.order_id !== record.razorpay_order_id ||
-    payment.amount !== record.amount_paise ||
-    payment.currency !== "INR"
-  ) {
-    return json({ error: "Payment does not match the Campus Bites order." }, 409);
-  }
-  if (payment.status !== "captured") {
-    return json({ error: "Payment is not captured yet. Please wait or retry verification.", status: payment.status }, 409);
-  }
-
-  await env.DB.prepare(
-    `UPDATE payment_orders
-       SET status = 'paid', razorpay_payment_id = ?, paid_at = COALESCE(paid_at, ?)
-     WHERE app_order_id = ? AND status != 'refunded'`,
-  ).bind(payment.id, Date.now(), record.app_order_id).run();
-
-  return json({
-    verified: true,
-    appOrderId: record.app_order_id,
-    paymentId: payment.id,
-    status: "paid",
-  });
+  if(batch.length) await env.DB.batch(batch);
+  return json({importedColleges:b.colleges.length,importedItems:b.items.length});
 }
-
-async function razorpayWebhook(request, env) {
-  const rawBody = await request.text();
-  const signature = request.headers.get("X-Razorpay-Signature") || "";
-  const expected = await hmacHex(env.RAZORPAY_WEBHOOK_SECRET, rawBody);
-  if (!safeEqual(expected, signature)) return json({ error: "Invalid webhook signature." }, 400);
-
-  const eventId = request.headers.get("x-razorpay-event-id") || "";
-  if (!eventId) return json({ error: "Missing webhook event id." }, 400);
-
-  const event = JSON.parse(rawBody);
-  const eventName = event.event;
-  const payment = event.payload?.payment?.entity;
-  if (eventName === "payment.captured" && payment) {
-    const row = await env.DB.prepare(
-      "SELECT * FROM payment_orders WHERE razorpay_order_id = ?",
-    ).bind(payment.order_id).first();
-
-    if (row && payment.amount === row.amount_paise && payment.currency === "INR" && payment.status === "captured") {
-      await env.DB.prepare(
-        "INSERT OR IGNORE INTO razorpay_webhook_events (event_id, received_at) VALUES (?, ?)",
-      ).bind(eventId, Date.now()).run();
-      await env.DB.prepare(
-        `UPDATE payment_orders SET status = 'paid', razorpay_payment_id = ?, paid_at = COALESCE(paid_at, ?)
-         WHERE app_order_id = ? AND status != 'refunded'`,
-      ).bind(payment.id, Date.now(), row.app_order_id).run();
+async function createOrder(req,env) {
+  if(env.CHECKOUT_ENABLED!=="true") return json({error:"Secure checkout is not enabled until the catalogue and authentication are configured."},503);
+  if(!originOk(req,env)) return json({error:"Origin not allowed."},403);
+  const session=await sessionFrom(req,env);
+  if(!session) return json({error:"Your email session has expired. Verify your college email again."},401);
+  const b=await req.json().catch(()=>null);
+  if(!b||!Array.isArray(b.items)||b.items.length<1||b.items.length>30||typeof b.orderToken!=="string"||!/^TK-\d{1,8}$/.test(b.orderToken)) return json({error:"Invalid order."},400);
+  const ids=[...new Set(b.items.map(x=>String(x.id||"")))];
+  if(ids.length!==b.items.length) return json({error:"Duplicate menu items are not allowed."},400);
+  const quantities=b.items.map(x=>({id:String(x.id||""),qty:Number(x.qty)}));
+  if(quantities.some(x=>!x.id||!Number.isInteger(x.qty)||x.qty<1||x.qty>20)) return json({error:"Invalid item quantity."},400);
+  const placeholders=ids.map(()=>"?").join(",");
+  const found=await env.DB.prepare("SELECT id,name,price_paise,category,college_name,canteen_name FROM menu_items WHERE active=1 AND college_name=? AND id IN ("+placeholders+")").bind(session.collegeName,...ids).all();
+  const byId=new Map((found.results||[]).map(x=>[x.id,x]));
+  if(byId.size!==ids.length) return json({error:"One or more menu items are unavailable for this college. Refresh the menu."},409);
+  const items=quantities.map(q=>{const m=byId.get(q.id);return {id:m.id,name:m.name,qty:q.qty,price:m.price_paise/100,canteen:m.canteen_name,college:m.college_name};});
+  const amountPaise=items.reduce((sum,x)=>sum+byId.get(x.id).price_paise*x.qty,0);
+  if(!Number.isSafeInteger(amountPaise)||amountPaise<100||amountPaise>10000000) return json({error:"Order total is outside the permitted range."},400);
+  const appOrderId=crypto.randomUUID();
+  const created=await rp(env,"/orders",{method:"POST",body:JSON.stringify({amount:amountPaise,currency:"INR",receipt:"cb_"+appOrderId.replace(/-/g,"").slice(0,20),notes:{campus_bites_order_id:appOrderId,campus_bites_token:b.orderToken,college:session.collegeName}})});
+  await env.DB.prepare("INSERT INTO payment_orders(app_order_id,order_token,razorpay_order_id,amount_paise,currency,status,items_json,student_ref,college_name,created_at) VALUES(?,?,?,?,'INR','created',?,?,?,?)").bind(appOrderId,b.orderToken,created.id,amountPaise,JSON.stringify(items),session.email,session.collegeName,Date.now()).run();
+  return json({appOrderId,razorpayOrderId:created.id,amount:created.amount,currency:created.currency,keyId:env.RAZORPAY_KEY_ID,items:items,total:amountPaise/100,customerEmail:session.email},201);
+}
+async function verifyCheckout(req,env) {
+  if(!originOk(req,env)) return json({error:"Origin not allowed."},403);
+  const session=await sessionFrom(req,env);
+  if(!session) return json({error:"Email session expired."},401);
+  const b=await req.json().catch(()=>null);
+  if(!b?.razorpay_order_id||!b?.razorpay_payment_id||!b?.razorpay_signature) return json({error:"Missing payment verification fields."},400);
+  const record=await env.DB.prepare("SELECT * FROM payment_orders WHERE razorpay_order_id=? AND student_ref=?").bind(b.razorpay_order_id,session.email).first();
+  if(!record) return json({error:"Payment order not found for this verified email."},404);
+  const expected=await hmac(env.RAZORPAY_KEY_SECRET,record.razorpay_order_id+"|"+b.razorpay_payment_id);
+  if(!equal(expected,b.razorpay_signature)) return json({error:"Payment signature verification failed."},400);
+  const payment=await rp(env,"/payments/"+encodeURIComponent(b.razorpay_payment_id));
+  if(payment.order_id!==record.razorpay_order_id||payment.amount!==record.amount_paise||payment.currency!=="INR") return json({error:"Payment does not match the Campus Bites order."},409);
+  if(payment.status!=="captured") return json({error:"Payment has not been captured yet.",status:payment.status},409);
+  await env.DB.prepare("UPDATE payment_orders SET status='paid',razorpay_payment_id=?,paid_at=COALESCE(paid_at,?) WHERE app_order_id=? AND status!='refunded'").bind(payment.id,Date.now(),record.app_order_id).run();
+  return json({verified:true,appOrderId:record.app_order_id,paymentId:payment.id,status:"paid"});
+}
+async function webhook(req,env) {
+  const raw=await req.text(), sig=req.headers.get("X-Razorpay-Signature")||"";
+  if(!equal(await hmac(env.RAZORPAY_WEBHOOK_SECRET,raw),sig)) return json({error:"Invalid webhook signature."},400);
+  const eventId=req.headers.get("x-razorpay-event-id")||"";
+  if(!eventId) return json({error:"Missing webhook event id."},400);
+  const event=JSON.parse(raw), p=event.payload?.payment?.entity;
+  if(p&&event.event==="payment.captured") {
+    const row=await env.DB.prepare("SELECT * FROM payment_orders WHERE razorpay_order_id=?").bind(p.order_id).first();
+    if(row&&p.amount===row.amount_paise&&p.currency==="INR"&&p.status==="captured") {
+      const inserted=await env.DB.prepare("INSERT OR IGNORE INTO razorpay_webhook_events(event_id,received_at) VALUES(?,?)").bind(eventId,Date.now()).run();
+      if(inserted.meta?.changes) await env.DB.prepare("UPDATE payment_orders SET status='paid',razorpay_payment_id=?,paid_at=COALESCE(paid_at,?) WHERE app_order_id=? AND status!='refunded'").bind(p.id,Date.now(),row.app_order_id).run();
     }
-  } else if (eventName === "payment.failed" && payment?.order_id) {
-    await env.DB.prepare(
-      "UPDATE payment_orders SET status = 'failed' WHERE razorpay_order_id = ? AND status = 'created'",
-    ).bind(payment.order_id).run();
+  } else if(p&&event.event==="payment.failed") {
+    await env.DB.prepare("UPDATE payment_orders SET status='failed' WHERE razorpay_order_id=? AND status='created'").bind(p.order_id).run();
+  } else if(p&&event.event==="payment.refunded") {
+    await env.DB.prepare("UPDATE payment_orders SET status='refunded' WHERE razorpay_payment_id=?").bind(p.id).run();
   }
-
-  return json({ received: true });
+  return json({received:true});
 }
-
-export default {
-  async fetch(request, env) {
-    const cors = corsHeaders(request, env);
-    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
-    const url = new URL(request.url);
-
-    try {
-      if (request.method === "GET" && url.pathname === "/health") {
-        return json({ ok: true, service: "campus-bites-payments" }, 200, cors);
-      }
-      if (request.method === "POST" && url.pathname === "/api/orders") {
-        const response = await createOrder(request, env);
-        return new Response(response.body, { status: response.status, headers: { ...Object.fromEntries(response.headers), ...cors } });
-      }
-      if (request.method === "POST" && url.pathname === "/api/payments/verify") {
-        const response = await verifyCheckout(request, env);
-        return new Response(response.body, { status: response.status, headers: { ...Object.fromEntries(response.headers), ...cors } });
-      }
-      if (request.method === "POST" && url.pathname === "/api/webhooks/razorpay") {
-        return await razorpayWebhook(request, env);
-      }
-      return json({ error: "Not found." }, 404, cors);
-    } catch (error) {
-      console.error("Campus Bites payment API error:", error);
-      return json({ error: "Payment service temporarily unavailable." }, 500, cors);
-    }
-  },
-};
+export default { async fetch(req,env) {
+  const ch=cors(req,env), url=new URL(req.url);
+  if(req.method==="OPTIONS") return new Response(null,{status:204,headers:ch});
+  try {
+    let r;
+    if(req.method==="GET"&&url.pathname==="/health") r=json({ok:true,service:"campus-bites-payments"},200,ch);
+    else if(req.method==="GET"&&url.pathname==="/api/catalog") r=await getCatalog(url,env);
+    else if(req.method==="POST"&&url.pathname==="/api/auth/email/start") r=await startEmailOtp(req,env);
+    else if(req.method==="POST"&&url.pathname==="/api/auth/email/verify") r=await verifyEmailOtp(req,env);
+    else if(req.method==="POST"&&url.pathname==="/api/catalog/import") r=await importCatalog(req,env);
+    else if(req.method==="POST"&&url.pathname==="/api/orders") r=await createOrder(req,env);
+    else if(req.method==="POST"&&url.pathname==="/api/payments/verify") r=await verifyCheckout(req,env);
+    else if(req.method==="POST"&&url.pathname==="/api/webhooks/razorpay") return await webhook(req,env);
+    else r=json({error:"Not found."},404,ch);
+    return new Response(r.body,{status:r.status,headers:{...Object.fromEntries(r.headers),...ch}});
+  } catch(e) { console.error("Campus Bites API error:",e); return json({error:"Payment service temporarily unavailable."},500,ch); }
+}};
