@@ -14,7 +14,7 @@ function equal(a,b) {
 }
 function cors(request,env) {
   const o=request.headers.get("Origin")||"";
-  if(o && o===env.ALLOWED_ORIGIN) return {"access-control-allow-origin":o,"access-control-allow-methods":"GET, POST, OPTIONS","access-control-allow-headers":"Content-Type, Authorization, X-Razorpay-Signature","access-control-max-age":"86400","vary":"Origin"};
+  if(o && o===env.ALLOWED_ORIGIN) return {"access-control-allow-origin":o,"access-control-allow-methods":"GET, POST, PUT, OPTIONS","access-control-allow-headers":"Content-Type, Authorization, X-Razorpay-Signature","access-control-max-age":"86400","vary":"Origin"};
   return {};
 }
 function originOk(req,env) { return req.headers.get("Origin")===env.ALLOWED_ORIGIN && !!env.ALLOWED_ORIGIN; }
