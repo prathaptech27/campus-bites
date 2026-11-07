@@ -29,8 +29,11 @@ async function audit(env,collegeId,email,action,entityId,details={}) {
 }
 function platformAuthorized(req,env) {
   const token=(req.headers.get("Authorization")||"").replace(/^Bearer\s+/i,"");
-  return !!env.PLATFORM_ADMIN_TOKEN && token.length===env.PLATFORM_ADMIN_TOKEN.length &&
-    token===env.PLATFORM_ADMIN_TOKEN;
+  const secret=String(env.PLATFORM_ADMIN_TOKEN||"");
+  if(!secret || token.length!==secret.length) return false;
+  let diff=0;
+  for(let i=0;i<token.length;i++) diff|=token.charCodeAt(i)^secret.charCodeAt(i);
+  return diff===0;
 }
 function safeConnection(row) {
   return {
@@ -303,6 +306,18 @@ export async function reconcileTenantWebhook(event,env) {
     const row=await env.DB.prepare("SELECT * FROM cb_multi_payment_orders WHERE razorpay_order_id=?").bind(payment.order_id).first();
     if(row && payment.amount===row.amount_paise && payment.currency==="INR" && payment.status==="captured") {
       await env.DB.prepare("UPDATE cb_multi_payment_orders SET status='paid',razorpay_payment_id=?,paid_at=COALESCE(paid_at,?) WHERE app_order_id=? AND status!='refunded'").bind(payment.id,now(),row.app_order_id).run();
+    }
+  }
+  if(payment && event.event==="payment.failed") {
+    await env.DB.prepare("UPDATE cb_multi_payment_orders SET status='failed' WHERE razorpay_order_id=? AND status='created'").bind(payment.order_id).run();
+  }
+  if(event.event==="refund.processed") {
+    const refund=event.payload?.refund?.entity;
+    if(refund?.payment_id && Number.isSafeInteger(refund.amount)) {
+      const row=await env.DB.prepare("SELECT app_order_id,amount_paise FROM cb_multi_payment_orders WHERE razorpay_payment_id=?").bind(refund.payment_id).first();
+      if(row && refund.amount>=row.amount_paise) {
+        await env.DB.prepare("UPDATE cb_multi_payment_orders SET status='refunded' WHERE app_order_id=? AND status='paid'").bind(row.app_order_id).run();
+      }
     }
   }
   if(event.event==="transfer.processed" || event.event==="transfer.failed" || event.event==="transfer.reversed") {
