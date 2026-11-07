@@ -28,7 +28,7 @@ async function audit(env,collegeId,email,action,entityId,details={}) {
   ).bind(id(),collegeId,email,action,entityId||null,JSON.stringify(details),now()).run();
 }
 function platformAuthorized(req,env) {
-  const token=(req.headers.get("Authorization")||"").replace(/^Bearer\\s+/i,"");
+  const token=(req.headers.get("Authorization")||"").replace(/^Bearer\s+/i,"");
   return !!env.PLATFORM_ADMIN_TOKEN && token.length===env.PLATFORM_ADMIN_TOKEN.length &&
     token===env.PLATFORM_ADMIN_TOKEN;
 }
@@ -50,8 +50,8 @@ export async function handleMultiCollegeRoute(req,env,url,utils) {
     const collegeId=clean(b?.id,80), name=clean(b?.name,180);
     const domain=clean(b?.email_domain,120).toLowerCase();
     const adminEmail=clean(b?.owner_email,180).toLowerCase();
-    if(!collegeId || !name || !/^[a-z0-9.-]+\\.[a-z]{2,}$/i.test(domain) ||
-       !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(adminEmail) ||
+    if(!collegeId || !name || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain) ||
+       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adminEmail) ||
        adminEmail.split("@")[1]!==domain) return fail("Provide college id, name, valid institutional email domain and an owner email on that domain.");
     await env.DB.prepare(
       "INSERT INTO colleges(id,name,email_domain,active) VALUES(?,?,?,1) ON CONFLICT(id) DO UPDATE SET name=excluded.name,email_domain=excluded.email_domain,active=1"
@@ -68,7 +68,7 @@ export async function handleMultiCollegeRoute(req,env,url,utils) {
     const collegeId=clean(b?.collegeId,80), email=clean(b?.email,180).toLowerCase();
     const role=clean(b?.role,20).toUpperCase();
     const college=await env.DB.prepare("SELECT id,email_domain FROM colleges WHERE id=? AND active=1").bind(collegeId).first();
-    if(!college || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) ||
+    if(!college || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
        email.split("@")[1]!==String(college.email_domain).toLowerCase() ||
        !["ADMIN","FINANCE","OWNER"].includes(role)) return fail("Invalid college administrator details.");
     await env.DB.prepare(
@@ -126,8 +126,8 @@ export async function handleMultiCollegeRoute(req,env,url,utils) {
       const email=clean(b.businessEmail,180).toLowerCase(), phone=clean(b.phone,20);
       const pan=clean(b.pan,10).toUpperCase(), beneficiary=clean(b.beneficiaryName,120);
       const account=clean(b.accountNumber,24), ifsc=clean(b.ifsc,11).toUpperCase();
-      if(legalName.length<4 || !businessType || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) ||
-         !/^\\+?[0-9]{10,15}$/.test(phone) || !/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(pan) ||
+      if(legalName.length<4 || !businessType || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+         !/^\+?[0-9]{10,15}$/.test(phone) || !/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(pan) ||
          beneficiary.length<2 || !/^[0-9]{9,18}$/.test(account) ||
          !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)) return fail("Check the legal name, business type, email, phone, PAN, beneficiary, account number and IFSC.");
       const existing=type==="CENTRAL"
@@ -216,7 +216,7 @@ export async function createTenantOrder(req,env,utils) {
   if(!session) return utils.json({error:"Your email session has expired. Verify your college email again."},401);
   const b=await req.json().catch(()=>null);
   if(!b || !Array.isArray(b.items) || b.items.length<1 || b.items.length>30 ||
-     typeof b.orderToken!=="string" || !/^TK-\\d{1,8}$/.test(b.orderToken)) return utils.json({error:"Invalid order."},400);
+     typeof b.orderToken!=="string" || !/^TK-\d{1,8}$/.test(b.orderToken)) return utils.json({error:"Invalid order."},400);
   const ids=b.items.map(x=>clean(x?.id,100));
   if(ids.some(x=>!x) || new Set(ids).size!==ids.length) return utils.json({error:"Invalid or duplicate menu item."},400);
   const quantities=b.items.map(x=>({id:clean(x.id,100),qty:Number(x.qty)}));
