@@ -71,6 +71,7 @@ CREATE TABLE IF NOT EXISTS cb_multi_payment_orders (
   canteen_name TEXT NOT NULL,
   destination_id TEXT NOT NULL,
   merchant_connection_id TEXT NOT NULL,
+  destination_map_json TEXT NOT NULL DEFAULT '[]',
   amount_paise INTEGER NOT NULL,
   currency TEXT NOT NULL DEFAULT 'INR',
   status TEXT NOT NULL DEFAULT 'created'
