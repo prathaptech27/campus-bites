@@ -378,7 +378,13 @@
         .payment-card.selected { border-color: var(--primary); background: rgba(99,102,241,0.2); }
         .payment-card h4 { font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
         .payment-card p { font-size: 11px; color: var(--text-muted); }
-        #qrDisplayContainer { background: var(--surface-row-bg); border: 2px solid rgba(16,185,129,0.6); border-radius: 16px; padding: 14px; text-align: center; margin-bottom: 14px; }
+        #qrDisplayContainer { background: var(--surface-row-bg); border: 1.5px solid rgba(16,185,129,0.55); border-radius: 16px; padding: 14px; text-align: left; margin-bottom: 14px; }
+        .secure-payment-brand { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+        .secure-payment-mark { width:38px; height:38px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:linear-gradient(135deg,#4f46e5,#4338ca); color:#fff; font-size:19px; font-weight:900; flex-shrink:0; }
+        .secure-payment-methods { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; margin-top:10px; }
+        .secure-payment-methods span { background:var(--surface-sub-bg); border:1px solid var(--liquid-glass-border); border-radius:9px; padding:8px 7px; color:var(--text-main); font-size:11px; font-weight:800; text-align:center; }
+        .secure-payment-note { color:var(--text-muted); font-size:11px; line-height:1.5; font-weight:650; margin-top:10px; }
+        .payment-card:focus-visible { outline:3px solid var(--primary); outline-offset:2px; }
         .bill-summary { background: var(--surface-sub-bg); border: 1px solid var(--liquid-glass-border); border-radius: 14px; padding: 14px; margin-bottom: 14px; }
         .bill-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; color: var(--text-muted); font-weight: 600; }
         .bill-row.total { font-size: 16px; font-weight: 900; color: var(--text-main); border-top: 1px dashed rgba(148,163,184,0.4); padding-top: 8px; margin-top: 8px; }
@@ -1696,19 +1702,19 @@
         </div>
 
         <div id="qrDisplayContainer">
-            <p style="font-size: 13px; font-weight: 900; color: #10b981; margin-bottom: 4px;">🔒 Official Canteen UPI & Banking Details</p>
-            <div class="banking-name-shield" style="margin-bottom: 8px;">
-                <div style="font-size: 10px; font-weight: 900; color: #059669; text-transform: uppercase;">🏦 Official Banking Name (Verify in GPay / PhonePe)</div>
-                <div style="font-size: 14.5px; font-weight: 900; color: var(--text-main); margin-top: 2px;" id="qrMerchantNameText">CANTEEN OFFICIAL</div>
-                <div style="font-size: 11.5px; font-weight: 800; color: var(--primary); margin-top: 2px;">Official VPA: <span id="qrVpaText">canteen@sbi</span></div>
-                <div style="font-size: 11.5px; font-weight: 800; color: var(--text-main); margin-top: 2px;" id="qrPhoneContainer">UPI Mobile #: <span id="qrPhoneText">--</span></div>
+            <div class="secure-payment-brand">
+                <div class="secure-payment-mark">✓</div>
+                <div>
+                    <div style="font-size:13px;font-weight:900;color:var(--text-main);">Secure checkout by Razorpay</div>
+                    <div style="font-size:11px;color:var(--text-muted);font-weight:700;">Your payment details stay with the payment provider</div>
+                </div>
             </div>
-            <div class="qr-checkout-frame">
-                <img id="upiQrImg" src="" alt="UPI QR" />
+            <div style="font-size:12px;color:var(--text-main);font-weight:800;">Choose your preferred method in the secure checkout window.</div>
+            <div class="secure-payment-methods">
+                <span>📱 UPI Apps</span><span>💳 Credit / Debit Cards</span>
+                <span>🏦 Netbanking</span><span>👛 Supported Wallets</span>
             </div>
-            <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 4px;">
-                Auto-redirects to your Digital Receipt only upon verified payment.
-            </div>
+            <p class="secure-payment-note">CampusBites confirms an online order only after the server verifies that Razorpay captured the exact order amount. Returning to this app or uploading a screenshot does not count as payment.</p>
         </div>
 
         <div class="bill-summary">
@@ -4097,21 +4103,24 @@
         }
 
         function selectPayment(mode) {
+            if (mode !== 'online' && mode !== 'cash') return;
             selectedPaymentMethod = mode;
-            const qrBox = document.getElementById('qrDisplayContainer');
+            const onlineCard = document.getElementById('payOnlineCard');
+            const cashCard = document.getElementById('payCashCard');
+            const securePanel = document.getElementById('qrDisplayContainer');
             const mainBtn = document.getElementById('mainCheckoutActionBtn');
             const totalVal = document.getElementById('billTotal') ? document.getElementById('billTotal').innerText : '0';
 
-            if (mode === 'online') {
-                document.getElementById('payOnlineCard').classList.add('selected');
-                document.getElementById('payCashCard').classList.remove('selected');
-                qrBox.style.display = 'block';
-                if (mainBtn) mainBtn.innerText = `⚡ Proceed to UPI Payment (₹${totalVal})`;
-            } else {
-                document.getElementById('payCashCard').classList.add('selected');
-                document.getElementById('payOnlineCard').classList.remove('selected');
-                qrBox.style.display = 'none';
-                if (mainBtn) mainBtn.innerText = `💵 Place Cash Order (Pay ₹${totalVal} at Counter)`;
+            onlineCard.classList.toggle('selected', mode === 'online');
+            cashCard.classList.toggle('selected', mode === 'cash');
+            onlineCard.setAttribute('aria-pressed', String(mode === 'online'));
+            cashCard.setAttribute('aria-pressed', String(mode === 'cash'));
+            if (securePanel) securePanel.style.display = mode === 'online' ? 'block' : 'none';
+
+            if (mainBtn) {
+                mainBtn.innerText = mode === 'online'
+                    ? `🔒 Continue to Secure Payment (₹${totalVal})`
+                    : `💵 Place Cash Order (Pay ₹${totalVal} at Counter)`;
             }
         }
 
@@ -4443,8 +4452,8 @@
                     key: serverOrder.keyId,
                     amount: serverOrder.amount,
                     currency: serverOrder.currency,
-                    name: activeMerchant,
-                    description: `Campus Bites Order #${tokenNum}`,
+                    name: "CampusBites",
+                    description: `Canteen order #${tokenNum} • ${activeCol}`,
                     order_id: serverOrder.razorpayOrderId,
                     prefill: {
                         name: currentUser.name || "Student",
@@ -4455,7 +4464,7 @@
                     modal: {
                         ondismiss: function() {
                             pendingUpiOrderDraft = null;
-                            alert("Payment was cancelled. No paid receipt was generated.");
+                            alert("Payment was cancelled. No paid receipt was created. You can safely try again from your tray.");
                         }
                     },
                     handler: async function(response) {
