@@ -218,38 +218,51 @@ export async function createTenantOrder(req,env,utils) {
   if(byId.size!==ids.length) return utils.json({error:"One or more menu items are unavailable for this college."},409);
   const items=quantities.map(q=>{const m=byId.get(q.id);return {id:m.id,name:m.name,qty:q.qty,price:m.price_paise/100,canteen:m.canteen_name,college:m.college_name};});
   const canteens=[...new Set(items.map(x=>x.canteen))];
-  if(canteens.length!==1) return utils.json({error:"Online checkout currently supports one canteen per order. Split items into separate canteen orders."},409);
-  const canteenName=canteens[0];
   const amountPaise=items.reduce((sum,x)=>sum+byId.get(x.id).price_paise*x.qty,0);
   if(!Number.isSafeInteger(amountPaise)||amountPaise<100||amountPaise>10000000) return utils.json({error:"Order total is outside the permitted range."},400);
   const settings=await env.DB.prepare("SELECT * FROM cb_payment_settings WHERE college_id=?").bind(session.collegeId).first();
   if(!settings) return utils.json({error:"This college has not configured an approved payment destination yet."},503);
-  const destinationType=settings.destination_mode;
-  const destination=destinationType==="CENTRAL"
-    ? await env.DB.prepare("SELECT * FROM cb_payment_destinations WHERE college_id=? AND destination_type='CENTRAL' AND status='ACTIVE'").bind(session.collegeId).first()
-    : await env.DB.prepare("SELECT * FROM cb_payment_destinations WHERE college_id=? AND destination_type='CANTEEN' AND canteen_name=? AND status='ACTIVE'").bind(session.collegeId,canteenName).first();
-  if(!destination) return utils.json({error:"No verified payment account is configured for this canteen."},503);
-  const connection=await env.DB.prepare("SELECT * FROM cb_merchant_connections WHERE id=? AND college_id=? AND status='ACTIVE'").bind(destination.merchant_connection_id,session.collegeId).first();
-  if(!connection) return utils.json({error:"The canteen's merchant account is not verified or active."},503);
-  if(connection.provider==="DIRECT_BANK") return utils.json({error:"This bank's direct API adapter is not configured. Ask CampusBites to complete the bank-specific integration before enabling online checkout."},503);
-  if(connection.provider!=="RAZORPAY_ROUTE" || env.ROUTE_ENABLED!=="true") return utils.json({error:"Razorpay Route is not enabled for this merchant."},503);
+
+  // Resolve destinations entirely on the server. Central mode produces one transfer;
+  // individual mode produces one transfer per canteen represented in this order.
+  const destinationGroups=[];
+  if(settings.destination_mode==="CENTRAL") {
+    const destination=await env.DB.prepare("SELECT * FROM cb_payment_destinations WHERE college_id=? AND destination_type='CENTRAL' AND status='ACTIVE'").bind(session.collegeId).first();
+    if(!destination) return utils.json({error:"No verified central payment account is configured."},503);
+    const connection=await env.DB.prepare("SELECT * FROM cb_merchant_connections WHERE id=? AND college_id=? AND status='ACTIVE'").bind(destination.merchant_connection_id,session.collegeId).first();
+    if(!connection || connection.provider!=="RAZORPAY_ROUTE") return utils.json({error:"The central destination does not have an active Razorpay Route connection."},503);
+    destinationGroups.push({destination,connection,amountPaise,canteens});
+  } else {
+    for(const canteenName of canteens) {
+      const destination=await env.DB.prepare("SELECT * FROM cb_payment_destinations WHERE college_id=? AND destination_type='CANTEEN' AND canteen_name=? AND status='ACTIVE'").bind(session.collegeId,canteenName).first();
+      if(!destination) return utils.json({error:"No verified payment account is configured for canteen: "+canteenName},503);
+      const connection=await env.DB.prepare("SELECT * FROM cb_merchant_connections WHERE id=? AND college_id=? AND status='ACTIVE'").bind(destination.merchant_connection_id,session.collegeId).first();
+      if(!connection || connection.provider!=="RAZORPAY_ROUTE") return utils.json({error:"The merchant account for "+canteenName+" is not an active Razorpay Route account."},503);
+      const canteenAmount=items.filter(x=>x.canteen===canteenName).reduce((sum,x)=>sum+byId.get(x.id).price_paise*x.qty,0);
+      destinationGroups.push({destination,connection,amountPaise:canteenAmount,canteens:[canteenName]});
+    }
+  }
+  if(env.ROUTE_ENABLED!=="true") return utils.json({error:"Razorpay Route is not enabled for this merchant."},503);
   const appOrderId=crypto.randomUUID();
-  const transfer={
-    account:connection.external_merchant_id,
-    amount:amountPaise,
+  const transfers=destinationGroups.map(group=>({
+    account:group.connection.external_merchant_id,
+    amount:group.amountPaise,
     currency:"INR",
-    notes:{college_id:session.collegeId,canteen:canteenName,order_id:appOrderId},
+    notes:{college_id:session.collegeId,canteen:group.canteens.join(","),order_id:appOrderId},
     linked_account_notes:["college_id","canteen","order_id"],
     on_hold:false
-  };
+  }));
+  if(transfers.reduce((sum,t)=>sum+t.amount,0)!==amountPaise) return utils.json({error:"Payment destination allocation does not match order total."},409);
+  const primary=destinationGroups[0];
   const created=await utils.rp(env,"/orders",{method:"POST",body:JSON.stringify({
     amount:amountPaise,currency:"INR",receipt:"cb_"+appOrderId.replace(/-/g,"").slice(0,20),
-    payment_capture:1,partial_payment:false,transfers:[transfer],
-    notes:{campus_bites_order_id:appOrderId,campus_bites_token:b.orderToken,college:session.collegeName,canteen:canteenName}
+    payment_capture:1,partial_payment:false,transfers,
+    notes:{campus_bites_order_id:appOrderId,campus_bites_token:b.orderToken,college:session.collegeName,canteens:canteens.join(",")}
   })});
+  const destinationMap=destinationGroups.map(g=>({destinationId:g.destination.id,merchantConnectionId:g.connection.id,canteens:g.canteens,amountPaise:g.amountPaise}));
   await env.DB.prepare(
-    "INSERT INTO cb_multi_payment_orders(app_order_id,order_token,razorpay_order_id,college_id,college_name,canteen_name,destination_id,merchant_connection_id,amount_paise,currency,status,transfer_status,items_json,student_ref,created_at) VALUES(?,?,?,?,?,?,?,?,?,'INR','created','created',?,?,?)"
-  ).bind(appOrderId,b.orderToken,created.id,session.collegeId,session.collegeName,canteenName,destination.id,connection.id,amountPaise,JSON.stringify(items),session.email,now()).run();
+    "INSERT INTO cb_multi_payment_orders(app_order_id,order_token,razorpay_order_id,college_id,college_name,canteen_name,destination_id,merchant_connection_id,destination_map_json,amount_paise,currency,status,transfer_status,items_json,student_ref,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,'INR','created','created',?,?,?)"
+  ).bind(appOrderId,b.orderToken,created.id,session.collegeId,session.collegeName,canteens.length===1?canteens[0]:"MULTIPLE",primary.destination.id,primary.connection.id,JSON.stringify(destinationMap),amountPaise,JSON.stringify(items),session.email,now()).run();
   return utils.json({appOrderId,razorpayOrderId:created.id,amount:created.amount,currency:created.currency,keyId:env.RAZORPAY_KEY_ID,items,total:amountPaise/100,customerEmail:session.email,provider:"RAZORPAY_ROUTE"},201);
 }
 
