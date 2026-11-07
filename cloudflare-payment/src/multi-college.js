@@ -87,6 +87,9 @@ export async function handleMultiCollegeRoute(req,env,url,utils) {
     const member=await collegeAdmin(req,env,session);
     if(!member) return fail("College administrator permission required.",403);
     const collegeId=session.collegeId;
+    if(member.role==="FINANCE" && !(method==="GET" && path==="/api/college-admin/config") &&
+       !(method==="POST" && path==="/api/college-admin/route/refresh"))
+      return fail("Your college role is read-only for merchant configuration changes.",403);
 
     if(path==="/api/college-admin/config" && method==="GET") {
       const settings=await env.DB.prepare("SELECT * FROM cb_payment_settings WHERE college_id=?").bind(collegeId).first();
