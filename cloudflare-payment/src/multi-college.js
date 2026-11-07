@@ -202,6 +202,7 @@ export async function handleMultiCollegeRoute(req,env,url,utils) {
       await env.DB.prepare(
         "INSERT INTO cb_payment_destinations(id,college_id,destination_type,canteen_name,merchant_connection_id,display_name,status,created_at,updated_at) VALUES(?,?,?,?,?,?, 'PENDING',?,?)"
       ).bind(destinationId,collegeId,type,type==="CANTEEN"?canteenName:null,connectionId,bankName,now(),now()).run();
+      await env.DB.prepare("INSERT OR IGNORE INTO cb_payment_settings(college_id,destination_mode,integration_mode,updated_by,updated_at) VALUES(?,?,'DIRECT_BANK',?,?)").bind(collegeId,type,session.email,now()).run();
       await audit(env,collegeId,session.email,"DIRECT_BANK_CONNECTION_REQUESTED",connectionId,{bankName,destinationType:type,canteenName});
       return ok({created:true,connectionId,destinationId,status:"PENDING",message:"Bank merchant integration is awaiting CampusBites technical verification. Payments remain disabled until a bank-specific adapter is installed and tested."},201);
     }
@@ -236,6 +237,7 @@ export async function createTenantOrder(req,env,utils) {
   if(!Number.isSafeInteger(amountPaise)||amountPaise<100||amountPaise>10000000) return utils.json({error:"Order total is outside the permitted range."},400);
   const settings=await env.DB.prepare("SELECT * FROM cb_payment_settings WHERE college_id=?").bind(session.collegeId).first();
   if(!settings) return utils.json({error:"This college has not configured an approved payment destination yet."},503);
+  if(settings.integration_mode==="DIRECT_BANK") return utils.json({error:"Direct bank checkout is not enabled until this bank's approved API adapter and signed webhook are implemented and tested."},503);
 
   // Resolve destinations entirely on the server. Central mode produces one transfer;
   // individual mode produces one transfer per canteen represented in this order.
