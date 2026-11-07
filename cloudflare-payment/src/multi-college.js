@@ -160,6 +160,7 @@ export async function handleMultiCollegeRoute(req,env,url,utils) {
       await env.DB.prepare(
         "INSERT INTO cb_payment_destinations(id,college_id,destination_type,canteen_name,merchant_connection_id,display_name,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?)"
       ).bind(destinationId,collegeId,type,type==="CANTEEN"?canteenName:null,connectionId,legalName,verified?"ACTIVE":"PENDING",now(),now()).run();
+      await env.DB.prepare("INSERT OR IGNORE INTO cb_payment_settings(college_id,destination_mode,integration_mode,updated_by,updated_at) VALUES(?,?, 'RAZORPAY_ROUTE',?,?)").bind(collegeId,type,session.email,now()).run();
       await audit(env,collegeId,session.email,"ROUTE_MERCHANT_ONBOARDED",connectionId,{destinationType:type,canteenName:type==="CANTEEN"?canteenName:null,linkedAccountId:linked.id});
       return ok({created:true,connectionId,destinationId,linkedAccountId:linked.id,status:verified?"ACTIVE":"PENDING",verificationStatus:settlement?.verification_status||"PENDING",maskedAccount:masked},201);
     }
