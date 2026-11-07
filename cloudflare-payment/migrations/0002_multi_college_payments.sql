@@ -97,3 +97,7 @@ CREATE TABLE IF NOT EXISTS cb_payment_audit (
   details_json TEXT,
   created_at INTEGER NOT NULL
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS cb_multi_payment_id_unique
+  ON cb_multi_payment_orders(razorpay_payment_id)
+  WHERE razorpay_payment_id IS NOT NULL;
