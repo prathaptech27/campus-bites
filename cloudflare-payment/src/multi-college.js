@@ -183,13 +183,24 @@ export async function handleMultiCollegeRoute(req,env,url,utils) {
     if(path==="/api/college-admin/direct-bank/request" && method==="POST") {
       const b=await req.json().catch(()=>null);
       const bankName=clean(b?.bankName,100), merchantRef=clean(b?.merchantReference,120);
-      if(!bankName || !merchantRef) return fail("Bank name and bank-issued merchant reference are required.");
-      const connectionId=id();
+      const type=clean(b?.destinationType,20).toUpperCase();
+      const canteenName=clean(b?.canteenName,100);
+      if(!bankName || !merchantRef || !["CENTRAL","CANTEEN"].includes(type) ||
+         (type==="CANTEEN"&&!canteenName) || (type==="CENTRAL"&&canteenName))
+        return fail("Bank name, bank-issued merchant reference and valid destination details are required.");
+      const existing=type==="CENTRAL"
+        ? await env.DB.prepare("SELECT id FROM cb_payment_destinations WHERE college_id=? AND destination_type='CENTRAL'").bind(collegeId).first()
+        : await env.DB.prepare("SELECT id FROM cb_payment_destinations WHERE college_id=? AND destination_type='CANTEEN' AND canteen_name=?").bind(collegeId,canteenName).first();
+      if(existing) return fail("A destination already exists for this account type.",409);
+      const connectionId=id(), destinationId=id();
       await env.DB.prepare(
         "INSERT INTO cb_merchant_connections(id,college_id,provider,external_merchant_id,provider_reference,display_name,status,verification_status,metadata_json,created_by,created_at,updated_at) VALUES(?,?,'DIRECT_BANK',NULL,?,?,'PENDING','PENDING',?,?,?,?)"
       ).bind(connectionId,collegeId,merchantRef,bankName,JSON.stringify({bankName}),session.email,now(),now()).run();
-      await audit(env,collegeId,session.email,"DIRECT_BANK_CONNECTION_REQUESTED",connectionId,{bankName});
-      return ok({created:true,connectionId,status:"PENDING",message:"Bank merchant integration is awaiting CampusBites technical verification. It cannot accept payments until a bank-specific adapter is installed and tested."},201);
+      await env.DB.prepare(
+        "INSERT INTO cb_payment_destinations(id,college_id,destination_type,canteen_name,merchant_connection_id,display_name,status,created_at,updated_at) VALUES(?,?,?,?,?,?, 'PENDING',?,?)"
+      ).bind(destinationId,collegeId,type,type==="CANTEEN"?canteenName:null,connectionId,bankName,now(),now()).run();
+      await audit(env,collegeId,session.email,"DIRECT_BANK_CONNECTION_REQUESTED",connectionId,{bankName,destinationType:type,canteenName});
+      return ok({created:true,connectionId,destinationId,status:"PENDING",message:"Bank merchant integration is awaiting CampusBites technical verification. Payments remain disabled until a bank-specific adapter is installed and tested."},201);
     }
 
     return fail("Not found.",404);
