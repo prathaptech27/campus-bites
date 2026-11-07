@@ -9,6 +9,6 @@ MAIL_FROM = "Campus Bites <payments@REPLACE-WITH-YOUR-VERIFIED-DOMAIN>"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "campus-bites-payments"
-database_id = "54d98d3e-e175-42c6-a659-c66ff6f2a097"
+database_name = "campus-bites-payment"
+database_id = "a290bdb5-9979-4284-8abc-2f8783db3052"
 migrations_dir = "migrations"
