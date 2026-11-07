@@ -131,12 +131,15 @@ async function verifyCheckout(req,env) {
   if(!b?.razorpay_order_id||!b?.razorpay_payment_id||!b?.razorpay_signature) return json({error:"Missing payment verification fields."},400);
   const record=await env.DB.prepare("SELECT * FROM payment_orders WHERE razorpay_order_id=? AND student_ref=?").bind(b.razorpay_order_id,session.email).first();
   if(!record) return json({error:"Payment order not found for this verified email."},404);
+  if(record.status==="refunded") return json({error:"This order has already been refunded."},409);
   const expected=await hmac(env.RAZORPAY_KEY_SECRET,record.razorpay_order_id+"|"+b.razorpay_payment_id);
   if(!equal(expected,b.razorpay_signature)) return json({error:"Payment signature verification failed."},400);
   const payment=await rp(env,"/payments/"+encodeURIComponent(b.razorpay_payment_id));
   if(payment.order_id!==record.razorpay_order_id||payment.amount!==record.amount_paise||payment.currency!=="INR") return json({error:"Payment does not match the Campus Bites order."},409);
   if(payment.status!=="captured") return json({error:"Payment has not been captured yet.",status:payment.status},409);
   await env.DB.prepare("UPDATE payment_orders SET status='paid',razorpay_payment_id=?,paid_at=COALESCE(paid_at,?) WHERE app_order_id=? AND status!='refunded'").bind(payment.id,Date.now(),record.app_order_id).run();
+  const confirmed=await env.DB.prepare("SELECT status FROM payment_orders WHERE app_order_id=?").bind(record.app_order_id).first();
+  if(confirmed?.status!=="paid") return json({error:"Payment status changed while verification was running. Contact the canteen administrator before retrying."},409);
   return json({verified:true,appOrderId:record.app_order_id,paymentId:payment.id,status:"paid"});
 }
 async function webhook(req,env) {
@@ -144,17 +147,31 @@ async function webhook(req,env) {
   if(!equal(await hmac(env.RAZORPAY_WEBHOOK_SECRET,raw),sig)) return json({error:"Invalid webhook signature."},400);
   const eventId=req.headers.get("x-razorpay-event-id")||"";
   if(!eventId) return json({error:"Missing webhook event id."},400);
-  const event=JSON.parse(raw), p=event.payload?.payment?.entity;
-  if(p&&event.event==="payment.captured") {
-    const row=await env.DB.prepare("SELECT * FROM payment_orders WHERE razorpay_order_id=?").bind(p.order_id).first();
-    if(row&&p.amount===row.amount_paise&&p.currency==="INR"&&p.status==="captured") {
-      const inserted=await env.DB.prepare("INSERT OR IGNORE INTO razorpay_webhook_events(event_id,received_at) VALUES(?,?)").bind(eventId,Date.now()).run();
-      if(inserted.meta?.changes) await env.DB.prepare("UPDATE payment_orders SET status='paid',razorpay_payment_id=?,paid_at=COALESCE(paid_at,?) WHERE app_order_id=? AND status!='refunded'").bind(p.id,Date.now(),row.app_order_id).run();
+  let event;
+  try { event=JSON.parse(raw); } catch { return json({error:"Invalid webhook payload."},400); }
+
+  // Record every event once. Razorpay retries webhook deliveries; duplicate IDs are safe no-ops.
+  const inserted=await env.DB.prepare("INSERT OR IGNORE INTO razorpay_webhook_events(event_id,received_at) VALUES(?,?)").bind(eventId,Date.now()).run();
+  if(!inserted.meta?.changes) return json({received:true,duplicate:true});
+
+  const payment=event.payload?.payment?.entity;
+  if(payment&&(event.event==="payment.captured"||event.event==="order.paid")) {
+    const row=await env.DB.prepare("SELECT * FROM payment_orders WHERE razorpay_order_id=?").bind(payment.order_id).first();
+    if(row&&payment.amount===row.amount_paise&&payment.currency==="INR"&&payment.status==="captured") {
+      await env.DB.prepare("UPDATE payment_orders SET status='paid',razorpay_payment_id=?,paid_at=COALESCE(paid_at,?) WHERE app_order_id=? AND status!='refunded'").bind(payment.id,Date.now(),row.app_order_id).run();
     }
-  } else if(p&&event.event==="payment.failed") {
-    await env.DB.prepare("UPDATE payment_orders SET status='failed' WHERE razorpay_order_id=? AND status='created'").bind(p.order_id).run();
-  } else if(p&&event.event==="payment.refunded") {
-    await env.DB.prepare("UPDATE payment_orders SET status='refunded' WHERE razorpay_payment_id=?").bind(p.id).run();
+  } else if(payment&&event.event==="payment.failed") {
+    // A failed attempt must never downgrade an order that has already been captured.
+    await env.DB.prepare("UPDATE payment_orders SET status='failed' WHERE razorpay_order_id=? AND status='created'").bind(payment.order_id).run();
+  } else if(event.event==="refund.processed") {
+    const refund=event.payload?.refund?.entity;
+    if(refund?.payment_id&&Number.isSafeInteger(refund.amount)) {
+      const row=await env.DB.prepare("SELECT app_order_id,amount_paise FROM payment_orders WHERE razorpay_payment_id=?").bind(refund.payment_id).first();
+      // Only mark the whole order refunded for a full refund; partial refunds need a separate ledger state.
+      if(row&&refund.amount>=row.amount_paise) {
+        await env.DB.prepare("UPDATE payment_orders SET status='refunded' WHERE app_order_id=? AND status='paid'").bind(row.app_order_id).run();
+      }
+    }
   }
   return json({received:true});
 }
