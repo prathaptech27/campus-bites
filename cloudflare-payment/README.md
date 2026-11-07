@@ -80,13 +80,13 @@ curl -X POST https://YOUR-WORKER.workers.dev/api/catalog/import \
 
 Use stable unique item IDs. Update the imported catalogue whenever an administrator changes menu prices. The admin token must never be placed in `index.html`.
 
-## 3. Razorpay and email
+## 3. Student checkout experience\n\nThe student selects Online Payment or Cash in the CampusBites checkout drawer. Online Payment opens Razorpay Standard Checkout, where Razorpay presents the payment methods enabled for your account (such as UPI, cards, netbanking and supported wallets). CampusBites does not collect or store card numbers, UPI PINs or banking credentials. The app creates a paid digital receipt only after the Worker verifies the Razorpay signature and confirms the payment is captured for the exact server-calculated amount.\n\nCash orders remain a separate `cash_pending` flow and must be confirmed as collected by authorised staff; they are never treated as online payments.\n\n## 4. Razorpay and email
 
 Use Razorpay Test Mode first. Configure webhook URL:
 `https://YOUR-WORKER.workers.dev/api/webhooks/razorpay`
-Subscribe to `payment.captured`, `payment.failed`, and `payment.refunded`. The webhook secret must match RAZORPAY_WEBHOOK_SECRET.
+Subscribe to `payment.captured`, `payment.failed`, `order.paid`, and `refund.processed`. The Worker deduplicates webhook event IDs, never lets a late failed-attempt event downgrade a captured order, and marks an order refunded only when the processed refund covers the full order amount. The webhook secret must match RAZORPAY_WEBHOOK_SECRET.
 
-## 4. Enable test checkout
+## 5. Enable test checkout
 
 Only after importing and validating all college domains and menu items, configuring Resend, deploying, and completing tests, set:
 `CHECKOUT_ENABLED = "true"`
