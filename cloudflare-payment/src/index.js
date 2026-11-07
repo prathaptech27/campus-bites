@@ -154,6 +154,9 @@ async function webhook(req,env) {
   try { event=JSON.parse(raw); } catch { return json({error:"Invalid webhook payload."},400); }
 
   // Record every event once. Razorpay retries webhook deliveries; duplicate IDs are safe no-ops.
+  // Apply idempotent state reconciliation before deduplication. If a Worker invocation
+  // fails after this point, Razorpay's retry can safely re-apply the same state update.
+  await reconcileTenantWebhook(event,env);
   const inserted=await env.DB.prepare("INSERT OR IGNORE INTO razorpay_webhook_events(event_id,received_at) VALUES(?,?)").bind(eventId,Date.now()).run();
   if(!inserted.meta?.changes) return json({received:true,duplicate:true});
 
@@ -176,7 +179,6 @@ async function webhook(req,env) {
       }
     }
   }
-  await reconcileTenantWebhook(event,env);
   return json({received:true});
 }
 export default { async fetch(req,env) {
