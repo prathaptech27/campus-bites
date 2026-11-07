@@ -328,9 +328,23 @@ export async function reconcileTenantWebhook(event,env) {
   if(event.event==="transfer.processed" || event.event==="transfer.failed" || event.event==="transfer.reversed") {
     const transfer=event.payload?.transfer?.entity;
     const orderId=transfer?.notes?.order_id;
-    if(orderId) {
+    if(orderId && transfer?.id) {
       const state=event.event==="transfer.processed"?"processed":event.event==="transfer.failed"?"failed":"reversed";
-      await env.DB.prepare("UPDATE cb_multi_payment_orders SET transfer_status=?,transfer_ids_json=? WHERE app_order_id=?").bind(state,JSON.stringify([transfer.id]),orderId).run();
+      const row=await env.DB.prepare("SELECT destination_map_json,transfer_ids_json FROM cb_multi_payment_orders WHERE app_order_id=?").bind(orderId).first();
+      if(row) {
+        let known=[];
+        try { known=JSON.parse(row.transfer_ids_json||"[]"); if(!Array.isArray(known)) known=[]; } catch { known=[]; }
+        known=known.filter(x=>x.id!==transfer.id);
+        known.push({id:transfer.id,status:state});
+        let expected=1;
+        try { expected=Math.max(1,JSON.parse(row.destination_map_json||"[]").length); } catch {}
+        const aggregate=known.some(x=>x.status==="failed"||x.status==="reversed")
+          ? "attention"
+          : known.length>=expected && known.every(x=>x.status==="processed")
+            ? "processed" : "pending";
+        await env.DB.prepare("UPDATE cb_multi_payment_orders SET transfer_status=?,transfer_ids_json=? WHERE app_order_id=?")
+          .bind(aggregate,JSON.stringify(known),orderId).run();
+      }
     }
   }
 }
