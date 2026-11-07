@@ -5,6 +5,8 @@ compatibility_date = "2026-11-01"
 [vars]
 ALLOWED_ORIGIN = "https://campus-bites-liart.vercel.app"
 CHECKOUT_ENABLED = "false"
+MULTI_TENANT_PAYMENTS_ENABLED = "false"
+ROUTE_ENABLED = "false"
 MAIL_FROM = "Campus Bites <payments@REPLACE-WITH-YOUR-VERIFIED-DOMAIN>"
 
 [[d1_databases]]

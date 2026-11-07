@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CampusBites · College Payments Admin</title>
+<style>
+:root{color-scheme:light;--ink:#172033;--muted:#64748b;--line:#dbe3ef;--brand:#4f46e5;--bg:#f4f7fb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:15px/1.5 Inter,system-ui,Arial;color:var(--ink)}
+header{background:#111827;color:white;padding:22px max(20px,calc((100% - 1080px)/2))}
+header strong{font-size:20px}header span{color:#c7d2fe;font-size:13px}
+main{max-width:1080px;margin:28px auto;padding:0 16px 60px}
+.card{background:white;border:1px solid var(--line);border-radius:18px;padding:22px;margin:16px 0;box-shadow:0 8px 24px #0f172a0a}
+h1{font-size:26px;margin:0 0 8px}h2{font-size:18px;margin:0 0 14px}.muted{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+label{display:block;font-weight:650;font-size:13px;margin:10px 0 5px}
+input,select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;background:white}
+button{border:0;border-radius:10px;background:var(--brand);color:white;font-weight:750;padding:12px 16px;cursor:pointer}
+button.secondary{background:#e8eafc;color:#3730a3}button:disabled{opacity:.5;cursor:not-allowed}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.hidden{display:none!important}
+.notice{padding:12px 14px;border-radius:10px;background:#eff6ff;color:#1e40af;font-size:13px;margin:12px 0}
+.error{background:#fef2f2;color:#991b1b}.success{background:#ecfdf5;color:#065f46}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);padding:12px;border-radius:12px;margin:8px 0}
+.pill{font-size:11px;font-weight:800;border-radius:20px;padding:5px 9px;background:#fef3c7;color:#92400e}
+.pill.active{background:#dcfce7;color:#166534}
+small{color:var(--muted)}@media(max-width:650px){.grid{grid-template-columns:1fr}main{margin-top:16px}.card{padding:17px}}
+</style>
+</head>
+<body>
+<header><strong>CampusBites</strong><br><span>College merchant & payment administration</span></header>
+<main>
+<section id="login" class="card">
+<h1>College administrator sign in</h1>
+<p class="muted">Use your registered college email. Access is granted only to administrator accounts provisioned by CampusBites.</p>
+<div class="grid">
+<div><label>College name</label><input id="collegeName" autocomplete="organization" placeholder="Your registered college name"></div>
+<div><label>Official college email</label><input id="email" type="email" autocomplete="email" placeholder="admin@college.edu.in"></div>
+</div>
+<div class="grid">
+<div><label>6-digit email code</label><input id="otp" inputmode="numeric" maxlength="6" placeholder="Enter code sent to your email"></div>
+<div class="actions" style="align-items:end"><button id="sendOtp">Send verification code</button><button id="loginBtn" class="secondary">Verify & sign in</button></div>
+</div>
+<div id="loginMsg" class="notice hidden"></div>
+</section>
+
+<section id="dashboard" class="hidden">
+<div class="card">
+<h1 id="collegeTitle">College payment settings</h1>
+<p class="muted">Bank details are submitted to Razorpay's secure merchant onboarding API. CampusBites stores only the linked-account reference and masked account number, not the full account number or PAN.</p>
+<div id="summary" class="notice">Loading payment configuration…</div>
+<h2>Payment destination policy</h2>
+<div class="grid">
+<div><label>Where should payments settle?</label><select id="destinationMode"><option value="CENTRAL">All canteens → College central account</option><option value="CANTEEN">Each canteen → Its own account</option></select></div>
+<div><label>Payment integration</label><select id="integrationMode"><option value="RAZORPAY_ROUTE">Razorpay Route (linked merchants)</option><option value="DIRECT_BANK" disabled>Direct bank API (bank approval & adapter required)</option></select></div>
+</div>
+<div class="actions"><button id="saveSettings">Save payment settings</button><button id="reload" class="secondary">Refresh status</button></div>
+</div>
+
+<div class="card">
+<h2>Connect a bank account</h2>
+<p class="muted">This creates a Razorpay Route linked account. The college must be eligible and approved for Route. Do not enter a personal account unless the college has formally authorised it as the merchant settlement account.</p>
+<div class="grid">
+<div><label>Destination type</label><select id="destinationType"><option value="CENTRAL">College central account</option><option value="CANTEEN">Individual canteen account</option></select></div>
+<div><label>Canteen name (only for individual account)</label><input id="canteenName" placeholder="e.g. Main Canteen"></div>
+<div><label>Legal business / institution name</label><input id="legalName" placeholder="Exact name on PAN and bank records"></div>
+<div><label>Business type (as approved by Razorpay)</label><input id="businessType" placeholder="e.g. educational_institute"></div>
+<div><label>Authorised representative email</label><input id="businessEmail" type="email"></div>
+<div><label>Authorised representative phone</label><input id="phone" inputmode="tel" placeholder="+919876543210"></div>
+<div><label>PAN</label><input id="pan" maxlength="10" autocomplete="off"></div>
+<div><label>Bank account holder / beneficiary name</label><input id="beneficiaryName"></div>
+<div><label>Bank account number</label><input id="accountNumber" inputmode="numeric" autocomplete="off"></div>
+<div><label>IFSC</label><input id="ifsc" maxlength="11" autocapitalize="characters"></div>
+</div>
+<label style="display:flex;gap:10px;align-items:flex-start;font-weight:500;margin-top:16px"><input id="tnc" type="checkbox" style="width:auto;margin-top:3px"> I confirm that I am authorised to submit this college merchant onboarding request and accept the applicable Razorpay Route terms on behalf of the institution.</label>
+<div class="actions"><button id="connectBank">Submit secure bank onboarding</button></div>
+<div id="onboardMsg" class="notice hidden"></div>
+</div>
+
+<div class="card">
+<h2>Merchant connections</h2><div id="connections" class="muted">No connections loaded.</div>
+</div>
+<div class="card">
+<h2>Payment destinations</h2><div id="destinations" class="muted">No destinations loaded.</div>
+</div>
+<div class="card">
+<h2>Direct bank integration</h2>
+<p class="muted">A bank's direct merchant API is bank-specific. This request records the bank-issued merchant reference for technical onboarding; payments stay disabled until CampusBites implements and tests that bank's documented API and webhook contract.</p>
+<div class="grid"><div><label>Bank name</label><input id="bankName" placeholder="e.g. SBI"></div><div><label>Bank-issued merchant reference</label><input id="merchantReference"></div></div>
+<div class="actions"><button id="directBankRequest" class="secondary">Request direct bank integration</button></div>
+<div id="directMsg" class="notice hidden"></div>
+</div>
+<div class="actions"><button id="logout" class="secondary">Sign out</button></div>
+</section>
+</main>
+<script>
+const API_BASE="https://REPLACE-WITH-YOUR-WORKER.workers.dev";
+const $=id=>document.getElementById(id);
+let sessionToken="",collegeName="",email="";
+function message(id,text,kind="notice"){const el=$(id);el.textContent=text;el.className="notice "+kind;}
+async function api(path,options={}){const r=await fetch(API_BASE+path,{...options,headers:{"Content-Type":"application/json","Authorization":"Bearer "+sessionToken,...(options.headers||{})}});const b=await r.json().catch(()=>({}));if(!r.ok)throw new Error(b.error||"Request failed");return b;}
+$("sendOtp").onclick=async()=>{try{collegeName=$("collegeName").value.trim();email=$("email").value.trim().toLowerCase();const r=await fetch(API_BASE+"/api/auth/email/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({collegeName,email})});const b=await r.json();if(!r.ok)throw new Error(b.error);message("loginMsg","Verification code sent. Check your college email.","success");}catch(e){message("loginMsg",e.message,"error");}};
+$("loginBtn").onclick=async()=>{try{collegeName=$("collegeName").value.trim();email=$("email").value.trim().toLowerCase();const r=await fetch(API_BASE+"/api/auth/email/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({collegeName,email,code:$("otp").value.trim()})});const b=await r.json();if(!r.ok)throw new Error(b.error);sessionToken=b.sessionToken;sessionStorage.setItem("cb_college_admin_session",sessionToken);$("login").classList.add("hidden");$("dashboard").classList.remove("hidden");await loadConfig();}catch(e){message("loginMsg",e.message,"error");}};
+async function loadConfig(){try{const c=await api("/api/college-admin/config");$("collegeTitle").textContent=c.college.name+" · Payment settings";$("destinationMode").value=c.settings.destination_mode;$("integrationMode").value=c.settings.integration_mode;$("summary").textContent="Signed in as "+c.college.email+" ("+c.college.role+").";$("connections").innerHTML="";for(const x of c.connections){const d=document.createElement("div");d.className="row";d.innerHTML="<div><strong>"+escapeHtml(x.displayName)+"</strong><br><small>"+escapeHtml(x.provider)+" · "+escapeHtml(x.maskedAccount||"")+"</small></div><span class='pill "+(x.status==="ACTIVE"?"active":"")+"'>"+escapeHtml(x.status)+"</span>";if(x.provider==="RAZORPAY_ROUTE"&&x.status==="PENDING"){const btn=document.createElement("button");btn.className="secondary";btn.textContent="Refresh verification";btn.onclick=()=>refreshConnection(x.id);d.appendChild(btn);}$("connections").appendChild(d);}if(!c.connections.length)$("connections").textContent="No merchant connections yet."; $("destinations").innerHTML="";for(const x of c.destinations){const d=document.createElement("div");d.className="row";d.innerHTML="<div><strong>"+escapeHtml(x.display_name)+"</strong><br><small>"+escapeHtml(x.destination_type==="CENTRAL"?"College central account":"Canteen: "+x.canteen_name)+"</small></div><span class='pill "+(x.status==="ACTIVE"?"active":"")+"'>"+escapeHtml(x.status)+"</span>";$("destinations").appendChild(d);}if(!c.destinations.length)$("destinations").textContent="No destinations configured yet.";}catch(e){message("summary",e.message,"error");}}
+async function refreshConnection(connectionId){try{const r=await api("/api/college-admin/route/refresh",{method:"POST",body:JSON.stringify({connectionId})});message("summary","Merchant verification status: "+r.status+" ("+r.verificationStatus+").",r.status==="ACTIVE"?"success":"notice");await loadConfig();}catch(e){message("summary",e.message,"error");}}
+function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+$("saveSettings").onclick=async()=>{try{const r=await api("/api/college-admin/settings",{method:"PUT",body:JSON.stringify({destinationMode:$("destinationMode").value,integrationMode:$("integrationMode").value})});message("summary","Settings saved: "+r.destinationMode+" / "+r.integrationMode,"success");await loadConfig();}catch(e){message("summary",e.message,"error");}};
+$("reload").onclick=loadConfig;
+$("destinationType").onchange=()=>{$("canteenName").disabled=$("destinationType").value!=="CANTEEN";};
+$("destinationType").dispatchEvent(new Event("change"));
+$("connectBank").onclick=async()=>{try{const body={destinationType:$("destinationType").value,canteenName:$("destinationType").value==="CANTEEN"?$("canteenName").value.trim():"",legalBusinessName:$("legalName").value.trim(),businessType:$("businessType").value.trim(),businessEmail:$("businessEmail").value.trim(),phone:$("phone").value.trim(),pan:$("pan").value.trim().toUpperCase(),beneficiaryName:$("beneficiaryName").value.trim(),accountNumber:$("accountNumber").value.trim(),ifsc:$("ifsc").value.trim().toUpperCase(),tncAccepted:$("tnc").checked};const r=await api("/api/college-admin/route/onboard",{method:"POST",body:JSON.stringify(body)});$("accountNumber").value="";$("pan").value="";message("onboardMsg","Merchant request submitted. Linked account: "+r.linkedAccountId+" · Status: "+r.status+". Refresh after the provider completes verification.","success");await loadConfig();}catch(e){message("onboardMsg",e.message,"error");}};
+$("directBankRequest").onclick=async()=>{try{const r=await api("/api/college-admin/direct-bank/request",{method:"POST",body:JSON.stringify({bankName:$("bankName").value.trim(),merchantReference:$("merchantReference").value.trim(),destinationType:$("destinationType").value,canteenName:$("destinationType").value==="CANTEEN"?$("canteenName").value.trim():""})});message("directMsg",r.message,"success");await loadConfig();}catch(e){message("directMsg",e.message,"error");}};
+$("logout").onclick=()=>{sessionStorage.removeItem("cb_college_admin_session");sessionToken="";$("dashboard").classList.add("hidden");$("login").classList.remove("hidden");};
+const saved=sessionStorage.getItem("cb_college_admin_session");if(saved){sessionToken=saved;$("login").classList.add("hidden");$("dashboard").classList.remove("hidden");loadConfig();}
+</script>
+</body></html>
