@@ -1,3 +1,4 @@
+import { handleMultiCollegeRoute, createTenantOrder, verifyTenantCheckout, reconcileTenantWebhook } from "./multi-college.js";
 const json = (data, status = 200, headers = {}) => new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json; charset=utf-8", ...headers } });
 const enc = new TextEncoder();
 const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,"0")).join("");
@@ -99,6 +100,7 @@ async function importCatalog(req,env) {
   return json({importedColleges:b.colleges.length,importedItems:b.items.length});
 }
 async function createOrder(req,env) {
+  if(env.MULTI_TENANT_PAYMENTS_ENABLED==="true") return createTenantOrder(req,env,{json,sessionFrom,originOk,rp,hmac,equal});
   if(env.CHECKOUT_ENABLED!=="true") return json({error:"Secure checkout is not enabled until the catalogue and authentication are configured."},503);
   if(!originOk(req,env)) return json({error:"Origin not allowed."},403);
   const session=await sessionFrom(req,env);
@@ -124,6 +126,7 @@ async function createOrder(req,env) {
   return json({appOrderId,razorpayOrderId:created.id,amount:created.amount,currency:created.currency,keyId:env.RAZORPAY_KEY_ID,items:items,total:amountPaise/100,customerEmail:session.email},201);
 }
 async function verifyCheckout(req,env) {
+  if(env.MULTI_TENANT_PAYMENTS_ENABLED==="true") return verifyTenantCheckout(req,env,{json,sessionFrom,originOk,rp,hmac,equal});
   if(!originOk(req,env)) return json({error:"Origin not allowed."},403);
   const session=await sessionFrom(req,env);
   if(!session) return json({error:"Email session expired."},401);
@@ -173,6 +176,7 @@ async function webhook(req,env) {
       }
     }
   }
+  await reconcileTenantWebhook(event,env);
   return json({received:true});
 }
 export default { async fetch(req,env) {
@@ -180,7 +184,11 @@ export default { async fetch(req,env) {
   if(req.method==="OPTIONS") return new Response(null,{status:204,headers:ch});
   try {
     let r;
-    if(req.method==="GET"&&url.pathname==="/health") r=json({ok:true,service:"campus-bites-payments"},200,ch);
+    if(url.pathname.startsWith("/api/college-admin/") || url.pathname.startsWith("/api/platform/")) {
+      const handled=await handleMultiCollegeRoute(req,env,url,{json,sessionFrom,originOk,rp,hmac,equal});
+      r=handled || json({error:"Not found."},404,ch);
+    }
+    else if(req.method==="GET"&&url.pathname==="/health") r=json({ok:true,service:"campus-bites-payments"},200,ch);
     else if(req.method==="GET"&&url.pathname==="/api/catalog") r=await getCatalog(url,env);
     else if(req.method==="POST"&&url.pathname==="/api/auth/email/start") r=await startEmailOtp(req,env);
     else if(req.method==="POST"&&url.pathname==="/api/auth/email/verify") r=await verifyEmailOtp(req,env);
