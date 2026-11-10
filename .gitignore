@@ -1,0 +1,22 @@
+# ==========================================
+# CampusBites - Files that must not go to GitHub
+# ==========================================
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+server/.env
+server/.env.*
+
+# Node.js dependencies
+node_modules/
+server/node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Operating system files
+.DS_Store
+Thumbs.db
