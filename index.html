@@ -1,27 +1,3 @@
-I have added a Normal (Fast) / Glass UI switcher alongside your existing Light /
-Dark mode toggle, persisted in localStorage (cb_ui_style).
-
-What was added:
-
-1.  New UI Style Attribute (data-ui-style="normal" | "glass"):
-      - Normal Mode (default for fast performance): Completely disables all
-        backdrop-filter / -webkit-backdrop-filter blur effects, hides the fixed
-        multi-radial .ambient-mesh background layer, and switches all cards,
-        headers, drawers, modals, and inputs to crisp, lightweight solid
-        surfaces (for both Light and Dark themes).
-      - Glass Mode: Restores the full Apple Liquid Glass design with translucent
-        gradients, backdrop-filter: blur(), and the ambient mesh background.
-2.  Switch Buttons in Both Views:
-      - Added ✨ Glass / ⚡ Normal toggle buttons right next to the Light/Dark
-        toggle in both the Login/Auth Gate (#authStyleToggleBtn) and the Top
-        Header (#headerStyleToggleBtn).
-3.  Saved Preference:
-      - Uses applyUiStyle() and toggleUiStyle() (matching your applyThemeMode()
-        / toggleThemeMode() pattern) so the user's chosen combination (e.g.,
-        Dark + Normal, Light + Normal, Dark + Glass, Light + Glass) is
-        remembered across reloads.
-
-Updated index.html
 
 <!DOCTYPE html>
 <html lang="en" data-theme="light" data-ui-style="normal">
