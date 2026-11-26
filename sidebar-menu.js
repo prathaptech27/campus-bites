@@ -1,8 +1,8 @@
 /* ============================================================================
-   CampusBites — 3-Bar Slide-Out Side Window & Essential Utilities
+   CampusBites — 3-Bar Side Window + Clean Header + Fast 60fps Tray Optimizer
    File: sidebar-menu.js
-   Usage: Upload alongside index.html and add:
-          <script src="sidebar-menu.js"></script> before </body> in index.html
+   Usage: Upload alongside index.html and keep:
+          <script src="sidebar-menu.js"></script> right before </body>
    ============================================================================ */
 (function () {
     "use strict";
@@ -13,14 +13,59 @@
     const FEEDBACK_STORAGE_KEY = "cb_user_feedback_v1";
 
     /* ------------------------------------------------------------------------
-       1. INJECT STYLES (LIGHT/DARK + NORMAL/GLASS AWARE)
+       1. INJECT STYLES (CLEAN HEADER + FAST TRAY + SIDEBAR)
        ------------------------------------------------------------------------ */
     const sidebarCSS = `
-        /* Declutter top header — move secondary controls into 3-bar sidebar */
+        /* Remove theme/style, logout, college name & user details from <header> only (all are in sidebar) */
         header #headerStyleToggleBtn,
         header #headerThemeToggleBtn,
-        header .switch-auth-btn {
+        header .switch-auth-btn,
+        header #headerSubTitle,
+        header #activeUserPill {
             display: none !important;
+        }
+
+        /* Keep <header> as a clean single row: Brand on left, 3-Bar button on right */
+        header {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            flex-wrap: nowrap !important;
+            padding: 10px 14px !important;
+        }
+        header .brand,
+        header .header-actions {
+            width: auto !important;
+        }
+
+        /* ====================================================================
+           FAST 60FPS TRAY DRAWER OPTIMIZATION
+           ==================================================================== */
+        .drawer-overlay {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            background: rgba(15, 23, 42, 0.56) !important;
+        }
+        .drawer {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            background: var(--surface-row-bg, #ffffff) !important;
+            box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.22) !important;
+            will-change: transform;
+            contain: layout style paint;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            visibility: hidden;
+            pointer-events: none;
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.16s !important;
+        }
+        .drawer.active {
+            visibility: visible;
+            pointer-events: auto;
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s !important;
+        }
+        [data-theme="dark"] .drawer {
+            background: #1e293b !important;
         }
 
         /* 3-Bar Hamburger Button in Top Bar */
@@ -51,7 +96,6 @@
             height: 2.2px;
             border-radius: 3px;
             background: currentColor;
-            transition: 0.2s ease;
         }
         .cb-sb-menu-btn span:nth-child(2) {
             width: 13px;
@@ -63,13 +107,11 @@
         .cb-sb-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.48);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            background: rgba(15, 23, 42, 0.56);
             z-index: 540;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.22s ease;
+            transition: opacity 0.18s ease;
         }
         .cb-sb-overlay.open {
             opacity: 1;
@@ -84,31 +126,26 @@
             bottom: 0;
             width: min(330px, 86vw);
             background: var(--drawer-glass-bg, #ffffff);
-            backdrop-filter: blur(22px) saturate(190%);
-            -webkit-backdrop-filter: blur(22px) saturate(190%);
             border-left: 1.5px solid var(--liquid-glass-border, #e2e8f0);
-            box-shadow: -12px 0 36px rgba(15, 23, 42, 0.28);
+            box-shadow: -8px 0 28px rgba(15, 23, 42, 0.25);
             z-index: 550;
             display: flex;
             flex-direction: column;
             transform: translate3d(105%, 0, 0);
-            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
+            contain: layout style paint;
+            visibility: hidden;
+            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.2s;
             color: var(--text-main, #0f172a);
         }
         .cb-sb-drawer.open {
+            visibility: visible;
             transform: translate3d(0, 0, 0);
+            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
         }
-
-        /* Fast Solid Normal Mode Overrides */
-        [data-ui-style="normal"] .cb-sb-overlay {
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            background: rgba(15, 23, 42, 0.62);
-        }
-        [data-ui-style="normal"] .cb-sb-drawer {
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            box-shadow: -6px 0 24px rgba(0, 0, 0, 0.22);
+        [data-ui-style="glass"] .cb-sb-drawer.open {
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
         }
 
         /* Sidebar Header & Profile Card */
@@ -196,6 +233,7 @@
             flex: 1;
             overflow-y: auto;
             padding: 12px 14px;
+            -webkit-overflow-scrolling: touch;
         }
         .cb-sb-section-label {
             font-size: 10px;
@@ -227,13 +265,9 @@
             flex-direction: column;
             gap: 4px;
             color: var(--text-main, #0f172a);
-            transition: border-color 0.15s ease, transform 0.12s ease;
         }
         .cb-sb-toggle-card:active {
             transform: scale(0.97);
-        }
-        .cb-sb-toggle-card:hover {
-            border-color: var(--primary, #4f46e5);
         }
         .cb-sb-toggle-top {
             display: flex;
@@ -282,10 +316,6 @@
             cursor: pointer;
             color: var(--text-main, #0f172a);
             text-align: left;
-            transition: border-color 0.15s ease, transform 0.12s ease;
-        }
-        .cb-sb-item:hover {
-            border-color: var(--primary, #4f46e5);
         }
         .cb-sb-item:active {
             transform: scale(0.985);
@@ -362,9 +392,7 @@
         .cb-sb-modal {
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.56);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.62);
             z-index: 650;
             display: none;
             align-items: center;
@@ -373,11 +401,6 @@
         }
         .cb-sb-modal.active {
             display: flex;
-        }
-        [data-ui-style="normal"] .cb-sb-modal {
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            background: rgba(15, 23, 42, 0.65);
         }
         .cb-sb-modal-card {
             background: var(--modal-glass-bg, #ffffff);
@@ -517,7 +540,161 @@
     document.head.appendChild(styleEl);
 
     /* ------------------------------------------------------------------------
-       2. SAFE ACCESSORS FOR INDEX.HTML GLOBALS
+       2. FAST NON-BLOCKING TRAY DRAWER OVERRIDE
+       Defers heavy QR canvas PNG encoding until AFTER the slide animation finishes
+       ------------------------------------------------------------------------ */
+    let deferredQrTimer = null;
+    let lastRenderedDrawerQrUri = "";
+
+    function installFastTrayDrawer() {
+        if (typeof window.openDrawer !== "function") return;
+
+        window.openDrawer = function () {
+            const drawerEl = document.getElementById("trayDrawer");
+            const overlayEl = document.getElementById("drawerOverlay");
+            if (!drawerEl || !overlayEl) return;
+
+            const wasAlreadyOpen = drawerEl.classList.contains("active");
+
+            // Show drawer IMMEDIATELY on first tap so there is zero perceived lag
+            if (!wasAlreadyOpen) {
+                if (typeof pushOverlayHistoryState === "function") pushOverlayHistoryState("tray-drawer");
+                overlayEl.classList.add("active");
+                requestAnimationFrame(() => drawerEl.classList.add("active"));
+            }
+
+            const role = getRole();
+            const activeCol = (role === "admin" || role === "staff" || role === "auditor")
+                ? (typeof currentAdminCollege !== "undefined" ? currentAdminCollege : "")
+                : getUser().college;
+
+            const currentTray = typeof tray !== "undefined" ? tray : {};
+            const allCanteens = typeof canteens !== "undefined" ? canteens : [];
+            const allOffers = typeof offersEvents !== "undefined" ? offersEvents : [];
+
+            let totalCount = 0, subtotal = 0, drawerListHtml = "";
+            let activeUpi = "canteen@sbi";
+            let activePhone = "";
+            let activeMerchant = `${(activeCol || "CANTEEN").toUpperCase()} CANTEEN OFFICIAL`;
+
+            for (let id in currentTray) {
+                const item = typeof getMenuItemFast === "function" ? getMenuItemFast(id) : null;
+                if (item) {
+                    const qty = currentTray[id];
+                    totalCount += qty;
+                    subtotal += item.price * qty;
+                    const matchedCanteen = allCanteens.find(c => c.college === item.college && c.name === item.canteen);
+                    if (matchedCanteen && matchedCanteen.upi) {
+                        activeUpi = matchedCanteen.upi;
+                        activePhone = matchedCanteen.phone || "";
+                        activeMerchant = matchedCanteen.merchant || `${(activeCol || "CANTEEN").toUpperCase()} CANTEEN OFFICIAL`;
+                    }
+
+                    drawerListHtml += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px; background: var(--surface-row-bg); padding: 8px 10px; border-radius: 10px; border: 1px solid var(--liquid-glass-border); color: var(--text-main);">
+                            <div>
+                                <strong>${item.name}</strong><br>
+                                <span style="font-size: 11px; color: var(--primary); font-weight: 700;">🏛️ ${item.college} • 🏪 ${item.canteen}</span><br>
+                                <span style="font-size: 11.5px; color: var(--text-muted);">₹${item.price} x ${qty} = <strong>₹${item.price * qty}</strong></span>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <button onclick="updateQty('${id}', -1)" style="background:rgba(99,102,241,0.18); color:var(--primary); border:none; width:24px; height:24px; border-radius:6px; font-weight:800; cursor:pointer;">-</button>
+                                <span style="margin: 0 8px; font-weight: 800;">${qty}</span>
+                                <button onclick="updateQty('${id}', 1)" style="background:rgba(99,102,241,0.18); color:var(--primary); border:none; width:24px; height:24px; border-radius:6px; font-weight:800; cursor:pointer;">+</button>
+                                <button class="remove-item-symbol" onclick="removeCartItem('${id}')" title="Remove item">✕</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            if (totalCount === 0) {
+                drawerListHtml = `<p style="color:var(--text-muted); font-size:13px; text-align:center; padding: 18px; font-weight: 600;">Your tray is currently empty.</p>`;
+                if (typeof activeSelectedOfferId !== "undefined") activeSelectedOfferId = null;
+                const ft = document.getElementById("floatingTray");
+                if (ft) ft.classList.add("hidden");
+            }
+
+            const offersBox = document.getElementById("availableOffersBox");
+            const collegeOffers = allOffers.filter(ev => ev.college === activeCol);
+
+            if (offersBox) {
+                if (collegeOffers.length === 0 || totalCount === 0) {
+                    offersBox.innerHTML = `<span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">No item offers available.</span>`;
+                    if (typeof activeSelectedOfferId !== "undefined") activeSelectedOfferId = null;
+                } else {
+                    offersBox.innerHTML = collegeOffers.map(ev => {
+                        const hasItem = typeof doesTrayHaveOfferItem === "function" ? doesTrayHaveOfferItem(ev) : false;
+                        const isSelected = typeof activeSelectedOfferId !== "undefined" && activeSelectedOfferId === ev.id;
+                        const targetIds = typeof getOfferTargetIds === "function" ? getOfferTargetIds(ev) : [];
+                        const dishNames = targetIds.map(tid => {
+                            const d = typeof getMenuItemFast === "function" ? getMenuItemFast(tid) : null;
+                            return d ? d.name : null;
+                        }).filter(Boolean).join(" / ") || "Eligible Item";
+
+                        if (!hasItem) {
+                            return `<div style="background:var(--surface-sub-bg); border:1px solid var(--liquid-glass-border); padding:9px 12px; border-radius:10px; margin-bottom:6px; font-size:12.5px; opacity: 0.75;"><strong style="color:var(--text-muted);">${ev.title}</strong><br><span style="font-size:11px; color:var(--danger); font-weight:700;">Add "${dishNames}" to unlock ₹${ev.amount} OFF</span></div>`;
+                        }
+                        return `
+                            <div style="background:${isSelected ? "rgba(99, 102, 241, 0.22)" : "var(--surface-row-bg)"}; border:1px solid ${isSelected ? "var(--primary)" : "var(--liquid-glass-border)"}; padding:9px 12px; border-radius:10px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; font-size:12.5px;">
+                                <div><strong style="color:var(--text-main);">${ev.title}</strong><br><span style="font-size:11px; color:var(--success); font-weight:700;">✔ Valid on ${dishNames} (Saves ₹${ev.amount})</span></div>
+                                <button onclick="selectOfferInDrawer('${ev.id}', true)" style="background:${isSelected ? "var(--primary)" : "var(--surface-sub-bg)"}; color:${isSelected ? "white" : "var(--text-main)"}; border:1px solid var(--liquid-glass-border); padding:5px 11px; border-radius:8px; font-size:11.5px; font-weight:800; cursor:pointer;">${isSelected ? "Applied ✓" : "Apply"}</button>
+                            </div>
+                        `;
+                    }).join("");
+                }
+            }
+
+            let computedDiscount = 0;
+            if (typeof activeSelectedOfferId !== "undefined" && activeSelectedOfferId) {
+                const selectedOff = allOffers.find(e => e.id === activeSelectedOfferId);
+                if (selectedOff && typeof doesTrayHaveOfferItem === "function" && doesTrayHaveOfferItem(selectedOff)) {
+                    computedDiscount = selectedOff.amount;
+                } else {
+                    activeSelectedOfferId = null;
+                }
+            }
+
+            const finalPayable = Math.max(0, subtotal - computedDiscount);
+            document.getElementById("drawerItemsList").innerHTML = drawerListHtml;
+            document.getElementById("billSubtotal").innerText = subtotal;
+            document.getElementById("billDiscountText").innerText = `-₹${computedDiscount}`;
+            document.getElementById("billTotal").innerText = finalPayable;
+            document.getElementById("qrVpaText").innerText = activeUpi;
+            document.getElementById("qrMerchantNameText").innerText = activeMerchant;
+
+            const qrPhoneBox = document.getElementById("qrPhoneContainer");
+            if (qrPhoneBox) {
+                if (activePhone) {
+                    qrPhoneBox.style.display = "block";
+                    document.getElementById("qrPhoneText").innerText = activePhone;
+                } else {
+                    qrPhoneBox.style.display = "none";
+                }
+            }
+
+            const payMode = typeof selectedPaymentMethod !== "undefined" ? selectedPaymentMethod : "online";
+            if (typeof selectPayment === "function") selectPayment(payMode);
+
+            // Defer & debounce QR generation so the drawer slides at 60fps without blocking!
+            if (deferredQrTimer) clearTimeout(deferredQrTimer);
+            if (payMode === "online" && finalPayable > 0 && typeof buildFixedAmountQrUri === "function" && typeof generateQrDataUrl === "function") {
+                const qrUri = buildFixedAmountQrUri(activeUpi, activeMerchant, finalPayable, `CampusBites ${activeCol || ""}`);
+                if (qrUri !== lastRenderedDrawerQrUri) {
+                    deferredQrTimer = setTimeout(() => {
+                        const qrImg = document.getElementById("upiQrImg");
+                        if (qrImg && drawerEl.classList.contains("active")) {
+                            lastRenderedDrawerQrUri = qrUri;
+                            qrImg.src = generateQrDataUrl(qrUri, 180);
+                        }
+                    }, wasAlreadyOpen ? 220 : 190);
+                }
+            }
+        };
+    }
+
+    /* ------------------------------------------------------------------------
+       3. SAFE ACCESSORS FOR INDEX.HTML GLOBALS
        ------------------------------------------------------------------------ */
     function getRole() {
         return typeof currentRole !== "undefined" ? currentRole : "student";
@@ -550,10 +727,11 @@
     }
 
     /* ------------------------------------------------------------------------
-       3. BUILD SIDEBAR & MODALS DOM
+       4. BUILD SIDEBAR & MODALS DOM
        ------------------------------------------------------------------------ */
     function buildSidebarDOM() {
-        // Insert 3-bar hamburger button into the Top Header
+        installFastTrayDrawer();
+
         const headerActions = document.querySelector("header .header-actions");
         if (headerActions && !document.getElementById("cbSbOpenBtn")) {
             const btn = document.createElement("button");
@@ -567,7 +745,6 @@
             headerActions.appendChild(btn);
         }
 
-        // Overlay + Side Window + Sub-Modals + Mini Toast
         const wrapper = document.createElement("div");
         wrapper.id = "cbSidebarRoot";
         wrapper.innerHTML = `
@@ -831,14 +1008,13 @@
     }
 
     /* ------------------------------------------------------------------------
-       4. DYNAMIC CONTENT REFRESH (PROFILE, TOGGLES, ROLE-AWARE QUICK NAV)
+       5. DYNAMIC CONTENT REFRESH
        ------------------------------------------------------------------------ */
     function refreshSidebarUI() {
         const role = getRole();
         const user = getUser();
         const activeCol = getActiveCollege();
 
-        // Profile Box
         const avatarEl = document.getElementById("cbSbAvatar");
         const nameEl = document.getElementById("cbSbProfileName");
         const subEl = document.getElementById("cbSbProfileSub");
@@ -862,7 +1038,6 @@
             if (subEl) subEl.textContent = `${activeCol ? activeCol + " • " : ""}${user.phone || user.email || "Student Pass"}`;
         }
 
-        // Sync Theme & UI Style Toggle Cards
         const isDark = document.documentElement.getAttribute("data-theme") === "dark";
         const isGlass = document.documentElement.getAttribute("data-ui-style") === "glass";
 
@@ -880,7 +1055,6 @@
         if (styleBadge) styleBadge.textContent = isGlass ? "GLASS" : "NORMAL";
         if (styleSub) styleSub.textContent = isGlass ? "Tap for Fast Normal" : "Fast Solid • Tap for Glass";
 
-        // Build Role-Aware Quick Navigation
         const navList = document.getElementById("cbSbQuickNavList");
         if (!navList) return;
 
@@ -934,7 +1108,7 @@
     }
 
     /* ------------------------------------------------------------------------
-       5. SIDEBAR & MODAL CONTROLS
+       6. SIDEBAR & MODAL CONTROLS
        ------------------------------------------------------------------------ */
     function openSidebar() {
         refreshSidebarUI();
@@ -975,8 +1149,7 @@
 
     function closeAllSidebarOverlays() {
         let closedAny = false;
-        const modals = ["cbSbContactModal", "cbSbFeedbackModal", "cbSbFaqModal", "cbSbAboutModal"];
-        modals.forEach(id => {
+        ["cbSbContactModal", "cbSbFeedbackModal", "cbSbFaqModal", "cbSbAboutModal"].forEach(id => {
             const m = document.getElementById(id);
             if (m && m.classList.contains("active")) {
                 m.classList.remove("active");
@@ -992,7 +1165,7 @@
     }
 
     /* ------------------------------------------------------------------------
-       6. CONTACT, FEEDBACK & SHARE LOGIC
+       7. CONTACT, FEEDBACK & SHARE LOGIC
        ------------------------------------------------------------------------ */
     function populateContactModal() {
         const colObj = getActiveCollegeRecord();
@@ -1087,7 +1260,6 @@
         existing.unshift(entry);
         localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(existing.slice(0, 50)));
 
-        // Optional EmailJS notification if configured in index.html
         if (typeof cloudConfig !== "undefined" && cloudConfig.emailPublicKey && cloudConfig.emailServiceId && cloudConfig.emailTemplateId && window.emailjs) {
             const colObj = getActiveCollegeRecord();
             const targetEmail = (colObj && colObj.email) ? colObj.email : "support@campusbites.in";
@@ -1128,7 +1300,7 @@
     }
 
     /* ------------------------------------------------------------------------
-       7. BIND EVENTS
+       8. BIND EVENTS
        ------------------------------------------------------------------------ */
     function bindSidebarEvents() {
         const overlay = document.getElementById("cbSbOverlay");
@@ -1136,7 +1308,6 @@
         if (overlay) overlay.addEventListener("click", closeSidebar);
         if (closeBtn) closeBtn.addEventListener("click", closeSidebar);
 
-        // Theme & UI Style toggle cards
         const themeCard = document.getElementById("cbSbThemeCard");
         if (themeCard) {
             themeCard.addEventListener("click", () => {
@@ -1157,20 +1328,17 @@
             });
         }
 
-        // Support & Utility Buttons
         document.getElementById("cbSbContactBtn")?.addEventListener("click", () => openSubModal("cbSbContactModal"));
         document.getElementById("cbSbFeedbackBtn")?.addEventListener("click", () => openSubModal("cbSbFeedbackModal"));
         document.getElementById("cbSbFaqBtn")?.addEventListener("click", () => openSubModal("cbSbFaqModal"));
         document.getElementById("cbSbShareBtn")?.addEventListener("click", handleShareApp);
         document.getElementById("cbSbAboutBtn")?.addEventListener("click", () => openSubModal("cbSbAboutModal"));
 
-        // Logout button
         document.getElementById("cbSbLogoutBtn")?.addEventListener("click", () => {
             closeSidebar();
             if (typeof logoutAndOpenAuthGate === "function") logoutAndOpenAuthGate();
         });
 
-        // Close modal buttons & backdrop click
         document.querySelectorAll("[data-cb-close-modal]").forEach(btn => {
             btn.addEventListener("click", () => closeSubModal(btn.getAttribute("data-cb-close-modal")));
         });
@@ -1180,13 +1348,11 @@
             });
         });
 
-        // Star rating buttons
         document.querySelectorAll("#cbSbStarContainer .cb-sb-star").forEach(btn => {
             btn.addEventListener("click", () => updateStarUI(Number(btn.getAttribute("data-star"))));
         });
         document.getElementById("cbSbSubmitFbBtn")?.addEventListener("click", handleFeedbackSubmit);
 
-        // FAQ Accordion
         document.querySelectorAll(".cb-sb-faq-q").forEach(qBtn => {
             qBtn.addEventListener("click", () => {
                 const parent = qBtn.closest(".cb-sb-faq-item");
@@ -1194,7 +1360,6 @@
             });
         });
 
-        // ESC key & Mobile Back button support
         document.addEventListener("keydown", (e) => {
             if (e.key === "Escape") closeAllSidebarOverlays();
         });
