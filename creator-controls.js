@@ -1,4 +1,11 @@
-/* --- START OF FILE: creator-controls.js --- */
+/* ============================================================================
+   CampusBites — Separate App Creator Control Module
+   File: creator-controls.js
+   Features:
+     1. Live Master Switch: Online UPI Payment ON / OFF across all devices
+     2. Live Master Switch: App Under Maintenance Mode ON / OFF + Custom Notice
+     3. Instant Cross-Device Sync over dedicated lightweight MQTT topic
+   ============================================================================ */
 (function () {
     "use strict";
 
@@ -52,6 +59,9 @@
         }
     }
 
+    /* ------------------------------------------------------------------------
+       1. STYLES FOR CREATOR PANEL & FULL-SCREEN MAINTENANCE LOCK
+       ------------------------------------------------------------------------ */
     const css = `
         .cb-cc-panel {
             background: var(--liquid-glass-strong, #ffffff);
@@ -94,6 +104,8 @@
         .cb-cc-btn.on { background: #10b981; }
         .cb-cc-btn.off { background: #dc2626; }
 
+        /* Disabled
+Online Payment Card Visual */
         #payOnlineCard.cb-online-disabled {
             opacity: 0.55;
             border-style: dashed !important;
@@ -101,6 +113,8 @@
             background: rgba(239, 68, 68, 0.08) !important;
         }
 
+        /*
+Full-Screen Maintenance Overlay */
         .cb-maint-overlay {
             position: fixed;
             inset: 0;
@@ -113,7 +127,9 @@
             padding: 20px;
             text-align: center;
         }
-        .cb-maint-overlay.active { display: flex; }
+        .cb-maint-overlay.active {
+            display: flex;
+        }
         .cb-maint-card {
             max-width: 440px;
             width: 100%;
@@ -141,7 +157,11 @@
     st.textContent = css;
     document.head.appendChild(st);
 
+    /* ------------------------------------------------------------------------
+       2. BUILD MAINTENANCE OVERLAY & CREATOR CONTROL PANEL
+       ------------------------------------------------------------------------ */
     function mountCreatorUI() {
+        // A. Full-Screen Maintenance Overlay
         if (!document.getElementById("cbMaintenanceOverlay")) {
             const ov = document.createElement("div");
             ov.id = "cbMaintenanceOverlay";
@@ -152,25 +172,29 @@
                     <span class="cb-maint-badge">System Maintenance</span>
                     <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">App Under Maintenance</h2>
                     <p id="cbMaintOverlayMsg" style="font-size: 13px; color: #e2e8f0; line-height: 1.55; font-weight: 600; margin-bottom: 20px;">
-                        CampusBites is temporarily under maintenance. Please check back shortly!
+                     CampusBites is temporarily under maintenance. Please check back shortly!
                     </p>
                     <button type="button" id="cbMaintRefreshBtn" style="width:100%; background:#10b981; color:#fff; border:none; padding:12px; border-radius:13px; font-size:13px; font-weight:900; cursor:pointer; margin-bottom:10px;">
-                        🔄 Check Again
+                     🔄 Check Again
                     </button>
                     <button type="button" id="cbMaintCreatorBypassBtn" style="background:none; border:1px solid rgba(255,255,255,0.3); color:#cbd5e1; padding:7px 14px; border-radius:10px; font-size:11px; font-weight:800; cursor:pointer;">
-                        👑 App Creator Login (Unlock)
+                     👑 App Creator Login (Unlock)
                     </button>
                 </div>
             `;
             document.body.appendChild(ov);
 
-            document.getElementById("cbMaintRefreshBtn").addEventListener("click", () => location.reload());
+            document.getElementById("cbMaintRefreshBtn").addEventListener("click", () => {
+                location.reload();
+            });
             document.getElementById("cbMaintCreatorBypassBtn").addEventListener("click", () => {
                 const pin = prompt("👑 Enter App Creator PIN to unlock & manage Maintenance Mode:");
                 if (pin === "9999") {
-                    const pinInput = document.getElementById("creatorMasterPinInput");
-                    if (pinInput) pinInput.value = "9999";
-                    if (typeof completeCreatorAuditorLogin === "function") completeCreatorAuditorLogin();
+                    if (typeof openCreatorModal === "function") {
+                     const pinInput = document.getElementById("creatorMasterPinInput");
+                     if (pinInput) pinInput.value = "9999";
+                     if (typeof completeCreatorAuditorLogin === "function") completeCreatorAuditorLogin();
+                    }
                     enforceAllCreatorFlags();
                 } else if (pin !== null) {
                     alert("❌ Invalid Creator PIN!");
@@ -178,48 +202,51 @@
             });
         }
 
+        // B. Creator Controls Panel inside #creatorControlsMount (in #tab-auditor-portal)
         const mount = document.getElementById("creatorControlsMount");
         if (mount && !document.getElementById("cbCreatorControlsBox")) {
             mount.innerHTML = `
                 <div class="cb-cc-panel" id="cbCreatorControlsBox">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                        <div>
-                            <span style="font-size:10px; font-weight:900; color:var(--primary); text-transform:uppercase; letter-spacing:0.6px;">👑 Creator Live App Switches</span>
-                            <h3 style="font-size:16px; font-weight:900; color:var(--text-main);">Payment Gateway &amp; Maintenance Controls</h3>
-                        </div>
-                        <span style="font-size:11px; font-weight:800; color:#10b981;">⚡ Syncs live to all connected devices</span>
+                     <div>
+                     <span style="font-size:10px; font-weight:900; color:var(--primary); text-transform:uppercase; letter-spacing:0.6px;">👑 Creator Live App Switches (creator-controls.js)</span>
+                     <h3 style="font-size:16px; font-weight:900; color:var(--text-main);">Payment Gateway &amp; Maintenance Controls</h3>
+                     </div>
+                     <span style="font-size:11px; font-weight:800; color:#10b981;">⚡ Syncs live to all connected devices</span>
                     </div>
 
                     <div class="cb-cc-grid">
-                        <div class="cb-cc-card" id="cbCcOnlinePayCard">
-                            <div>
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                    <strong style="font-size:14px;">💳 Online UPI Payment</strong>
-                                    <span id="cbCcOnlineStatusBadge" style="font-size:10.5px; font-weight:900; padding:3px 9px; border-radius:12px;">ON</span>
-                                </div>
-                                <p style="font-size:11.5px; color:var(--text-muted); font-weight:600; line-height:1.4;">
-                                    Turn OFF to temporarily disable Online UPI / QR checkout app-wide. Students will automatically use <b>Cash on Pay</b>.
-                                </p>
-                            </div>
-                            <button type="button" class="cb-cc-btn on" id="cbCcToggleOnlineBtn">Turn Online Payment OFF</button>
-                        </div>
+                     <!-- SWITCH 1: ONLINE UPI PAYMENT ON/OFF -->
+                     <div class="cb-cc-card" id="cbCcOnlinePayCard">
+                     <div>
+                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                     <strong style="font-size:14px;">💳 Online UPI Payment</strong>
+                     <span id="cbCcOnlineStatusBadge" style="font-size:10.5px; font-weight:900; padding:3px 9px; border-radius:12px;">ON</span>
+                     </div>
+                     <p style="font-size:11.5px; color:var(--text-muted); font-weight:600; line-height:1.4;">
+                     Turn OFF to temporarily disable Online UPI / QR checkout app-wide. Students will automatically use <b>Cash on Pay</b>.
+                     </p>
+                     </div>
+                     <button type="button" class="cb-cc-btn on" id="cbCcToggleOnlineBtn">Turn Online Payment OFF</button>
+                     </div>
 
-                        <div class="cb-cc-card" id="cbCcMaintCard">
-                            <div>
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                    <strong style="font-size:14px;">🚧 App Maintenance Mode</strong>
-                                    <span id="cbCcMaintStatusBadge" style="font-size:10.5px; font-weight:900; padding:3px 9px; border-radius:12px;">LIVE</span>
-                                </div>
-                                <p style="font-size:11.5px; color:var(--text-muted); font-weight:600; line-height:1.4; margin-bottom:8px;">
-                                    Turn ON if something goes wrong. Shows an "App Under Maintenance" screen to all students, colleges &amp; counter staff (Creator stays unlocked).
-                                </p>
-                                <input type="text" class="form-control" id="cbCcMaintMsgInput" placeholder="Maintenance notice shown to users..." style="font-size:12px; margin-bottom:6px;">
-                            </div>
-                            <div style="display:flex; gap:6px;">
-                                <button type="button" class="cb-cc-btn off" id="cbCcToggleMaintBtn" style="flex:1;">Enable Maintenance Mode</button>
-                                <button type="button" id="cbCcSaveMaintMsgBtn" style="background:#334155; color:#fff; border:none; border-radius:10px; padding:0 12px; font-size:11px; font-weight:800; cursor:pointer;">Save Msg</button>
-                            </div>
-                        </div>
+                     <!-- SWITCH 2: MAINTENANCE MODE ON/OFF -->
+                     <div class="cb-cc-card" id="cbCcMaintCard">
+                     <div>
+                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                     <strong style="font-size:14px;">🚧 App Maintenance Mode</strong>
+                     <span id="cbCcMaintStatusBadge" style="font-size:10.5px; font-weight:900; padding:3px 9px; border-radius:12px;">LIVE</span>
+                     </div>
+                     <p style="font-size:11.5px; color:var(--text-muted); font-weight:600; line-height:1.4; margin-bottom:8px;">
+                     Turn ON if something goes wrong. Shows an "App Under Maintenance" screen to all students, colleges &amp; counter staff (Creator stays unlocked).
+                     </p>
+                     <input type="text" class="form-control" id="cbCcMaintMsgInput" placeholder="Maintenance notice shown to users..." style="font-size:12px; margin-bottom:6px;">
+                     </div>
+                     <div style="display:flex; gap:6px;">
+                     <button type="button" class="cb-cc-btn off" id="cbCcToggleMaintBtn" style="flex:1;">Enable Maintenance Mode</button>
+                     <button type="button" id="cbCcSaveMaintMsgBtn" style="background:#334155; color:#fff; border:none; border-radius:10px; padding:0 12px; font-size:11px; font-weight:800; cursor:pointer;">Save Msg</button>
+                     </div>
+                     </div>
                     </div>
                 </div>
             `;
@@ -299,15 +326,21 @@
     }
     window.refreshCreatorControlsUI = refreshCreatorControlsUI;
 
+    /* ------------------------------------------------------------------------
+       3. ENFORCE ONLINE PAYMENT OFF & MAINTENANCE MODE LIVE
+       ------------------------------------------------------------------------ */
     function enforceAllCreatorFlags() {
+        // 1. Maintenance Mode Enforcement (Creator / auditor is NEVER locked out)
         const role = typeof currentRole !== "undefined" ? currentRole : "student";
         const overlay = document.getElementById("cbMaintenanceOverlay");
         const msgEl = document.getElementById("cbMaintOverlayMsg");
         if (msgEl) msgEl.textContent = creatorFlags.maintenanceMessage || DEFAULT_FLAGS.maintenanceMessage;
         if (overlay) {
-            overlay.classList.toggle("active", Boolean(creatorFlags.maintenanceMode) && role !== "auditor");
+            const shouldBlock = Boolean(creatorFlags.maintenanceMode) && role !== "auditor";
+            overlay.classList.toggle("active", shouldBlock);
         }
 
+        // 2. Online Payment ON/OFF Enforcement in Tray Drawer
         const onlineCard = document.getElementById("payOnlineCard");
         if (onlineCard) {
             if (!creatorFlags.onlinePaymentEnabled) {
@@ -326,6 +359,7 @@
     }
 
     function hookPaymentFunctions() {
+        // Wrap selectPayment
         if (typeof window.selectPayment === "function" && !window.selectPayment.__cbWrapped) {
             const origSelectPayment = window.selectPayment;
             window.selectPayment = function (mode) {
@@ -340,6 +374,7 @@
             window.selectPayment.__cbWrapped = true;
         }
 
+        // Wrap placeOrder
         if (typeof window.placeOrder === "function" && !window.placeOrder.__cbWrapped) {
             const origPlaceOrder = window.placeOrder;
             window.placeOrder = function () {
@@ -357,6 +392,7 @@
             window.placeOrder.__cbWrapped = true;
         }
 
+        // Wrap openDrawer so online disabled state always reflects immediately
         if (typeof window.openDrawer === "function" && !window.openDrawer.__cbCreatorWrapped) {
             const origOpenDrawer = window.openDrawer;
             window.openDrawer = function () {
@@ -370,6 +406,7 @@
             window.openDrawer.__cbCreatorWrapped = true;
         }
 
+        // Re-check maintenance lock on logout/role switches
         if (typeof window.logoutAndOpenAuthGate === "function" && !window.logoutAndOpenAuthGate.__cbCreatorWrapped) {
             const origLogout = window.logoutAndOpenAuthGate;
             window.logoutAndOpenAuthGate = function () {
@@ -381,6 +418,9 @@
         }
     }
 
+    /* ------------------------------------------------------------------------
+       4. HOOK INTO INDEX.HTML MQTT & STORAGE FOR REAL-TIME FLAGS SYNC
+       ------------------------------------------------------------------------ */
     const prevOnConnect = window.onCbMqttConnected;
     window.onCbMqttConnected = function (client) {
         if (typeof prevOnConnect === "function") prevOnConnect(client);
@@ -416,16 +456,17 @@
         mountCreatorUI();
         hookPaymentFunctions();
         enforceAllCreatorFlags();
+        // Pull Firebase creator flags if configured
         if (typeof cloudConfig !== "undefined" && cloudConfig.dbUrl) {
             fetch(`${cloudConfig.dbUrl}/campusbites_creator_flags.json`)
                 .then(r => r.ok ? r.json() : null)
                 .then(data => {
                     if (data && Number(data.updatedAt || 0) > Number(creatorFlags.updatedAt || 0)) {
-                        creatorFlags = { ...DEFAULT_FLAGS, ...data };
-                        window.CB_CREATOR_FLAGS = creatorFlags;
-                        localStorage.setItem(CREATOR_FLAGS_KEY, JSON.stringify(creatorFlags));
-                        enforceAllCreatorFlags();
-                        refreshCreatorControlsUI();
+                     creatorFlags = { ...DEFAULT_FLAGS, ...data };
+                     window.CB_CREATOR_FLAGS = creatorFlags;
+                     localStorage.setItem(CREATOR_FLAGS_KEY, JSON.stringify(creatorFlags));
+                     enforceAllCreatorFlags();
+                     refreshCreatorControlsUI();
                     }
                 }).catch(() => {});
         }
@@ -437,4 +478,3 @@
         initCreatorControls();
     }
 })();
-/* --- END OF FILE: creator-controls.js --- */
